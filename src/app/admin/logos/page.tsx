@@ -21,7 +21,7 @@ export default async function AdminLogosPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
       </div>

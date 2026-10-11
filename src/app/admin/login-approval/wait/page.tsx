@@ -42,7 +42,7 @@ export default function AdminLoginApprovalWaitPage() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="hf-type-title mb-1 text-hf-black">Godkend dette udstyr</h1>
+      <h1 className="hf-type-title text-hf-black">Godkend dette udstyr</h1>
       <p className="hf-type-body mb-6 text-text-secondary">
         Vi har sendt et link til din e-mail. Åbn det og godkend, at det er dig — så fortsætter du automatisk her.
         Linket virker i 15 minutter.

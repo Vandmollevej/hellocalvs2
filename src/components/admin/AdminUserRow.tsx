@@ -87,7 +87,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
         <p className="hf-type-strong text-hf-black">{user.displayName}</p>
         {user.blockedAt && (
           <p className="hf-type-small mt-1">
-            <span className="rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">Spærret</span>{" "}
+            <span className="hf-badge hf-badge--danger">Spærret</span>{" "}
             <span className="text-hf-red-dark">
               {new Date(user.blockedAt).toLocaleDateString("da-DK")}
               {user.blockedReason ? ` — ${user.blockedReason}` : ""}
@@ -130,7 +130,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
               onClick={unblock}
               disabled={busy !== null}
               title="Ophæv spærring"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-tan disabled:opacity-50"
+              className="hf-btn-icon"
             >
               <IconLockOpen size={16} />
             </button>
@@ -139,7 +139,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
             <Link
               href={`/admin/users/points?user=${user.id}`}
               title="Tildel points"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-tan"
+              className="hf-btn-icon"
             >
               <IconCoins size={16} />
             </Link>
@@ -149,7 +149,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
             onClick={forget}
             disabled={busy !== null}
             title="Ret til at blive glemt"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-hf-red-dark hover:bg-hf-tan disabled:opacity-50"
+            className="hf-btn-icon"
           >
             <IconUserOff size={16} />
           </button>

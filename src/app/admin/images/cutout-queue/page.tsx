@@ -17,14 +17,14 @@ export default async function AdminCutoutQueuePage() {
   const count = queue.pending.length;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
       <ImagesTabs active="cutoutQueue" />
       <p className="hf-type-body text-text-secondary">
         {count === 0 ? "Ingen billeder venter på frilæggelse." : count === 1 ? "1 billede venter på at få fjernet baggrunden." : `${count} billeder venter på at få fjernet baggrunden.`}
       </p>
       <CutoutQueueList rows={queue.pending} emptyText="Køen er tom." />
-      <div className="rounded-lg border border-hf-tan-dark bg-hf-tan px-4 py-3">
+      <div className="hf-surface bg-hf-tan px-4 py-3">
         <p className="hf-type-strong text-hf-black">
           {queue.robot.notice}
         </p>

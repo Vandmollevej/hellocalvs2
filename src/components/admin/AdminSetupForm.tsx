@@ -98,7 +98,7 @@ export function AdminSetupForm() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="hf-type-page-title hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3 text-center tracking-[0.4em]"
+              className="hf-input"
             />
           </label>
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
@@ -124,7 +124,7 @@ export function AdminSetupForm() {
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
+          className="hf-input"
         />
       </label>
       <AdminNewPasswordFields

@@ -24,7 +24,7 @@ export default async function AdminGuideBuilderPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "gb_title")}</h1>
         <p className="hf-type-body text-text-secondary">{t(admin.locale, "gb_intro")}</p>

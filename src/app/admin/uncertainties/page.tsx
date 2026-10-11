@@ -42,7 +42,7 @@ export default async function AdminUncertaintiesPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Usikkerheder</h1>
         <p className="hf-type-body text-text-secondary">

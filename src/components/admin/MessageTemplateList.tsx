@@ -35,7 +35,7 @@ export function MessageTemplateList({ templates }: { templates: MessageTemplateD
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Søg i beskeder"
-          className="hf-type-body hf-field min-w-[220px] flex-1 rounded-md border border-hf-tan-dark px-3"
+          className="hf-input min-w-[220px] flex-1"
         />
         <FilterDropdown
           label="Gruppe"

@@ -29,7 +29,7 @@ export default async function RejectionReasonsPage() {
           <RejectionReasonRow key={reason.id} id={reason.id} label={reason.label} active={reason.active} />
         ))}
         <form action={saveRejectionReason} className="flex gap-2">
-          <input name="label" placeholder="Ny årsag" className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-page-bg px-2 py-1" />
+          <input name="label" placeholder="Ny årsag" className="hf-input flex-1" />
           <button type="submit" className="hf-btn-secondary hf-btn--compact w-fit">
             Tilføj
           </button>

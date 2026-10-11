@@ -21,50 +21,74 @@ const HEX = "#[0-9a-fA-F]{3,8}\\b";
 const RAW_TYPE =
   "(^|\\s|:)(text-(xs|sm|base|lg|xl|[2-9]xl)|text-\\[\\d+px\\]|font-(thin|light|normal|medium|semibold|bold|extrabold|black))(\\s|$)";
 
+const COLOR_SELECTORS = [
+  {
+    selector: `JSXAttribute[name.name="className"] Literal[value=/${HEX}/]`,
+    message: "Hex-farve i className: brug et token (bg-hf-*, text-hf-*, border-hf-*) fra globals.css.",
+  },
+  {
+    selector: `JSXAttribute[name.name="className"] TemplateElement[value.raw=/${HEX}/]`,
+    message: "Hex-farve i className: brug et token (bg-hf-*, text-hf-*, border-hf-*) fra globals.css.",
+  },
+  {
+    selector: `JSXAttribute[name.name="style"] Property[key.type="Identifier"] > Literal[value=/${HEX}/]`,
+    message: "Hex-farve i style: brug et token (var(--hf-color-*)) eller en utility-klasse.",
+  },
+  {
+    selector: `JSXAttribute[name.name="style"] Property[key.type="Identifier"] > Literal[value=/^var\\(--hf-/]`,
+    message: "Statisk style med et token: brug den tilsvarende utility (bg-hf-*, text-hf-*, border-hf-*) i className.",
+  },
+];
+
+const TYPE_SELECTORS = [
+  {
+    selector: `JSXAttribute[name.name="className"] Literal[value=/${RAW_TYPE}/]`,
+    message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
+  },
+  {
+    selector: `JSXAttribute[name.name="className"] TemplateElement[value.raw=/${RAW_TYPE}/]`,
+    message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
+  },
+];
+
+// Admin (bruger 2026-10-11): knapper og felter bruger KUN de fælles klasser
+// (.hf-btn-*, .hf-choice, .hf-input) — ingen side må selv sætte kant, baggrund,
+// radius, skrift eller indre luft på <button>/<input>/<select>/<textarea>.
+const CONTROL_STYLE =
+  "(^|\\s|:)(rounded(-[a-z0-9]+)?|border(-[a-z0-9-]+)?|bg-(hf|page|surface)[a-z0-9-]*|p[xy]-[0-9.]+|hf-type-[a-z-]+)(\\s|$)";
+const CONTROL_MESSAGE =
+  "Hjemmelavet knap-/feltstil i admin: brug .hf-btn-primary/-brand/-secondary/-danger/-text/-icon, .hf-choice eller .hf-input (+ .hf-btn--compact/.hf-btn--inline/.hf-input--compact) fra globals.css.";
+const ADMIN_CONTROL_SELECTORS = [
+  {
+    selector: `JSXOpeningElement[name.name=/^(button|input|select|textarea)$/] > JSXAttribute[name.name="className"] Literal[value=/${CONTROL_STYLE}/]`,
+    message: CONTROL_MESSAGE,
+  },
+  {
+    selector: `JSXOpeningElement[name.name=/^(button|input|select|textarea)$/] > JSXAttribute[name.name="className"] TemplateElement[value.raw=/${CONTROL_STYLE}/]`,
+    message: CONTROL_MESSAGE,
+  },
+];
+
 const designTokenRules = [
   {
     name: "design-tokens/colors",
     files: ["src/**/*.tsx"],
     ignores: DESIGN_TOKEN_EXEMPT,
-    rules: {
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector: `JSXAttribute[name.name="className"] Literal[value=/${HEX}/]`,
-          message: "Hex-farve i className: brug et token (bg-hf-*, text-hf-*, border-hf-*) fra globals.css.",
-        },
-        {
-          selector: `JSXAttribute[name.name="className"] TemplateElement[value.raw=/${HEX}/]`,
-          message: "Hex-farve i className: brug et token (bg-hf-*, text-hf-*, border-hf-*) fra globals.css.",
-        },
-        {
-          selector: `JSXAttribute[name.name="style"] Property[key.type="Identifier"] > Literal[value=/${HEX}/]`,
-          message: "Hex-farve i style: brug et token (var(--hf-color-*)) eller en utility-klasse.",
-        },
-        {
-          selector: `JSXAttribute[name.name="style"] Property[key.type="Identifier"] > Literal[value=/^var\\(--hf-/]`,
-          message: "Statisk style med et token: brug den tilsvarende utility (bg-hf-*, text-hf-*, border-hf-*) i className.",
-        },
-      ],
-    },
+    rules: { "no-restricted-syntax": ["error", ...COLOR_SELECTORS] },
   },
   {
     name: "design-tokens/typography",
     files: ["src/**/*.tsx"],
     ignores: [...DESIGN_TOKEN_EXEMPT, ...MARKETING_ZONE],
-    rules: {
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector: `JSXAttribute[name.name="className"] Literal[value=/${RAW_TYPE}/]`,
-          message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
-        },
-        {
-          selector: `JSXAttribute[name.name="className"] TemplateElement[value.raw=/${RAW_TYPE}/]`,
-          message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
-        },
-      ],
-    },
+    rules: { "no-restricted-syntax": ["error", ...TYPE_SELECTORS] },
+  },
+  {
+    // Et senere config-objekt erstatter no-restricted-syntax for filerne, så
+    // farve- og typografi-reglerne gentages her.
+    name: "design-tokens/admin-controls",
+    files: ["src/app/admin/**/*.tsx", "src/components/admin/**/*.tsx"],
+    ignores: [...DESIGN_TOKEN_EXEMPT, "src/components/admin/AdminShell.tsx"],
+    rules: { "no-restricted-syntax": ["error", ...COLOR_SELECTORS, ...TYPE_SELECTORS, ...ADMIN_CONTROL_SELECTORS] },
   },
 ];
 

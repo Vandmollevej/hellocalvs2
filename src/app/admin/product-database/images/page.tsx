@@ -44,7 +44,7 @@ export default async function AdminImagesPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-col gap-1">
         <h1 className="hf-type-title text-hf-black">Billeder</h1>
         <p className="hf-type-body text-text-secondary">

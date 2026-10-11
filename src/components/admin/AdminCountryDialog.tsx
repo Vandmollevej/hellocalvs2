@@ -76,7 +76,7 @@ export function AdminCountryDialog({
               key={country.flag}
               onClick={() => choose(country.flag)}
               aria-pressed={isSelected}
-              className="hf-control-row flex w-full items-center gap-3 border-b border-hf-tan-dark px-4 text-left hover:bg-hf-tan"
+              className="hf-btn-text hf-control-row w-full"
             >
               <Image src={`/flags/${country.flag}.png`} alt="" width={36} height={27} className="rounded-[2px]" />
               <span className="hf-type-body flex-1">{COUNTRY_NAMES[country.flag]?.[locale] ?? country.flag}</span>

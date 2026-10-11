@@ -151,7 +151,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
           {group.hiddenCount > 0 && ` · ${group.hiddenCount} mere vises efter denne fletning`}
         </p>
         {hasLongText && (
-          <button type="button" onClick={() => setExpanded((v) => !v)} className="hf-type-small text-hf-green-dark">
+          <button type="button" onClick={() => setExpanded((v) => !v)} className="hf-btn-text">
             {expanded ? "Vis korte tekster" : "Vis hele tekster"}
           </button>
         )}
@@ -182,9 +182,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
             return (
               <div
                 key={column.id}
-                className={`grid grid-rows-subgrid rounded-lg px-2 pb-2 ${
-                  isFinal ? "border-2 border-hf-green-dark bg-hf-gray-light" : "border border-hf-gray-border bg-hf-white"
-                }`}
+                className={`hf-surface grid grid-rows-subgrid px-2 pb-2 ${isFinal ? "hf-selected" : ""}`}
                 style={{ gridColumn: colIndex + 2, gridRow: `1 / span ${rows.length}` }}
               >
                 {rows.map((row, i) => {
@@ -201,7 +199,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
                           <button
                             type="button"
                             onClick={() => chooseFinal(column.id)}
-                            className="hf-type-caption self-start text-hf-green-dark underline"
+                            className="hf-btn-text self-start"
                           >
                             Gør til endelig
                           </button>
@@ -211,7 +209,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
                             href={`/admin/products/${column.productId}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="hf-type-caption self-start text-text-secondary underline"
+                            className="hf-btn-text self-start"
                           >
                             Åbn vare
                           </a>
@@ -231,7 +229,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
                           <button
                             type="button"
                             onClick={() => take(field.key, column.values[field.key])}
-                            className="hf-type-caption self-start text-text-secondary underline"
+                            className="hf-btn-text self-start"
                           >
                             Fortryd
                           </button>
@@ -252,7 +250,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
                       onClick={() => take(field.key, value)}
                       aria-label={`Brug ${field.label} fra ${column.title}`}
                       title="Brug denne værdi i den endelige"
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-green-light"
+                      className="hf-btn-icon -my-2"
                     >
                       <Arrow direction={direction} />
                     </button>
@@ -289,7 +287,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
           type="button"
           onClick={() => submit("dismiss")}
           disabled={busy !== null}
-          className="hf-type-small rounded-md border border-hf-gray-border px-3 py-1.5 text-text-secondary disabled:opacity-60"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline"
         >
           {busy === "dismiss" ? "…" : group.kind === "sources" ? "Behold som nu" : "Ikke dubletter"}
         </button>
@@ -297,7 +295,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
           type="button"
           onClick={() => submit("save")}
           disabled={busy !== null}
-          className="hf-type-small hf-type-strong rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
+          className="hf-btn-brand hf-btn--compact hf-btn--inline"
         >
           {busy === "save"
             ? "Gemmer…"

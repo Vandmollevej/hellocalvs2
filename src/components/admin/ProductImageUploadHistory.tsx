@@ -21,8 +21,8 @@ import { CheckerThumb } from "@/components/admin/ImageCompare";
 
 type Confirm = { ids: string[]; text: string };
 
-const buttonClass = "hf-type-small rounded-md border border-hf-tan-dark bg-hf-white px-3 py-1.5 text-hf-black hover:border-hf-green disabled:opacity-60";
-const dangerButtonClass = "hf-type-small rounded-md border border-hf-red-dark bg-hf-white px-3 py-1.5 text-hf-red-dark hover:bg-hf-red-muted disabled:opacity-60";
+const buttonClass = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const dangerButtonClass = "hf-btn-danger hf-btn--compact hf-btn--inline";
 
 export function ProductImageUploadHistory({ batches, canEdit }: { batches: ProductImageUploadBatch[]; canEdit: boolean }) {
   const router = useRouter();

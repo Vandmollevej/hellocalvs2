@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { loadProductDatabase, loadProductDatabaseSuggestions, type ProductDatabaseRow } from "@/lib/admin-product-database";
@@ -95,7 +96,7 @@ function StoreTags({ stores }: { stores: string[] }) {
   return (
     <span className="flex flex-wrap gap-1">
       {stores.map((store) => (
-        <span key={store} className="hf-type-micro hf-type-strong rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
+        <span key={store} className="hf-badge">
           {store}
         </span>
       ))}
@@ -320,31 +321,8 @@ function GridView({ rows, columns }: { rows: ProductDatabaseRow[]; columns: Prod
 }
 
 function Pagination({ filters, pageCount }: { filters: Filters; pageCount: number }) {
-  if (pageCount <= 1) return null;
   const page = Math.min(filters.page, pageCount);
-  const linkClass = "hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-4 py-2 text-hf-black hover:border-hf-green";
-  const disabledClass = "hf-type-body rounded-md border border-hf-tan-dark px-4 py-2 text-text-muted";
-  return (
-    <nav aria-label="Sider" className="flex items-center justify-between gap-3">
-      {page > 1 ? (
-        <Link href={productDatabaseHref(filters, { page: page - 1 })} className={linkClass}>
-          ← Forrige
-        </Link>
-      ) : (
-        <span className={disabledClass}>← Forrige</span>
-      )}
-      <span className="hf-type-body text-text-secondary">
-        Side {numberFormat.format(page)} af {numberFormat.format(pageCount)}
-      </span>
-      {page < pageCount ? (
-        <Link href={productDatabaseHref(filters, { page: page + 1 })} className={linkClass}>
-          Næste →
-        </Link>
-      ) : (
-        <span className={disabledClass}>Næste →</span>
-      )}
-    </nav>
-  );
+  return <AdminPagination page={page} pageCount={pageCount} hrefFor={(next) => productDatabaseHref(filters, { page: next })} />;
 }
 
 export default async function AdminProductDatabasePage({
@@ -371,7 +349,7 @@ export default async function AdminProductDatabasePage({
     `hf-type-body rounded-md px-3 py-1.5 ${active ? "bg-hf-green-dark text-hf-white" : "text-hf-black hover:bg-hf-tan"}`;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h1 className="hf-type-title text-hf-black">{deletedView ? "Slettede varer" : "Varer"}</h1>

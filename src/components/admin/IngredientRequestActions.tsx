@@ -33,13 +33,13 @@ export function IngredientRequestActions({ id, name: initialName }: { id: string
         onChange={(event) => setName(event.target.value)}
         maxLength={80}
         aria-label="Ingrediensens navn"
-        className="hf-type-body hf-field flex-1 rounded border border-hf-tan-dark bg-hf-white px-3 text-hf-black"
+        className="hf-input flex-1"
       />
       <button
         type="button"
         disabled={busy || !name.trim()}
         onClick={() => decide("add")}
-        className="hf-type-body hf-type-strong rounded bg-hf-green-dark px-3 py-2 text-hf-white disabled:opacity-50"
+        className="hf-btn-brand hf-btn--compact hf-btn--inline"
       >
         Tilføj globalt
       </button>
@@ -47,7 +47,7 @@ export function IngredientRequestActions({ id, name: initialName }: { id: string
         type="button"
         disabled={busy}
         onClick={() => decide("reject")}
-        className="hf-type-body rounded border border-hf-tan-dark px-3 py-2 text-hf-black disabled:opacity-50"
+        className="hf-btn-secondary hf-btn--compact hf-btn--inline"
       >
         Afvis
       </button>

@@ -32,7 +32,7 @@ export function FridaMatchChoice({ reviewId, candidates }: { reviewId: string; c
           type="button"
           onClick={() => choose(c.id, { fridaProductId: c.id })}
           disabled={loading !== null}
-          className="hf-type-small flex w-full items-center justify-between gap-3 rounded-md border border-hf-tan-dark px-3 py-2 text-left text-hf-black disabled:opacity-60"
+          className="hf-btn-secondary hf-btn--compact hf-btn--inline w-full"
         >
           <span>{loading === c.id ? "…" : c.name}</span>
           <span className="shrink-0 text-text-secondary">
@@ -44,7 +44,7 @@ export function FridaMatchChoice({ reviewId, candidates }: { reviewId: string; c
         type="button"
         onClick={() => choose("none", { fridaProductId: null })}
         disabled={loading !== null}
-        className="hf-type-small self-start rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-black disabled:opacity-60"
+        className="hf-btn-secondary hf-btn--compact hf-btn--inline self-start"
       >
         {loading === "none" ? "…" : "Ingen passer"}
       </button>
@@ -75,7 +75,7 @@ export function FridaMatchReset({ reviewId }: { reviewId: string }) {
       type="button"
       onClick={reset}
       disabled={loading}
-      className="hf-type-small shrink-0 rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-black disabled:opacity-60"
+      className="hf-btn-secondary hf-btn--compact hf-btn--inline shrink-0"
     >
       {loading ? "…" : "Vælg igen"}
     </button>

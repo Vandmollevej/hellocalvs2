@@ -78,7 +78,7 @@ export default async function AdminGrantPointsPage({
   const allowed = canGrantAdminPoints(lastGrant?.createdAt ?? null);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "nav_grant_points")}</h1>
         <p className="hf-type-body text-text-secondary">

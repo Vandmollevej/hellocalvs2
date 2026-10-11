@@ -90,7 +90,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
     });
   }
 
-  const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2 py-1 text-hf-black";
+  const fieldClass = "hf-input";
 
   return (
     <div
@@ -115,7 +115,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
           onPreview(event.target.value);
         }}
         placeholder="Hej {{navn}}, tak for din besked …"
-        className={`hf-type-body w-full p-2 ${fieldClass}`}
+        className={`w-full ${fieldClass}`}
       />
       <div className="flex flex-wrap items-center justify-end gap-2">
         {message && <span className="mr-auto text-text-secondary">{message}</span>}
@@ -124,7 +124,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
             type="button"
             disabled={busy}
             onClick={remove}
-            className="rounded-md border border-hf-tan-dark px-2.5 py-1 text-hf-red-dark hover:bg-hf-tan disabled:opacity-50"
+            className="hf-btn-danger hf-btn--compact hf-btn--inline"
           >
             Slet
           </button>
@@ -133,7 +133,7 @@ function TemplateForm({ initial, onPreview }: { initial: Template; onPreview: (b
           type="button"
           disabled={busy || !dirty || !title.trim() || !body.trim()}
           onClick={save}
-          className="rounded-md bg-hf-green-dark px-3 py-1 text-hf-white disabled:opacity-50"
+          className="hf-btn-brand hf-btn--compact hf-btn--inline"
         >
           {isNew ? "Opret" : "Gem"}
         </button>

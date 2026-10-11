@@ -274,7 +274,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             onClick={() => setExpanded((v) => !v)}
             title={expanded ? "Skjul detaljer" : "Vis alle detaljer"}
             aria-expanded={expanded}
-            className="flex h-8 w-8 flex-shrink-0 items-center justify-center text-text-muted"
+            className="hf-btn-icon"
           >
             <svg
               width="18"
@@ -297,7 +297,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               type="button"
               onClick={() => act("reject")}
               disabled={loading !== null}
-              className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
+              className="hf-btn-danger hf-btn--compact hf-btn--inline"
             >
               {loading === "reject" ? "…" : "Afvis"}
             </button>
@@ -305,7 +305,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               type="button"
               onClick={() => act("approve")}
               disabled={loading !== null}
-              className="hf-type-body rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-60"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               {loading === "approve" ? "…" : "Godkend"}
             </button>
@@ -346,7 +346,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
                       value={form.ingredientsText}
                       onChange={(e) => set("ingredientsText")(e.target.value)}
                       rows={6}
-                      className="hf-type-body rounded-md border border-hf-tan-dark p-2"
+                      className="hf-input"
                     />
                   </label>
                 </div>
@@ -355,7 +355,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
                 type="button"
                 onClick={approveTranslation}
                 disabled={saving}
-                className="hf-type-body mt-4 rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
+                className="hf-btn-brand hf-btn--compact hf-btn--inline mt-4"
               >
                 {saving ? "Gemmer…" : "Godkend oversættelse"}
               </button>
@@ -364,7 +364,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
           <Section
             title="Vare"
             action={
-              <a href={`/admin/products/${product.id}`} className="hf-type-small text-hf-green-dark underline">
+              <a href={`/admin/products/${product.id}`} className="hf-btn-text">
                 Åbn vareside (merge m.m.)
               </a>
             }
@@ -469,7 +469,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               type="button"
               onClick={save}
               disabled={saving}
-              className="hf-type-body rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white disabled:opacity-60"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               {saving ? "Gemmer…" : "Gem ændringer"}
             </button>
@@ -512,7 +512,7 @@ function Field({
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
+        className="hf-input"
       />
     </label>
   );

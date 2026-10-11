@@ -52,9 +52,9 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
   }
 
   return (
-    <div className="rounded-xl border border-hf-tan-dark p-4">
+    <div className="hf-surface p-4">
       {sheet}
-      <button type="button" onClick={() => setOpen(!open)} className="hf-type-body text-hf-black hf-type-strong">
+      <button type="button" onClick={() => setOpen(!open)} className="hf-btn-text text-hf-black">
         {open ? "Luk" : "Send mail og push til alle brugere"}
       </button>
       {open && (
@@ -64,7 +64,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
             onChange={(e) => setSubject(e.target.value)}
             maxLength={MAX_SUBJECT}
             placeholder="Emne / push-titel"
-            className="hf-type-body rounded-lg border border-hf-tan-dark px-3 py-2"
+            className="hf-input"
           />
           <textarea
             value={message}
@@ -72,7 +72,7 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
             maxLength={MAX_MESSAGE}
             rows={6}
             placeholder="Besked (kun tekst — links og emojis virker)"
-            className="hf-type-body rounded-lg border border-hf-tan-dark px-3 py-2"
+            className="hf-input"
           />
           <label className="hf-type-body flex items-center gap-2">
             <input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} />
@@ -88,14 +88,14 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             placeholder="Din adgangskode (kræves ved hver udsendelse)"
-            className="hf-type-body rounded-lg border border-hf-tan-dark px-3 py-2"
+            className="hf-input"
           />
           {error && <p className="hf-type-body text-red-700">{error}</p>}
           {done && <p className="hf-type-body text-hf-green">{done}</p>}
           <button
             type="submit"
             disabled={!canSend}
-            className="hf-type-body rounded-lg bg-hf-black px-4 py-2 disabled:opacity-40 text-hf-white hf-type-strong"
+            className="hf-btn-primary hf-btn--compact hf-btn--inline"
           >
             {busy ? "Sender…" : "Send til alle"}
           </button>

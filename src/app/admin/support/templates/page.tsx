@@ -12,7 +12,7 @@ export default async function AdminSupportTemplatesPage() {
   const templates = await listSupportReplyTemplates();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <Link href="/admin/support" className="hf-type-small text-text-secondary hover:text-text-primary">
         ← Tilbage til indbakken
       </Link>

@@ -10,7 +10,7 @@ export default async function AdminSearchSynonymsPage() {
   const synonyms = await prisma.searchSynonym.findMany({ orderBy: [{ language: "asc" }, { termA: "asc" }] });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Synonymordbog</h1>
         <p className="hf-type-body text-text-secondary">

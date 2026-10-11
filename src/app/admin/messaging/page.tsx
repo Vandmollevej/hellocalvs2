@@ -38,7 +38,7 @@ export default async function AdminMessagingPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "messaging_title")}</h1>
         <p className="hf-type-body mt-1 text-text-secondary">

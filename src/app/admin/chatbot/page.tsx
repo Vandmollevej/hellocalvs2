@@ -51,7 +51,7 @@ export default async function AdminChatbotPage({
   const maxCount = stats.rows[0]?.count ?? 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Chatbot</h1>
         <p className="hf-type-body text-text-secondary">
@@ -116,7 +116,7 @@ export default async function AdminChatbotPage({
 
       <section className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex overflow-hidden rounded-md border border-hf-tan-dark" role="tablist">
+          <div className="hf-surface flex overflow-hidden" role="tablist">
             {(
               [
                 ["questions", "Spørgsmål og svar"],
@@ -148,7 +148,7 @@ export default async function AdminChatbotPage({
               name="q"
               defaultValue={filter.q}
               placeholder="Fx abonnement"
-              className="hf-type-body h-9 rounded-md border border-hf-tan-dark bg-hf-white px-2 outline-none focus:border-hf-green"
+              className="hf-input hf-input--compact"
             />
           </label>
           <label className="flex flex-col gap-1">
@@ -156,7 +156,7 @@ export default async function AdminChatbotPage({
             <select
               name="category"
               defaultValue={filter.category ?? ""}
-              className="hf-type-body h-9 rounded-md border border-hf-tan-dark bg-hf-white px-2"
+              className="hf-input hf-input--compact"
             >
               <option value="">Alle kategorier</option>
               {CHATBOT_CATEGORIES.map((category) => (
@@ -170,7 +170,7 @@ export default async function AdminChatbotPage({
             <input type="checkbox" name="escalated" value="1" defaultChecked={filter.escalated} />
             <span>Kun sendt til medarbejder</span>
           </label>
-          <button type="submit" className="hf-type-small hf-type-strong h-9 rounded-md bg-hf-green-dark px-3 text-hf-white">
+          <button type="submit" className="hf-btn-brand hf-btn--compact hf-btn--inline">
             Filtrér
           </button>
           {(filter.q || filter.category || filter.escalated) && (

@@ -5158,3 +5158,9 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - **Udeladt bevidst:** Scan med kamera, Billeddagbog (kræver kamera), stemme (Chat afløser den), forsidens drejehjul og dagsliste (kalenderens dagsvisning er forsiden).
 - **Vagt:** `src/lib/web-nav.test.mjs` (kører i `npm test`) sammenligner appens menuer (Profil, Indstillinger, Visning, bundmenuens ikoner) og forsidens popups med webben og fejler, når webben mangler noget. Se REGLER → "Webversionen følger appen".
 - Ikke prøvet i browser (ingen lokal DB/login); lint og typecheck på de ændrede filer er rene, og alle 104 native skærme er accepteret i paritetsvagten (kun `WebShell.tsx`, som er desktop-only, er ændret).
+## 2026-10-11: Admin bruger kun fælles klasser (knapper, felter, kort, mærker, sidenavigation)
+
+- Brugerens klage: siden "flimrede" i bredden mellem Retter-listerne, og "Søg" var understreget igen. Årsag 1: `.hf-shell` er scroll-containeren, og scrollbaren kom og gik efter sidelængde; nu reserverer `scrollbar-gutter: stable` pladsen. Årsag 2: en senere omskrivning af `DishListPage` (Disable-knappen) overskrev den fælles `.hf-search`; søgefeltet er genindsat.
+- Nye fælles klasser: `.hf-input` (+ `--compact`), `.hf-btn--inline`, `.hf-badge` (+ `--success/--warning/--danger`), `.hf-admin-page`; komponent `AdminPagination` erstatter fire hjemmelavede Forrige/Næste-rækker.
+- Alle admin-knapper/-felter/-kort/-mærker er omlagt til klasserne (kodemod + gennemgang). Lint-regel `design-tokens/admin-controls` fejler på hjemmelavet kant/baggrund/radius/skrift/padding på `<button>/<input>/<select>/<textarea>` i admin.
+- Retter-listerne har samme kolonnebredder med og uden Disable-knap.

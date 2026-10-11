@@ -27,7 +27,7 @@ export default async function AdminBugReportsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "bug_reports_title")}</h1>
       <p className="hf-type-body text-text-secondary">
         Godkendelse giver brugeren 10 points (gælder ikke AI-genererede rapporter). Nyeste øverst.

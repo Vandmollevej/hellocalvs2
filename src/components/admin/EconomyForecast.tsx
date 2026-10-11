@@ -36,7 +36,7 @@ export function EconomyForecast({ initial, basis }: { initial: Forecast; basis: 
         <p className="hf-type-strong text-hf-black">
           Næste måneds forventede indtjening: {kr.format(forecast.totalDkk)} kr.
         </p>
-        <button type="button" onClick={run} disabled={loading} className="hf-control rounded-md bg-hf-fab px-3 text-hf-white disabled:opacity-60">
+        <button type="button" onClick={run} disabled={loading} className="hf-btn-brand hf-btn--inline hf-btn--large">
           {loading ? "Beregner …" : "Beregn med AI"}
         </button>
       </div>

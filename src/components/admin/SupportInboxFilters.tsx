@@ -45,15 +45,14 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
   return (
     <div className="hf-type-small flex flex-col gap-3 hf-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex overflow-hidden rounded-md border border-hf-tan-dark">
+        <div className="flex flex-wrap gap-1">
           {STATUSES.map((status) => (
             <button
               key={status.key}
               type="button"
               onClick={() => apply({ status: status.key })}
-              className={`px-2.5 py-1 ${
-                filter.status === status.key ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-              }`}
+              aria-pressed={filter.status === status.key}
+              className="hf-choice"
             >
               {status.label}
             </button>
@@ -64,7 +63,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
           <select
             value={filter.sort}
             onChange={(event) => apply({ sort: event.target.value === "newest" ? "newest" : "oldest" })}
-            className="hf-field rounded-md border border-hf-tan-dark bg-hf-cream px-2 text-hf-black"
+            className="hf-input hf-input--compact"
           >
             <option value="oldest">Ældste øverst</option>
             <option value="newest">Senest modtaget øverst</option>
@@ -97,7 +96,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
             value={q}
             onChange={(event) => setQ(event.target.value)}
             placeholder="Søg emne, navn, e-mail, sagsnr."
-            className="hf-field min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-cream px-2 text-hf-black"
+            className="hf-input hf-input--compact min-w-0 flex-1"
           />
         </form>
       </div>

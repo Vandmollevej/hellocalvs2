@@ -36,7 +36,7 @@ export async function EnergySplitFlags() {
                 {flag.product.name}
                 {flag.product.packageSizeText ? ` (${flag.product.packageSizeText})` : ""}
               </Link>
-              <span className="hf-type-small shrink-0 rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
+              <span className="hf-badge shrink-0">
                 Afvigelse {flag.deviationPoints} %-point
               </span>
             </div>

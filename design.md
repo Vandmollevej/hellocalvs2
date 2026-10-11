@@ -2133,9 +2133,14 @@ tokens og må gerne stå i eksisterende kode, men ny kode bruger de kanoniske.
 - Flader: `.hf-card` (+ `--form`, `--brand`, `--outline`, `--row`), `.hf-surface`,
   `.hf-panel` (+ `--form`), `.hf-kpi`, `.hf-chip`, `.hf-accordion*`.
 - Knapper: `.hf-btn-primary/-secondary/-danger/-brand/-text/-icon`, `.hf-choice`,
-  modifier `.hf-btn--compact`. Primærknappen er altid uigennemsigtig —
+  modifiers `.hf-btn--compact` (40 px) og `.hf-btn--inline` (naturlig bredde). Primærknappen er altid uigennemsigtig —
   `disabled:opacity-*` på den er fjernet overalt (var død kode).
-- Felter: `.hf-field` (48 px) + `border-hf-field-border rounded-card`.
+- Felter: `.hf-field` (kun højde, app) og `.hf-input` (komplet felt: kant, baggrund,
+  radius, skrift, fokus; `--compact` = 40 px; textarea vokser) til admin og formularer.
+- Mærker: `.hf-badge` (+ `--success/--warning/--danger`). Sidenavigation i admin-lister:
+  `AdminPagination`. Admin-sidens rod: `.hf-admin-page` (samme afstand på alle sider).
+  `scrollbar-gutter: stable` på `.hf-shell`, så siden ikke skifter bredde mellem
+  korte og lange sider.
 - Skal: `.hf-appbar` (`__slot`, `__slot-button`, `__center`, `__title`, `__end`,
   `__profile`), `.hf-shell*`, `.hf-navrow`, `.hf-crumbs`, `.hf-menu`.
 - Hjælpere: `.hf-safe-top`, `.hf-fade-bottom`, `.hf-glyph-lg/-md`,

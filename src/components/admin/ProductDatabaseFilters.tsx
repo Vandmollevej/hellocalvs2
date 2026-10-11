@@ -158,7 +158,7 @@ export function ProductDatabaseFilters({
           />
           <div className="flex min-w-0 flex-col gap-1">
             <span className="hf-type-label text-text-secondary">Visning</span>
-            <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
+            <div className="hf-surface flex gap-1 p-1">
               {VIEW_OPTIONS.map((option) => (
                 <button
                   key={option.value}
@@ -206,7 +206,7 @@ export function ProductDatabaseFilters({
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <label className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="hf-type-label text-text-secondary">Søg</span>
-          <span className="hf-field flex items-center gap-2 rounded-md border border-hf-tan-dark bg-page-bg px-3 focus-within:border-hf-green">
+          <span className="hf-search">
             <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-text-muted" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-4-4" />
@@ -216,7 +216,7 @@ export function ProductDatabaseFilters({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Navn, mærke, sub brand, variant eller stregkode…"
-              className="hf-type-body h-full w-full min-w-0 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
+              className="min-w-0"
             />
           </span>
         </label>
@@ -227,7 +227,7 @@ export function ProductDatabaseFilters({
           type="button"
           onClick={() => setShowFilters((value) => !value)}
           aria-expanded={showFilters}
-          className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black"
+          className="hf-btn-text"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
             <path d="M3 6h18M6 12h12M10 18h4" />
@@ -270,7 +270,7 @@ export function ProductDatabaseFilters({
                 }), { scroll: false });
               });
             }}
-            className="hf-btn-text text-hf-green-dark"
+            className="hf-btn-text"
           >
             Nulstil alt
           </button>
@@ -367,7 +367,7 @@ export function ProductDatabaseFilters({
               <button
                 type="button"
                 onClick={() => go(chip.clear)}
-                className="hf-type-small flex items-center gap-1.5 rounded-full border border-hf-green bg-hf-tan px-3 py-1 text-hf-green-dark hover:bg-hf-tan-dark"
+                className="hf-choice is-selected"
               >
                 {chip.label}
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" aria-label="Fjern filter">

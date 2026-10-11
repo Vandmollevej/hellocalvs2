@@ -41,7 +41,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
   if (email) views.push({ value: "mail", label: "Mail" });
   if (push) views.push({ value: "push", label: "Notifikation" });
   const activeView = views.some((option) => option.value === view) ? view : views[0].value;
-  const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2.5 py-1.5 hf-type-body text-hf-black";
+  const fieldClass = "hf-input";
 
   function copyFrom(event: string) {
     const source = templates.find((template) => template.event === event);
@@ -115,7 +115,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
           rows={18}
           value={draft.bodyHtml}
           onChange={(event) => setDraft({ ...draft, bodyHtml: event.target.value })}
-          className={`${fieldClass} hf-type-small font-mono`}
+          className={`${fieldClass} font-mono`}
         />
       </label>
 
@@ -124,7 +124,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
           type="button"
           disabled={!draft.subject && !draft.bodyHtml}
           onClick={() => setDraft(EMPTY)}
-          className="hf-btn-secondary h-12 px-4"
+          className="hf-btn-secondary hf-btn--large"
         >
           Ryd kladde
         </button>

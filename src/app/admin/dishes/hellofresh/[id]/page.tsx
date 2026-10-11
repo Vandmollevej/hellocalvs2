@@ -64,7 +64,7 @@ export default async function AdminMealKitDishPage({ params }: { params: Promise
   const allergens = view.allergenNames.length ? view.allergenNames : view.allergenKeys;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <Link href={DISH_SOURCE_PATHS[provider.source]} className="hf-type-small text-text-secondary hover:text-hf-black">
         ← {provider.name}-retter
       </Link>

@@ -83,7 +83,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="hf-type-page-title mb-1 text-text-primary">Nulstil admin-adgang</h1>
+      <h1 className="hf-type-title text-hf-black">Nulstil admin-adgang</h1>
       {qrCodeDataUrl ? (
         <>
           <p className="hf-type-body mb-4 text-text-secondary">
@@ -106,7 +106,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="hf-type-page-title hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3 text-center tracking-[0.4em]"
+              className="hf-input"
             />
             {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
             <button

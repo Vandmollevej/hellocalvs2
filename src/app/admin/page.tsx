@@ -129,7 +129,7 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Oversigt</h1>
 
       {failedMigrations.length > 0 && (
@@ -249,7 +249,7 @@ export default async function AdminDashboardPage() {
                             {formatWaiting(request.lastUserMessageAt, now)}
                           </span>
                         ) : (
-                          <span className="hf-type-small shrink-0 rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">
+                          <span className="hf-badge shrink-0">
                             Besvaret
                           </span>
                         )}
@@ -338,7 +338,7 @@ export default async function AdminDashboardPage() {
         >
           <div className="flex flex-wrap gap-2 border-b border-border-strong px-4 py-3">
             {counts.uncertainties.byTab.map((tab) => (
-              <span key={tab.key} className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">
+              <span key={tab.key} className="hf-badge">
                 {tab.label} <span className="hf-type-strong text-hf-black">{tab.count}</span>
               </span>
             ))}

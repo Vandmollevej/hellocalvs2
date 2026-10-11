@@ -63,15 +63,15 @@ function ReportRow({ report }: { report: NutritionReport }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark p-4">
+    <div className="hf-surface flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
           Næringsindhold
-          <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan-dark px-2 py-0.5 text-text-secondary">
+          <span className="hf-badge">
             Brugerindberettet
           </span>
         </span>
-        <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
+        <span className="hf-badge">
           Confidence {Math.round(report.confidence)}%
         </span>
       </div>
@@ -97,7 +97,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
           type="button"
           disabled={busy}
           onClick={() => decide("APPROVE")}
-          className="hf-btn-primary px-3 py-1"
+          className="hf-btn-primary hf-btn--compact"
         >
           Godkend
         </button>
@@ -105,7 +105,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
           type="button"
           disabled={busy}
           onClick={() => decide("REJECT")}
-          className="hf-btn-secondary px-3 py-1"
+          className="hf-btn-secondary hf-btn--compact"
         >
           Afvis
         </button>
@@ -121,14 +121,14 @@ function ReportRow({ report }: { report: NutritionReport }) {
               onChange={(event) => setMessage(event.target.value)}
               placeholder="Besked til indberetteren"
               rows={2}
-              className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1"
+              className="hf-input"
             />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 disabled={busy || !message.trim()}
                 onClick={sendMessage}
-                className="hf-btn-secondary px-3 py-1"
+                className="hf-btn-secondary hf-btn--compact"
               >
                 Send besked
               </button>

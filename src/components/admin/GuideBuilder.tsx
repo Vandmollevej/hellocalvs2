@@ -80,7 +80,7 @@ async function downscaleImage(file: File): Promise<string> {
 
 function Card({ title, children, className = "" }: { title: string; children: ReactNode; className?: string }) {
   return (
-    <section className={`mb-3 flex break-inside-avoid flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-3 ${className}`}>
+    <section className={`hf-surface mb-3 flex break-inside-avoid flex-col gap-2 p-3 ${className}`}>
       <h2 className="hf-type-body hf-type-strong text-hf-black">{title}</h2>
       {children}
     </section>
@@ -96,7 +96,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-const inputClass = "hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-hf-black";
+const inputClass = "hf-input";
 
 export function GuideBuilder({
   locale,
@@ -304,6 +304,7 @@ export function GuideBuilder({
                 event.stopPropagation();
                 removeElement(element.id);
               }}
+              // eslint-disable-next-line no-restricted-syntax -- 24 px sletteprik på det valgte element i telefon-forhåndsvisningen; .hf-btn-icon (44 px) ville dække indholdet
               className="absolute -right-3 -top-3 z-10 flex size-6 items-center justify-center rounded-full bg-hf-black text-hf-white"
             >
               <IconX size={14} />
@@ -372,7 +373,7 @@ export function GuideBuilder({
 
   // --- Render ------------------------------------------------------------
 
-  const tileBase = "hf-type-small flex items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-2 text-left text-hf-black";
+  const tileBase = "hf-choice gap-2 py-2 text-left";
   const localizedInput = (label: AdminI18nKey, value: string, onChange: (v: string) => void, multiline = false) => (
     <Field label={tr(label)}>
       {multiline ? (
@@ -397,7 +398,7 @@ export function GuideBuilder({
     <div className="flex flex-col gap-4">
       {sheet}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex rounded-md border border-hf-tan-dark p-0.5" role="tablist">
+        <div className="hf-surface flex p-0.5" role="tablist">
           {(["startup", "tooltips"] as GuideKind[]).map((k) => (
             <button
               key={k}
@@ -405,7 +406,7 @@ export function GuideBuilder({
               role="tab"
               aria-selected={kind === k}
               onClick={() => switchKind(k)}
-              className={`hf-type-body rounded px-3 py-1.5 ${kind === k ? "bg-hf-black text-hf-white" : "text-text-secondary hover:bg-hf-tan"}`}
+              className="hf-choice"
             >
               {tr(k === "startup" ? "gb_tab_startup" : "gb_tab_tooltips")}
               {dirty[k] ? " •" : ""}
@@ -420,7 +421,7 @@ export function GuideBuilder({
               type="button"
               onClick={() => setLang(l)}
               aria-pressed={lang === l}
-              className={`rounded border border-hf-tan-dark px-2 py-1 uppercase ${lang === l ? "bg-hf-black text-hf-white" : "hover:bg-hf-tan"}`}
+              className="hf-choice uppercase"
             >
               {l}
             </button>
@@ -441,14 +442,14 @@ export function GuideBuilder({
           <button
             type="button"
             onClick={resetToDefault}
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-text-secondary hover:bg-hf-tan"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             {tr("gb_reset_default")}
           </button>
           <button
             type="button"
             onClick={() => setOverlayOpen(true)}
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-hf-black hover:bg-hf-tan"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             {tr("gb_open_overlay")}
           </button>
@@ -456,7 +457,7 @@ export function GuideBuilder({
             type="button"
             onClick={save}
             disabled={!anyDirty || saveState === "saving"}
-            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50"
+            className="hf-btn-brand hf-btn--compact hf-btn--inline"
           >
             {tr("gb_save")}
           </button>
@@ -483,7 +484,7 @@ export function GuideBuilder({
                     onDragEnd={endDrag}
                     onClick={() => applyTheme(theme.id)}
                     aria-pressed={active}
-                    className={`${tileBase} flex-col items-stretch ${active ? "outline outline-2 outline-hf-green" : ""}`}
+                    className={`${tileBase} flex-col items-stretch`}
                   >
                     <span className="flex h-10 items-end gap-1 rounded border border-hf-tan-dark p-1.5" style={{ background: bg.hex }}>
                       <span className="h-1 flex-1 rounded-full" style={{ background: accent.hex }} />
@@ -507,7 +508,7 @@ export function GuideBuilder({
                   onDragEnd={endDrag}
                   onClick={() => applyBackground(bg.id)}
                   aria-pressed={screen.background === bg.id}
-                  className={`${tileBase} cursor-grab ${screen.background === bg.id ? "outline outline-2 outline-hf-green" : ""}`}
+                  className={`${tileBase} cursor-grab justify-start`}
                 >
                   <span className="size-8 shrink-0 rounded border border-hf-tan-dark" style={{ background: bg.hex }} />
                   <span className="flex min-w-0 flex-col">
@@ -535,7 +536,7 @@ export function GuideBuilder({
                   onDragStart={(event) => startDrag(event, { type: "text", role: role.id })}
                   onDragEnd={endDrag}
                   onClick={() => insertElement({ type: "text", role: role.id }, "end")}
-                  className={`${tileBase} cursor-grab justify-between disabled:cursor-not-allowed disabled:opacity-40`}
+                  className={`${tileBase} cursor-grab justify-between disabled:cursor-not-allowed`}
                 >
                   <span className={`text-left ${role.className} truncate`}>
                     {role.label[uiLang]}
@@ -555,7 +556,7 @@ export function GuideBuilder({
                 onDragStart={(event) => startDrag(event, { type: "setting" })}
                 onDragEnd={endDrag}
                 onClick={() => insertElement({ type: "setting" }, "end")}
-                className={`${tileBase} cursor-grab disabled:cursor-not-allowed disabled:opacity-40`}
+                className={`${tileBase} cursor-grab justify-start disabled:cursor-not-allowed`}
               >
                 <IconGripVertical size={16} className="text-text-muted" />
                 <span className="flex-1">{tr("gb_setting_block")}</span>
@@ -576,9 +577,7 @@ export function GuideBuilder({
                     type="button"
                     onClick={() => selectScreen(i)}
                     aria-current={i === index ? "true" : undefined}
-                    className={`hf-type-body flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left ${
-                      i === index ? "bg-hf-black text-hf-white" : "text-hf-black hover:bg-hf-tan"
-                    }`}
+                    className={`hf-navrow flex-1 ${i === index ? "is-active" : ""}`}
                   >
                     <span
                       className="size-4 shrink-0 rounded-sm border border-hf-tan-dark"
@@ -588,7 +587,7 @@ export function GuideBuilder({
                       {i + 1}. {s.stepLabel[uiLang] || s.stepLabel.da}
                     </span>
                   </button>
-                  <button type="button" aria-label={tr("gb_move_up")} onClick={() => moveScreen(i, -1)} disabled={i === 0} className="p-1 text-text-secondary disabled:opacity-30">
+                  <button type="button" aria-label={tr("gb_move_up")} onClick={() => moveScreen(i, -1)} disabled={i === 0} className="hf-btn-icon">
                     <IconArrowUp size={16} />
                   </button>
                   <button
@@ -596,7 +595,7 @@ export function GuideBuilder({
                     aria-label={tr("gb_move_down")}
                     onClick={() => moveScreen(i, 1)}
                     disabled={i === config.screens.length - 1}
-                    className="p-1 text-text-secondary disabled:opacity-30"
+                    className="hf-btn-icon"
                   >
                     <IconArrowDown size={16} />
                   </button>
@@ -605,7 +604,7 @@ export function GuideBuilder({
                     aria-label={tr("gb_remove_screen")}
                     onClick={() => removeScreen(i)}
                     disabled={config.screens.length <= 1}
-                    className="p-1 text-text-secondary disabled:opacity-30"
+                    className="hf-btn-icon"
                   >
                     <IconTrash size={16} />
                   </button>
@@ -616,7 +615,7 @@ export function GuideBuilder({
               type="button"
               onClick={addScreen}
               disabled={config.screens.length >= GUIDE_MAX_SCREENS}
-              className="hf-type-body flex items-center justify-center gap-1 rounded-md border border-dashed border-hf-tan-dark px-3 py-2 text-text-secondary hover:bg-hf-tan disabled:opacity-40"
+              className="hf-btn-secondary hf-btn--compact hf-btn--inline"
             >
               <IconPlus size={16} /> {tr(kind === "startup" ? "gb_add_screen" : "gb_add_tooltip")}
             </button>
@@ -635,7 +634,7 @@ export function GuideBuilder({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-black hover:bg-hf-tan"
+                    className="hf-btn-secondary hf-btn--compact hf-btn--inline"
                   >
                     {tr("gb_image_upload")}
                   </button>
@@ -643,7 +642,7 @@ export function GuideBuilder({
                     <button
                       type="button"
                       onClick={() => updateScreen((s) => ({ ...s, image: null }))}
-                      className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-text-secondary hover:bg-hf-tan"
+                      className="hf-btn-secondary hf-btn--compact hf-btn--inline"
                     >
                       {tr("gb_image_remove")}
                     </button>
@@ -732,9 +731,7 @@ export function GuideBuilder({
                         type="button"
                         onClick={() => updateElement(selected.id, { align })}
                         aria-pressed={selected.align === align}
-                        className={`hf-type-body rounded border border-hf-tan-dark px-3 py-1 ${
-                          selected.align === align ? "bg-hf-black text-hf-white" : "text-hf-black hover:bg-hf-tan"
-                        }`}
+                        className="hf-choice"
                       >
                         {tr(align === "left" ? "gb_align_left" : "gb_align_center")}
                       </button>
@@ -849,7 +846,7 @@ function DeleteButton({ label, onClick }: { label: string; onClick: () => void }
     <button
       type="button"
       onClick={onClick}
-      className="hf-type-body flex items-center justify-center gap-1 rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark hover:bg-hf-tan"
+      className="hf-btn-danger hf-btn--compact hf-btn--inline"
     >
       <IconTrash size={16} /> {label}
     </button>

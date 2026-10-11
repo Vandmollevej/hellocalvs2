@@ -22,7 +22,7 @@ import {
 
 const DATE_TIME = new Intl.DateTimeFormat("da-DK", { dateStyle: "short", timeStyle: "short" });
 const REVIEW_LABEL = { PENDING: "Afventer", ACCEPTED: "Godkendt", REJECTED: "Afvist" } as const;
-const inputClass = "hf-type-body rounded border border-hf-tan-dark bg-page-bg px-3 py-2";
+const inputClass = "hf-input";
 
 export default async function ScanWorkerPage({
   params,
@@ -65,7 +65,7 @@ export default async function ScanWorkerPage({
   const weeks = groupByIsoWeek(worker.submissions, (row) => row.createdAt);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <Link href="/admin/scan-invites" className="hf-type-small text-text-secondary underline">
@@ -82,7 +82,7 @@ export default async function ScanWorkerPage({
           {worker.status !== "ACTIVE" && (
             <form action={resendInvite}>
               <input type="hidden" name="workerId" value={worker.id} />
-              <button className="hf-type-body rounded border border-hf-tan-dark px-3 py-1.5">
+              <button className="hf-btn-secondary hf-btn--compact hf-btn--inline">
                 {worker.status === "INVITED" ? "Send invitation igen" : "Ny opsætning"}
               </button>
             </form>
@@ -90,7 +90,7 @@ export default async function ScanWorkerPage({
           <form action={setWorkerStatus}>
             <input type="hidden" name="workerId" value={worker.id} />
             <input type="hidden" name="status" value={worker.status === "DISABLED" ? "ACTIVE" : "DISABLED"} />
-            <button className="hf-type-body rounded border border-hf-tan-dark px-3 py-1.5">
+            <button className="hf-btn-secondary hf-btn--compact hf-btn--inline">
               {worker.status === "DISABLED" ? "Genaktivér" : "Deaktivér"}
             </button>
           </form>
@@ -180,20 +180,20 @@ export default async function ScanWorkerPage({
                         <form action={reviewSubmission}>
                           <input type="hidden" name="submissionId" value={row.id} />
                           <input type="hidden" name="decision" value="accept" />
-                          <button className="hf-btn-primary w-full px-3 py-1">Godkend</button>
+                          <button className="hf-btn-primary w-full hf-btn--compact">Godkend</button>
                         </form>
                         <form action={reviewSubmission} className="flex flex-col gap-1">
                           <input type="hidden" name="submissionId" value={row.id} />
                           <input type="hidden" name="decision" value="reject" />
-                          <select name="reasonId" className="hf-type-small rounded border border-hf-tan-dark bg-page-bg px-1 py-1">
+                          <select name="reasonId" className="hf-input">
                             {reasons.map((reason) => (
                               <option key={reason.id} value={reason.id}>
                                 {reason.label}
                               </option>
                             ))}
                           </select>
-                          <input name="comment" placeholder="Kommentar (valgfri)" className="hf-type-small rounded border border-hf-tan-dark bg-page-bg px-1 py-1" />
-                          <button className="hf-type-small rounded border border-[var(--hf-color-danger)] px-3 py-1 text-[var(--hf-color-danger)]">Afvis</button>
+                          <input name="comment" placeholder="Kommentar (valgfri)" className="hf-input" />
+                          <button className="hf-btn-danger hf-btn--compact hf-btn--inline">Afvis</button>
                         </form>
                       </div>
                     )}
@@ -211,7 +211,7 @@ export default async function ScanWorkerPage({
           <input type="hidden" name="workerId" value={worker.id} />
           <p className="hf-type-body">Klar til udbetaling: {formatKroner(due)}</p>
           <input name="note" placeholder="Note (fx overført dato)" className={inputClass} />
-          <button disabled={due === 0} className="hf-btn-primary px-3 py-2">
+          <button disabled={due === 0} className="hf-btn-primary hf-btn--compact">
             Registrér udbetaling
           </button>
         </form>
@@ -263,7 +263,7 @@ export default async function ScanWorkerPage({
           <label className="hf-type-body flex items-center gap-2">
             <input type="checkbox" name="clearSensitive" /> Slet CPR og bankkonto
           </label>
-          <button className="hf-btn-primary px-4 py-2 sm:col-span-2">Gem profil (ny version)</button>
+          <button className="hf-btn-primary sm:col-span-2 hf-btn--compact">Gem profil (ny version)</button>
         </form>
         <details>
           <summary className="hf-type-body cursor-pointer">Tidligere versioner ({worker.profileVersions.length})</summary>
@@ -301,7 +301,7 @@ export default async function ScanWorkerPage({
         <form action={sendAdminMessage} className="flex gap-2">
           <input type="hidden" name="workerId" value={worker.id} />
           <input name="body" placeholder="Skriv til medarbejderen" className={`flex-1 ${inputClass}`} />
-          <button className="hf-btn-primary px-3 py-2">Send</button>
+          <button className="hf-btn-primary hf-btn--compact">Send</button>
         </form>
       </section>
     </div>

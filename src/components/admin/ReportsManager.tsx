@@ -16,8 +16,8 @@ export type ReportPartner = {
   schedules: { id: string; frequency: "WEEKLY" | "MONTHLY"; enabled: boolean; nextRunAt: string; lastSentAt: string | null }[];
 };
 
-const BTN = "hf-type-small rounded-md border border-hf-tan-dark px-3 py-1.5 text-text-secondary hover:bg-hf-tan disabled:opacity-50";
-const PRIMARY = "hf-type-small rounded-md bg-hf-black px-3 py-1.5 text-hf-white disabled:opacity-50";
+const BTN = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const PRIMARY = "hf-btn-brand hf-btn--compact hf-btn--inline";
 const FREQ_LABEL = { WEEKLY: "Ugentligt", MONTHLY: "Månedligt" } as const;
 const fmt = (iso: string) => new Date(iso).toLocaleDateString("da-DK", { day: "numeric", month: "short", year: "numeric" });
 
@@ -89,7 +89,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
                 <button className={BTN} onClick={() => scheduleAction({ action: "toggleSchedule", id: s.id, enabled: !s.enabled })}>
                   {s.enabled ? "Pause" : "Genoptag"}
                 </button>
-                <button className={BTN} onClick={() => ask("Fjern intervalrapporten?", () => void scheduleAction({ action: "deleteSchedule", id: s.id }))}>
+                <button className="hf-btn-danger hf-btn--compact hf-btn--inline" onClick={() => ask("Fjern intervalrapporten?", () => void scheduleAction({ action: "deleteSchedule", id: s.id }))}>
                   Fjern
                 </button>
               </div>
@@ -103,7 +103,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
           <input type="radio" checked={mode === "push"} onChange={() => setMode("push")} /> Send nu
         </label>
         {mode === "push" && (
-          <select className="hf-type-body h-10 rounded-md border border-hf-tan-dark bg-hf-white px-3" value={days} onChange={(e) => setDays(Number(e.target.value))}>
+          <select className="hf-input hf-input--compact" value={days} onChange={(e) => setDays(Number(e.target.value))}>
             <option value={7}>Seneste 7 dage</option>
             <option value={30}>Seneste 30 dage</option>
             <option value={90}>Seneste 90 dage</option>
@@ -113,7 +113,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
           <input type="radio" checked={mode === "schedule"} onChange={() => setMode("schedule")} /> Sæt op til interval
         </label>
         {mode === "schedule" && (
-          <select className="hf-type-body h-10 rounded-md border border-hf-tan-dark bg-hf-white px-3" value={frequency} onChange={(e) => setFrequency(e.target.value as "WEEKLY" | "MONTHLY")}>
+          <select className="hf-input hf-input--compact" value={frequency} onChange={(e) => setFrequency(e.target.value as "WEEKLY" | "MONTHLY")}>
             <option value="WEEKLY">Ugentligt</option>
             <option value="MONTHLY">Månedligt</option>
           </select>
@@ -145,7 +145,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
             </p>
             <p className="hf-type-small text-text-secondary">Hver partners tal sendes kun til den partners egne kontakter:</p>
             {chosen.map((p) => (
-              <div key={p.id} className="rounded-md border border-hf-tan-dark p-3">
+              <div key={p.id} className="hf-surface p-3">
                 <p className="hf-type-strong text-hf-black">{p.name}</p>
                 <ul className="hf-type-body text-text-secondary">
                   {p.recipients.map((r) => (
@@ -156,7 +156,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
                 </ul>
               </div>
             ))}
-            <button className="hf-control hf-btn-primary w-full px-4" disabled={busy} onClick={execute}>
+            <button className="hf-btn-primary w-full" disabled={busy} onClick={execute}>
               {busy ? "Sender…" : mode === "push" ? "Send rapport" : "Sæt op"}
             </button>
           </div>

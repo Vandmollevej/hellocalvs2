@@ -18,7 +18,7 @@ type Props = {
 export function AdminNewPasswordFields({ label, password, confirm, onPasswordChange, onConfirmChange, showErrors = false }: Props) {
   const [visible, setVisible] = useState(false);
   const mismatch = confirm.length > 0 && confirm !== password;
-  const inputClass = "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white pl-3 pr-11";
+  const inputClass = "hf-input w-full";
 
   function eyeButton() {
     return (
@@ -27,7 +27,7 @@ export function AdminNewPasswordFields({ label, password, confirm, onPasswordCha
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? "Skjul adgangskode" : "Vis adgangskode"}
         aria-pressed={visible}
-        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-text-muted"
+        className="hf-btn-text absolute inset-y-0 right-0 w-11 text-text-muted"
       >
         {visible ? <IconEyeOff size={20} aria-hidden /> : <IconEye size={20} aria-hidden />}
       </button>

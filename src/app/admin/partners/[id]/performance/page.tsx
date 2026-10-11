@@ -72,7 +72,7 @@ export default async function PartnerPerformancePage({
           <Link
             key={item.id}
             href={item.to}
-            className={`rounded-md px-3 py-1.5 ${item.id === tab ? "hf-type-strong bg-hf-tan text-hf-green-dark" : "text-text-secondary hover:text-text-primary"}`}
+            className={`hf-choice${item.id === tab ? " is-selected" : ""}`}
           >
             {item.label}
           </Link>
@@ -88,8 +88,8 @@ export default async function PartnerPerformancePage({
         <form method="get" className="flex flex-wrap items-end gap-2">
           {tab === "mining" && <input type="hidden" name="tab" value="mining" />}
           {onlyTriggered && <input type="hidden" name="triggered" value="1" />}
-          <label className="flex flex-col"><span className="hf-type-caption">Fra</span><input type="date" name="from" defaultValue={fromInput} className="hf-type-body h-10 rounded-md border border-hf-tan-dark bg-hf-white px-3" /></label>
-          <label className="flex flex-col"><span className="hf-type-caption">Til</span><input type="date" name="to" defaultValue={toInput} className="hf-type-body h-10 rounded-md border border-hf-tan-dark bg-hf-white px-3" /></label>
+          <label className="flex flex-col"><span className="hf-type-caption">Fra</span><input type="date" name="from" defaultValue={fromInput} className="hf-input hf-input--compact" /></label>
+          <label className="flex flex-col"><span className="hf-type-caption">Til</span><input type="date" name="to" defaultValue={toInput} className="hf-input hf-input--compact" /></label>
           <button className={BTN}>Vis</button>
         </form>
         <Link href={href({ triggered: onlyTriggered ? "" : "1" })} className="hf-choice" aria-pressed={onlyTriggered} title="Vis kun reklamer, der udløses af produktkategori eller produkttype">

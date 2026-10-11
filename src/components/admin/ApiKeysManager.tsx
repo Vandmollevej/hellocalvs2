@@ -150,21 +150,21 @@ export function ApiKeysManager({
             <button
               type="button"
               onClick={() => setAddingGroup(true)}
-              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark"
+              className="hf-btn-secondary hf-btn--compact hf-btn--inline"
             >
               Tilføj gruppe
             </button>
             <button
               type="button"
               onClick={() => setAddingApiIn(allGroupTitles[0] ?? "")}
-              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark"
+              className="hf-btn-secondary hf-btn--compact hf-btn--inline"
             >
               Tilføj API
             </button>
             <button
               type="button"
               onClick={testAll}
-              className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               Test alle
             </button>
@@ -303,8 +303,7 @@ export function ApiKeysManager({
   );
 }
 
-const formInputClass =
-  "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black";
+const formInputClass = "hf-input w-full";
 
 function AddGroupForm({ onSave, onCancel }: { onSave: (title: string) => Promise<void>; onCancel: () => void }) {
   const [title, setTitle] = useState("");
@@ -332,11 +331,11 @@ function AddGroupForm({ onSave, onCancel }: { onSave: (title: string) => Promise
         <button
           type="submit"
           disabled={busy || !title.trim()}
-          className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
+          className="hf-btn-brand hf-btn--compact hf-btn--inline"
         >
           {busy ? "Gemmer…" : "Gem"}
         </button>
-        <button type="button" onClick={onCancel} className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary">
+        <button type="button" onClick={onCancel} className="hf-btn-text text-text-secondary">
           Annullér
         </button>
       </div>
@@ -421,11 +420,11 @@ function AddApiForm({
         <button
           type="submit"
           disabled={busy || !ready}
-          className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
+          className="hf-btn-brand hf-btn--compact hf-btn--inline"
         >
           {busy ? "Gemmer…" : "Gem"}
         </button>
-        <button type="button" onClick={onCancel} className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary">
+        <button type="button" onClick={onCancel} className="hf-btn-text text-text-secondary">
           Annullér
         </button>
       </div>
@@ -570,8 +569,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
     }
   }
 
-  const inputClass =
-    "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 font-mono text-hf-black";
+  const inputClass = "hf-input w-full font-mono";
 
   return (
     <div className="flex flex-col gap-2 py-2.5">
@@ -639,14 +637,14 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
             <button
               type="submit"
               disabled={busy || !value.trim()}
-              className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
+              className="hf-btn-brand hf-btn--compact hf-btn--inline"
             >
               {busy ? "Gemmer…" : "Gem"}
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary"
+              className="hf-btn-text text-text-secondary"
             >
               Annullér
             </button>

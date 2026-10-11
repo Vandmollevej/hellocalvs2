@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { IconSearch } from "@tabler/icons-react";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import { dishProblems, type DishPage, type DishRow } from "@/lib/admin-dishes";
 import { LIST_PROBLEM_LABELS, problemText, type ListProblem } from "@/lib/admin-list-problems";
 import type { BulkKind } from "@/lib/admin-bulk-actions";
@@ -33,7 +35,7 @@ function Row({ row, kind }: { row: DishRow; kind: BulkKind }) {
   const main = (
     <>
       {row.imageUrl ? (
-        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-hf-tan-dark bg-hf-white">
+        <div className="hf-surface h-12 w-12 shrink-0 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={row.imageUrl} alt="" loading="lazy" className={`h-full w-full object-cover ${dim ? "opacity-50" : ""}`} />
         </div>
@@ -109,10 +111,7 @@ export function DishListPage({
     const query = params.toString();
     return query ? `${basePath}?${query}` : basePath;
   };
-  const linkClass = "hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-4 py-2 text-hf-black hover:border-hf-green";
-  const disabledClass = "hf-type-body rounded-md border border-hf-tan-dark px-4 py-2 text-text-muted";
-  const tabClass = (active: boolean) =>
-    `hf-type-body rounded-md px-3 py-1.5 ${active ? "bg-hf-green-dark text-hf-white" : "text-hf-black hover:bg-hf-tan"}`;
+  const tabClass = (active: boolean) => `hf-choice ${active ? "is-selected" : ""}`;
   const { overview } = data;
   const problemCounts: { key: ListProblem; count: number; label: string }[] = [
     { key: "image", count: overview.missingImage, label: "mangler billede" },
@@ -122,7 +121,7 @@ export function DishListPage({
   const shownProblems = problemCounts.filter((entry) => entry.count > 0);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h1 className="hf-type-title text-hf-black">{deleted ? `${title} — slettede` : title}</h1>
@@ -130,7 +129,7 @@ export function DishListPage({
             {deleted ? "Slettede retter. Markér og vælg Gendan under Handlinger for at få dem tilbage i gennemsyn." : intro}
           </p>
         </div>
-        <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1" role="group" aria-label="Aktive eller slettede">
+        <div className="flex gap-2" role="group" aria-label="Aktive eller slettede">
           <Link href={hrefFor({ deleted: false, problem: "" })} aria-current={!deleted ? "page" : undefined} className={tabClass(!deleted)}>
             Aktive
           </Link>
@@ -140,19 +139,12 @@ export function DishListPage({
         </div>
       </div>
 
-      <form action={basePath} className="flex gap-2">
+      {/* Fælles søgefelt (.hf-search, design.md §6.5); Enter sender søgningen. */}
+      <form action={basePath} role="search" className="hf-search">
         {deleted && <input type="hidden" name="deleted" value="1" />}
         {problem && !deleted && <input type="hidden" name="problem" value={problem} />}
-        <input
-          type="search"
-          name="q"
-          defaultValue={q}
-          placeholder="Søg efter ret"
-          className="hf-type-body h-12 min-w-0 flex-1 rounded-md border border-hf-tan-dark bg-hf-white px-4 text-hf-black"
-        />
-        <button type="submit" className="hf-btn-text h-12 rounded-md bg-hf-green-dark px-5 text-hf-white">
-          Søg
-        </button>
+        <IconSearch size={16} color="var(--hf-black)" aria-hidden />
+        <input type="search" name="q" defaultValue={q} placeholder="Søg efter ret" aria-label="Søg efter ret" className="min-w-0" />
       </form>
 
       {!deleted && shownProblems.length > 0 && (
@@ -186,11 +178,11 @@ export function DishListPage({
           </p>
 
           {data.rows.length === 0 ? (
-            <div className="rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-12 text-center">
+            <div className="hf-surface px-4 py-12 text-center">
               <p className="hf-type-body text-text-secondary">{deleted ? "Ingen slettede retter." : empty}</p>
             </div>
           ) : (
-            <ul className="divide-y divide-border-strong overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
+            <ul className="hf-surface divide-y divide-border-strong overflow-hidden">
               {data.rows.map((row) => (
                 <Row key={row.id} row={row} kind={kind} />
               ))}
@@ -199,27 +191,7 @@ export function DishListPage({
         </div>
       </BulkSelection>
 
-      {data.pageCount > 1 && (
-        <nav aria-label="Sider" className="flex items-center justify-between gap-3">
-          {data.page > 1 ? (
-            <Link href={hrefFor({ page: data.page - 1 })} className={linkClass}>
-              ← Forrige
-            </Link>
-          ) : (
-            <span className={disabledClass}>← Forrige</span>
-          )}
-          <span className="hf-type-body text-text-secondary">
-            Side {numberFormat.format(data.page)} af {numberFormat.format(data.pageCount)}
-          </span>
-          {data.page < data.pageCount ? (
-            <Link href={hrefFor({ page: data.page + 1 })} className={linkClass}>
-              Næste →
-            </Link>
-          ) : (
-            <span className={disabledClass}>Næste →</span>
-          )}
-        </nav>
-      )}
+      <AdminPagination page={data.page} pageCount={data.pageCount} hrefFor={(next) => hrefFor({ page: next })} />
     </div>
   );
 }

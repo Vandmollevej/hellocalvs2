@@ -33,7 +33,7 @@ export default async function AdminTestProgrammesPage() {
   const date = (value: Date | null) => (value ? value.toLocaleDateString("da-DK") : "—");
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "nav_test_programmes")}</h1>
       <p className="hf-type-body text-text-secondary">
         Den første bruger, der tilmelder sig på en integrations side, får pladsen. Godkend, når appen er aktiveret

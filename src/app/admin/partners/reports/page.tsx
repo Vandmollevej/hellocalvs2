@@ -34,7 +34,7 @@ export default async function ReportsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Rapporter</h1>
       <ReportsManager partners={withRecipients} />
       <div className="hf-panel">

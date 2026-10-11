@@ -35,8 +35,9 @@ function fmt(date: Date | null | undefined) {
   return date ? date.toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" }) : "—";
 }
 
-const inputClass = "rounded border border-hf-tan-dark bg-page-bg px-3 py-2";
-const smallButton = "hf-type-small rounded border border-hf-tan-dark px-2.5 py-1 hover:bg-hf-tan";
+const inputClass = "hf-input";
+const smallButton = "hf-btn-secondary hf-btn--compact hf-btn--inline";
+const dangerButton = "hf-btn-danger hf-btn--compact hf-btn--inline";
 
 export default async function AdminUsersPage({
   searchParams,
@@ -86,7 +87,7 @@ export default async function AdminUsersPage({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Admin-brugere</h1>
         <p className="hf-type-body text-text-secondary">
@@ -120,7 +121,7 @@ export default async function AdminUsersPage({
               <option value="FULL">Administrator (fuld adgang)</option>
             </select>
           </label>
-          <button type="submit" className="hf-btn-primary px-4 py-2">
+          <button type="submit" className="hf-btn-primary hf-btn--large">
             Send invitation
           </button>
         </form>
@@ -134,7 +135,7 @@ export default async function AdminUsersPage({
           </p>
         )}
         {inviteLink && (
-          <input readOnly value={inviteLink} className="hf-type-small w-full rounded border border-hf-tan-dark bg-page-bg px-3 py-2" />
+          <input readOnly value={inviteLink} className="hf-input w-full" />
         )}
       </section>
 
@@ -176,7 +177,7 @@ export default async function AdminUsersPage({
                           {!invite.revokedAt && !expired && (
                             <form action={revokeAdminInvite}>
                               <input type="hidden" name="inviteId" value={invite.id} />
-                              <button type="submit" className={`${smallButton} text-hf-red-dark`}>
+                              <button type="submit" className={dangerButton}>
                                 Træk tilbage
                               </button>
                             </form>
@@ -219,7 +220,7 @@ export default async function AdminUsersPage({
                   <div className="flex flex-wrap items-center gap-2">
                     <form action={setAdminAccessLevel} className="flex items-center gap-2">
                       <input type="hidden" name="userId" value={admin.id} />
-                      <select name="accessLevel" defaultValue={admin.adminAccessLevel} className="hf-type-small rounded border border-hf-tan-dark bg-page-bg px-2 py-1">
+                      <select name="accessLevel" defaultValue={admin.adminAccessLevel} className="hf-input">
                         <option value="READ">Læseadgang</option>
                         <option value="FULL">Administrator</option>
                       </select>
@@ -230,7 +231,7 @@ export default async function AdminUsersPage({
                     <form action={setAdminDisabled}>
                       <input type="hidden" name="userId" value={admin.id} />
                       <input type="hidden" name="disable" value={disabled ? "0" : "1"} />
-                      <button type="submit" className={`${smallButton} ${disabled ? "" : "text-hf-red-dark"}`}>
+                      <button type="submit" className={disabled ? smallButton : dangerButton}>
                         {disabled ? "Aktivér" : "Deaktivér"}
                       </button>
                     </form>
@@ -251,7 +252,7 @@ export default async function AdminUsersPage({
                         id={`ips-${admin.id}`}
                         name="ips"
                         defaultValue={admin.adminAllowedIps ?? ""}
-                        className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-page-bg px-3 py-1.5"
+                        className="hf-input flex-1"
                       />
                       <button type="submit" className={smallButton}>
                         Gem

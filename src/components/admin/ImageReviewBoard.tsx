@@ -40,7 +40,7 @@ function Pic({ slide, onClick }: { slide: ReviewSlide; onClick?: () => void }) {
     <span className="hf-type-small text-text-muted">Intet billede</span>
   );
   return onClick && slide.src ? (
-    <button type="button" onClick={onClick} className="hf-pick-frame cursor-zoom-in" aria-label={`Forstør: ${slide.label}`}>
+    <button type="button" onClick={onClick} className="hf-btn-text hf-pick-frame" aria-label={`Forstør: ${slide.label}`}>
       {inner}
     </button>
   ) : (
@@ -217,10 +217,10 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                 </div>
               )}
               <div className="flex gap-2">
-                <button type="button" onClick={() => act(item, "reject")} disabled={busy} className="hf-btn-danger h-12 flex-1 px-3">
+                <button type="button" onClick={() => act(item, "reject")} disabled={busy} className="hf-btn-danger flex-1 hf-btn--large">
                   {rejectLabel}
                 </button>
-                <button type="button" onClick={() => act(item, "approve", pickedKey(item))} disabled={busy} className="hf-btn-primary h-12 flex-1 px-3">
+                <button type="button" onClick={() => act(item, "approve", pickedKey(item))} disabled={busy} className="hf-btn-primary flex-1 hf-btn--large">
                   {approveLabel}
                 </button>
               </div>
@@ -282,7 +282,8 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                   type="button"
                   onClick={() => setLightbox(n)}
                   aria-current={n === lightbox}
-                  className={`hf-type-small h-8 min-w-8 rounded-full px-2 ${n === lightbox ? "bg-hf-white text-hf-black hf-type-strong" : "text-hf-white/80 hover:bg-hf-white/20"}`}
+                  aria-pressed={n === lightbox}
+                  className="hf-choice"
                 >
                   {n + 1}
                 </button>
@@ -290,14 +291,15 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
               {numbers.length > 0 && numbers[numbers.length - 1] < flat.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
             </div>
             <div className="mx-auto flex w-full max-w-xl gap-2">
-              <button type="button" onClick={() => act(current.item, "reject")} disabled={busy} className="hf-btn-danger h-12 flex-1 bg-hf-white px-3">
+              <button type="button" onClick={() => act(current.item, "reject")} disabled={busy} // eslint-disable-next-line no-restricted-syntax -- ligger på det mørke fuldskærmsoverlay; .hf-btn-danger er gennemsigtig og ville være ulæselig
+          className="hf-btn-danger flex-1 bg-hf-white hf-btn--large">
                 {rejectLabel}
               </button>
               <button
                 type="button"
                 onClick={() => act(current.item, "approve", current.slide.key ?? pickedKey(current.item))}
                 disabled={busy}
-                className="hf-btn-primary h-12 flex-1 px-3"
+                className="hf-btn-primary flex-1 hf-btn--large"
               >
                 {approveLabel}
               </button>

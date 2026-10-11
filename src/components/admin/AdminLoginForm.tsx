@@ -71,14 +71,14 @@ export function AdminLoginForm() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="hf-type-title mb-1 text-hf-black">Admin-login</h1>
+      <h1 className="hf-type-title text-hf-black">Admin-login</h1>
       <p className="hf-type-body mb-8 text-text-secondary">Log ind for at godkende nye varer og billeder.</p>
 
       <button
         type="button"
         onClick={loginWithPasskey}
         disabled={passkeyBusy}
-        className="hf-type-body hf-type-strong rounded-md border border-hf-green-dark px-4 py-2.5 text-hf-green-dark disabled:opacity-60"
+        className="hf-btn-secondary hf-btn--compact hf-btn--inline"
       >
         {passkeyBusy ? "Venter på Face ID…" : "Log ind med Face ID / passkey"}
       </button>
@@ -93,7 +93,7 @@ export function AdminLoginForm() {
             autoComplete="username webauthn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
+            className="hf-input"
           />
         </label>
         <label className="hf-type-body flex flex-col gap-1">
@@ -104,7 +104,7 @@ export function AdminLoginForm() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
+            className="hf-input"
           />
         </label>
         {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}

@@ -71,7 +71,7 @@ export function BillingForm({ partnerId, values, mode, canEdit }: { partnerId: s
               </select>
             </label>
             <label className="flex flex-col gap-1"><span className={LABEL}>Betalingsfrist (dage)</span><input className={INPUT} inputMode="numeric" value={draft.paymentTermsDays} onChange={set("paymentTermsDays")} /></label>
-            <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Note</span><textarea className={`${INPUT} h-24 py-2`} value={draft.paymentNote} onChange={set("paymentNote")} /></label>
+            <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Note</span><textarea className="hf-input w-full" value={draft.paymentNote} onChange={set("paymentNote")} /></label>
           </>
         )}
       </fieldset>

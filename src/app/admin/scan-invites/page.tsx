@@ -28,7 +28,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
   const rate = settings?.payPerItemOre ?? 100;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="hf-type-title text-hf-black">Scan-invites</h1>
@@ -85,7 +85,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
             name="kroner"
             defaultValue={(rate / 100).toFixed(2).replace(".", ",")}
             inputMode="decimal"
-            className="w-28 rounded border border-hf-tan-dark bg-page-bg px-3 py-2"
+            className="hf-input w-28"
           />
           <button type="submit" className="hf-btn-secondary hf-btn--compact w-fit">
             Gem

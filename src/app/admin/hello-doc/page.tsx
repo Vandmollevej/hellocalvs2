@@ -40,7 +40,7 @@ export default async function AdminHelloDocPage({
   return (
     <div className="hf-insight__content">
       <div className="hf-insight__head">
-        <h1 className="hf-type-page-title">Hello Doc</h1>
+        <h1 className="hf-type-title text-hf-black">Hello Doc</h1>
         <p className="hf-type-body text-text-secondary">
           Sådan ser lægevisningen ud med din egen konto ({data.profile.email}) som udgangspunkt.
         </p>

@@ -26,8 +26,8 @@ export function RejectionReasonRow({ id, label, active }: { id: string; label: s
         save(String(new FormData(event.currentTarget).get("label") ?? ""), on);
       }}
     >
-      <input name="label" defaultValue={label} className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-page-bg px-2 py-1" />
-      <button type="submit" disabled={pending} className="hf-type-small rounded border border-hf-tan-dark px-2 py-1 disabled:opacity-50">
+      <input name="label" defaultValue={label} className="hf-input flex-1" />
+      <button type="submit" disabled={pending} className="hf-btn-secondary hf-btn--compact hf-btn--inline">
         Gem
       </button>
       <Toggle

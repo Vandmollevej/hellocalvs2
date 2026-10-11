@@ -61,7 +61,7 @@ export function ReviewSizePicker({ sizeIdx, onChoose }: { sizeIdx: number; onCho
           aria-label={size.label}
           aria-pressed={sizeIdx === idx}
           onClick={() => onChoose(idx)}
-          className="hf-choice w-9 px-0"
+          className="hf-choice hf-choice--icon"
         >
           <SizeIcon squares={size.squares} />
         </button>

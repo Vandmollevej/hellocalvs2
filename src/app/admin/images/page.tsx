@@ -15,7 +15,7 @@ export default async function AdminImagesPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
       <ImagesTabs active="suggestions" />
       <PendingImageBoard

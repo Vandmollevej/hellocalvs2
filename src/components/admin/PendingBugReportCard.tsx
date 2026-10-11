@@ -101,7 +101,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             type="button"
             onClick={() => act("reject")}
             disabled={loading !== null}
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
+            className="hf-btn-danger hf-btn--compact hf-btn--inline"
           >
             {loading === "reject" ? "…" : "Afvis"}
           </button>
@@ -109,7 +109,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             type="button"
             onClick={() => act("approve")}
             disabled={loading !== null}
-            className="hf-btn-primary px-3 py-1.5"
+            className="hf-btn-primary hf-btn--compact"
           >
             {loading === "approve" ? "…" : report.source === "AI" ? "Godkend" : "Godkend (+10 points)"}
           </button>

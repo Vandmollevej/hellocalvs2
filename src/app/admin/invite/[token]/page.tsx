@@ -19,7 +19,7 @@ export default async function AdminInvitePage({ params }: { params: Promise<{ to
 
   return (
     <div className="mx-auto max-w-sm px-4 py-8">
-      <h1 className="hf-type-title mb-1 text-hf-black">Velkommen, {invite.name}</h1>
+      <h1 className="hf-type-title text-hf-black">Velkommen, {invite.name}</h1>
       <p className="hf-type-body mb-8 text-text-secondary">
         Du er inviteret til Hello Cal Admin som {LEVEL_LABEL[invite.accessLevel].toLowerCase()} ({invite.email}). Vælg
         en adgangskode, og scan derefter QR-koden med en authenticator-app (fx Google Authenticator eller Authy).

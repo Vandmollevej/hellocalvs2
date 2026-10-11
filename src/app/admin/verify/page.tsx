@@ -40,7 +40,7 @@ export default function AdminVerifyPage() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="hf-type-title mb-1 text-hf-black">Bekræftelseskode</h1>
+      <h1 className="hf-type-title text-hf-black">Bekræftelseskode</h1>
       <p className="hf-type-body mb-8 text-text-secondary">
         Indtast den 6-cifrede kode fra din authenticator-app.
       </p>
@@ -55,13 +55,13 @@ export default function AdminVerifyPage() {
           required
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-          className="hf-type-page-title rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 text-center tracking-[0.4em]"
+          className="hf-input"
         />
         {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="hf-btn-primary px-4 py-2.5"
+          className="hf-btn-primary hf-btn--large"
         >
           {loading ? "Bekræfter…" : "Log ind"}
         </button>

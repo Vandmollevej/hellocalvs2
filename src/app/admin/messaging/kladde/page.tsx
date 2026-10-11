@@ -16,7 +16,7 @@ export default async function AdminMessageDraftPage() {
   const templates = await prisma.messageTemplate.findMany({ orderBy: { event: "asc" } });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <Link href="/admin/messaging" className="hf-type-body text-text-secondary hover:text-hf-black">
         ← Tilbage til besked automatisering
       </Link>

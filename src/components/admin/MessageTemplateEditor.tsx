@@ -52,7 +52,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
     }
   }
 
-  const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2.5 py-1.5 hf-type-body text-hf-black";
+  const fieldClass = "hf-input";
 
   return (
     <PhonePreviewEditor
@@ -101,7 +101,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           rows={18}
           value={form.bodyHtml}
           onChange={(event) => setForm({ ...form, bodyHtml: event.target.value })}
-          className={`${fieldClass} hf-type-small font-mono`}
+          className={`${fieldClass} font-mono`}
         />
       </label>
       {push && <p className="hf-type-small text-text-muted">Notifikationen viser teksten uden HTML-formatering.</p>}
@@ -112,7 +112,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           type="button"
           disabled={busy || !dirty}
           onClick={() => setForm(saved)}
-          className="hf-btn-secondary h-12 px-4"
+          className="hf-btn-secondary hf-btn--large"
         >
           Fortryd
         </button>
@@ -120,7 +120,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
           type="button"
           disabled={busy || !dirty}
           onClick={save}
-          className="hf-btn-primary h-12 px-4"
+          className="hf-btn-primary hf-btn--large"
         >
           Gem
         </button>

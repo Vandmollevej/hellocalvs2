@@ -92,7 +92,7 @@ export default async function AdminQualityControlPage() {
   const rows = [...matchRows, ...reportRowsByProduct.values()];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "quality_control_title")}</h1>
       <QualityControlTabs active="products" locale={admin.locale} />
       {rows.length === 0 ? (

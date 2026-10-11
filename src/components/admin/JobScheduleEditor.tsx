@@ -24,7 +24,7 @@ export function JobScheduleEditor({ control }: { control: ReturnType<typeof useJ
         value={scheduleType}
         onChange={(e) => setScheduleType(e.target.value as ScheduleType)}
         aria-label="Plan"
-        className="rounded-md border border-hf-tan-dark bg-page-bg px-2 py-1"
+        className="hf-input"
       >
         <option value="continuous">Løbende</option>
         <option value="time">Dagligt kl.</option>
@@ -37,7 +37,7 @@ export function JobScheduleEditor({ control }: { control: ReturnType<typeof useJ
           value={timeValue}
           onChange={(e) => setTimeValue(e.target.value)}
           aria-label="Tidspunkt"
-          className="rounded-md border border-hf-tan-dark bg-page-bg px-2 py-1"
+          className="hf-input"
         />
       )}
       {scheduleType === "interval" && (
@@ -46,7 +46,7 @@ export function JobScheduleEditor({ control }: { control: ReturnType<typeof useJ
           value={intervalValue}
           onChange={(e) => setIntervalValue(e.target.value.replace(/\D/g, ""))}
           aria-label="Minutter"
-          className="w-20 rounded-md border border-hf-tan-dark bg-page-bg px-2 py-1"
+          className="hf-input w-20"
         />
       )}
       <button type="button" disabled={busy} onClick={saveSchedule} className="hf-btn-secondary hf-btn--compact w-fit disabled:opacity-50">

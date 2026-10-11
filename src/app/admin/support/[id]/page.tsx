@@ -34,7 +34,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
   const allowed = permissions ? SUPPORT_PERMISSION_KEYS.filter((key) => permissions[key]) : [];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <Link href="/admin/support" className="hf-type-small text-text-secondary hover:text-text-primary">
         ← Tilbage til indbakken
       </Link>

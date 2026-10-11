@@ -108,7 +108,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
           setName(active?.name ?? "");
           setMenu(menu === "save" ? null : "save");
         }}
-        className="hf-btn-brand hf-btn--compact"
+        className="hf-btn-brand hf-btn--compact hf-btn--inline"
       >
         Gem visning
       </button>
@@ -119,7 +119,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
           void refresh();
           setMenu(menu === "views" ? null : "views");
         }}
-        className="hf-type-body hf-type-strong flex items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-4 py-2.5 text-hf-black hover:border-hf-green"
+        className="hf-btn-secondary hf-btn--compact hf-btn--inline"
       >
         {active ? active.name : "Visninger"}
         <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${menu === "views" ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -143,7 +143,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
               onChange={(event) => setName(event.target.value)}
               maxLength={60}
               placeholder="Fx Uden billede, Bilka"
-              className="hf-field hf-type-body rounded-md border border-hf-tan-dark bg-page-bg px-3 text-hf-black outline-none focus:border-hf-green"
+              className="hf-input"
             />
           </label>
           <p className="hf-type-small text-text-muted">
@@ -153,7 +153,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
           <button
             type="submit"
             disabled={!name.trim() || busy}
-            className="hf-btn-brand hf-btn--compact"
+            className="hf-btn-brand hf-btn--compact hf-btn--inline"
           >
             {busy ? "Gemmer…" : "Gem"}
           </button>
@@ -172,7 +172,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
                     type="button"
                     onClick={() => apply(view)}
                     aria-current={active?.id === view.id}
-                    className={`hf-type-body min-w-0 flex-1 truncate px-4 py-2.5 text-left text-hf-black ${active?.id === view.id ? "hf-type-strong" : ""}`}
+                    className={`hf-navrow min-w-0 flex-1 truncate ${active?.id === view.id ? "is-active" : ""}`}
                   >
                     {view.name}
                   </button>
@@ -181,7 +181,7 @@ export function SavedViewsControls({ filters }: { filters: ProductDatabaseFilter
                     onClick={() => remove(view)}
                     aria-label={`Slet ${view.name}`}
                     title="Slet visning"
-                    className="shrink-0 px-3 py-2.5 text-text-muted hover:text-hf-red-dark"
+                    className="hf-btn-icon"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
                       <path d="M6 6l12 12M18 6 6 18" />

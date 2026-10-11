@@ -78,7 +78,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
+      <section className="hf-surface flex flex-col gap-3 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-text-primary hf-type-body hf-type-strong">Mængde-robot</h2>
@@ -130,7 +130,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
         {message && <p className="text-text-secondary hf-type-body">{message}</p>}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
+      <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="text-text-primary hf-type-body hf-type-strong">Indstillinger</h2>
         <label className="flex items-start gap-2 hf-type-body">
           <input
@@ -157,7 +157,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
                 step={field.step}
                 value={draft[field.key]}
                 onChange={(event) => setDraft({ ...draft, [field.key]: Number(event.target.value) })}
-                className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
+                className="hf-input"
               />
               <span className="text-text-secondary hf-type-small">{field.help}</span>
             </label>
@@ -168,7 +168,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             type="button"
             disabled={busy || !dirty}
             onClick={() => send("PATCH", API, { settings: draft }, "Gemt. Robotten bruger de nye indstillinger ved næste kørsel.")}
-            className="rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50 hf-type-body hf-type-strong"
+            className="hf-btn-brand hf-btn--compact hf-btn--inline"
           >
             Gem indstillinger
           </button>
@@ -176,14 +176,14 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             type="button"
             disabled={busy}
             onClick={() => setDraft(DEFAULT_AMOUNT_SUGGESTION_SETTINGS)}
-            className="rounded-md border border-border-strong px-3 py-2 text-text-secondary hover:bg-hf-tan hf-type-body"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Standardværdier
           </button>
         </div>
       </section>
 
-      <section className="flex flex-col gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
+      <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="text-text-primary hf-type-body hf-type-strong">Test et forslag</h2>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex min-w-[200px] flex-1 flex-col gap-1 hf-type-body">
@@ -191,7 +191,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             <input
               value={testItemId}
               onChange={(event) => setTestItemId(event.target.value)}
-              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
+              className="hf-input"
             />
           </label>
           <label className="flex min-w-[160px] flex-col gap-1 hf-type-body">
@@ -199,7 +199,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             <input
               value={testUserId}
               onChange={(event) => setTestUserId(event.target.value)}
-              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
+              className="hf-input"
             />
           </label>
           <label className="flex flex-col gap-1 hf-type-body">
@@ -207,7 +207,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             <select
               value={testContext}
               onChange={(event) => setTestContext(event.target.value as "EATEN" | "RECIPE")}
-              className="rounded-md border border-border-strong px-3 py-2 hf-type-body"
+              className="hf-input"
             >
               <option value="EATEN">Spist</option>
               <option value="RECIPE">Opskrift</option>
@@ -216,7 +216,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           <button
             type="button"
             onClick={runTest}
-            className="rounded-md border border-border-strong px-3 py-2 text-text-secondary hover:bg-hf-tan hf-type-body"
+            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
           >
             Beregn
           </button>
@@ -233,7 +233,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
         )}
       </section>
 
-      <section className="flex flex-col gap-2 rounded-md border border-border-strong bg-surface-2 p-4">
+      <section className="hf-surface flex flex-col gap-2 p-4">
         <h2 className="text-text-primary hf-type-body hf-type-strong">
           Forslag med flest brugere bag ({robot.suggestionCount} i alt)
         </h2>

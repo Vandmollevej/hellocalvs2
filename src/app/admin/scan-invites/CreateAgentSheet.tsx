@@ -8,7 +8,7 @@ import { inviteWorker } from "./actions";
 // hvem der hyres (navn, e-mail, telefon, adresse, fødselsdato, køn). CPR og
 // bank udfyldes bagefter på agentens egen side. Gem sender invitationen.
 const FORM_ID = "create-agent-form";
-const fieldClass = "hf-type-body rounded border border-hf-tan-dark bg-page-bg px-3 py-2";
+const fieldClass = "hf-input";
 
 export function CreateAgentSheet() {
   const [open, setOpen] = useState(false);
@@ -25,7 +25,7 @@ export function CreateAgentSheet() {
           title="Opret agent"
           footer={
             <>
-              <button type="submit" form={FORM_ID} className="hf-btn-primary h-12 w-full px-4">
+              <button type="submit" form={FORM_ID} className="hf-btn-primary w-full hf-btn--large">
                 Opret og send invitation
               </button>
               <BottomSheetCloseButton className="hf-bottom-sheet__skip">Annullér</BottomSheetCloseButton>

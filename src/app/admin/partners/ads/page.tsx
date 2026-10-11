@@ -28,7 +28,7 @@ export default async function AdsPage({ searchParams }: { searchParams: Promise<
   const stats = (await Promise.all(partners.map((p) => getPartnerStats(p.id, from, to)))).filter((s) => s !== null);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Reklamer</h1>
       <div className="flex gap-2">
         {PERIODS.map((p) => (

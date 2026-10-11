@@ -37,7 +37,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   const balanceByUser = new Map(balances.map((b) => [b.userId, b._sum.amount ?? 0]));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">{t(admin.locale, "users_title")}</h1>
         <p className="hf-type-body text-text-secondary">
