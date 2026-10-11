@@ -245,3 +245,5 @@ Last updated: 2026-10-11
 - Codex12okt00:12:275 yderligere Nemlig-typer verificeret;2563 tomme Nemlig,3048 samlet alle10ark. Andre celler/formler bevaret. Samlet opfølgning ikke afsluttet.
 
 - Codex12okt00:22:217 typer rettet og2fuglefoder-rækker eksporteret/slettet. Nemlig6600produkter og2344tomme typer, alle10ark2829tomme. Bevarede værdier og titelformler verificeret. Samlet opfølgning ikke afsluttet.
+
+- Codex12okt00:32:335 yderligere Nemlig-typer færdigverificeret;2009 tomme Nemlig,2494 samlet alle10ark. Øvrige celler/formler bevaret. Samlet opfølgning stadig uafsluttet.
