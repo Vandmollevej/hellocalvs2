@@ -15,10 +15,10 @@ Last updated: 2026-10-11
 
 - Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
 - Cardio PR #398 flettet sammen med master i isoleret arbejdskopi; konflikter i native-sideliste og genererede oversættelser løst uden at fjerne masters nye sider. Cardio tilføjet i webmenuen, så desktop-paritet følger profilmenuen.
-- Cardio-rettelsen er pushet som b0d400bd til claude/cardio; PR #398 har grønne checks. Fletning afventer GitHub-login i Codex-browseren, da connectoren ikke har merge-adgang.
+- Cardio PR #398 er flettet via GitHubs normale PR-knap til master som ae9c4b7e, efter alle otte checks var grønne. Deployet kører. Admin-opfølgningen af84f85d er pushet og ligger i PR #399; checks afventes.
 - De efterladte dubletliste-rettelser er hentet fra Claude-arbejdskopien uden at ændre originalen. Begge dubletlister har markering og Handlinger; slettede varer udelades også fra tælling og gruppeopslag. Samlede handlinger nulstiller dubletcachen og genindlæser scroll-listen med beskyttelse mod gamle igangværende svar.
 - Lint har 0 fejl (12 eksisterende advarsler); build gennemfører alle 402 sider. Seks webmenu-tests og native-paritetskontrollen er grønne. Browserkontrol mod databasen mangler.
-- Deploykøen afventer et ældre deploy, som står i trinnet for databasemigrationer og app. Det er ikke bevis for, at de senere commits er live. Opfølgningen på alle ni opgaver fortsætter.
+- Deploys for e3a67698 (webmenu), 6c425727 (Vipps), 6d87e4b6 og e0c103b5 (admin) er nu gennemført med success. Cardio-deployet er endnu ikke afsluttet. Opfølgningen på alle ni opgaver fortsætter.
 
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
