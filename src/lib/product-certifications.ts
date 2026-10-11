@@ -17,6 +17,15 @@ function wordRegex(source: RegExp) {
   return new RegExp(`(^|[^\\p{L}\\p{N}])(?:${body})(?=$|[^\\p{L}\\p{N}])`, "giu");
 }
 
+// "Fedt" efter procenttegnet må ikke stå i H1/H2 (der er ikke plads, og for
+// mejeri, alkohol og oste er det underforstået). Det må stå i varetekst mv.
+export function stripFatWord(text: string): string {
+  return text
+    .replace(/%\s*(?:fedtindhold|fedt|fett|fat|gras|matières grasses|mg)\b\.?/giu, "%")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 export function extractCertifications(name: string): { title: string; certifications: Certification[] } {
   let title = name;
   const certifications: Certification[] = [];

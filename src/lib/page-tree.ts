@@ -484,6 +484,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
+              { path: "/admin/product-database/labels", label: "Labels" },
               {
                 path: "/admin/product-database/open-food-facts",
                 label: "Open Food Facts",

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { DuplicateCompareGroup } from "@/components/admin/DuplicateCompareGroup";
 import { ListModeToggle, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
+import { BulkActionsBar, BulkSelection } from "@/components/admin/BulkSelection";
 import type { CompareGroup } from "@/lib/duplicate-review";
 
 // Listen på admin "Dubletter" → Varer (docs/DECISIONS.md 2026-10-11).
@@ -32,7 +33,7 @@ export function DuplicateList({
 
   // Evigheds-scroll-tilstand. Startes én gang pr. side (siden remountes med ny
   // key), så server-opdateringer efter en rettelse ikke nulstiller den.
-  const [seedGroups] = useState(initialGroups);
+  const [seedGroups, setSeedGroups] = useState(initialGroups);
   const [extra, setExtra] = useState<CompareGroup[]>([]);
   const [cursor, setCursor] = useState((page - 1) * perPage + initialConsumed);
   const [serverTotal, setServerTotal] = useState(total);
@@ -40,6 +41,7 @@ export function DuplicateList({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const busy = useRef(false);
+  const requestGeneration = useRef(0);
 
   const scrollGroups = (() => {
     const seen = new Set<string>();
@@ -61,6 +63,7 @@ export function DuplicateList({
   async function loadMore() {
     if (busy.current || !hasMore) return;
     busy.current = true;
+    const generation = requestGeneration.current;
     setLoading(true);
     setError(null);
     try {
@@ -69,15 +72,46 @@ export function DuplicateList({
       });
       if (!res.ok) throw new Error("Kunne ikke hente flere");
       const data = (await res.json()) as { total: number; consumed: number; groups: CompareGroup[] };
+      if (generation !== requestGeneration.current) return;
       setExtra((current) => [...current, ...data.groups]);
       setCursor((c) => c + data.consumed);
       // Intet at hente mere, selvom tallet siger andet: undgå endeløs løkke.
       setServerTotal(data.consumed === 0 ? 0 : data.total);
     } catch (e) {
+      if (generation !== requestGeneration.current) return;
       setError(e instanceof Error ? e.message : "Kunne ikke hente flere");
     } finally {
-      busy.current = false;
-      setLoading(false);
+      if (generation === requestGeneration.current) {
+        busy.current = false;
+        setLoading(false);
+      }
+    }
+  }
+
+  async function reloadAfterBulk() {
+    if (mode !== "scroll") return;
+    const generation = ++requestGeneration.current;
+    busy.current = true;
+    setLoading(true);
+    setError(null);
+    const offset = (page - 1) * perPage;
+    try {
+      const res = await fetch(`/api/admin/duplicate-products/list?offset=${offset}&limit=${perPage}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("Kunne ikke opdatere dubletter");
+      const data = (await res.json()) as { total: number; consumed: number; groups: CompareGroup[] };
+      if (generation !== requestGeneration.current) return;
+      setSeedGroups(data.groups);
+      setExtra([]);
+      setCursor(offset + data.consumed);
+      setServerTotal(data.consumed === 0 ? 0 : data.total);
+      setRemoved(0);
+    } catch (e) {
+      if (generation === requestGeneration.current) setError(e instanceof Error ? e.message : "Kunne ikke opdatere dubletter");
+    } finally {
+      if (generation === requestGeneration.current) {
+        busy.current = false;
+        setLoading(false);
+      }
     }
   }
 
@@ -87,9 +121,18 @@ export function DuplicateList({
       ? `Viser ${scrollGroups.length} af ${serverTotal + removed}`
       : `Side ${page} af ${pages} · ${total} i alt`;
 
+  // Markering (docs/DECISIONS.md 2026-10-11): kolonner, der er en vare i
+  // databasen (ikke butikkens egne data), kan behandles samlet.
+  const selectable = groups.flatMap((group) => group.columns.filter((column) => column.productId));
+  const columnIds = [...new Set(selectable.map((column) => column.id))];
+  const columnTargets = Object.fromEntries(selectable.map((column) => [column.id, column.productId as string]));
+
   return (
+    <BulkSelection kind="product" ids={columnIds} targets={columnTargets}>
     <div className="flex flex-col gap-4">
       <ListModeToggle summary={summary} />
+
+      <BulkActionsBar onDone={() => void reloadAfterBulk()} />
 
       {groups.length === 0 && !hasMore ? (
         <p className="hf-type-body text-text-secondary">Ingen vare-dubletter afventer gennemgang.</p>
@@ -125,5 +168,6 @@ export function DuplicateList({
         </div>
       )}
     </div>
+    </BulkSelection>
   );
 }

@@ -484,6 +484,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/product-database/labels",
+      "web": "src/app/admin/product-database/labels/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Adminside; admin har ingen native skærme."
+    },
+    {
       "route": "/admin/product-database/logo-upload",
       "web": "src/app/admin/product-database/logo-upload/page.tsx",
       "status": "web-only",

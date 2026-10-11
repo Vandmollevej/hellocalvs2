@@ -3,6 +3,7 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { parseBulkRequest } from "@/lib/admin-bulk-actions";
 import { runBulkAction } from "@/lib/admin-bulk";
 import { invalidateUncertaintyCache } from "@/lib/uncertainties";
+import { invalidateDuplicateCache } from "@/lib/duplicate-review";
 
 // POST /api/admin/bulk — { kind: "product" | "recipe", action, ids: string[] }
 // Fælles rute for admin-listernes "Handlinger"-menu og til/fra-knappen på en
@@ -15,5 +16,6 @@ export async function POST(req: Request) {
   const changed = await runBulkAction(request.kind, request.action, request.ids);
   // Usikkerhedslisterne cacher i 30 s; slettede/deaktiverede varer skal væk med det samme.
   invalidateUncertaintyCache();
+  invalidateDuplicateCache();
   return NextResponse.json({ ok: true, changed });
 }

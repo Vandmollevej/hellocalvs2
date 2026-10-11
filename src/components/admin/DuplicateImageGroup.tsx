@@ -2,6 +2,7 @@
 
 import type { ImageCandidate, ImageGroup } from "@/lib/duplicate-review";
 import type { ImageGroupView, ImageQuality } from "@/lib/image-quality";
+import { BulkRow } from "@/components/admin/BulkSelection";
 
 // Én vare på admin "Dubletter" → Varebilleder (docs/DECISIONS.md 2026-09-28
 // og 2026-10-11): billedet der vises i dag ved siden af ét alternativ (det
@@ -88,7 +89,7 @@ export function DuplicateImageGroup({ group, view, quality, busy, error, onPick,
   const others = alternatives.filter((img) => img.id !== shown?.id);
 
   return (
-    <section className="hf-panel">
+    <BulkRow as="div" id={group.productId} ignoreInteractive className="hf-panel">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <a
           href={`/admin/products/${group.productId}`}
@@ -142,6 +143,6 @@ export function DuplicateImageGroup({ group, view, quality, busy, error, onPick,
       )}
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-    </section>
+    </BulkRow>
   );
 }

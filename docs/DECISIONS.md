@@ -80,8 +80,8 @@ Brugerens krav: en ret uden billede stod som "Godkendt" uden nogen advarsel; sta
 - **Markering + Handlinger** (`BulkSelection`): Ctrl/⌘ + klik markerer enkeltvis, Shift + klik en hel stribe fra den sidst markerede, "Markér" i bjælken gør klik til markering uden tastatur, "Markér alle på siden", Esc rydder. Ingen afkrydsningsfelter (2026-09-02). "Handlinger" vises altid; menuen: Disable, Aktivér, Godkend, Send til gennemsyn, Slet (i Slettede: Gendan). Alt går via `POST /api/admin/bulk` (`src/lib/admin-bulk.ts`).
 - **Blød sletning**: `Product.deletedAt` og `SharedRecipe.deletedAt` (migration `20261011120000_admin_soft_delete`). Slet sætter `deletedAt`, status REJECTED og `discontinued`, så al eksisterende søgning også udelader rækken. Slettede findes under "Slettede (N)" øverst på Varer og på hver retteliste; Gendan lægger dem tilbage som Afventer (gennemsyn).
 - **"(Brug 126228 i stedet) …"-retter** er HelloFreshs egen mærkning af en udgået dublet, ikke noget vi genererer. Migrationen deaktiverer de eksisterende (kan aktiveres igen), og `scripts/hellofresh-import/agent.py` springer dem over.
-- Dækker: Varer (liste, detaljer, galleri), alle Retter-lister (bruger, HelloFresh, RetNemt, BetterFeast, Valdemarsro) og kø-listerne Kvalitetskontrol, Nye varer (alle tre visninger), Usikkerheder, Energi-afvigelser, Advarsler (dubletter + billeder til godkendelse) og Billedforslag. Her er rækken en sag; markeringen rammer varen bag (`BulkSelection targets`). Statustekst + til/fra og rød mangler-linje findes kun på Varer og Retter (kø-listerne har egne godkend/afvis-knapper). Slettede varer udelades fra alle kø-lister (`deletedAt: null`).
-- Ikke med: sammenligningsboards for dubletter (`/admin/duplicate-products`: Dubletter → Produkter/Produktbilleder), hvor man vælger værdier fra én vare ind i en anden, og Logoer (rækken er et mærke, ikke en vare).
+- Dækker: Varer (liste, detaljer, galleri), alle Retter-lister (bruger, HelloFresh, RetNemt, BetterFeast, Valdemarsro) og kø-listerne Kvalitetskontrol, Nye varer (alle tre visninger), Usikkerheder, Energi-afvigelser, Advarsler (dubletter + billeder til godkendelse), Billedforslag og Dubletter (Varer: kolonner, der er en vare; Billeder: varen). Her er rækken en sag; markeringen rammer varen bag (`BulkSelection targets`). Statustekst + til/fra og rød mangler-linje findes kun på Varer og Retter (kø-listerne har egne godkend/afvis-knapper). Slettede varer udelades fra alle kø-lister (`deletedAt: null`).
+- Ikke med: Logoer (rækken er et mærke, ikke en vare) og butikkens egne datakolonner i dublet-sammenligningen (de er ikke en vare i databasen).
 
 ## 2026-10-10: Søgeresultatets tekst begynder med brand og subbrand
 
@@ -5169,3 +5169,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Nye fælles klasser: `.hf-input` (+ `--compact`), `.hf-btn--inline`, `.hf-badge` (+ `--success/--warning/--danger`), `.hf-admin-page`; komponent `AdminPagination` erstatter fire hjemmelavede Forrige/Næste-rækker.
 - Alle admin-knapper/-felter/-kort/-mærker er omlagt til klasserne (kodemod + gennemgang). Lint-regel `design-tokens/admin-controls` fejler på hjemmelavet kant/baggrund/radius/skrift/padding på `<button>/<input>/<select>/<textarea>` i admin.
 - Retter-listerne har samme kolonnebredder med og uden Disable-knap.
+
+## 2026-10-11: Sikker samling af efterladt arbejde
+
+- Regnearksscripts og supplerende navneregler fra den lokale deploy-branch medtages uden at erstatte masters nyere import, adgangsmur, konti eller admin-lister. Regneark og store import-/billeddata forbliver lokale som i importvejledningerne.
+- Den tidligere upushede Labels-side sættes i Varedatabase, bruger certifikatlogoer fra den fælles logofunktion og får admin-genvej Alt+Shift+0.
+- Søgeord uden artikel vælger ental-/flertalstitlen, når kun den ene titel indeholder ordet; uklare match bevarer standardtitlen.
+- Efterladt GuideGate og 25-point OFF-fotoflow indføres ikke: masters flow-system og 10-point genscanning er den aktuelle produktkontrakt.

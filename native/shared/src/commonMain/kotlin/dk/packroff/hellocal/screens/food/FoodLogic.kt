@@ -372,6 +372,11 @@ fun normalizeProductType(productType: String) = if (productType.trim().lowercase
 
 data class ProductHeading(val title: String, val variants: List<String>)
 
+private fun stripFatWord(text: String): String = text
+    .replace(Regex("%\\s*(?:fedtindhold|fedt|fett|fat|gras|matières grasses|mg)\\b\\.?", RegexOption.IGNORE_CASE), "%")
+    .replace(Regex("\\s{2,}"), " ")
+    .trim()
+
 fun splitProductHeading(product: ProductDto): ProductHeading {
     val variants = mutableListOf<String>()
     for (candidate in listOf(product.variant, product.flavor)) {
@@ -390,11 +395,11 @@ fun splitProductHeading(product: ProductDto): ProductHeading {
             var typeTitle: String = productType
             for (variant in variants) typeTitle = removeVariantPhrase(typeTitle, variant)
             typeTitle = tidyTitle(typeTitle)
-            if (typeTitle.isNotEmpty()) return ProductHeading(capitalizeFirst(normalizeProductType(typeTitle)), variants)
+            if (typeTitle.isNotEmpty()) return ProductHeading(stripFatWord(capitalizeFirst(normalizeProductType(typeTitle))), variants.map(::stripFatWord))
         }
-        return ProductHeading(product.name.trim(), emptyList())
+        return ProductHeading(stripFatWord(product.name.trim()), emptyList())
     }
-    return ProductHeading(capitalizeFirst(title), variants)
+    return ProductHeading(stripFatWord(capitalizeFirst(title)), variants.map(::stripFatWord))
 }
 
 // ---------------------------------------------------------------------------

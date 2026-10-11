@@ -3,6 +3,8 @@
 // Brand lives in its own relation and the total quantity in packageSizeText,
 // so neither is repeated in the name.
 
+import { stripFatWord } from "./product-certifications.ts";
+
 export const PACKAGE_SIZE_UNITS = ["g", "kg", "ml", "cl", "L", "stk"] as const;
 export type PackageSizeUnit = (typeof PACKAGE_SIZE_UNITS)[number];
 
@@ -165,9 +167,9 @@ export function splitProductHeading(product: {
       let typeTitle = productType;
       for (const variant of variants) typeTitle = removeVariantPhrase(typeTitle, variant);
       typeTitle = tidyTitle(typeTitle);
-      if (typeTitle) return { title: capitalize(normalizeProductType(typeTitle)), variants };
+      if (typeTitle) return { title: stripFatWord(capitalize(normalizeProductType(typeTitle))), variants: variants.map(stripFatWord) };
     }
-    return { title: product.name.trim(), variants: [] };
+    return { title: stripFatWord(product.name.trim()), variants: [] };
   }
-  return { title: capitalize(title), variants };
+  return { title: stripFatWord(capitalize(title)), variants: variants.map(stripFatWord) };
 }
