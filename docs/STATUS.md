@@ -227,3 +227,5 @@ Last updated: 2026-10-11
 - Codex 20:44: sidste admin-kode deployet grønt i abd501c7/PR #400; efterfølgende PR #399 kun docs, derfor korrekt intet nyt deploy. DRK nu 13 tomme produkttyper. Arkene er fortsat under arbejde.
 
 - Codex 20:54: fem yderligere kildekontrollerede typer. DRK ni tomme typer, Årstiderne to. Andre celler/formler bevaret; samlet opfølgning og Excel endnu ikke afsluttet.
+
+- Codex 21:04: DRK nu 8 tomme typer. Ny audit alle ti ark viser også store eksisterende mangler i Nemlig/SPAR; samlet 6385 tomme typer. Omfang og resterende navneregler skal fortsat behandles. Excel ikke færdig.
