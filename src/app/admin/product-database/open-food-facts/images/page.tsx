@@ -31,7 +31,7 @@ export default async function AdminOffImagesPage({
   ].join("|");
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Open Food Facts · Billeder</h1>
         <p className="hf-type-body text-text-secondary">

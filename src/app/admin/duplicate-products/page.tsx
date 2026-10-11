@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { DuplicateImageList } from "@/components/admin/DuplicateImageList";
@@ -45,7 +46,7 @@ export default async function AdminDuplicateProductsPage({
   ] as const;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Dubletter</h1>
         <p className="hf-type-body text-text-secondary">
@@ -78,26 +79,8 @@ export default async function AdminDuplicateProductsPage({
           <DuplicateImageList groups={images.groups} />
         ))}
 
-      {images && pages > 1 && (
-        <div className="hf-type-small flex items-center justify-between text-text-secondary">
-          {page > 1 ? (
-            <Link href={`/admin/duplicate-products?tab=${tab}&side=${page - 1}`} className="text-hf-green-dark">
-              ← Forrige
-            </Link>
-          ) : (
-            <span />
-          )}
-          <span>
-            Side {page} af {pages}
-          </span>
-          {page < pages ? (
-            <Link href={`/admin/duplicate-products?tab=${tab}&side=${page + 1}`} className="text-hf-green-dark">
-              Næste →
-            </Link>
-          ) : (
-            <span />
-          )}
-        </div>
+      {images && (
+        <AdminPagination page={page} pageCount={pages} hrefFor={(next) => `/admin/duplicate-products?tab=${tab}&side=${next}`} />
       )}
 
       {products && (

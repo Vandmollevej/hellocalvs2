@@ -132,7 +132,7 @@ export default async function OffQualityPage({
   const returnTo = offQualityHref(filters, { page: filters.page });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <Link href="/admin/scan-invites" className="hf-type-small text-text-secondary underline">
           ← Scan-invites
@@ -148,10 +148,10 @@ export default async function OffQualityPage({
       {notice && <p className="hf-type-body rounded bg-hf-green-light px-3 py-2 text-hf-green-dark">{notice}</p>}
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5">{numberFormat.format(all.length)} vurderet</span>
-        <span className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5">{numberFormat.format(notBad)} ikke gode</span>
-        <span className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5">{numberFormat.format(pending)} sendt, ikke scannet</span>
-        <span className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5">{numberFormat.format(done)} scannet</span>
+        <span className="hf-badge">{numberFormat.format(all.length)} vurderet</span>
+        <span className="hf-badge">{numberFormat.format(notBad)} ikke gode</span>
+        <span className="hf-badge">{numberFormat.format(pending)} sendt, ikke scannet</span>
+        <span className="hf-badge">{numberFormat.format(done)} scannet</span>
         <form action={runAssessmentNow} className="ml-auto">
           <input type="hidden" name="returnTo" value={returnTo} />
           <button type="submit" className="hf-btn-secondary hf-btn--compact w-fit">
@@ -172,7 +172,7 @@ export default async function OffQualityPage({
             <input
               name="q"
               defaultValue={filters.q}
-              className="hf-type-body w-64 rounded border border-hf-tan-dark bg-page-bg px-2 py-1"
+              className="hf-input w-64"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1">
@@ -180,7 +180,7 @@ export default async function OffQualityPage({
             <select
               name="rating"
               defaultValue={filters.rating}
-              className="hf-type-body rounded border border-hf-tan-dark bg-page-bg px-2 py-1"
+              className="hf-input"
             >
               <option value="">Alle, der ikke er gode</option>
               <option value="all">Alle (også gode)</option>
@@ -196,7 +196,7 @@ export default async function OffQualityPage({
             <select
               name="sent"
               defaultValue={filters.sent}
-              className="hf-type-body rounded border border-hf-tan-dark bg-page-bg px-2 py-1"
+              className="hf-input"
             >
               {OFF_QUALITY_SENT_FILTERS.map((option) => (
                 <option key={option.key} value={option.key}>
@@ -210,7 +210,7 @@ export default async function OffQualityPage({
             <select
               name="sort"
               defaultValue={filters.sort}
-              className="hf-type-body rounded border border-hf-tan-dark bg-page-bg px-2 py-1"
+              className="hf-input"
             >
               {OFF_QUALITY_SORTS.map((option) => (
                 <option key={option.key} value={option.key}>
@@ -224,7 +224,7 @@ export default async function OffQualityPage({
             <select
               name="perPage"
               defaultValue={String(filters.perPage)}
-              className="hf-type-body rounded border border-hf-tan-dark bg-page-bg px-2 py-1"
+              className="hf-input"
             >
               {OFF_QUALITY_PER_PAGE.map((n) => (
                 <option key={n} value={n}>

@@ -27,7 +27,7 @@ function SectionFallback({ label }: { label: string }) {
   return (
     <div className="flex flex-col gap-2" role="status" aria-busy="true">
       <p className="hf-type-small text-text-muted">{label}</p>
-      <div className="h-16 animate-pulse rounded-lg border border-hf-tan-dark bg-hf-white" />
+      <div className="hf-surface h-16 animate-pulse" />
     </div>
   );
 }

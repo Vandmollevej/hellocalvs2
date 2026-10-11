@@ -41,7 +41,7 @@ function ChoiceRow<T extends string>({
   hrefFor: (value: T) => string;
 }) {
   return (
-    <div className="hf-type-small flex flex-wrap overflow-hidden rounded-md border border-hf-tan-dark">
+    <div className="hf-surface hf-type-small flex flex-wrap overflow-hidden">
       {options.map((option) => (
         <Link
           key={option.value || "all"}
@@ -94,7 +94,7 @@ export default async function AdminOffPage({ searchParams }: { searchParams: Pro
   const lastIndex = Math.min(firstIndex + data.rows.length - 1, data.matching);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div className="flex flex-col gap-1">
         <h1 className="hf-type-title text-hf-black">Open Food Facts</h1>
         <p className="hf-type-body text-text-secondary">
@@ -133,7 +133,7 @@ export default async function AdminOffPage({ searchParams }: { searchParams: Pro
           name="q"
           defaultValue={filters.q}
           placeholder="Søg på stregkode, navn, mærke eller type"
-          className="hf-type-body h-10 w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black outline-none placeholder:text-text-muted focus:border-hf-green sm:max-w-sm"
+          className="hf-input hf-input--compact w-full sm:max-w-sm"
         />
         {filters.band && <input type="hidden" name="band" value={filters.band} />}
         {filters.link && <input type="hidden" name="link" value={filters.link} />}

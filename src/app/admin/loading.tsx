@@ -7,7 +7,7 @@ export default function AdminLoading() {
       <div className="h-4 w-full max-w-xl animate-pulse rounded bg-hf-tan" />
       <div className="mt-2 flex flex-col gap-2">
         {Array.from({ length: 6 }, (_, i) => (
-          <div key={i} className="h-16 animate-pulse rounded-lg border border-hf-tan-dark bg-hf-white" />
+          <div key={i} className="hf-surface h-16 animate-pulse" />
         ))}
       </div>
       <span className="sr-only">Henter…</span>

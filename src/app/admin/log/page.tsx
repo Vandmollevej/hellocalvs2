@@ -474,7 +474,7 @@ export default async function AdminLogPage({
   const [enabled, total] = await Promise.all([isDebugLogEnabled(), prisma.debugLog.count()]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="hf-admin-page">
       <div>
         <h1 className="hf-type-title text-hf-black">Log</h1>
         <p className="hf-type-body text-text-secondary">

@@ -88,7 +88,7 @@ export async function LegacyWarnings() {
                   <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
                     {group[0].name}
                     {conflict && (
-                      <span className="hf-type-small rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">
+                      <span className="hf-badge hf-badge--danger">
                         Data matcher ikke
                       </span>
                     )}

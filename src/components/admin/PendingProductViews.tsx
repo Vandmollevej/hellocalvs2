@@ -85,7 +85,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
             ? `Viser ${visibleProducts.length} af ${products.length} varer`
             : `Side ${currentPage} af ${pageCount} · ${products.length} varer`}
         </p>
-        <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1" role="group" aria-label="Visning">
+        <div className="hf-surface flex gap-1 p-1" role="group" aria-label="Visning">
           {VIEWS.map((option) => (
             <button key={option.value} type="button" aria-pressed={view === option.value} onClick={() => choose(option.value)} className="hf-choice">
               {option.label}
@@ -108,7 +108,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
         <ul className="flex flex-col divide-y divide-border-strong/50 hf-surface">
           {visibleProducts.map((product) => (
             <li key={product.id}>
-              <button type="button" onClick={() => setOpenId(product.id)} className="flex w-full items-center gap-4 px-4 py-3 text-left">
+              <button type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text w-full">
                 <Thumb product={product} className="h-14 w-14" />
                 <span className="min-w-0 flex-1">
                   <span className="hf-type-strong block truncate text-hf-black">{product.name}</span>
@@ -126,7 +126,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
       {view === "grid" && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {visibleProducts.map((product) => (
-            <button key={product.id} type="button" onClick={() => setOpenId(product.id)} className="flex flex-col gap-2 hf-surface p-3 text-left">
+            <button key={product.id} type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text flex-col hf-surface">
               <Thumb product={product} className="aspect-square w-full" />
               <span className="hf-type-strong line-clamp-2 text-hf-black">{product.name}</span>
               <span className="hf-type-small truncate text-text-secondary">{subtitle(product)}</span>
