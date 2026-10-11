@@ -6,6 +6,7 @@ import { IconAlertTriangle } from "@tabler/icons-react";
 import type { Locale } from "@prisma/client";
 import { t } from "@/lib/admin-i18n";
 import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
+import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
 
 type BaseRow = {
   id: string;
@@ -32,7 +33,7 @@ function IssueThumbnail({ imageUrl, confidence }: { imageUrl: string | null; con
     <div className="relative h-10 w-10 shrink-0">
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
+        <img src={imageUrl} alt="" loading="lazy" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
       ) : (
         <div className="h-10 w-10 rounded-md border border-hf-tan-dark bg-hf-tan-dark" />
       )}
@@ -81,8 +82,15 @@ function matchesFilter(confidence: number | null, filter: ConfidenceFilter) {
   }
 }
 
+// Rækker tegnes gradvist (docs/DECISIONS.md 2026-10-11): evigheds-scroll eller
+// sideinddelt efter brugerens valg øverst.
+const PAGE_SIZE = 50;
+
 export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Locale }) {
   const router = useRouter();
+  const [mode] = useListMode();
+  const [shown, setShown] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<ConfidenceFilter>("under80");
   // Standardsortering (docs/DECISIONS.md 2026-09-19): flest anvendelser
   // sidste 30 dage først, lavest confidence som anden nøgle — så et produkt
@@ -106,7 +114,20 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
     return sorted;
   }, [rows, filter, sortKey, sortDir]);
 
+  function resetWindow() {
+    setShown(PAGE_SIZE);
+    setPage(1);
+  }
+
+  const pageCount = Math.max(1, Math.ceil(visibleRows.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const displayedRows =
+    mode === "scroll"
+      ? visibleRows.slice(0, shown)
+      : visibleRows.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   function toggleSort(key: SortKey) {
+    resetWindow();
     if (sortKey === key) {
       setSortDir((dir) => (dir === "asc" ? "desc" : "asc"));
     } else {
@@ -117,12 +138,22 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
 
   return (
     <div className="flex flex-col gap-4">
+      <ListModeToggle
+        summary={
+          mode === "scroll"
+            ? `Viser ${displayedRows.length} af ${visibleRows.length}`
+            : `Side ${currentPage} af ${pageCount} · ${visibleRows.length} i alt`
+        }
+      />
       <div className="hf-type-small flex gap-2">
         {(["under80", "0-50", "50-80", "80-100", "all"] as ConfidenceFilter[]).map((option) => (
           <button
             key={option}
             type="button"
-            onClick={() => setFilter(option)}
+            onClick={() => {
+              resetWindow();
+              setFilter(option);
+            }}
             className={`rounded-md border px-2.5 py-1 ${
               filter === option
                 ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
@@ -153,7 +184,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
             </tr>
           </thead>
           <tbody>
-            {visibleRows.map((row) => (
+            {displayedRows.map((row) => (
               <tr
                 key={row.id}
                 onClick={() => router.push(`/admin/products/${row.productId}`)}
@@ -203,6 +234,11 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
           </tbody>
         </table>
       </div>
+
+      {mode === "scroll" && shown < visibleRows.length && (
+        <LoadMoreSentinel onVisible={() => setShown((n) => n + PAGE_SIZE)} loading={false} />
+      )}
+      {mode === "pages" && <ListPager page={currentPage} pages={pageCount} onPage={setPage} />}
     </div>
   );
 }

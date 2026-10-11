@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PendingImageCard } from "@/components/admin/PendingImageCard";
 import { ClearForwardFlagButton } from "@/components/admin/ClearForwardFlagButton";
+import { ProgressiveList } from "@/components/admin/ProgressiveList";
 
 // Possible duplicates: two products sharing the same name (case-insensitive)
 // — the schema's Barcode.code is a primary key, so two products can never
@@ -9,17 +10,34 @@ import { ClearForwardFlagButton } from "@/components/admin/ClearForwardFlagButto
 // signal without a dedicated fuzzy-matching pipeline. Products that
 // otherwise match but have differing macros/ingredients are flagged as a
 // data conflict rather than a plain duplicate.
+//
+// Hastighed (docs/DECISIONS.md 2026-10-11): grupperingen sker i databasen og
+// kun de første grupper hentes; før blev hele varekataloget læst ind og
+// grupperet i hukommelsen ved hvert besøg.
+const DUPLICATE_GROUP_LIMIT = 300;
+const PENDING_IMAGE_LIMIT = 200;
+
 async function findDuplicateGroups() {
+  const [countRows, groupRows] = await Promise.all([
+    prisma.$queryRaw<{ n: bigint }[]>`
+      SELECT count(*) AS n FROM (
+        SELECT 1 FROM "products" GROUP BY lower(btrim(name)) HAVING count(*) > 1
+      ) t`,
+    prisma.$queryRaw<{ ids: string[] }[]>`
+      SELECT array_agg(id ORDER BY "createdAt") AS ids FROM "products"
+      GROUP BY lower(btrim(name)) HAVING count(*) > 1
+      ORDER BY lower(btrim(name))
+      LIMIT ${DUPLICATE_GROUP_LIMIT}`,
+  ]);
   const products = await prisma.product.findMany({
+    where: { id: { in: groupRows.flatMap((row) => row.ids) } },
     include: { brand: true },
-    orderBy: { name: "asc" },
   });
-  const byName = new Map<string, typeof products>();
-  for (const p of products) {
-    const key = p.name.trim().toLowerCase();
-    byName.set(key, [...(byName.get(key) ?? []), p]);
-  }
-  return [...byName.values()].filter((group) => group.length > 1);
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const groups = groupRows
+    .map((row) => row.ids.flatMap((id) => byId.get(id) ?? []))
+    .filter((group) => group.length > 1);
+  return { total: Number(countRows[0]?.n ?? 0), groups };
 }
 
 function macrosDiffer(a: { kcalPer100g: number; proteinPer100g: number; carbsPer100g: number; fatPer100g: number; ingredientsText: string | null }, b: typeof a) {
@@ -36,70 +54,91 @@ function macrosDiffer(a: { kcalPer100g: number; proteinPer100g: number; carbsPer
 // videresend-misbrug). Siden "Advarsler" er erstattet af "Uncertainties"
 // (docs/DECISIONS.md 2026-09-24), som viser dem under de fire faner.
 export async function LegacyWarnings() {
-  const [duplicateGroups, pendingImages, forwardAbuseUsers] = await Promise.all([
+  const [duplicates, pendingImages, pendingImageTotal, forwardAbuseUsers] = await Promise.all([
     findDuplicateGroups(),
-    prisma.product.findMany({ where: { imageStatus: "PENDING" }, include: { brand: true }, orderBy: { createdAt: "asc" } }),
+    prisma.product.findMany({
+      where: { imageStatus: "PENDING" },
+      include: { brand: true },
+      orderBy: { createdAt: "asc" },
+      take: PENDING_IMAGE_LIMIT,
+    }),
+    prisma.product.count({ where: { imageStatus: "PENDING" } }),
     prisma.user.findMany({
       where: { forwardAbuseFlaggedAt: { not: null } },
       orderBy: { forwardAbuseFlaggedAt: "desc" },
+      take: 200,
     }),
   ]);
+  const duplicateGroups = duplicates.groups;
 
   return (
     <div className="flex flex-col gap-8">
       <section className="flex flex-col gap-4">
         <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
-          Mulige dubletter ({duplicateGroups.length})
+          Mulige dubletter ({duplicates.total})
         </h2>
         {duplicateGroups.length === 0 ? (
           <p className="hf-type-body text-text-secondary">Ingen varer med samme navn fundet.</p>
         ) : (
-          duplicateGroups.map((group) => {
-            const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
-            return (
-              <div key={group[0].name} className="hf-panel">
-                <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
-                  {group[0].name}
-                  {conflict && (
-                    <span className="hf-type-small rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">
-                      Data matcher ikke
-                    </span>
-                  )}
-                </p>
-                <div className="flex flex-col gap-2">
-                  {group.map((p) => (
-                    <Link
-                      key={p.id}
-                      href={`/admin/products/${p.id}`}
-                      className="hf-type-body flex items-center justify-between rounded-md border border-hf-tan-dark px-3 py-2 hover:border-hf-green"
-                    >
-                      <span>
-                        {p.brand?.name ? `${p.brand.name} · ` : ""}
-                        {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
-                        {p.carbsPer100g} g · Fedt {p.fatPer100g} g
+          <ProgressiveList
+            items={duplicateGroups.map((group) => {
+              const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
+              return (
+                <div key={group[0].id} className="hf-panel">
+                  <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
+                    {group[0].name}
+                    {conflict && (
+                      <span className="hf-type-small rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">
+                        Data matcher ikke
                       </span>
-                      <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
-                    </Link>
-                  ))}
+                    )}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {group.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/admin/products/${p.id}`}
+                        className="hf-type-body flex items-center justify-between rounded-md border border-hf-tan-dark px-3 py-2 hover:border-hf-green"
+                      >
+                        <span>
+                          {p.brand?.name ? `${p.brand.name} · ` : ""}
+                          {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
+                          {p.carbsPer100g} g · Fedt {p.fatPer100g} g
+                        </span>
+                        <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          />
+        )}
+        {duplicates.total > duplicateGroups.length && (
+          <p className="hf-type-small text-text-muted">
+            Viser de første {duplicateGroups.length} af {duplicates.total} grupper.
+          </p>
         )}
       </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
-          Billeder til godkendelse ({pendingImages.length})
+          Billeder til godkendelse ({pendingImageTotal})
         </h2>
         {pendingImages.length === 0 ? (
           <p className="hf-type-body text-text-secondary">Ingen billeder afventer godkendelse.</p>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {pendingImages.map((product) => (
+          <ProgressiveList
+            className="grid gap-4 sm:grid-cols-2"
+            items={pendingImages.map((product) => (
               <PendingImageCard key={product.id} product={product} />
             ))}
-          </div>
+          />
+        )}
+        {pendingImageTotal > pendingImages.length && (
+          <p className="hf-type-small text-text-muted">
+            Viser de ældste {pendingImages.length} af {pendingImageTotal} — godkend dem, så kommer de næste frem.
+          </p>
         )}
       </section>
 

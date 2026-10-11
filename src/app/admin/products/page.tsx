@@ -16,6 +16,9 @@ const SORTS = [
 ] as const;
 type SortKey = (typeof SORTS)[number]["key"];
 
+// Højst så mange varer med alle detaljer ad gangen.
+const LIST_CAP = 200;
+
 const createdAtFormat = new Intl.DateTimeFormat("da-DK", {
   timeZone: "Europe/Copenhagen",
   day: "2-digit",
@@ -41,13 +44,59 @@ export default async function AdminProductsPage({
   const tab = tabParam === "auto" ? "auto" : "user";
   const sort: SortKey = SORTS.some((s) => s.key === sortParam) ? (sortParam as SortKey) : "time";
 
-  const rows = await prisma.product.findMany({
-    where: {
-      status: "PENDING",
-      // Brugeres egne private ingredienser er ikke til godkendelse.
-      privateOwnerId: null,
-      externalSource: tab === "auto" ? { not: null } : null,
-    },
+  const where = {
+    status: "PENDING" as const,
+    // Brugeres egne private ingredienser er ikke til godkendelse.
+    privateOwnerId: null,
+    externalSource: tab === "auto" ? { not: null } : null,
+  };
+
+  // Hastighed (docs/DECISIONS.md 2026-10-11): sorteringen afgøres på lette
+  // felter, og kun de første LIST_CAP varer hentes med alle detaljer (før blev
+  // hele køen hentet og tegnet). Godkendes varer, rykker de næste frem.
+  const total = await prisma.product.count({ where });
+  let ids: string[];
+  if (sort === "time") {
+    const light = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: LIST_CAP,
+      select: { id: true },
+    });
+    ids = light.map((p) => p.id);
+  } else if (sort === "alpha") {
+    const light = await prisma.product.findMany({
+      where,
+      select: { id: true, name: true, createdAt: true },
+    });
+    ids = light
+      .sort((a, b) => a.name.localeCompare(b.name, "da") || b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, LIST_CAP)
+      .map((p) => p.id);
+  } else {
+    const light = await prisma.product.findMany({
+      where,
+      select: {
+        id: true,
+        createdAt: true,
+        aiAnalyses: { select: { kind: true, confidence: true, prediction: true } },
+        matchChecks: { select: { confidence: true } },
+      },
+    });
+    ids = light
+      .map((p) => ({
+        id: p.id,
+        createdAt: p.createdAt.getTime(),
+        // Uden måling nederst.
+        confidence: productConfidencePercent(p.aiAnalyses, p.matchChecks) ?? Infinity,
+      }))
+      .sort((a, b) => (a.confidence !== b.confidence ? a.confidence - b.confidence : b.createdAt - a.createdAt))
+      .slice(0, LIST_CAP)
+      .map((p) => p.id);
+  }
+
+  const loaded = await prisma.product.findMany({
+    where: { id: { in: ids } },
     include: {
       brand: true,
       category: { select: { name: true } },
@@ -57,8 +106,9 @@ export default async function AdminProductsPage({
       aiAnalyses: { select: { kind: true, confidence: true, prediction: true } },
       matchChecks: { select: { confidence: true } },
     },
-    orderBy: { createdAt: "desc" },
   });
+  const loadedById = new Map(loaded.map((p) => [p.id, p]));
+  const rows = ids.flatMap((id) => loadedById.get(id) ?? []);
 
   const products: PendingProduct[] = rows.map((p) => ({
     id: p.id,
@@ -108,18 +158,6 @@ export default async function AdminProductsPage({
     dietaryTags: Object.values(asStringRecord(p.dietaryTags)),
   }));
 
-  const createdAtMs = new Map(rows.map((p) => [p.id, p.createdAt.getTime()]));
-  products.sort((a, b) => {
-    if (sort === "alpha") return a.name.localeCompare(b.name, "da");
-    if (sort === "confidence") {
-      // Uden måling nederst.
-      const ca = a.confidencePercent ?? Infinity;
-      const cb = b.confidencePercent ?? Infinity;
-      if (ca !== cb) return ca - cb;
-    }
-    return createdAtMs.get(b.id)! - createdAtMs.get(a.id)!;
-  });
-
   const tabClass = (active: boolean) =>
     `hf-type-body rounded-md px-3 py-1.5 ${active ? "hf-selected" : "border border-hf-tan-dark text-text-secondary"}`;
   const activeSort = SORTS.find((s) => s.key === sort)!;
@@ -162,7 +200,15 @@ export default async function AdminProductsPage({
       {products.length === 0 ? (
         <p className="hf-type-body text-text-secondary">Ingen varer afventer godkendelse i denne fane.</p>
       ) : (
-        <PendingProductViews products={products} />
+        <>
+          <PendingProductViews products={products} />
+          {total > products.length && (
+            <p className="hf-type-small text-text-muted">
+              Viser de første {products.length} af {total} i den valgte sortering — godkend eller afvis dem, så
+              kommer de næste frem.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

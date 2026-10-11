@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { DUPLICATE_FIELDS, type DuplicateFieldValues } from "@/lib/duplicate-fields";
-import { applyFieldValues, dismissProductSet, MAX_COLUMNS, mergeProductInto } from "@/lib/duplicate-review";
+import {
+  applyFieldValues,
+  dismissProductSet,
+  invalidateDuplicateCache,
+  MAX_COLUMNS,
+  mergeProductInto,
+} from "@/lib/duplicate-review";
 
 // POST /api/admin/duplicate-products/resolve — "Gem endelig" / "Ikke
 // dubletter" på admin "Dubletter" → Produkter (docs/DECISIONS.md 2026-09-28).
@@ -63,6 +69,7 @@ export async function POST(req: Request) {
         if (action === "save") await applyFieldValues(tx, productId, values);
         await tx.productSourceRecord.updateMany({ where: { productId }, data: { reviewedAt: new Date() } });
       });
+      invalidateDuplicateCache();
       return NextResponse.json({ ok: true, productId });
     }
 
@@ -71,6 +78,7 @@ export async function POST(req: Request) {
     }
     if (action === "dismiss") {
       await dismissProductSet(productIds);
+      invalidateDuplicateCache();
       return NextResponse.json({ ok: true });
     }
     if (!productIds.includes(keepProductId)) {
@@ -85,6 +93,7 @@ export async function POST(req: Request) {
       },
       { timeout: 30_000 },
     );
+    invalidateDuplicateCache();
     return NextResponse.json({ ok: true, productId: keepProductId });
   } catch (error) {
     console.error("Duplicate resolve failed", error);

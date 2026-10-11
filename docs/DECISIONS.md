@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-10-11: Admin-hastighed — lange lister hentes gradvist, tunge opslag caches kort
+
+Brugeren oplevede admin som ekstremt langsom ved sideskift, og at Usikkerheder og Dubletter viste alt på én gang (evigt scroll for at læse det ind).
+
+- Lange admin-lister (Usikkerheder, Dubletter → Varer, Varer til godkendelse, Kvalitetskontrol, øvrige advarsler) hentes/tegnes gradvist. Valget **evigheds-scroll eller sideinddelt** står øverst (`ListModeToggle`), huskes i browseren (`hc-admin-list-mode`) og gælder alle lister.
+- Serveren sender kun lette rækker pr. udsnit; detaljer (fx redigerings-lightboxen under Usikkerheder) hentes først, når de åbnes.
+- Tunge opslag caches 30–60 s i hukommelsen (`src/lib/ttl-cache.ts`, på `globalThis`) og nulstilles af de ruter, der ændrer data. Cachen er pr. Node-proces; op til TTL gammel data accepteres.
+- `src/app/admin/loading.tsx` giver øjeblikkelig respons ved sideskift; tunge sektioner nederst på en side streames med Suspense i stedet for at holde hele siden tilbage.
+
 ## 2026-10-11: Webvisning — Support i egen boks, profilcirkel uden tekst, tilføj-dropdown = mobilens firkanter, sprog som "DK"-dropdown
 
 Brugerens krav til desktop-skallen (`WebShell`):

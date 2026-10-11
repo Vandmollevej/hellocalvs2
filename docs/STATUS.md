@@ -2,6 +2,13 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Admin langsom ved sideskift — hurtigere sider + valg mellem evigheds-scroll og sideinddelt
+
+- **Årsager:** ingen indlæsningsskelet (`loading.tsx`) i admin, så siden stod stille, til alle databasekald var færdige; Usikkerheder hentede op til 4000 rækker med joins og sendte dem alle til browseren, og "Øvrige advarsler" læste hele varekataloget for at finde dubletter; Dubletter kørte de tunge gruppe-opslag to gange pr. visning (tælling + side); admin-oversigten brugte hele usikkerhedslisten blot til at tælle; ingen cache.
+- **Rettet:** `src/app/admin/loading.tsx`; `src/lib/ttl-cache.ts` (hukommelses-cache 30–60 s, nulstilles ved rettelser); Usikkerheder henter lette rækker gradvist fra `/api/admin/uncertainties` og detaljer først ved "Rediger"; Dubletter → Varer, øvrige advarsler, Varer til godkendelse og Kvalitetskontrol tegnes gradvist; Varer til godkendelse sorteres på lette felter og henter højst 200 med detaljer ad gangen.
+- **Valg øverst** (`ListModeToggle`, `src/components/admin/ListMode.tsx`): evigheds-scroll eller sideinddelt; huskes i browseren og gælder alle lister. Billed-fanerne (Dubletter → Varebilleder, Billedforslag) har deres egen størrelses-/sidevælger og er uændrede.
+- Typetjek og lint grønne på de ændrede filer; ikke prøvet i browser (ingen lokal DB/login) — tjek Usikkerheder (fanerne, sortering, "Rediger"), Dubletter → Varer og Varer til godkendelse på en stor database.
+
 ## 2026-10-11: Forsiden er væk i webversionen
 
 - `AppHomeGate` (`src/components/AppHomeGate.tsx`) pakker den indloggede forside ind: på desktop-skallen (≥ 1024 px) monteres hjul, liste, bundmenu og prompter aldrig, så siden ikke længere starter med at loade drejehjul/spinnere, før kalenderen åbner. Delt breakpoint i `src/lib/desktop-query.ts`. Se DECISIONS 2026-10-11 og REGLER "Webversionen har ingen forside".

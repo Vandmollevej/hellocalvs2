@@ -1,36 +1,58 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import type { Box } from "@/lib/ai-regions";
-import type { UncertaintyRow, UncertaintyTabKey } from "@/lib/uncertainties";
+import type {
+  UncertaintyRow,
+  UncertaintySort,
+  UncertaintySummary,
+  UncertaintyTabKey,
+} from "@/lib/uncertainties";
+import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
 
 // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24/25): fem faner, én række
 // pr. produkt, sortering efter usikkerhed (standard, højeste først),
 // oprettelsesdato eller navn. "Se produkt" åbner produktsiden som overlay;
 // "Rediger" åbner en lightbox med det beskårne foto og røde rammer om de
 // områder, AI'en var usikker på.
+//
+// Hastighed (docs/DECISIONS.md 2026-10-11): listen hentes gradvist i lette
+// rækker fra /api/admin/uncertainties — enten som evigheds-scroll eller
+// sideinddelt (valg øverst, husket i browseren). Lightboxens detaljer hentes
+// først, når man trykker "Rediger".
 
 type Tab = { key: UncertaintyTabKey; label: string };
 type Field = { key: string; label: string; kind: "text" | "number" | "textarea" };
-type SortKey = "uncertainty" | "created" | "name";
+type Slice = { total: number; rows: UncertaintySummary[] };
 
-const SORTS: { key: SortKey; label: string }[] = [
+const SORTS: { key: UncertaintySort; label: string }[] = [
   { key: "uncertainty", label: "Usikkerhed" },
   { key: "created", label: "Oprettet" },
   { key: "name", label: "Navn" },
 ];
 
+function appendUnique(current: UncertaintySummary[], next: UncertaintySummary[]) {
+  const seen = new Set(current.map((row) => row.id));
+  return [...current, ...next.filter((row) => !seen.has(row.id))];
+}
+
 export function UncertaintiesBoard({
-  rows: initialRows,
+  initialRows,
+  initialTotal,
+  initialCounts,
+  pageSize,
   tabs,
   fields,
   target,
   urgentBelow,
   hideBelow,
 }: {
-  rows: UncertaintyRow[];
+  initialRows: UncertaintySummary[];
+  initialTotal: number;
+  initialCounts: Record<UncertaintyTabKey, number>;
+  pageSize: number;
   tabs: readonly Tab[];
   fields: Record<UncertaintyTabKey, Field[]>;
   target: number;
@@ -38,43 +60,164 @@ export function UncertaintiesBoard({
   hideBelow: number;
 }) {
   const router = useRouter();
-  const [rows, setRows] = useState(initialRows);
+  const [mode] = useListMode();
   const [tab, setTab] = useState<UncertaintyTabKey>(tabs[0].key);
-  const [sort, setSort] = useState<SortKey>("uncertainty");
+  const [sort, setSort] = useState<UncertaintySort>("uncertainty");
+  const [counts, setCounts] = useState(initialCounts);
+  const [total, setTotal] = useState(initialTotal);
+  // To visninger af samme data: scroll-listen vokser, side-listen er ét udsnit.
+  const [scrollRows, setScrollRows] = useState(initialRows);
+  const [pageRows, setPageRows] = useState(initialRows);
+  const [page, setPage] = useState(1);
+  const [exhausted, setExhausted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [opening, setOpening] = useState<string | null>(null);
   const [productOverlay, setProductOverlay] = useState<string | null>(null);
   const [editing, setEditing] = useState<UncertaintyRow | null>(null);
+  // Hæves ved skift af fane/sortering, så forsinkede svar ikke blandes ind.
+  const generation = useRef(0);
+  const busy = useRef(false);
 
-  const visible = useMemo(() => {
-    const list = rows.filter((r) => r.tab === tab);
-    // Under 70 % (urgent) står altid øverst, uanset sortering.
-    return list.sort((a, b) => {
-      if (a.urgent !== b.urgent) return a.urgent ? -1 : 1;
-      if (sort === "created") return b.productCreatedAt.localeCompare(a.productCreatedAt);
-      if (sort === "name") return a.productName.localeCompare(b.productName, "da");
-      return b.uncertaintyPercent - a.uncertaintyPercent;
+  async function request(tabKey: UncertaintyTabKey, sortKey: UncertaintySort, offset: number): Promise<Slice> {
+    const query = new URLSearchParams({
+      tab: tabKey,
+      sort: sortKey,
+      offset: String(offset),
+      limit: String(pageSize),
     });
-  }, [rows, tab, sort]);
+    const res = await fetch(`/api/admin/uncertainties?${query.toString()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Kunne ikke hente listen");
+    return (await res.json()) as Slice;
+  }
+
+  // Ny fane eller sortering: start forfra med første udsnit.
+  async function start(tabKey: UncertaintyTabKey, sortKey: UncertaintySort) {
+    const ticket = ++generation.current;
+    busy.current = false;
+    setTab(tabKey);
+    setSort(sortKey);
+    setScrollRows([]);
+    setPageRows([]);
+    setPage(1);
+    setExhausted(false);
+    setTotal(counts[tabKey]);
+    setError(null);
+    setLoading(true);
+    try {
+      const data = await request(tabKey, sortKey, 0);
+      if (ticket !== generation.current) return;
+      setTotal(data.total);
+      setScrollRows(data.rows);
+      setPageRows(data.rows);
+      if (data.rows.length === 0) setExhausted(true);
+    } catch (e) {
+      if (ticket === generation.current) setError(e instanceof Error ? e.message : "Kunne ikke hente listen");
+    } finally {
+      if (ticket === generation.current) setLoading(false);
+    }
+  }
+
+  // Evigheds-scroll: næste udsnit hægtes på bunden.
+  async function loadMore() {
+    if (busy.current || loading || exhausted || scrollRows.length >= total) return;
+    busy.current = true;
+    const ticket = generation.current;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await request(tab, sort, scrollRows.length);
+      if (ticket !== generation.current) return;
+      setTotal(data.total);
+      setScrollRows((current) => appendUnique(current, data.rows));
+      if (data.rows.length === 0) setExhausted(true);
+    } catch (e) {
+      if (ticket === generation.current) setError(e instanceof Error ? e.message : "Kunne ikke hente listen");
+    } finally {
+      busy.current = false;
+      if (ticket === generation.current) setLoading(false);
+    }
+  }
+
+  // Sideinddelt: hent én bestemt side.
+  async function goToPage(next: number) {
+    const ticket = generation.current;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await request(tab, sort, (next - 1) * pageSize);
+      if (ticket !== generation.current) return;
+      const lastPage = Math.max(1, Math.ceil(data.total / pageSize));
+      if (next > lastPage) {
+        // Siden findes ikke længere (fx efter rettelser): gå til den sidste.
+        setLoading(false);
+        void goToPage(lastPage);
+        return;
+      }
+      setTotal(data.total);
+      setPageRows(data.rows);
+      setPage(next);
+    } catch (e) {
+      if (ticket === generation.current) setError(e instanceof Error ? e.message : "Kunne ikke hente listen");
+    } finally {
+      if (ticket === generation.current) setLoading(false);
+    }
+  }
+
+  async function openEditor(row: UncertaintySummary) {
+    setOpening(row.id);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/admin/uncertainties/${row.id}?source=${row.source}`, { cache: "no-store" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.message ?? "Kunne ikke åbne rækken");
+      }
+      setEditing(((await res.json()) as { row: UncertaintyRow }).row);
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : "Kunne ikke åbne rækken");
+    } finally {
+      setOpening(null);
+    }
+  }
+
+  function handleSaved(row: UncertaintyRow) {
+    setScrollRows((current) => current.filter((r) => r.id !== row.id));
+    setPageRows((current) => current.filter((r) => r.id !== row.id));
+    setTotal((current) => Math.max(0, current - 1));
+    setCounts((current) => ({ ...current, [row.tab]: Math.max(0, current[row.tab] - 1) }));
+    setEditing(null);
+    router.refresh();
+    // Sideinddelt: fyld siden op igen med næste række.
+    if (mode === "pages") void goToPage(page);
+  }
+
+  const rows = mode === "scroll" ? scrollRows : pageRows;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const hasMore = !exhausted && scrollRows.length < total;
+  const summary =
+    mode === "scroll" ? `Viser ${scrollRows.length} af ${total}` : `Side ${page} af ${pages} · ${total} i alt`;
 
   return (
     <div className="flex flex-col gap-4">
+      <ListModeToggle summary={summary} />
+
       <div className="flex flex-wrap items-center gap-2 border-b border-hf-tan-dark">
-        {tabs.map((t) => {
-          const count = rows.filter((r) => r.tab === t.key).length;
-          return (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => setTab(t.key)}
-              className={`hf-type-body -mb-px border-b-2 px-3 py-2 ${
-                tab === t.key
-                  ? "hf-type-strong border-hf-green-dark text-hf-green-dark"
-                  : "border-transparent text-text-secondary hover:text-text-primary"
-              }`}
-            >
-              {t.label} ({count})
-            </button>
-          );
-        })}
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => t.key !== tab && void start(t.key, sort)}
+            className={`hf-type-body -mb-px border-b-2 px-3 py-2 ${
+              tab === t.key
+                ? "hf-type-strong border-hf-green-dark text-hf-green-dark"
+                : "border-transparent text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            {t.label} ({counts[t.key]})
+          </button>
+        ))}
       </div>
 
       <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-muted">
@@ -83,7 +226,7 @@ export function UncertaintiesBoard({
           <button
             key={s.key}
             type="button"
-            onClick={() => setSort(s.key)}
+            onClick={() => s.key !== sort && void start(tab, s.key)}
             className={`rounded-full border px-2.5 py-1 ${
               sort === s.key
                 ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
@@ -99,11 +242,24 @@ export function UncertaintiesBoard({
         </span>
       </div>
 
-      {visible.length === 0 ? (
-        <p className="hf-type-body text-text-secondary">Ingen usikre varer i denne fane.</p>
+      {actionError && <p className="hf-type-body text-hf-red-dark">{actionError}</p>}
+
+      {rows.length === 0 ? (
+        loading ? (
+          <p className="hf-type-body text-text-secondary">Henter…</p>
+        ) : error ? (
+          <div className="flex items-center gap-3">
+            <p className="hf-type-body text-hf-red-dark">{error}</p>
+            <button type="button" onClick={() => void start(tab, sort)} className="hf-btn-secondary px-3 py-1">
+              Prøv igen
+            </button>
+          </div>
+        ) : (
+          <p className="hf-type-body text-text-secondary">Ingen usikre varer i denne fane.</p>
+        )
       ) : (
         <div className="flex flex-col gap-2">
-          {visible.map((row) => (
+          {rows.map((row) => (
             <div
               key={row.id}
               className={`flex items-center gap-3 rounded-lg border bg-hf-white p-3 ${
@@ -113,7 +269,7 @@ export function UncertaintiesBoard({
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-hf-tan">
                 {row.thumbnailUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={row.thumbnailUrl} alt="" className="h-full w-full object-contain" />
+                  <img src={row.thumbnailUrl} alt="" loading="lazy" className="h-full w-full object-contain" />
                 )}
               </div>
               <div className="min-w-0 flex-1">
@@ -133,10 +289,11 @@ export function UncertaintiesBoard({
               </div>
               <button
                 type="button"
-                onClick={() => setEditing(row)}
-                className="hf-btn-secondary px-2.5 py-1"
+                disabled={opening === row.id}
+                onClick={() => void openEditor(row)}
+                className="hf-btn-secondary px-2.5 py-1 disabled:opacity-50"
               >
-                Rediger
+                {opening === row.id ? "Åbner…" : "Rediger"}
               </button>
               <span
                 className={`hf-type-body hf-type-strong w-14 text-right ${
@@ -148,6 +305,17 @@ export function UncertaintiesBoard({
             </div>
           ))}
         </div>
+      )}
+
+      {mode === "scroll" && hasMore && rows.length > 0 && (
+        <LoadMoreSentinel onVisible={() => void loadMore()} loading={loading} error={error} />
+      )}
+
+      {mode === "pages" && rows.length > 0 && (
+        <>
+          {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
+          <ListPager page={page} pages={pages} onPage={(next) => void goToPage(next)} busy={loading} />
+        </>
       )}
 
       {productOverlay && (
@@ -163,24 +331,9 @@ export function UncertaintiesBoard({
       {editing && (
         <Overlay onClose={() => setEditing(null)}>
           {editing.source === "matchCheck" ? (
-            <ImageLightbox
-              row={editing}
-              onSaved={() => {
-                setRows((current) => current.filter((r) => r.id !== editing.id));
-                setEditing(null);
-                router.refresh();
-              }}
-            />
+            <ImageLightbox row={editing} onSaved={() => handleSaved(editing)} />
           ) : (
-            <EditLightbox
-              row={editing}
-              fields={fields[editing.tab]}
-              onSaved={() => {
-                setRows((current) => current.filter((r) => r.id !== editing.id));
-                setEditing(null);
-                router.refresh();
-              }}
-            />
+            <EditLightbox row={editing} fields={fields[editing.tab]} onSaved={() => handleSaved(editing)} />
           )}
         </Overlay>
       )}

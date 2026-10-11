@@ -246,3 +246,9 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - En ret (Trender netop nu, søgning, favoritter, Mine retter, web og native) vises **aldrig** med "0 kcal". Er energien 0 eller ukendt, skjules retten på serveren (`/api/shared-recipes`: `nutritionMissing = false`, `kcalPer100g > 0`, delte retter `kcal > 0`), og klienterne viser ingen kcal-tekst i stedet for et nul.
 - Importrobotterne gemmer 0 kcal + `nutritionMissing = true`, når næringen er ukendt (Valdemarsro uden Frida-match, BetterFeast/RetNemt uden tal). 0 er en pladsholder, aldrig en værdi — tjek altid `nutritionMissing`, når en liste hentes direkte fra `products`.
 - Nye lister, der viser kcal for retter/varer, skal følge samme regel; et nul må aldrig stå uden, at nogen har reageret på det.
+
+## Lange admin-lister (user rule 2026-10-11)
+
+- Enhver admin-liste, der kan blive lang, hentes/tegnes gradvist og har øverst valget "Evigheds-scroll / Sideinddelt" (`ListModeToggle` + `useListMode` i `src/components/admin/ListMode.tsx`). Valget huskes i browseren og gælder alle lister.
+- Send aldrig hele tabellen til browseren: lette rækker pr. udsnit, detaljer først ved åbning. Tunge opslag caches kort (`src/lib/ttl-cache.ts`) og nulstilles af ruter, der ændrer data.
+- Admin-sider har altid en `loading.tsx`, så sideskift reagerer med det samme.
