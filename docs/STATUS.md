@@ -1,6 +1,12 @@
 # HELLO CAL — project status
 
-Last updated: 2026-10-10
+Last updated: 2026-10-11
+
+## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
+
+- **Årsag til at grænsen stod stille:** skridt, træning og aktiv energi blev hentet med filteret `<type>.interval.start_time >= "…Z"`, som Google afviser (400). `Promise.allSettled` skjulte fejlen, så kun vægt/målinger kom ind. Nu `<type>.interval.civil_start_time >= "ÅÅÅÅ-MM-DDTHH:MM:SS"` (uden Z), afviste datatyper logges, og `fetchVersion` = 1 henter de 90 dage igen én gang (PR #391).
+- **Aktiv energi (`active-energy-burned`):** hentes som `ACTIVE_ENERGY_KCAL` pr. dag; Google Health har `energy` som læsetype. Kalenderen (web + native, alle visninger) lægger pr. dag det største af træningspas-kcal og enhedens aktive energi oven i målet (PR #389). Se DECISIONS 2026-10-10/11.
+- **Ikke prøvet mod rigtige Google-data:** svarets form (`activeEnergyBurned.interval` + `kcal`) er læst fra Googles dokumentation. Rykker grænsen sig ikke efter en synkronisering, så tjek serverloggen for "Google Health datatype #… fejlede".
 
 ## 2026-10-10: Mærker på produktcirklen + prioritering af visning
 
