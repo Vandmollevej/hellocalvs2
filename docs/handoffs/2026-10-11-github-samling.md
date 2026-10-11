@@ -61,5 +61,8 @@ sammen med scripts, når de er gennemgået.
 
 ## Verifikation og næste skridt
 
-I gang: færdiggør sammenfletning, lint, build, tests, skema og paritet;
-push, flet og kontroller deploy. Ingen livekontrol er endnu gennemført.
+Lokalt verificeret: 378/378 tests, lint med 0 fejl (12 eksisterende advarsler),
+build, Prisma validate/generate, Python-syntaks, native sync og paritet.
+Paritet: 126 porteret, 6 eksisterende mangler, 113 kun web.
+Næste skridt: push, GitHub-checks, fletning og deploykontrol. Migrationen
+er ikke kørt mod live data; deploy tester den først på en skemakopi.

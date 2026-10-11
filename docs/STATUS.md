@@ -10,7 +10,7 @@ Last updated: 2026-10-11
   nyere produkt-/kontoregler bevaret. Labels-siden kobles til adminmenuen og
   bruger de eksisterende certifikatlogoer.
 - Detaljer og resterende arbejde: `docs/handoffs/2026-10-11-github-samling.md`.
-- Verifikation og push er endnu ikke afsluttet.
+- Lokalt verificeret: 378 tests, lint uden fejl, build, Prisma, Python-syntaks og native sync/paritet. Push, GitHub-checks og deploykontrol følger.
 ## 2026-10-11: Codex overtager ni afbrudte opgaver
 
 - Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
