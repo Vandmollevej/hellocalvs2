@@ -39,7 +39,7 @@ Ejer: Codex, chat om GitHub-forbindelsen. Filer: isoleret samlingskopi
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| github-samling | Gennemgå lokale branches/worktrees og saml manglende arbejde uden at overskrive nyere master | I gang | Sammenflet, verificer og push; bevar lokale importdata og andre worktrees |
+| github-samling | Gennemgå lokale branches/worktrees og saml manglende arbejde uden at overskrive nyere master | I gang | PR #400 flettet (abd501c7); kontroller build/deploy #714 og deep health, derefter arkivér rækken |
 
 ## G-AABNE-PR — Fortsat
 ## G-CODEX-OPFOELGNING — Ni afbrudte opgaver (2026-10-11)
@@ -49,6 +49,8 @@ Afgrænsning og næste skridt pr. opgave:
 `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
 Brugeren har godkendt commits, push og fortsættelse af opgaverne.
 
+
+## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
 
 Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
 

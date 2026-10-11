@@ -66,3 +66,9 @@ build, Prisma validate/generate, Python-syntaks, native sync og paritet.
 Paritet: 126 porteret, 6 eksisterende mangler, 113 kun web.
 Næste skridt: push, GitHub-checks, fletning og deploykontrol. Migrationen
 er ikke kørt mod live data; deploy tester den først på en skemakopi.
+
+PR #400 er flettet som abd501c7d1d9370c88e24c4712c1d3d7d47997bc.
+Native push-run #845 er grøn på 6fa997f2 (Android, iPhone, paritet).
+Alle commits fra deploy er nu forfædre til origin/master.
+Build/deploy #714: https://github.com/Vandmollevej/hellocalvs2/actions/runs/38144958492
+Afventer produktions-build og deployment; lokal hovedmappe er stadig urørt.
