@@ -60,10 +60,10 @@ type DataPoint = {
 // 400, som Promise.allSettled slugte, så ingen skridt/træning/energi kom ind.
 const civilStart = (field: string, since: Date) => `${field}.interval.civil_start_time >= "${since.toISOString().slice(0, 19)}"`;
 
-async function listDataPoints(accessToken: string, dataType: string, filter: string, pageSize: number) {
+async function listDataPoints(accessToken: string, dataType: string, filter: string, pageSize: number, maxPages = 40) {
   const points: DataPoint[] = [];
   let pageToken: string | undefined;
-  for (let page = 0; page < 40; page++) {
+  for (let page = 0; page < maxPages; page++) {
     const url = new URL(`${API}/${dataType}/dataPoints`);
     url.searchParams.set("filter", filter);
     url.searchParams.set("pageSize", String(pageSize));
@@ -335,12 +335,13 @@ async function intervalDays(accessToken: string, since: Date, spec: IntervalSpec
 // Puls kommer med få sekunders mellemrum under træning; kun de seneste 14 dage
 // hentes, så sider og kald holder sig inden for grænsen.
 async function heartRates(accessToken: string, since: Date): Promise<IntegrationItem[]> {
-  const from = new Date(Math.max(since.getTime(), Date.now() - 14 * DAY_MS));
+  const from = new Date(Math.max(since.getTime(), Date.now() - 3 * DAY_MS));
   const points = await listDataPoints(
     accessToken,
     "heart-rate",
     `heart_rate.sample_time.physical_time >= "${from.toISOString()}"`,
-    1000
+    1000,
+    200
   );
   return googleHeartRateItems(points as unknown as GooglePoint[]);
 }

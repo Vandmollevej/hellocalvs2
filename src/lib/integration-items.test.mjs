@@ -353,11 +353,14 @@ test("Google Health: dagsværdier, intervalsummer og puls", () => {
   const bpm = googleHeartRateItems([
     { heartRate: { sampleTime: { physicalTime: "2026-10-02T10:05:00Z" }, beatsPerMinute: "60" } },
     { heartRate: { sampleTime: { physicalTime: "2026-10-02T10:35:00Z" }, beatsPerMinute: "100" } },
+    { heartRate: { sampleTime: { physicalTime: "2026-10-02T10:36:00Z" }, beatsPerMinute: "120" } },
   ]);
   const hr = Object.fromEntries(bpm.map((i) => [i.payload.type, i.payload.value]));
-  assert.equal(hr.HEART_RATE_BPM, 80);
+  // 5-minutters spande: 10:35 og 10:36 samles (110), 10:05 står for sig selv.
+  const buckets = bpm.filter((i) => i.payload.type === "HEART_RATE_BPM").map((i) => i.payload.value).sort((a, b) => a - b);
+  assert.deepEqual(buckets, [60, 110]);
   assert.equal(hr.HEART_RATE_MIN_BPM, 60);
-  assert.equal(hr.HEART_RATE_MAX_BPM, 100);
+  assert.equal(hr.HEART_RATE_MAX_BPM, 120);
 });
 
 test("Google Health: søvn og vand findes som til/fra-valg", async () => {
