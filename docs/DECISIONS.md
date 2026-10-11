@@ -63,6 +63,16 @@ Brugerens krav: en liste over Open Food Facts-varer, hvor hver vare er vurderet 
 - **Klaret:** når en agent opretter/supplerer varen via "Opret vare" (`POST /api/scan/products`, stregkoden findes allerede), sættes `scanDoneAt`, og varen vurderes igen. Admin kan sende en vare igen.
 - **Uændret:** en suppleringsscanning udfylder fortsat kun tomme felter på varen (OPRETTELSES-APP.md D); en scanning overskriver altså ikke Open Food Facts' værdier.
 - Migration `20261011120000_product_quality_review`.
+## 2026-10-11: Admin-lister — mangler flages, status er til/fra, flere rækker behandles samlet, sletning er blød
+
+Brugerens krav: en ret uden billede stod som "Godkendt" uden nogen advarsel; status skal være "Godkendt" + en on/off-knap; alle produktlister i admin skal kunne markeres (klik, Ctrl, Shift) med en "Handlinger"-knap (disable, godkend, send til gennemsyn, slet), og slettede varer skal kunne findes.
+
+- **Mangler flages** (`src/lib/admin-list-problems.ts`): en række uden billede (alle), uden næring (butiksvare med `nutritionMissing`, ret med kcal ≤ 0) eller uden ingredienser (kun HelloFresh) får en tynd rød kant og en rød tekst under navnet; ikonet for manglende billede er rødt. Øverst på listen står en rød linje med tal ("N varer mangler billede · M mangler næring") hvor hvert led er et filter (Varer: `image=without` / `nutrition=missing`; Retter: `problem=image|nutrition|ingredients`). Tællerne gælder hele listen, ikke kun siden.
+- **Status** (`StatusToggle`): teksten Godkendt/Afventer/Afvist + en on/off-knap (`Toggle`). Til = godkendt og vist; fra = skjult for brugerne (`Product.discontinued`; for brugerretter status REJECTED). Fra → til på en række, der ikke er godkendt, godkender den (varer: med points/besked som ved enkelt-godkendelse).
+- **Markering + Handlinger** (`BulkSelection`): Ctrl/⌘ + klik markerer enkeltvis, Shift + klik en hel stribe fra den sidst markerede, "Markér" i bjælken gør klik til markering uden tastatur, "Markér alle på siden", Esc rydder. Ingen afkrydsningsfelter (2026-09-02). "Handlinger" vises altid; menuen: Disable, Aktivér, Godkend, Send til gennemsyn, Slet (i Slettede: Gendan). Alt går via `POST /api/admin/bulk` (`src/lib/admin-bulk.ts`).
+- **Blød sletning**: `Product.deletedAt` og `SharedRecipe.deletedAt` (migration `20261011120000_admin_soft_delete`). Slet sætter `deletedAt`, status REJECTED og `discontinued`, så al eksisterende søgning også udelader rækken. Slettede findes under "Slettede (N)" øverst på Varer og på hver retteliste; Gendan lægger dem tilbage som Afventer (gennemsyn).
+- **"(Brug 126228 i stedet) …"-retter** er HelloFreshs egen mærkning af en udgået dublet, ikke noget vi genererer. Migrationen deaktiverer de eksisterende (kan aktiveres igen), og `scripts/hellofresh-import/agent.py` springer dem over.
+- Dækker nu: Varer (liste, detaljer, galleri) og alle Retter-lister (bruger, HelloFresh, RetNemt, BetterFeast, Valdemarsro). Kvalitetskontrol-boards (godkendelseskø, dubletter, energifordeling m.fl.) har egne handlinger og er ikke ændret.
 
 ## 2026-10-10: Søgeresultatets tekst begynder med brand og subbrand
 

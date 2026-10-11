@@ -1543,6 +1543,11 @@ model Product {
   // kilden "FRIDA" i nutrientSources. null = ingen Frida-skøn.
   fridaEstimateId  String?
   createdAt        DateTime               @default(now())
+  // Slettet af admin (docs/DECISIONS.md 2026-10-11): varen/retten er skjult
+  // overalt, men rækken beholdes, så den kan findes under "Slettede" og
+  // gendannes. Sættes sammen med status REJECTED + discontinued, så al
+  // eksisterende søgning også udelader den. null = ikke slettet.
+  deletedAt        DateTime?
 
   // Login-frit admin-godkendelseslink (points-system 2026-09-02, se
   // docs/DECISIONS.md): unikt token brugt i mail-varsler, så admin kan
@@ -3613,6 +3618,8 @@ model SharedRecipe {
   rejectionReason String?
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
+  // Slettet af admin (docs/DECISIONS.md 2026-10-11): som Product.deletedAt.
+  deletedAt     DateTime?
 
   @@index([status, createdAt])
   @@index([publisherHash])

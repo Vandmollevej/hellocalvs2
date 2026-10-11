@@ -57,6 +57,7 @@ const BARCODE_OPTIONS = [
   { value: "with", label: "Med stregkode" },
   { value: "without", label: "Uden stregkode" },
 ];
+const NUTRITION_OPTIONS = [{ value: "missing", label: "Mangler næring" }];
 
 export function ProductDatabaseFilters({
   filters,
@@ -142,6 +143,7 @@ export function ProductDatabaseFilters({
   if (filters.status) chips.push({ key: "status", label: `Status: ${PRODUCT_STATUS_LABELS[filters.status]}`, clear: { status: "" } });
   if (filters.image) chips.push({ key: "image", label: filters.image === "with" ? "Med billede" : "Uden billede", clear: { image: "" } });
   if (filters.barcode) chips.push({ key: "barcode", label: filters.barcode === "with" ? "Med stregkode" : "Uden stregkode", clear: { barcode: "" } });
+  if (filters.nutrition) chips.push({ key: "nutrition", label: "Mangler næring", clear: { nutrition: "" } });
 
   return (
     <div aria-busy={pending} className="flex flex-col gap-4">
@@ -264,6 +266,7 @@ export function ProductDatabaseFilters({
                   status: "",
                   image: "",
                   barcode: "",
+                  nutrition: "",
                 }), { scroll: false });
               });
             }}
@@ -330,7 +333,7 @@ export function ProductDatabaseFilters({
             options={STATUS_OPTIONS}
             onChange={(status) => go({ status: status as Filters["status"] })}
           />
-          <div className="grid min-w-0 grid-cols-2 gap-3">
+          <div className="grid min-w-0 grid-cols-3 gap-3">
             <FilterDropdown
               label="Billede"
               value={filters.image}
@@ -340,11 +343,18 @@ export function ProductDatabaseFilters({
             />
             <FilterDropdown
               label="Stregkode"
-              alignRight
               value={filters.barcode}
               allLabel="Alle"
               options={BARCODE_OPTIONS}
               onChange={(barcode) => go({ barcode: barcode as Filters["barcode"] })}
+            />
+            <FilterDropdown
+              label="Næring"
+              alignRight
+              value={filters.nutrition}
+              allLabel="Alle"
+              options={NUTRITION_OPTIONS}
+              onChange={(nutrition) => go({ nutrition: nutrition as Filters["nutrition"] })}
             />
           </div>
         </div>

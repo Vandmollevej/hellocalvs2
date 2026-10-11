@@ -107,6 +107,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
+- **Admin-lister over varer og retter (user rule 2026-10-11)**: (1) en række uden billede/næring har tynd rød kant + rød tekst, og listen har en rød linje øverst med tal og filter — en mangelfuld ret må aldrig stå som en almindelig "Godkendt" række; (2) status til højre er teksten (Godkendt …) + en on/off-knap, aldrig en farvet kasse; (3) rækker kan markeres med klik/Ctrl/Shift og behandles under "Handlinger" (Disable, Godkend, Send til gennemsyn, Slet; altid synlig); (4) Slet er blød, de slettede findes under "Slettede" øverst på listen. Komponenter: `BulkSelection`/`BulkRow`/`BulkActionsBar`, `StatusToggle`, `admin-list-problems.ts`. Se DECISIONS.md 2026-10-11.
 - **Kalenderens dagsvisning følger klokken (user rule 2026-10-10)**: når man åbner en dag, scrolles tidslinjen efter tidspunktet på dagen — om morgenen ses natten + morgenen (øverst), midt på dagen morgen + aften (midten), om aftenen aften + nat (bunden af kalenderen). Nattens søvn skal stadig ses om morgenen. Web (`src/app/calendar/page.tsx`) og native (`CalendarDayDetails.kt`).
 
 - **ALDRIG grå tekst på grøn baggrund (user rule 2026-10-09)**: tekst på grøn flade (`bg-hf-brand`, grønne knapper/kort) er altid hvid (`text-hf-white`). Kombinér aldrig `text-text-secondary` eller andre grå farver med hvid på grøn — den grå vinder og gør teksten ulæselig. Gælder web og native.

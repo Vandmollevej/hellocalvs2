@@ -63,6 +63,12 @@ Last updated: 2026-10-11
 - **Google Health, iltmætning m.fl.:** timegennemsnit blander ikke længere dagsværdier ind, og migrationen `20261011080000_google_health_hourly_collapse` samler de eksisterende minutmålinger (skal med deployet).
 - **Rettet regel:** "Knapper står altid øverst" var forkert → nederst (REGLER → UI).
 - **Ikke prøvet i browser eller mod rigtig database** (ingen skærmtjek efter brugerens regel); web typecheckes/lintes, native kompileres kun i GitHub Actions.
+## 2026-10-11: Admin-lister — mangler flagges, til/fra-status, markering + Handlinger, slettede
+
+- Varer og alle Retter-lister: rød kant/tekst og rød linje øverst ved manglende billede/næring (filtre), status som tekst + on/off-knap, markering med klik/Ctrl/Shift og "Handlinger" (Disable, Aktivér, Godkend, Send til gennemsyn, Slet; Gendan under Slettede), og "Slettede (N)" øverst på listerne. Se DECISIONS 2026-10-11 og REGLER → UI.
+- "(Brug … i stedet)" i HelloFresh-titler er HelloFreshs egne udgåede dubletter: deaktiveret af migrationen og sprunget over af importen.
+- DB: `deletedAt` på `products` og `shared_recipes` (migration `20261011120000_admin_soft_delete`) skal med deployet.
+- **Ikke gjort:** Kvalitetskontrol-boards (godkendelseskø, dubletter, energifordeling m.fl.) har ikke markering/Handlinger endnu; ikke prøvet i browser. `npm test` har én rød test, der ikke stammer herfra: `/settings/display/priority` mangler i `src/lib/page-tree.ts`.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 

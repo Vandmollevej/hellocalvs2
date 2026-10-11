@@ -78,6 +78,9 @@ USER_AGENT = (
 )
 
 NEXT_DATA_RE = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
+# HelloFresh navngiver selv udgåede opskrifter "(Brug 126228 i stedet) …" eller
+# "(Brug 121446) …": en dublet af erstatningsopskriften, som ikke skal vises.
+RETIRED_NAME_RE = re.compile(r"^\(\s*Brug\s+\d+", re.I)
 RECIPE_ID_RE = re.compile(r"-([0-9a-f]{24})$")
 SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
@@ -298,6 +301,9 @@ def build_recipe_details(conn, recipe):
 
 def upsert_recipe(conn, recipe, retter_category_id):
     recipe_id = recipe["recipeId"]
+    if RETIRED_NAME_RE.match(recipe.get("name") or ""):
+        log.info("skipping %s (%s) — HelloFresh has replaced this recipe", recipe.get("name"), recipe_id)
+        return None
     nutrition = {item["name"]: item["amount"] for item in recipe.get("nutrition", [])}
 
     kcal = nutrition.get("Kalorier (kcal)")
