@@ -268,3 +268,8 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Webversionen (desktop-skallen `WebShell`, bredde ≥ 1024 px) skal kunne alt, hvad appen kan — undtagen det, der kræver kameraet: Scan med kamera, Billeddagbog og stemme (Chat/Indtast afløser mikrofonen). Plus-cirklen i topbjælken viser hele tilføj-menuen minus mikrofon og kamera.
 - Sidebjælken (`src/lib/web-nav.ts`) følger appens Profil- og Indstillinger-sider punkt for punkt (Beskeder med ulæst-tal, Status, Point, Vægtkalibrering, Kropsmål, Søvnmønster, Screeninger, Viden om, Hello Doc, Familie, Kommunikation, Visning med alle undersider, Support …). Nyt menupunkt i appen = nyt punkt i `web-nav.ts` i samme opgave. `src/lib/web-nav.test.mjs` læser appens menuer og fejler, når webben mangler et punkt (eller et nyt udeladt punkt ikke står i testens `NOT_ON_WEB` med begrundelse).
 - Alt, der kun er monteret på appens forside (`src/app/page.tsx`), findes ikke på desktop, fordi roden sender videre til kalenderen. Sådanne popups (vægt/tøj, "Det er længe siden, der er synkroniseret", pulsudsving → "Hvad foretog du dig?") monteres derfor også i `src/components/web/WebStartPrompts.tsx` (vises på kalenderen). Testen kræver det.
+# Løbende opfølgning (brugerregel 2026-10-11)
+
+- Hold løbende øje med igangværende job, checks, deploys og udestående opgaver. Fortsæt næste nødvendige trin, når resultatet er klar; et statussvar må ikke afslutte uafsluttet, autoriseret arbejde.
+- Ved længerevarende opfølgning bruges en aktiv opfølgning i den aktuelle chat. Meld kun væsentlig fremdrift, afslutning, fejl eller nødvendig brugerhandling. Opdatér checkpointet, så arbejdet kan genoptages uden at gentage allerede gennemførte trin.
+

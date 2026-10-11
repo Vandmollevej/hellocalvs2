@@ -19,6 +19,11 @@ Arbejdskopi: `worktrees/opfoelgning`, gren `codex/claude-opfoelgning`.
 
 ## Kontrol efter genoptagelse
 
+- PR #399 er nu flettet som 53e86336. Cardio-deploy ae9c4b7e er grønt. Ingen Actions-kørsel for 53e86336 blev returneret ved sidste API-kontrol; deploy af denne merge skal derfor stadig verificeres.
+- Gengangerrapporten er skrevet til hovedmappens Excelark/gengangere-fund.xlsx. Alle 5.388 kandidatpar er vurderet; de sidste 137 skeptikerpar er afsluttet (114 accepteret, 23 afvist). Rapportens endelige kontrol og samlet rapport mangler.
+- DRK har 700 tomme produkttyper, Årstiderne 413. Genfundne kopier ligger i Gennemgang/mine_skrivninger_2026-10-11; de har 718 henholdsvis 413 udfyldte typer og ingen ændrede originalfelter. Forslagene indeholder dog fejl (fx kaffe angivet som Proexo, krydderi som Stødt) og må ikke kopieres ukritisk. Mængde/antal i originalerne er nyere og skal bevares. Sammenligninger ligger i Temp/codex-opfoelgning/recovered_drk.json og recovered_aarstiderne.json.
+- Brugerens globale regel om løbende opfølgning er registreret i REGLER.md. Aktiv heartbeat hvert 10. minut: f-rdigg-r-hello-cal-opf-lgning. Arbejdet fortsætter; arkene åbnes først efter færdigt arbejde og kontrol.
+
 - Cardio PR #398 er flettet via normal GitHub-UI som ae9c4b7e (otte grønne checks). Connectorens merge-/PR-skriveadgang giver 403, men browseren er nu logget ind. Admin-commit af84f85d ligger i PR #399 mod master, hvor checks afventes. Automatisk godkendelseskontrol afviste direkte master-push; den vej må ikke bruges som omgåelse.
 - Sidste dubletændringer fandtes i Claude scratchpad cee053bd, ikke den tidligere kontrollerede rene arbejdskopi. De er overført hertil og suppleret med filtre i tælling/grupper, cacheinvalidering og scroll-genindlæsning efter bulk.
 - Lint: 0 fejl, 12 eksisterende advarsler. Build: alle 402 sider. Webmenu: 6 tests grønne. Native-paritet og skemavalidering grønne.
