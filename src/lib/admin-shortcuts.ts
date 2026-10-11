@@ -83,7 +83,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   // Administration
   "/admin/scan-invites": ["Alt+Shift+V"],
   "/admin/scan-invites/afvisningsaarsager": ["Alt+Shift+Z"],
-  "/admin/scan-invites/off-kvalitet": ["Alt+8"],
+  "/admin/scan-invites/off-kvalitet": ["Alt+9"],
   "/admin/jobs": ["Alt+J"],
   "/admin/agents": ["Alt+A"],
   "/admin/robots": ["Alt+R"],
