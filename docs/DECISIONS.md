@@ -26,6 +26,14 @@ Brugeren fandt "0 kcal pr. servering" under Trender netop nu ("grotesk"; et nul 
 - **Årsag:** importrobotterne (Valdemarsro, BetterFeast, RetNemt) gemmer `kcalPer100g = 0` + `nutritionMissing = true`, når næringen er ukendt. `/api/shared-recipes` hentede dem alligevel (uden at tjekke `nutritionMissing`), og "Trender netop nu" fylder op med tilfældige retter, så en ret uden energi kunne havne på forsiden. Klienterne formaterede blot 0 som "0 kcal pr. servering".
 - **Rettelse:** serveren udelader retter uden kendt energi (`nutritionMissing: false`, `kcalPer100g > 0`, delte retter `kcal > 0`, plus et sikkerhedsnet på den afrundede værdi), og web og native viser ingen kcal-tekst, hvis tallet alligevel er 0 (også favoritter og Mine retter).
 - Retter uden energi dukker op igen, så snart robotten har beregnet næringen (`nutritionMissing = false`).
+## 2026-10-11: Forsiden findes ikke i webversionen — den monteres aldrig
+
+Brugerens krav: når man åbner Hello Cal web, startede siden med at loade drejehjul og spinnere som appens forside. Den side skal slet ikke være tilgængelig i webversionen. Præciserer 2026-09-29 ("roden `/` sender videre til kalenderen"), som kun gjorde det efter at forsiden var renderet.
+
+- **Webversion = desktop-skallen** (`WebShell`, skærmbredde ≥ 1024 px). Grænsen står ét sted: `src/lib/desktop-query.ts`, brugt af `AppFrame` og forsidens port.
+- `src/app/page.tsx` pakker den indloggede forside ind i `AppHomeGate` (klient). I webversionen renderer porten en tom flade: Hero, hjul, tilføj-cirkel, dagens liste, bundmenu, puls- og vejeprompter monteres ikke, og der hentes ingen data. `WebShell` sender derefter roden videre til `/calendar?view=day` som før.
+- **Første rendering:** serveren giver kun et hint ud fra User-Agent (iPhone/iPad/Android/Mobile → forsiden i server-HTML'en som hidtil, ellers tom flade). Afgørelsen tages altid på skærmbredden i klienten, så en iPad i bred visning også får webskallen, og en smal desktop-rude får appen som den er.
+- Appen på telefon og tablet er uændret. Udloggede besøgende ser stadig `LandingPage`.
 
 ## 2026-10-11: Open Food Facts-kontrol — vurdering pr. kategori og "send til scan-appen"
 

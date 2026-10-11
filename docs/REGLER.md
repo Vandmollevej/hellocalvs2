@@ -225,6 +225,11 @@ Certifikater står nederst til venstre ud for cirklens bund (økologi altid nede
 - **Måltidskasser (2026-10-10)**: HelloFresh, RetNemt og BetterFeast står ét sted, `src/lib/meal-kit-providers.ts` (id-præfiks, kilde, navn). En ny måltidskasse tilføjes dér + egen agent i `scripts/<navn>-agent`; dens retter er Product-rækker i kategori "Retter" og vises på HelloFresh-opskriftssiden. Se DECISIONS 2026-10-10.
 - Opskrifter → filter → Antal personer: standard 0 = ikke valgt, vist lysegråt/underordnet; ingen person er valgt som default. Receptsiden bruger mindst 1 (brugerens krav 2026-10-10).
 
+## Webversionen har ingen forside (user rule 2026-10-11)
+
+- Forsiden med drejehjul, tilføj-cirkel og dagens liste findes kun i appen (telefon/tablet). I webversionen (desktop-skallen, ≥ 1024 px) må den aldrig renderes eller loade — hverken hjul, spinnere eller data. Roden `/` åbner kalenderens dagsvisning (`WEB_HOME`).
+- Ny forsidekomponent (prompt, popup, banner) lægges inde i `AppHomeGate` i `src/app/page.tsx`, så den følger porten. Breakpointet ligger kun i `src/lib/desktop-query.ts`.
+
 ## Venstre menu: alt foldet ud som standard (user rule 2026-10-11)
 
 - Fanerne/accordions i venstre menu — både webversionen (`WebShell`) og admin (`AdminShell`) — er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
