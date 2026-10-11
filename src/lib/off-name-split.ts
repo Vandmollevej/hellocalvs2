@@ -153,6 +153,8 @@ export type OffSplitFilters = {
   countryOfOrigin: string | null;
   wholeGrain: string | null;
   animalWelfare: string[];
+  /** MSC, ASC, Fairtrade … (brugerens regel 2026-10-11 punkt 16) */
+  certifications: string[];
   storage: string | null;
   decaf: string | null;
   cooked: string | null;
@@ -307,6 +309,22 @@ const COUNTRY: Record<string, string> = {
   estonia: "Estland", "czech-republic": "Tjekkiet", hungary: "Ungarn", romania: "Rumænien", bulgaria: "Bulgarien",
   croatia: "Kroatien", "dominican-republic": "Dominikanske Republik", colombia: "Colombia", "costa-rica": "Costa Rica",
 };
+
+// Oprindelses-adjektiver i navnet → land i _is_country_of_origen (brugerens regel 2026-10-11 punkt 14)
+const ORIGIN_ADJECTIVES: Record<string, string> = {
+  fransk: "Frankrig", franske: "Frankrig", italiensk: "Italien", italienske: "Italien", spansk: "Spanien",
+  spanske: "Spanien", tysk: "Tyskland", tyske: "Tyskland", svensk: "Sverige", svenske: "Sverige", norsk: "Norge",
+  norske: "Norge", græsk: "Grækenland", græske: "Grækenland", tyrkisk: "Tyrkiet", tyrkiske: "Tyrkiet",
+  hollandsk: "Holland", hollandske: "Holland", belgisk: "Belgien", belgiske: "Belgien", polsk: "Polen",
+  polske: "Polen", portugisisk: "Portugal", portugisiske: "Portugal", engelsk: "England", engelske: "England",
+  irsk: "Irland", irske: "Irland", østrigsk: "Østrig", østrigske: "Østrig", schweizisk: "Schweiz",
+  schweiziske: "Schweiz", amerikansk: "USA", amerikanske: "USA", kinesisk: "Kina", kinesiske: "Kina",
+  indisk: "Indien", indiske: "Indien", thailandsk: "Thailand", thailandske: "Thailand", japansk: "Japan",
+  japanske: "Japan", mexicansk: "Mexico", mexicanske: "Mexico", brasiliansk: "Brasilien", chilensk: "Chile",
+  argentinsk: "Argentina", marokkansk: "Marokko", sydafrikansk: "Sydafrika", peruviansk: "Peru",
+};
+// "Græsk yoghurt", "fransk dressing" … er en stil, ikke en oprindelse
+const ORIGIN_STYLE_NOUNS = new Set(["yoghurt", "yogurt", "salat", "dressing", "hotdog", "remoulade", "løgsuppe"]);
 
 // OFF-kategori → produkttype, når navnet ikke selv har en kendt type (kun de mest almindelige)
 const CATEGORY_TYPES: [RegExp, string][] = [
@@ -535,7 +553,7 @@ function emptyFilters(): OffSplitFilters {
   return {
     organic: null, glutenFree: null, lactoseFree: null, sugarFree: null, noAddedSugar: null, sweeteners: null,
     vegan: null, vegetarian: null, meatType: null, alcohol: null, alcoholPercent: null, fatPercent: null,
-    countryOfOrigin: null, wholeGrain: null, animalWelfare: [], storage: null, decaf: null, cooked: null, raw: null,
+    countryOfOrigin: null, wholeGrain: null, animalWelfare: [], certifications: [], storage: null, decaf: null, cooked: null, raw: null,
   };
 }
 
@@ -579,7 +597,16 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
   let packCount: number | null = qtyOff?.packCount ?? null;
   if (qtyOff?.issue === "maengde-ikke-aflaest") issues.push("maengde-ikke-aflaest");
 
-  const chunks = chunkify(titleText);
+  const chunks = chunkify(titleText.replace(/(\p{L})\s*\/\s*(\p{L})/gu, "$1 og $2"));
+
+  // MHD/datoer ("MHD 29.09.2026") hører ikke til nogen kolonne (brugerens regel 2026-10-11 punkt 5)
+  chunks.forEach((c, i) => {
+    if (c.ck === "mhd") {
+      c.removed = true;
+      const next = chunks[i + 1];
+      if (next && /^\d{1,2}[./-]\d{1,2}([./-]\d{2,4})?$/.test(next.text)) next.removed = true;
+    }
+  });
 
   // mængde i selve navnet (chunk "500g", "1,5 l", "6x33cl", "2 stk")
   const qtyInName: string[] = [];
@@ -629,6 +656,8 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
       quantityText = qtyInName[0];
       const m = /^(\d+) x /.exec(quantityText) ?? /^(\d+) stk$/.exec(quantityText);
       if (m) packCount = parseInt(m[1], 10);
+    } else if (/ stk$/.test(qtyInName[0])) {
+      if (packCount === null) packCount = parseInt(qtyInName[0], 10);
     } else if (quantityText !== qtyInName[0] && !quantityText.startsWith("ca.")) {
       issues.push("maengde-afviger-fra-navn");
     }
@@ -824,9 +853,22 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
   }
 
   if (consume((c) => c.ck === "fuldkorn")) filters.wholeGrain = "Fuldkorn";
+  if (phrase(["tilsat", "kulsyre"]) || phrase(["med", "kulsyre"]) || phrase(["m", "kulsyre"])) keywords.push("med kulsyre");
+
+  // certifikater (MSC, ASC, Fairtrade) renses ud som filter — ikke i type/variation
+  const certs: string[] = [];
+  for (const [ck, label] of [["msc", "MSC"], ["asc", "ASC"], ["fairtrade", "Fairtrade"]] as const) {
+    if (consume((c) => c.ck === ck && liveChunks(chunks).length > 1)) certs.push(label);
+  }
+  filters.certifications = certs;
 
   // frost
-  const frozenInName = consume((c) => ["frost", "frossen", "frosne", "frosset", "dybfrost", "frozen", "dybfrosne", "dybfrossen"].includes(c.ck));
+  let frozenToken: string | null = null;
+  const frozenInName = consume((c) => {
+    const hit = ["frost", "frossen", "frosne", "frosset", "dybfrost", "frozen", "dybfrosne", "dybfrossen"].includes(c.ck);
+    if (hit && !frozenToken && ["frossen", "frosne", "frosset"].includes(c.ck)) frozenToken = c.ck;
+    return hit;
+  });
   const frozenTag = catTags.some((t) => /frozen/.test(t));
   if (frozenInName || frozenTag) filters.storage = "Frost";
 
@@ -917,6 +959,18 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
   if (originCountries.length === 0) {
     if (consume((c) => ["dansk", "danske"].includes(c.ck) && liveChunks(chunks).length > 1) || labels.some((t) => /made-in-denmark|dk-/.test(t)))
       originCountries.push("Danmark");
+  }
+  if (originCountries.length === 0 && !/\bvin\b|rødvin|hvidvin|rosévin|champagne|cava|prosecco|crémant|vino\b/i.test(titleText)) {
+    const live = liveChunks(chunks);
+    for (let i = 0; i < live.length && live.length > 1; i++) {
+      const country = ORIGIN_ADJECTIVES[live[i].ck];
+      if (!country) continue;
+      const next = live[i + 1];
+      if (next && (vocab.typeByCk.has(live[i].ck + next.ck) || ORIGIN_STYLE_NOUNS.has(next.ck))) continue;
+      live[i].removed = true;
+      originCountries.push(country);
+      break;
+    }
   }
   if (originCountries.length) filters.countryOfOrigin = originCountries.slice(0, 3).join(" / ");
 
@@ -1032,6 +1086,11 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
       typeVia = "category";
       typeScore = 0.5;
       issues.push("type-fra-off-kategori");
+    } else if (words.length === 1 && hint && (vocab.words.get(words[0].text.toLowerCase()) ?? 0) >= 5 && !vocab.typeByCk.has(words[0].ck)) {
+      typeText = hint.name;
+      typeVia = "hint";
+      typeScore = 0.4 + 0.2 * (hint.share / 100);
+      issues.push("type-fra-maerke");
     } else if (words.length === 1) {
       typeText = sentenceCase(words[0].text);
       typeVia = "guess";
@@ -1060,6 +1119,8 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
   if (categoryType && chosen && typeEntry && compactKey(categoryType) === compactKey(typeEntry.name)) {
     typeScore = Math.min(1, typeScore + 0.05);
   }
+
+  if (typeText && /^instant kaffe$/i.test(typeText)) typeText = "Instantkaffe";
 
   // ---- variation og nøgleord af det der er tilbage
   const restChunks: Chunk[] = [];
@@ -1108,6 +1169,10 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
     seenWord.add(k);
     return true;
   });
+  if (typeText && /^kaffe$/i.test(typeText) && variationParts.includes("instant")) {
+    typeText = "Instantkaffe";
+    variationParts = variationParts.filter((w) => w !== "instant");
+  }
   // ledetråde i kanten
   while (variationParts.length && ["og", "med", "i", "af", "på", "fra", "til", "uden"].includes(variationParts[variationParts.length - 1])) {
     variationParts.pop();
@@ -1152,9 +1217,25 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
     if (kinds.length) filters.meatType = kinds[0];
   }
 
+  // Quantity = kun vægt/volumen; stk og "N x" står kun i Pack Count (brugerens regler 2026-10-11 punkt 1-3)
+  if (quantityText) {
+    const multi = /^(\d+) x (.+)$/.exec(quantityText);
+    const pieces = /^(\d+(?:\.\d+)?) stk$/.exec(quantityText);
+    if (multi) {
+      if (packCount === null) packCount = parseInt(multi[1], 10);
+      quantityText = multi[2];
+    } else if (pieces) {
+      if (packCount === null && Number.isInteger(parseFloat(pieces[1]))) packCount = parseInt(pieces[1], 10);
+      quantityText = null;
+    }
+  }
+
   // ---- titel efter titelreglen (uden brand og mængde)
   const stateWord = filters.cooked ?? null;
-  const frozenWord = filters.storage === "Frost" ? (typePlural || /(er|e|ne)$/.test(compactKey(typeText ?? "")) ? "frosne" : "frosset") : null;
+  const frozenWord =
+    filters.storage === "Frost"
+      ? (frozenToken ?? (typePlural || /(er|e|ne)$/.test(compactKey(typeText ?? "")) ? "frosne" : "frosset"))
+      : null;
   const flagWords: string[] = [];
   if (filters.decaf) flagWords.push("koffeinfri");
   if (filters.sugarFree) flagWords.push("sukkerfri");
@@ -1169,7 +1250,7 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
   const bodyParts: string[] = [];
   if (frozenWord) bodyParts.push(frozenWord);
   if (stateWord) bodyParts.push(stateWord);
-  if (typeText) bodyParts.push(typeText);
+  if (typeText) bodyParts.push(bodyParts.length > 0 && !/^[A-ZÆØÅ]{2,}/.test(typeText) ? typeText.charAt(0).toLowerCase() + typeText.slice(1) : typeText);
   if (variant) bodyParts.push(variant);
   bodyParts.push(...flagWords);
   let title = bodyParts.join(" ").replace(/\s+/g, " ").trim();

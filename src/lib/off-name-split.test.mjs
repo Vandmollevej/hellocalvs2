@@ -88,7 +88,27 @@ test("percent with a space and a pack count in the name", () => {
   assert.equal(r.filters.fatPercent, 0.8);
   const d = split({ name: "Donut m. glasur 4 stk" });
   assert.equal(d.packCount, 4);
-  assert.equal(d.quantityText, "4 stk");
+  assert.equal(d.quantityText, null, "stk står kun i Pack Count");
+});
+
+test("quantity is weight/volume only; multipack count goes to pack count", () => {
+  const r = split({ name: "Cola", brands: "Coca-Cola", quantity: "6 x 33 cl", hasDanishName: true });
+  assert.equal(r.packCount, 6);
+  assert.equal(r.quantityText, "33 cl");
+  const s = split({ name: "Æbler", quantity: "6 stk", hasDanishName: true });
+  assert.equal(s.packCount, 6);
+  assert.equal(s.quantityText, null);
+});
+
+test("MHD, certificates and origin adjectives are moved out of the name", () => {
+  const m = split({ name: "Laks MSC MHD 29.09.2026", brands: "Salling", hasDanishName: true });
+  assert.ok(!/mhd|29/i.test(m.title));
+  assert.deepEqual(m.filters.certifications, ["MSC"]);
+  const o = split({ name: "Fransk Dijonsennep", brands: "Maille", hasDanishName: true });
+  assert.equal(o.filters.countryOfOrigin, "Frankrig");
+  assert.ok(!/fransk/i.test(o.title));
+  const g = split({ name: "Græsk yoghurt", brands: "Arla", hasDanishName: true });
+  assert.equal(g.filters.countryOfOrigin, null, "græsk yoghurt er en produkttype");
 });
 
 test("empty name gives zero confidence and an issue", () => {

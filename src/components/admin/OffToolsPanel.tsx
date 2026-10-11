@@ -54,6 +54,7 @@ export function OffToolsPanel({ canEdit }: Props) {
     let saved = 0;
     let skipped = 0;
     let blocked = 0;
+    let failed = 0;
     try {
       for (const file of Array.from(files)) {
         const parsed = JSON.parse(await file.text()) as unknown;
@@ -72,9 +73,12 @@ export function OffToolsPanel({ canEdit }: Props) {
           saved += Number(data.saved ?? 0);
           skipped += Number(data.skipped ?? 0);
           blocked += Number(data.blocked ?? 0);
+          failed += Number(data.failed ?? 0);
         }
       }
-      setMessage(`Indlæst: ${saved} varer gemt, ${skipped} sprunget over, ${blocked} dyrefoder afvist.`);
+      setMessage(
+        `Indlæst: ${saved} varer gemt, ${skipped} sprunget over, ${blocked} dyrefoder afvist${failed ? `, ${failed} fejlede` : ""}.`,
+      );
       router.refresh();
     } catch {
       setMessage("Filen kunne ikke læses — den skal være en JSON-liste af OFF-varer.");

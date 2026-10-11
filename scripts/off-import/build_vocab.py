@@ -170,7 +170,8 @@ def main():
                 if sub:
                     sub_types[key(sub)][sentence(ptype)] += 1
             if trusted:
-                if ptype and len(ptype) <= 48 and len(ptype.split()) <= 5 and not re.search(r'[%|]', ptype) and \
+                if ptype and len(ptype) <= 48 and len(ptype.split()) <= 5 and not re.search(r'[%|,()/]', ptype) and \
+                        not re.match(r'^\d', ptype) and not re.search(r'\b[mu]\.', ptype, re.I) and \
                         not re.fullmatch(r'[\d\W]+', ptype):
                     k = key(ptype)
                     if k and k != key(brand):
