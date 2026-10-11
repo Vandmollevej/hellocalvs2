@@ -192,6 +192,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/profile/weight-calibration", label: "Vægtkalibrering" },
           { path: "/profile/body-measurements", label: "Kropsmål" },
           { path: "/profile/sleep", label: "Søvn" },
+          { path: "/profile/cardio", label: "Cardio" },
           {
             path: "/profile/screenings",
             label: "Screeninger",

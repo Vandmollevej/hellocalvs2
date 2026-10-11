@@ -1024,6 +1024,12 @@
       ]
     },
     {
+      "route": "/profile/cardio",
+      "web": "src/app/profile/cardio/page.tsx",
+      "status": "pending",
+      "native": []
+    },
+    {
       "route": "/profile/change-password",
       "web": "src/app/profile/change-password/page.tsx",
       "status": "ported",

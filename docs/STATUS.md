@@ -11,6 +11,14 @@ Last updated: 2026-10-11
   bruger de eksisterende certifikatlogoer.
 - Detaljer og resterende arbejde: `docs/handoffs/2026-10-11-github-samling.md`.
 - Verifikation og push er endnu ikke afsluttet.
+## 2026-10-11: Codex overtager ni afbrudte opgaver
+
+- Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
+- Cardio PR #398 flettet sammen med master i isoleret arbejdskopi; konflikter i native-sideliste og genererede oversættelser løst uden at fjerne masters nye sider. Cardio tilføjet i webmenuen, så desktop-paritet følger profilmenuen.
+- Cardio-rettelsen er pushet som b0d400bd til claude/cardio; PR #398 har grønne checks. Fletning afventer GitHub-login i Codex-browseren, da connectoren ikke har merge-adgang.
+- De efterladte dubletliste-rettelser er hentet fra Claude-arbejdskopien uden at ændre originalen. Begge dubletlister har markering og Handlinger; slettede varer udelades også fra tælling og gruppeopslag. Samlede handlinger nulstiller dubletcachen og genindlæser scroll-listen med beskyttelse mod gamle igangværende svar.
+- Lint har 0 fejl (12 eksisterende advarsler); build gennemfører alle 402 sider. Seks webmenu-tests og native-paritetskontrollen er grønne. Browserkontrol mod databasen mangler.
+- Deploykøen afventer et ældre deploy, som står i trinnet for databasemigrationer og app. Det er ikke bevis for, at de senere commits er live. Opfølgningen på alle ni opgaver fortsætter.
 
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
@@ -59,6 +67,11 @@ Last updated: 2026-10-11
 - Vægt/tøj-popup, synk-påmindelse og pulsudsving ("Hvad foretog du dig?") vises nu også på desktop (kalenderen) via `WebStartPrompts`.
 - Ny test `src/lib/web-nav.test.mjs` holder webben i takt med appens menuer og forsidens popups. Se DECISIONS og REGLER samme dato.
 - Ikke prøvet i browser/mod rigtig login. **Tjek efter deploy:** at Screeninger/Beskeder/Status/Point står i sidebjælken, at Log ud virker, og at vægt-popuppen kommer på kalenderen.
+## 2026-10-11: Cardio (Profil → Cardio)
+
+- Ny side `/profile/cardio` lige under Søvn: laveste hvilepuls, maxpuls, VO₂ max, iltmætning, HRV, åndedrætsfrekvens og pulsfald, hver med forløbsgraf (`HistoryLineChart`) og dropdown øverst for tidsinterval (30 dage – alt). Data læses automatisk fra de eksisterende ur-integrationer (`HealthMetric`) og kan indtastes manuelt som kropsmål (`POST /api/cardio`, kilde `MANUAL`, én værdi pr. type og dag).
+- Migration `20261011170000_health_metric_manual` skal med deployet. Tekster i `cardio.*` (da/en; øvrige sprog har engelsk).
+- **Ikke gjort:** native-skærm (Kotlin kan ikke kompileres her); paritet for `/profile` er accepteret, `/profile/cardio` står som pending i `native/parity/screens.json`. Ikke prøvet i browser/mod rigtig database. `npm test` fejler kun på `/settings/display/priority` (kendt).
 
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
@@ -87,8 +100,8 @@ Last updated: 2026-10-11
 - Varer og alle Retter-lister: rød kant/tekst og rød linje øverst ved manglende billede/næring (filtre), status som tekst + on/off-knap, markering med klik/Ctrl/Shift og "Handlinger" (Disable, Aktivér, Godkend, Send til gennemsyn, Slet; Gendan under Slettede), og "Slettede (N)" øverst på listerne. Se DECISIONS 2026-10-11 og REGLER → UI.
 - "(Brug … i stedet)" i HelloFresh-titler er HelloFreshs egne udgåede dubletter: deaktiveret af migrationen og sprunget over af importen.
 - DB: `deletedAt` på `products` og `shared_recipes` (migration `20261011120000_admin_soft_delete`) skal med deployet.
-- Markering + Handlinger findes også på Kvalitetskontrol, Nye varer, Usikkerheder, Energi-afvigelser, Advarsler og Billedforslag (rækken er en sag; handlingen rammer varen). Slettede varer udelades fra kø-listerne.
-- **Ikke med:** sammenligningsboardet for dubletter (`/admin/duplicate-products`) og Logoer (rækken er et mærke). Ikke prøvet i browser. `npm test` har én rød test, der ikke stammer herfra: `/settings/display/priority` mangler i `src/lib/page-tree.ts`.
+- Markering + Handlinger findes også på Kvalitetskontrol, Nye varer, Usikkerheder, Energi-afvigelser, Advarsler, Billedforslag og Dubletter (Varer + Billeder); rækken er en sag, og handlingen rammer varen. Slettede varer udelades fra kø-listerne.
+- **Ikke med:** Logoer (rækken er et mærke, ikke en vare). Ikke prøvet i browser. `npm test` har én rød test, der ikke stammer herfra: `/settings/display/priority` mangler i `src/lib/page-tree.ts`.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 
