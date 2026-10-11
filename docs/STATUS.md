@@ -229,3 +229,5 @@ Last updated: 2026-10-11
 - Codex 20:54: fem yderligere kildekontrollerede typer. DRK ni tomme typer, Årstiderne to. Andre celler/formler bevaret; samlet opfølgning og Excel endnu ikke afsluttet.
 
 - Codex 21:04: DRK nu 8 tomme typer. Ny audit alle ti ark viser også store eksisterende mangler i Nemlig/SPAR; samlet 6385 tomme typer. Omfang og resterende navneregler skal fortsat behandles. Excel ikke færdig.
+
+- Codex direkte genoptagelse: 222 entydige Nemlig-typer indskrevet med øvrige data/formler verificeret uændrede; 5663 blanke tilbage. SPAR 10 sikre titelmatch overføres. Fortsat arbejde kræves.
