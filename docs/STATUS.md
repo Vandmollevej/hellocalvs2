@@ -2,6 +2,10 @@
 
 Last updated: 2026-10-11
 
+## 2026-10-11: Scan-kontekst (land + sprog) på varer
+
+- Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011170000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
+
 ## 2026-10-11: Open Food Facts i egen tabel + admin-menu
 
 - **Ny menu** Varedatabase → Open Food Facts (`/admin/product-database/open-food-facts`, Alt+8): alle varer hentet fra OFF med navnet delt op (mærke, sub brand, produkttype, variation, nøgleord, mængde) og en sikkerhed i %. Se DECISIONS 2026-10-11.
