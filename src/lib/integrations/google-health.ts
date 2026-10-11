@@ -32,6 +32,12 @@ type DataPoint = {
   };
 };
 
+// Intervaldata (skridt, træning, aktiv energi) filtreres på
+// `<type>.interval.civil_start_time >= "ÅÅÅÅ-MM-DDTHH:MM:SS"` — uden Z og uden
+// `start_time` (developers.google.com/health/endpoints). Det gamle filter gav
+// 400, som Promise.allSettled slugte, så ingen skridt/træning/energi kom ind.
+const civilStart = (field: string, since: Date) => `${field}.interval.civil_start_time >= "${since.toISOString().slice(0, 19)}"`;
+
 async function listDataPoints(accessToken: string, dataType: string, filter: string, pageSize: number) {
   const points: DataPoint[] = [];
   let pageToken: string | undefined;
@@ -105,7 +111,7 @@ async function bodyFat(accessToken: string, since: Date): Promise<IntegrationIte
 }
 
 async function exercises(accessToken: string, since: Date): Promise<IntegrationItem[]> {
-  const points = await listDataPoints(accessToken, "exercise", `exercise.interval.start_time >= "${since.toISOString()}"`, 25);
+  const points = await listDataPoints(accessToken, "exercise", civilStart("exercise", since), 25);
   return points.flatMap((p) => {
     const e = p.exercise;
     if (!e) return [];
@@ -131,7 +137,7 @@ async function exercises(accessToken: string, since: Date): Promise<IntegrationI
 // synkronisering aldrig overskriver en hel dag med en delvis sum.
 async function dailySteps(accessToken: string, since: Date): Promise<IntegrationItem[]> {
   const from = new Date(Math.floor(since.getTime() / DAY_MS) * DAY_MS - DAY_MS);
-  const points = await listDataPoints(accessToken, "steps", `steps.interval.start_time >= "${from.toISOString()}"`, 10000);
+  const points = await listDataPoints(accessToken, "steps", civilStart("steps", from), 10000);
   const byDay = new Map<string, number>();
   for (const p of points) {
     if (!p.steps) continue;
@@ -148,9 +154,9 @@ async function dailySteps(accessToken: string, since: Date): Promise<Integration
 
 // Dagens aktive energi (kcal), lagt sammen pr. lokal dag som skridtene. Så en
 // dag med gåture og almindelig bevægelse også giver kalorier, ikke kun
-// loggede træningspas. Datatypens navn er ikke prøvet mod live-API'et, så
-// kandidaterne prøves i rækkefølge; den første, der giver data, bruges.
-const ACTIVE_ENERGY_TYPES = ["active-energy-burned", "active-calories", "calories-burned"];
+// loggede træningspas. Datatypen hedder active-energy-burned
+// (kcal pr. interval, developers.google.com/health/data-types/calories).
+const ACTIVE_ENERGY_TYPES = ["active-energy-burned"];
 
 async function dailyActiveEnergy(accessToken: string, since: Date): Promise<IntegrationItem[]> {
   const from = new Date(Math.floor(since.getTime() / DAY_MS) * DAY_MS - DAY_MS);
@@ -158,7 +164,7 @@ async function dailyActiveEnergy(accessToken: string, since: Date): Promise<Inte
   for (const dataType of ACTIVE_ENERGY_TYPES) {
     try {
       const field = dataType.replace(/-/g, "_");
-      const points = await listDataPoints(accessToken, dataType, `${field}.interval.start_time >= "${from.toISOString()}"`, 10000);
+      const points = await listDataPoints(accessToken, dataType, civilStart(field, from), 10000);
       const byDay = new Map<string, number>();
       for (const p of points) {
         const inner = innerOf(p as unknown as Record<string, unknown>, dataType);
@@ -278,6 +284,8 @@ export const googleHealth: OAuthProviderAdapter = {
   label: "Google Health",
   envPrefix: "GOOGLE_HEALTH",
   initialDays: 90,
+  // 1: skridt, træning og aktiv energi blev før hentet med et afvist filter; hent de 90 dage igen én gang.
+  fetchVersion: 1,
   buildAuthorizeUrl(state, redirectUri, settings) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("GOOGLE_HEALTH").clientId);
@@ -319,6 +327,9 @@ export const googleHealth: OAuthProviderAdapter = {
       dailyActiveEnergy(accessToken, since),
       ...SAMPLE_TYPES.map((spec) => samples(accessToken, since, spec)),
     ]);
+    results.forEach((r, i) => {
+      if (r.status === "rejected") console.error(`Google Health datatype #${i} fejlede`, r.reason);
+    });
     const ok = results.filter((r): r is PromiseFulfilledResult<IntegrationItem[]> => r.status === "fulfilled");
     if (ok.length === 0) throw (results[0] as PromiseRejectedResult).reason;
     return averagePerHour(ok.flatMap((r) => r.value));

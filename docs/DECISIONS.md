@@ -5015,3 +5015,6 @@ Hver række i forsidens tal-slider viser sit mål under tallet i stedet for plad
 
 ## 2026-10-10 — Enhedens aktive energi tæller med i dagens kaloriegrænse
 Kalenderens "Tilbage for i dag" lagde kun registrerede træningspas oven i målet, og Google Health-synkroniseringen hentede aldrig aktiv energi. Nu henter den dagens aktive energi (`ACTIVE_ENERGY_KCAL`, datatypens navn er ikke prøvet mod live-API'et: kandidaterne i `ACTIVE_ENERGY_TYPES` prøves i rækkefølge), og kalenderen (web + native) bruger pr. dag det største af træningspas-kcal og enhedens aktive energi, aldrig begge lagt sammen.
+
+## 2026-10-11 — Google Health: intervaldata filtreres på civil_start_time
+Skridt, træning og aktiv energi blev hentet med `<type>.interval.start_time >= "…Z"`, som Google afviser (400). Fejlen blev slugt af `Promise.allSettled`, så kun vægt/målinger kom ind og kaloriegrænsen aldrig rykkede sig. Filteret er nu `<type>.interval.civil_start_time >= "ÅÅÅÅ-MM-DDTHH:MM:SS"` (uden Z), afviste datatyper logges, og `fetchVersion` = 1 henter de 90 dage igen én gang.
