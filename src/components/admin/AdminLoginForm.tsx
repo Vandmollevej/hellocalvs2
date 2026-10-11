@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { startAuthentication } from "@simplewebauthn/browser";
+import { clearSidebarState } from "@/lib/sidebar-state";
 
 export function AdminLoginForm() {
   const router = useRouter();
+  // Nyt login: sidebjælken starter med alle grupper foldet ud.
+  useEffect(() => {
+    clearSidebarState();
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);

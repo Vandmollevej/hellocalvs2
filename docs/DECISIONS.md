@@ -5026,3 +5026,10 @@ Brugerens krav: hent alt sundhedsdata, hver app kan levere — også envejs, ikk
 - Søvn og vand er nye læsevalg for Google Health. Ældre forbindelser skal forbinde igen for dem (`readScopes`); `fetchVersion` 2 henter de 90 dage igen.
 - Google Cloud-klienten skal have `sleep.readonly` og `nutrition.readonly` slået til (brugeren).
 - Withings, Polar, Fitbit, Garmin, WHOOP og Huawei var allerede udvidet 2026-10-03; Strava leverer kun træning.
+
+## 2026-10-11: Venstre menu foldet ud som standard (webversion + admin)
+
+Brugerens krav: fanerne/accordions i venstre side af både webversionen og admin skal være foldet op, når man logger ind eller tilgår siden på ny efter at den har været lukket.
+- Før: admin åbnede kun den aktive gruppe og huskede åbne grupper (og den sammenklappede sidebjælke) i `localStorage`; webversionens `SideGroup` åbnede kun, når en af dens sider var aktiv.
+- Nu: alle grupper starter åbne. Egne valg huskes kun i `sessionStorage` (fanen åben), og login/logout rydder dem (`src/lib/sidebar-state.ts`). Samme regel for sidebjælkens ikon-skinne, så et nyt besøg aldrig viser en tom, sammenklappet menu.
+- Rørt: `AdminShell.tsx`, `WebShell.tsx`, `AdminLoginForm.tsx`, `app/login/page.tsx`.

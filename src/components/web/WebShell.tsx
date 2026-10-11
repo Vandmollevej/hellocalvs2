@@ -23,13 +23,14 @@ import {
   isWebRootPath,
   type WebNavItem,
 } from "@/lib/web-nav";
+import { WEB_COLLAPSED_KEY, readSidebarState, writeSidebarState } from "@/lib/sidebar-state";
 
 // Desktop-version af appen (docs/DECISIONS.md 2026-09-29), bygget på
 // admin-skallen (`AdminShell`): sidebjælke i fuld højde med logo og søgefelt,
 // genveje øverst og indstillinger nedenunder, hvid topbjælke med appens
 // bundmenu (uden kamera og stemme, med chat) og profilindstillinger yderst til
 // højre. Ingen telefonramme. Selve siderne er appens egne.
-const COLLAPSED_KEY = "hc-web-sidebar-collapsed";
+const COLLAPSED_KEY = WEB_COLLAPSED_KEY;
 
 // Profil-dropdown yderst til højre i topbjælken.
 const PROFILE_MENU = [
@@ -64,12 +65,10 @@ function isBestMatch(pathname: string, href: string) {
   );
 }
 
+// Kun så længe fanen er åben (sessionStorage): et nyt besøg starter altid med
+// udvidet sidebjælke og alle grupper foldet ud (src/lib/sidebar-state.ts).
 function readCollapsed() {
-  try {
-    return window.localStorage.getItem(COLLAPSED_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return readSidebarState(COLLAPSED_KEY) === "1";
 }
 
 function SideLink({
@@ -100,8 +99,9 @@ function SideLink({
   );
 }
 
-// Punkt med undermenu (Visning): folder ud, når en af siderne er åben, eller
-// når der trykkes på punktet. Foldet sammen sidebjælke linker direkte videre.
+// Punkt med undermenu (Visning): foldet ud som standard, hver gang siden åbnes
+// på ny; trykkes der på punktet, foldes det sammen/ud. Foldet sammen
+// sidebjælke linker direkte videre.
 function SideGroup({
   item,
   pathname,
@@ -118,7 +118,7 @@ function SideGroup({
   const { t } = useTranslation();
   const children = (item.children ?? []).filter((child) => !child.femaleOnly || isFemale);
   const inside = children.some((child) => isActive(pathname, child.href));
-  const [open, setOpen] = useState(inside);
+  const [open, setOpen] = useState(true);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (inside) setOpen(true);
@@ -249,11 +249,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
 
   function toggleCollapsed() {
     setCollapsed((value) => {
-      try {
-        window.localStorage.setItem(COLLAPSED_KEY, value ? "0" : "1");
-      } catch {
-        // Privat vindue o.l. — valget huskes bare ikke.
-      }
+      writeSidebarState(COLLAPSED_KEY, value ? "0" : "1");
       return !value;
     });
   }

@@ -11,6 +11,13 @@ import { AutomationMarkers } from "@/components/admin/AutomationMarkers";
 import { useAdminShortcuts } from "@/components/admin/useAdminShortcuts";
 import { formatCombo, shortcutsForHref } from "@/lib/admin-shortcuts";
 import { automationProps, navSlug } from "@/lib/automation-markers";
+import {
+  ADMIN_COLLAPSED_KEY,
+  ADMIN_OPEN_GROUPS_KEY,
+  clearSidebarState,
+  readSidebarState,
+  writeSidebarState,
+} from "@/lib/sidebar-state";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
 // 2026-09-27): venstre sidebjælke i fuld højde med logo, "Gå til…"-søgning
@@ -180,8 +187,11 @@ export const NAV: NavEntry[] = [
   { kind: "link", href: "/admin/log", key: "nav_log", icon: "log" },
 ];
 
-const OPEN_GROUPS_KEY = "hc-admin-open-groups";
-const COLLAPSED_KEY = "hc-admin-sidebar-collapsed";
+const OPEN_GROUPS_KEY = ADMIN_OPEN_GROUPS_KEY;
+const COLLAPSED_KEY = ADMIN_COLLAPSED_KEY;
+
+// Alle grupper er foldet ud som standard (se src/lib/sidebar-state.ts).
+const ALL_GROUP_IDS = NAV.flatMap((entry) => (entry.kind === "group" ? [entry.id] : []));
 
 const ALL_HREFS = NAV.flatMap((entry) => (entry.kind === "link" ? [entry.href] : entry.links.map((link) => link.href)));
 
@@ -207,22 +217,6 @@ function activeGroupId(pathname: string) {
     if (entry.kind === "group" && entry.links.some((link) => isActive(pathname, link.href))) return entry.id;
   }
   return null;
-}
-
-function readStorage(key: string) {
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function writeStorage(key: string, value: string) {
-  try {
-    window.localStorage.setItem(key, value);
-  } catch {
-    // Privat vindue o.l. — valget huskes bare ikke.
-  }
 }
 
 function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "chevron" | "menu" | "close" | "collapse"; className?: string }) {
@@ -751,18 +745,16 @@ export function AdminShell({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [openGroups, setOpenGroups] = useState<Set<string>>(() => {
-    const initial = activeGroupId(pathname);
-    return new Set(initial ? [initial] : []);
-  });
+  // Alle grupper er foldet ud som standard, hver gang admin åbnes på ny.
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set(ALL_GROUP_IDS));
 
-  // Husk åbne grupper og sammenklappet sidebjælke (kun bekvemmelighed).
+  // Egne fold/sammenklap huskes kun, mens fanen er åben (sessionStorage).
   useEffect(() => {
-    const stored = readStorage(OPEN_GROUPS_KEY);
-    const storedCollapsed = readStorage(COLLAPSED_KEY) === "1";
-    /* eslint-disable react-hooks/set-state-in-effect -- localStorage findes først efter hydrering */
-    if (stored) {
-      setOpenGroups((current) => new Set([...current, ...stored.split(",").filter(Boolean)]));
+    const stored = readSidebarState(OPEN_GROUPS_KEY);
+    const storedCollapsed = readSidebarState(COLLAPSED_KEY) === "1";
+    /* eslint-disable react-hooks/set-state-in-effect -- sessionStorage findes først efter hydrering */
+    if (stored !== null) {
+      setOpenGroups(new Set(stored.split(",").filter(Boolean)));
     }
     setCollapsed(storedCollapsed);
     /* eslint-enable react-hooks/set-state-in-effect */
@@ -829,20 +821,21 @@ export function AdminShell({
       const next = new Set(current);
       if (next.has(id)) next.delete(id);
       else next.add(id);
-      writeStorage(OPEN_GROUPS_KEY, [...next].join(","));
+      writeSidebarState(OPEN_GROUPS_KEY, [...next].join(","));
       return next;
     });
   }, []);
 
   function toggleCollapsed() {
     setCollapsed((value) => {
-      writeStorage(COLLAPSED_KEY, value ? "0" : "1");
+      writeSidebarState(COLLAPSED_KEY, value ? "0" : "1");
       return !value;
     });
   }
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
+    clearSidebarState();
     router.push("/admin/login");
     router.refresh();
   }

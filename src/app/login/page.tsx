@@ -14,10 +14,15 @@ import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
 import { findLoginCountry, readLoginCountry, type LoginCountry } from "@/lib/login-country";
+import { clearSidebarState } from "@/lib/sidebar-state";
 
 function LogIndContent() {
   const { t } = useTranslation();
   const router = useRouter();
+  // Nyt login: venstre menu (webversionen) starter udvidet med alt foldet ud.
+  useEffect(() => {
+    clearSidebarState();
+  }, []);
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/";
   const [email, setEmail] = useState("");
