@@ -11,6 +11,7 @@ import type {
   UncertaintyTabKey,
 } from "@/lib/uncertainties";
 import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
+import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24/25): fem faner, én række
 // pr. produkt, sortering efter usikkerhed (standard, højeste først),
@@ -199,9 +200,15 @@ export function UncertaintiesBoard({
   const summary =
     mode === "scroll" ? `Viser ${scrollRows.length} af ${total}` : `Side ${page} af ${pages} · ${total} i alt`;
 
+  // Markering (docs/DECISIONS.md 2026-10-11): rækken er en sag, handlingen rammer varen.
+  const rowTargets = Object.fromEntries(rows.map((row) => [row.id, row.productId]));
+
   return (
+    <BulkSelection kind="product" ids={rows.map((row) => row.id)} targets={rowTargets}>
     <div className="flex flex-col gap-4">
       <ListModeToggle summary={summary} />
+
+      <BulkActionsBar onDone={() => void start(tab, sort)} />
 
       <div className="flex flex-wrap items-center gap-2 border-b border-hf-tan-dark">
         {tabs.map((t) => (
@@ -254,8 +261,11 @@ export function UncertaintiesBoard({
       ) : (
         <div className="flex flex-col gap-2">
           {rows.map((row) => (
-            <div
+            <BulkRow
+              as="div"
               key={row.id}
+              id={row.id}
+              ignoreInteractive
               className={`flex items-center gap-3 rounded-lg border bg-hf-white p-3 ${
                 row.urgent ? "border-2 border-hf-red-dark" : "border-hf-tan-dark"
               }`}
@@ -296,7 +306,7 @@ export function UncertaintiesBoard({
               >
                 {row.uncertaintyPercent} %
               </span>
-            </div>
+            </BulkRow>
           ))}
         </div>
       )}
@@ -332,6 +342,7 @@ export function UncertaintiesBoard({
         </Overlay>
       )}
     </div>
+    </BulkSelection>
   );
 }
 

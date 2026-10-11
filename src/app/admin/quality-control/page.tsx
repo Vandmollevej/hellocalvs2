@@ -19,7 +19,7 @@ export default async function AdminQualityControlPage() {
   if (!admin) redirect("/admin/login");
 
   const matchChecks = await prisma.productMatchCheck.findMany({
-    where: { status: "PENDING", photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] } },
+    where: { status: "PENDING", photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] }, product: { deletedAt: null } },
     include: {
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
       analysis: { select: { imageUrl: true } },
@@ -30,7 +30,7 @@ export default async function AdminQualityControlPage() {
   // Brugerindberettede næringsændringer (docs/DECISIONS.md 2026-09-23) vises
   // i samme liste, samlet til én række pr. produkt med antal indberetninger.
   const nutritionReports = await prisma.productNutritionReport.findMany({
-    where: { status: "PENDING" },
+    where: { status: "PENDING", product: { deletedAt: null } },
     include: {
       product: { select: { id: true, name: true, brand: { select: { name: true } }, imageUrl: true } },
     },

@@ -194,7 +194,8 @@ function summaryFor(
 async function analysisSummaries(tab: UncertaintyTabKey): Promise<UncertaintySummary[]> {
   const kind = KIND_BY_TAB[tab];
   if (!kind) return [];
-  const where = { kind, productId: { not: null }, reviewedAt: null } as const;
+  // Slettede varer (admin, docs/DECISIONS.md 2026-10-11) står ikke i køen.
+  const where = { kind, productId: { not: null }, reviewedAt: null, product: { deletedAt: null } } as const;
 
   if (kind === "BARCODE") {
     // Stregkoder: den ugyldige kontrolciffer afgøres på selve koden.
@@ -227,7 +228,7 @@ async function analysisSummaries(tab: UncertaintyTabKey): Promise<UncertaintySum
 
 async function matchCheckSummaries(): Promise<UncertaintySummary[]> {
   const checks = await prisma.productMatchCheck.findMany({
-    where: { status: "PENDING", confidence: { lt: UNCERTAINTY_TARGET * 100 } },
+    where: { status: "PENDING", confidence: { lt: UNCERTAINTY_TARGET * 100 }, product: { deletedAt: null } },
     orderBy: { createdAt: "desc" },
     take: SUMMARY_LIMIT,
     select: { id: true, confidence: true, photoType: true, product: { select: productSummarySelect } },

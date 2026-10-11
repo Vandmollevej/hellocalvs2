@@ -23,6 +23,7 @@ export function PendingImageBoard({ items }: { items: ReviewItem[] }) {
       onReject={(id) => call(id, "reject")}
       emptyText="Ingen billedforslag afventer godkendelse."
       storageKey="hc-admin-image-board-size"
+      bulkProducts
     />
   );
 }

@@ -34,10 +34,13 @@ type Selection = {
   kind: BulkKind;
   deletedView: boolean;
   count: number;
+  // De markerede rækkers id'er, og de id'er handlingen skal ramme (fx
+  // produktets id, når rækken er en kvalitetskontrol-sag).
   selectedIds: string[];
+  actionIds: string[];
   selectMode: boolean;
   isSelected: (id: string) => boolean;
-  clickRow: (event: MouseEvent, id: string) => void;
+  clickRow: (event: MouseEvent, id: string, ignoreInteractive?: boolean) => void;
   setSelectMode: (value: boolean) => void;
   selectAll: () => void;
   clear: () => void;
@@ -49,6 +52,7 @@ const IDLE: Selection = {
   deletedView: false,
   count: 0,
   selectedIds: [],
+  actionIds: [],
   selectMode: false,
   isSelected: () => false,
   clickRow: noop,
@@ -61,12 +65,16 @@ const SelectionContext = createContext<Selection>(IDLE);
 export function BulkSelection({
   kind,
   ids,
+  targets,
   deletedView = false,
   children,
 }: {
   kind: BulkKind;
   // Rækkernes id'er i visningsrækkefølge (bruges til Shift-striber).
   ids: string[];
+  // Rækkens id → id'et handlingen rammer, når rækken ikke selv er varen
+  // (kvalitetskontrol, usikkerheder, energi-afvigelser).
+  targets?: Record<string, string>;
   deletedView?: boolean;
   children: ReactNode;
 }) {
@@ -77,6 +85,10 @@ export function BulkSelection({
   // Kun id'er, der stadig står på siden (efter søgning, sidebladring, opdatering).
   const selectedIds = useMemo(() => ids.filter((id) => selected.has(id)), [ids, selected]);
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const actionIds = useMemo(
+    () => [...new Set(selectedIds.map((id) => targets?.[id] ?? id))],
+    [selectedIds, targets],
+  );
   const selectionActive = selectedIds.length > 0;
 
   const clear = useCallback(() => {
@@ -91,10 +103,13 @@ export function BulkSelection({
   }, [ids]);
 
   const clickRow = useCallback(
-    (event: MouseEvent, id: string) => {
+    (event: MouseEvent, id: string, ignoreInteractive = false) => {
       const target = event.target as HTMLElement | null;
       // Til/fra-knappen og andre knapper på rækken har deres egen funktion.
       if (target?.closest("[data-bulk-ignore]")) return;
+      // Kort med egne felter og knapper (fx godkendelseskortet): kun klik på
+      // selve kortets flade markerer.
+      if (ignoreInteractive && target?.closest("a, button, input, select, textarea, label, summary")) return;
       const range = event.shiftKey;
       const toggle = event.ctrlKey || event.metaKey;
       // Uden tast og uden markering åbner rækken som normalt.
@@ -138,6 +153,7 @@ export function BulkSelection({
       deletedView,
       count: selectedIds.length,
       selectedIds,
+      actionIds,
       selectMode,
       isSelected: (id) => selectedSet.has(id),
       clickRow,
@@ -145,7 +161,7 @@ export function BulkSelection({
       selectAll,
       clear,
     }),
-    [kind, deletedView, selectedIds, selectedSet, selectMode, clickRow, selectAll, clear],
+    [kind, deletedView, selectedIds, actionIds, selectedSet, selectMode, clickRow, selectAll, clear],
   );
 
   return <SelectionContext.Provider value={value}>{children}</SelectionContext.Provider>;
@@ -155,36 +171,55 @@ export function BulkSelection({
 // `problem` giver den tynde røde kant (docs/DECISIONS.md 2026-10-11).
 export function BulkRow({
   id,
+  as = "li",
   className = "",
   style,
   problem = false,
+  ignoreInteractive = false,
+  onClick,
   children,
 }: {
   id: string;
+  // Rækkens element: li (lister), tr (tabeller) eller div (kort).
+  as?: "li" | "tr" | "div";
   className?: string;
   style?: CSSProperties;
   problem?: boolean;
+  // Kort med egne knapper/felter: kun klik på kortets flade markerer.
+  ignoreInteractive?: boolean;
+  // Almindeligt klik (uden markering) på rækken.
+  onClick?: () => void;
   children: ReactNode;
 }) {
   const selection = useContext(SelectionContext);
   const selected = selection.isSelected(id);
-  const frame = selected
-    ? "bg-hf-tan ring-2 ring-inset ring-hf-green"
-    : problem
-      ? "ring-1 ring-inset ring-hf-red-dark"
-      : "";
+  // Tabelrækker kan ikke have ring (box-shadow); de får baggrund + kontur.
+  const frame =
+    as === "tr"
+      ? selected
+        ? "bg-hf-tan outline outline-2 -outline-offset-2 outline-hf-green"
+        : problem
+          ? "outline outline-1 -outline-offset-1 outline-hf-red-dark"
+          : ""
+      : selected
+        ? "bg-hf-tan ring-2 ring-inset ring-hf-green"
+        : problem
+          ? "ring-1 ring-inset ring-hf-red-dark"
+          : "";
+  const Tag = as as "li";
   return (
-    <li
-      className={`relative ${className} ${frame}`}
+    <Tag
+      className={`${as === "tr" ? "" : "relative"} ${className} ${frame}`}
       style={style}
       data-selected={selected || undefined}
-      onClickCapture={(event) => selection.clickRow(event, id)}
+      onClick={onClick}
+      onClickCapture={(event) => selection.clickRow(event, id, ignoreInteractive)}
       // Shift + klik må ikke markere tekst hen over rækkerne.
       onMouseDown={(event) => {
         if (event.shiftKey) event.preventDefault();
       }}
     >
-      {selected && (
+      {selected && as !== "tr" && (
         <span
           aria-hidden="true"
           className="pointer-events-none absolute left-1 top-1 z-10 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-hf-green text-hf-white"
@@ -195,7 +230,7 @@ export function BulkRow({
         </span>
       )}
       {children}
-    </li>
+    </Tag>
   );
 }
 
@@ -203,7 +238,7 @@ const LIVE_ACTIONS: BulkAction[] = ["DISABLE", "ENABLE", "APPROVE", "REVIEW", "D
 const DELETED_ACTIONS: BulkAction[] = ["RESTORE"];
 
 // Bjælken over listen: antal markerede og "Handlinger"-menuen (vises altid).
-export function BulkActionsBar() {
+export function BulkActionsBar({ onDone }: { onDone?: () => void } = {}) {
   const selection = useContext(SelectionContext);
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -236,7 +271,7 @@ export function BulkActionsBar() {
     const noun = selection.count === 1 ? "række" : "rækker";
     if (action === "DELETE" && !window.confirm(`Slet ${selection.count} ${noun}? De flyttes til Slettede og kan gendannes.`)) return;
     setBusy(true);
-    const result = await sendBulkAction({ kind: selection.kind, action, ids: selection.selectedIds });
+    const result = await sendBulkAction({ kind: selection.kind, action, ids: selection.actionIds });
     setBusy(false);
     if (!result.ok) {
       setMessage({ text: result.message, failed: true });
@@ -245,6 +280,8 @@ export function BulkActionsBar() {
     setMessage({ text: `${BULK_ACTION_LABELS[action]}: ${result.changed} ${result.changed === 1 ? "række" : "rækker"} ændret`, failed: false });
     selection.clear();
     router.refresh();
+    // Lister, der selv holder rækkerne i klienten, henter dem igen.
+    onDone?.();
   }
 
   return (

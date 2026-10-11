@@ -77,7 +77,8 @@ Last updated: 2026-10-11
 - Varer og alle Retter-lister: rød kant/tekst og rød linje øverst ved manglende billede/næring (filtre), status som tekst + on/off-knap, markering med klik/Ctrl/Shift og "Handlinger" (Disable, Aktivér, Godkend, Send til gennemsyn, Slet; Gendan under Slettede), og "Slettede (N)" øverst på listerne. Se DECISIONS 2026-10-11 og REGLER → UI.
 - "(Brug … i stedet)" i HelloFresh-titler er HelloFreshs egne udgåede dubletter: deaktiveret af migrationen og sprunget over af importen.
 - DB: `deletedAt` på `products` og `shared_recipes` (migration `20261011120000_admin_soft_delete`) skal med deployet.
-- **Ikke gjort:** Kvalitetskontrol-boards (godkendelseskø, dubletter, energifordeling m.fl.) har ikke markering/Handlinger endnu; ikke prøvet i browser. `npm test` har én rød test, der ikke stammer herfra: `/settings/display/priority` mangler i `src/lib/page-tree.ts`.
+- Markering + Handlinger findes også på Kvalitetskontrol, Nye varer, Usikkerheder, Energi-afvigelser, Advarsler og Billedforslag (rækken er en sag; handlingen rammer varen). Slettede varer udelades fra kø-listerne.
+- **Ikke med:** sammenligningsboardet for dubletter (`/admin/duplicate-products`) og Logoer (rækken er et mærke). Ikke prøvet i browser. `npm test` har én rød test, der ikke stammer herfra: `/settings/display/priority` mangler i `src/lib/page-tree.ts`.
 
 ## 2026-10-11: Google Health — aktiv energi løfter kaloriegrænsen
 

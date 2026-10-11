@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { PendingImageCard } from "@/components/admin/PendingImageCard";
 import { ClearForwardFlagButton } from "@/components/admin/ClearForwardFlagButton";
 import { ProgressiveList } from "@/components/admin/ProgressiveList";
+import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Possible duplicates: two products sharing the same name (case-insensitive)
 // — the schema's Barcode.code is a primary key, so two products can never
@@ -21,10 +22,11 @@ async function findDuplicateGroups() {
   const [countRows, groupRows] = await Promise.all([
     prisma.$queryRaw<{ n: bigint }[]>`
       SELECT count(*) AS n FROM (
-        SELECT 1 FROM "products" GROUP BY lower(btrim(name)) HAVING count(*) > 1
+        SELECT 1 FROM "products" WHERE "deletedAt" IS NULL GROUP BY lower(btrim(name)) HAVING count(*) > 1
       ) t`,
     prisma.$queryRaw<{ ids: string[] }[]>`
       SELECT array_agg(id ORDER BY "createdAt") AS ids FROM "products"
+      WHERE "deletedAt" IS NULL
       GROUP BY lower(btrim(name)) HAVING count(*) > 1
       ORDER BY lower(btrim(name))
       LIMIT ${DUPLICATE_GROUP_LIMIT}`,
@@ -57,12 +59,12 @@ export async function LegacyWarnings() {
   const [duplicates, pendingImages, pendingImageTotal, forwardAbuseUsers] = await Promise.all([
     findDuplicateGroups(),
     prisma.product.findMany({
-      where: { imageStatus: "PENDING" },
+      where: { imageStatus: "PENDING", deletedAt: null },
       include: { brand: true },
       orderBy: { createdAt: "asc" },
       take: PENDING_IMAGE_LIMIT,
     }),
-    prisma.product.count({ where: { imageStatus: "PENDING" } }),
+    prisma.product.count({ where: { imageStatus: "PENDING", deletedAt: null } }),
     prisma.user.findMany({
       where: { forwardAbuseFlaggedAt: { not: null } },
       orderBy: { forwardAbuseFlaggedAt: "desc" },
@@ -70,9 +72,14 @@ export async function LegacyWarnings() {
     }),
   ]);
   const duplicateGroups = duplicates.groups;
+  // Markering (docs/DECISIONS.md 2026-10-11): varerne i dubletgrupperne og
+  // billedforslagene kan behandles samlet.
+  const productIds = [...new Set([...duplicateGroups.flat().map((p) => p.id), ...pendingImages.map((p) => p.id)])];
 
   return (
+    <BulkSelection kind="product" ids={productIds}>
     <div className="flex flex-col gap-8">
+      {productIds.length > 0 && <BulkActionsBar />}
       <section className="flex flex-col gap-4">
         <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
           Mulige dubletter ({duplicates.total})
@@ -95,18 +102,19 @@ export async function LegacyWarnings() {
                   </p>
                   <div className="flex flex-col gap-2">
                     {group.map((p) => (
-                      <Link
-                        key={p.id}
-                        href={`/admin/products/${p.id}`}
-                        className="hf-type-body flex items-center justify-between rounded-md border border-hf-tan-dark px-3 py-2 hover:border-hf-green"
-                      >
-                        <span>
-                          {p.brand?.name ? `${p.brand.name} · ` : ""}
-                          {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
-                          {p.carbsPer100g} g · Fedt {p.fatPer100g} g
-                        </span>
-                        <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
-                      </Link>
+                      <BulkRow as="div" key={p.id} id={p.id} className="rounded-md">
+                        <Link
+                          href={`/admin/products/${p.id}`}
+                          className="hf-type-body flex items-center justify-between rounded-md border border-hf-tan-dark px-3 py-2 hover:border-hf-green"
+                        >
+                          <span>
+                            {p.brand?.name ? `${p.brand.name} · ` : ""}
+                            {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
+                            {p.carbsPer100g} g · Fedt {p.fatPer100g} g
+                          </span>
+                          <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
+                        </Link>
+                      </BulkRow>
                     ))}
                   </div>
                 </div>
@@ -131,7 +139,9 @@ export async function LegacyWarnings() {
           <ProgressiveList
             className="grid gap-4 sm:grid-cols-2"
             items={pendingImages.map((product) => (
-              <PendingImageCard key={product.id} product={product} />
+              <BulkRow as="div" key={product.id} id={product.id} ignoreInteractive className="rounded-lg">
+                <PendingImageCard product={product} />
+              </BulkRow>
             ))}
           />
         )}
@@ -172,5 +182,6 @@ export async function LegacyWarnings() {
         )}
       </section>
     </div>
+    </BulkSelection>
   );
 }

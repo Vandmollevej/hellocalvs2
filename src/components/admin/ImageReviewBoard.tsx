@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ReviewSizePicker, useReviewSize } from "@/components/admin/ReviewSizePicker";
+import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Fælles gennemsynsvisning til Billedbehandling (docs/DECISIONS.md 2026-10-04):
 // størrelsesvælger (2/4/8 firkanter = 1/2/4 varer pr. side), paginering og en
@@ -28,6 +29,9 @@ type Props = {
   onReject: (id: string) => Promise<boolean>;
   emptyText: string;
   storageKey: string;
+  // Varernes id'er: rækkerne kan markeres og behandles samlet (Handlinger,
+  // docs/DECISIONS.md 2026-10-11). Ikke for logoer, hvor id'et er et mærke.
+  bulkProducts?: boolean;
 };
 
 const STRIP = 6;
@@ -48,7 +52,7 @@ function Pic({ slide, onClick }: { slide: ReviewSlide; onClick?: () => void }) {
   );
 }
 
-export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, emptyText, storageKey }: Props) {
+export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, emptyText, storageKey, bulkProducts = false }: Props) {
   const [items, setItems] = useState(initialItems);
   const { sizeIdx, perPage, choose } = useReviewSize(storageKey);
   const [page, setPage] = useState(0);
@@ -149,7 +153,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
     for (let i = start; i < Math.min(flat.length, start + 9); i++) numbers.push(i);
   }
 
-  return (
+  const board = (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="hf-type-small text-text-secondary">
@@ -157,6 +161,8 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
         </p>
         <ReviewSizePicker sizeIdx={sizeIdx} onChoose={chooseSize} />
       </div>
+
+      {bulkProducts && <BulkActionsBar />}
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
 
@@ -169,7 +175,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           const lightboxIndex = (slide: ReviewSlide) =>
             flat.findIndex((entry) => entry.item.id === item.id && entry.slide.src === slide.src);
           return (
-            <div key={item.id} className="hf-panel hf-panel--form">
+            <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
                 {item.subtitle && <p className="hf-type-small text-text-secondary">{item.subtitle}</p>}
@@ -224,7 +230,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                   {approveLabel}
                 </button>
               </div>
-            </div>
+            </BulkRow>
           );
         })}
       </div>
@@ -308,5 +314,13 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
         </div>
       )}
     </div>
+  );
+
+  return bulkProducts ? (
+    <BulkSelection kind="product" ids={visible.map((item) => item.id)}>
+      {board}
+    </BulkSelection>
+  ) : (
+    board
   );
 }

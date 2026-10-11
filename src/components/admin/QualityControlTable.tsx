@@ -7,6 +7,7 @@ import type { Locale } from "@prisma/client";
 import { t } from "@/lib/admin-i18n";
 import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
 import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
+import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 type BaseRow = {
   id: string;
@@ -126,6 +127,13 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
       ? visibleRows.slice(0, shown)
       : visibleRows.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
+  // Markering (docs/DECISIONS.md 2026-10-11): rækken er en sag, handlingen rammer varen.
+  const rowIds = useMemo(() => displayedRows.map((row) => row.id), [displayedRows]);
+  const rowTargets = useMemo(
+    () => Object.fromEntries(displayedRows.map((row) => [row.id, row.productId])),
+    [displayedRows],
+  );
+
   function toggleSort(key: SortKey) {
     resetWindow();
     if (sortKey === key) {
@@ -137,6 +145,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
   }
 
   return (
+    <BulkSelection kind="product" ids={rowIds} targets={rowTargets}>
     <div className="flex flex-col gap-4">
       <ListModeToggle
         summary={
@@ -162,6 +171,8 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
         ))}
       </div>
 
+      <BulkActionsBar />
+
       <div className="hf-surface hf-table-scroll">
         <table className="hf-type-body w-full text-left">
           <thead className="hf-type-small bg-hf-white text-text-secondary">
@@ -182,8 +193,10 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
           </thead>
           <tbody>
             {displayedRows.map((row) => (
-              <tr
+              <BulkRow
+                as="tr"
                 key={row.id}
+                id={row.id}
                 onClick={() => router.push(`/admin/products/${row.productId}`)}
                 className="cursor-pointer border-t border-hf-tan-dark hover:bg-hf-tan"
               >
@@ -226,7 +239,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                   </span>
                 </td>
                 <td className="px-3 py-2 text-text-secondary">{row.usageLast30Days.toLocaleString("da-DK")}</td>
-              </tr>
+              </BulkRow>
             ))}
           </tbody>
         </table>
@@ -237,5 +250,6 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
       )}
       {mode === "pages" && <ListPager page={currentPage} pages={pageCount} onPage={setPage} />}
     </div>
+    </BulkSelection>
   );
 }

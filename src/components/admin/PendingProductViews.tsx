@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PendingProductCard, type PendingProduct } from "@/components/admin/PendingProductCard";
 import { BottomSheet } from "@/components/hf/BottomSheet";
 import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
+import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Nye varer: tre visninger som i Produkt-databasen (docs/DECISIONS.md
 // 2026-10-04): Detaljer (fulde kort, som før), Liste (kompakte linjer) og
@@ -78,6 +79,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
       : products.slice((currentPage - 1) * windowSize, currentPage * windowSize);
 
   return (
+    <BulkSelection kind="product" ids={visibleProducts.map((product) => product.id)}>
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <p className="hf-type-small text-text-secondary">
@@ -96,10 +98,14 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
 
       <ListModeToggle />
 
+      <BulkActionsBar />
+
       {view === "details" && (
         <div className="flex flex-col gap-4">
           {visibleProducts.map((product) => (
-            <PendingProductCard key={product.id} product={product} />
+            <BulkRow as="div" key={product.id} id={product.id} ignoreInteractive problem={!product.imageUrl} className="rounded-lg">
+              <PendingProductCard product={product} />
+            </BulkRow>
           ))}
         </div>
       )}
@@ -107,7 +113,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
       {view === "list" && (
         <ul className="flex flex-col divide-y divide-border-strong/50 hf-surface">
           {visibleProducts.map((product) => (
-            <li key={product.id}>
+            <BulkRow key={product.id} id={product.id} problem={!product.imageUrl}>
               <button type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text w-full">
                 <Thumb product={product} className="h-14 w-14" />
                 <span className="min-w-0 flex-1">
@@ -118,7 +124,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
                 <span className="hf-type-body w-20 shrink-0 text-right">{Math.round(product.kcalPer100g)} kcal</span>
                 <span className="hf-type-body w-12 shrink-0 text-right">{product.confidencePercent === null ? "—" : `${product.confidencePercent} %`}</span>
               </button>
-            </li>
+            </BulkRow>
           ))}
         </ul>
       )}
@@ -126,11 +132,13 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
       {view === "grid" && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {visibleProducts.map((product) => (
-            <button key={product.id} type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text flex-col hf-surface">
-              <Thumb product={product} className="aspect-square w-full" />
-              <span className="hf-type-strong line-clamp-2 text-hf-black">{product.name}</span>
-              <span className="hf-type-small truncate text-text-secondary">{subtitle(product)}</span>
-            </button>
+            <BulkRow as="div" key={product.id} id={product.id} problem={!product.imageUrl} className="rounded-lg">
+              <button type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text h-full w-full flex-col hf-surface">
+                <Thumb product={product} className="aspect-square w-full" />
+                <span className="hf-type-strong line-clamp-2 text-hf-black">{product.name}</span>
+                <span className="hf-type-small truncate text-text-secondary">{subtitle(product)}</span>
+              </button>
+            </BulkRow>
           ))}
         </div>
       )}
@@ -148,5 +156,6 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
         </BottomSheet>
       )}
     </div>
+    </BulkSelection>
   );
 }

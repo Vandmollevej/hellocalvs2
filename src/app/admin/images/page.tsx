@@ -9,7 +9,7 @@ export default async function AdminImagesPage() {
   if (!admin) redirect("/admin/login");
 
   const products = await prisma.product.findMany({
-    where: { imageStatus: "PENDING" },
+    where: { imageStatus: "PENDING", deletedAt: null },
     include: { brand: true },
     orderBy: { createdAt: "asc" },
   });
