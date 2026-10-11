@@ -860,7 +860,7 @@
   },
   "/profile": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/page.tsx": "dc1f2b29089c7fbb",
+    "src/app/profile/page.tsx": "9a3914f0965e4bc2",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "6dbfc954cd0db43d",
     "src/components/EmailVerifySheet.tsx": "42e52d85f9bf57d9",
