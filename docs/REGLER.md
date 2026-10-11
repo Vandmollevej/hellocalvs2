@@ -73,6 +73,17 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Dublet-billeder: kun "Behold" og "Erstat med dette" (bruger 2026-10-11)**:
+  billedet der vises i dag står ved siden af ét alternativ; begge knapper
+  sletter de øvrige varianter. Øvrige alternativer vises som miniaturer under
+  (klik = byt ind). Ingen stregkode over billederne. Klik på et billede åbner
+  samme visning i en lightbox (bladr i hele sidekolonnen, tal i bunden).
+- **"Anbefalet" billede (bruger 2026-10-11)**: er et alternativ tydeligt bedre
+  end billedet i dag (mindst 25 % flere pixels, eller samme opløsning og PNG
+  frem for JPG, eller mærkbart højere mætning), får det en tynd lysegrøn ramme
+  og "Anbefalet" i mørkegrøn øverst til højre — og det er altid det alternativ,
+  der vises ved siden af originalen, også selvom det er _3 eller _4.
+  Regel i `src/lib/image-quality.ts`.
 
 ## Søgning
 
