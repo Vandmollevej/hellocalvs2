@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import type { ImageGroup } from "@/lib/duplicate-review";
+import type { ImageCandidate, ImageGroup } from "@/lib/duplicate-review";
+import type { ImageGroupView, ImageQuality } from "@/lib/image-quality";
 
-// Én vare på admin "Dubletter" → Produktbilleder (docs/DECISIONS.md
-// 2026-09-28): alle billed-varianter (EAN.png, EAN_2.png …) på én linje, så
-// de kan sammenlignes. Admin vælger hovedbillede (grøn ramme) og fravælger
-// dem, der ikke skal bruges.
+// Én vare på admin "Dubletter" → Varebilleder (docs/DECISIONS.md 2026-09-28
+// og 2026-10-11): billedet der vises i dag ved siden af ét alternativ (det
+// anbefalede, hvis der er et), og de øvrige alternativer som miniaturer under
+// — klik på en miniature bytter den ind som alternativ. Kun to handlinger:
+// "Behold" og "Erstat med dette"; begge sletter de øvrige varianter. Klik på
+// et billede åbner samme visning i lightboxen (DuplicateImageLightbox).
 
-function fileName(url: string) {
+export function fileName(url: string) {
   const name = url.split("?")[0].split("/").pop() ?? url;
   try {
     return decodeURIComponent(name);
@@ -18,37 +19,73 @@ function fileName(url: string) {
   }
 }
 
-export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
-  const router = useRouter();
-  const currentId = group.images.find((img) => img.isPrimary)?.id ?? group.images[0]?.id ?? "";
-  const [primaryId, setPrimaryId] = useState(currentId);
-  const [sizes, setSizes] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+function metaLine(image: ImageCandidate, quality?: ImageQuality) {
+  const size = !quality ? null : quality.ok ? `${quality.width} × ${quality.height}` : "Kan ikke indlæses";
+  return [size, quality?.ok ? quality.format : null, ...image.tags.filter((t) => t !== "Import")]
+    .filter(Boolean)
+    .join(" · ");
+}
 
-  async function save(keepIds: string[]) {
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/admin/duplicate-products/images", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: group.productId, keepImageIds: keepIds, primaryImageId: primaryId }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.message ?? "Kunne ikke gemme");
-        return;
-      }
-      setDone(true);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  }
+type CardProps = {
+  image: ImageCandidate;
+  quality?: ImageQuality;
+  kind: "current" | "alternative";
+  recommended: boolean;
+  busy: boolean;
+  onAction: () => void;
+  onOpen?: () => void;
+  large?: boolean;
+};
 
-  if (done) return null;
+export function DuplicatePickCard({ image, quality, kind, recommended, busy, onAction, onOpen, large }: CardProps) {
+  const frameClass = `hf-pick-frame ${recommended ? "is-recommended" : ""}`;
+  const picture = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={image.url} alt="" />
+  );
+  return (
+    <div className={`hf-pick-card ${large ? "is-large" : ""}`}>
+      <div className="flex items-center justify-between gap-2">
+        <span className={`hf-pick-badge ${kind === "current" ? "is-current" : ""}`}>
+          {kind === "current" ? "Vises i dag" : "Alternativ"}
+        </span>
+        {recommended && <span className="hf-type-small hf-type-strong text-hf-green-dark">Anbefalet</span>}
+      </div>
+      {onOpen ? (
+        <button type="button" onClick={onOpen} className={`${frameClass} cursor-zoom-in`} aria-label="Vis i stor størrelse">
+          {picture}
+        </button>
+      ) : (
+        <div className={frameClass}>{picture}</div>
+      )}
+      <span className="hf-type-caption break-all text-hf-black">{fileName(image.url)}</span>
+      <span className="hf-type-caption text-text-secondary">{metaLine(image, quality) || " "}</span>
+      <button
+        type="button"
+        onClick={onAction}
+        disabled={busy}
+        className={`h-12 ${kind === "current" ? "hf-btn-secondary" : "hf-btn-primary"}`}
+      >
+        {kind === "current" ? "Behold" : "Erstat med dette"}
+      </button>
+    </div>
+  );
+}
+
+type Props = {
+  group: ImageGroup;
+  view: ImageGroupView;
+  quality: Record<string, ImageQuality | undefined>;
+  busy: boolean;
+  error?: string;
+  onPick: (imageId: string) => void;
+  onOpen: () => void;
+  onResolve: (keepImageId: string) => void;
+};
+
+export function DuplicateImageGroup({ group, view, quality, busy, error, onPick, onOpen, onResolve }: Props) {
+  const { current, alternatives, recommendedId, shown } = view;
+  const others = alternatives.filter((img) => img.id !== shown?.id);
 
   return (
     <section className="hf-panel">
@@ -62,56 +99,49 @@ export function DuplicateImageGroup({ group }: { group: ImageGroup }) {
           {group.name}
         </a>
         {group.brand && <span className="hf-type-small text-hf-green-dark">{group.brand}</span>}
-        {group.barcodes.length > 0 && (
-          <span className="hf-type-caption text-text-secondary">{group.barcodes.join(", ")}</span>
-        )}
       </div>
 
       <div className="hf-pick-grid">
-        {group.images.map((img) => {
-          const isPrimary = img.id === primaryId;
-          const isCurrent = img.id === currentId;
-          return (
-            <div key={img.id} className={`hf-pick-card ${isPrimary ? "is-selected" : ""}`}>
-              <span className={`hf-pick-badge ${isCurrent ? "is-current" : ""}`}>{isCurrent ? "Vises i dag" : "Alternativ"}</span>
-              <a href={img.url} target="_blank" rel="noreferrer" className="hf-pick-frame">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt=""
-                  onLoad={(e) => {
-                    const el = e.currentTarget;
-                    setSizes((prev) => ({ ...prev, [img.id]: `${el.naturalWidth} × ${el.naturalHeight}` }));
-                  }}
-                />
-              </a>
-              <span className="hf-type-caption break-all text-hf-black">{fileName(img.url)}</span>
-              <span className="hf-type-caption text-text-secondary">
-                {[sizes[img.id], ...img.tags.filter((t) => t !== "Import")].filter(Boolean).join(" · ") || " "}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPrimaryId(img.id)}
-                aria-pressed={isPrimary}
-                className={`h-12 ${isPrimary ? "hf-btn-secondary" : "hf-btn-primary"}`}
-              >
-                {isPrimary ? "Valgt" : "Vælg"}
-              </button>
-            </div>
-          );
-        })}
+        <DuplicatePickCard
+          image={current}
+          quality={quality[current.url]}
+          kind="current"
+          recommended={false}
+          busy={busy}
+          onAction={() => onResolve(current.id)}
+          onOpen={onOpen}
+        />
+        {shown && (
+          <DuplicatePickCard
+            image={shown}
+            quality={quality[shown.url]}
+            kind="alternative"
+            recommended={shown.id === recommendedId}
+            busy={busy}
+            onAction={() => onResolve(shown.id)}
+            onOpen={onOpen}
+          />
+        )}
       </div>
+
+      {others.length > 0 && (
+        <div className="hf-pick-strip" aria-label="Øvrige billeder">
+          {others.map((img) => (
+            <button
+              key={img.id}
+              type="button"
+              onClick={() => onPick(img.id)}
+              aria-label={`Vis ${fileName(img.url)} som alternativ`}
+              className={`hf-pick-thumb ${img.id === recommendedId ? "is-recommended" : ""}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img.url} alt="" />
+            </button>
+          ))}
+        </div>
+      )}
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-
-      <div className="flex flex-wrap justify-end gap-2">
-        <button type="button" onClick={() => save([primaryId])} disabled={busy} className="hf-btn-secondary h-12 px-4">
-          Slet de øvrige billeder
-        </button>
-        <button type="button" onClick={() => save(group.images.map((img) => img.id))} disabled={busy} className="hf-btn-primary h-12 px-4">
-          {busy ? "Gemmer…" : "Gem hovedbillede"}
-        </button>
-      </div>
     </section>
   );
 }
