@@ -168,7 +168,7 @@ Ejer: OFF-kontrol-sessionen (2026-10-11), branch `claude/off-kvalitet-scan`
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| off-kvalitet | Liste over OFF-varer med vurdering pr. kategori + kommentar, afkrydsning/sortering, send til scan-appen som ikke scannede | I gang (kode skrevet, typetjekket) | Migration 20261011120000 skal med deployet; tryk "Vurdér nu" første gang. Brugerens test i admin |
+| off-kvalitet | Liste over OFF-varer med vurdering pr. kategori + kommentar, afkrydsning/sortering, send til scan-appen som ikke scannede | Færdig (14fd80e2, b20003e6; CI grøn) | Tryk "Vurdér nu" første gang (ellers kører robotten kl. 05:00). Brugerens test i admin og på telefon |
 
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
