@@ -24,10 +24,7 @@ services:
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
-    # MIDLERTIDIG (2026-10-11): 20261011000000_user_display_prefs stod som fejlet
-    # (P3009) efter deploy #681; resolve nulstiller rækken. Fjernes igen, når
-    # migrationen er anvendt i produktion (se DEPLOYMENT.md).
-    command: ["sh", "-c", "npx prisma migrate resolve --rolled-back 20261011000000_user_display_prefs || true; npx prisma migrate deploy"]
+    command: ["npx", "prisma", "migrate", "deploy"]
     depends_on:
       db:
         condition: service_healthy
