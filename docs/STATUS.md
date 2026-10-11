@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-11
 
+- DRK: 181 yderligere produkttyper rettet manuelt; 659 af 700 oprindelige mangler udfyldt. 41 udestår. Andre celler og titelformler er kontrolleret uændrede.
+
 - DRK-opfølgning: yderligere 170 produkttyper indskrevet (478 samlet); 222 tomme typer udestår. Originalfelter, øvrige data og formler er bevaret.
 
 - DRK: 308 manglende produkttyper er indskrevet med øvrige celler og formler bevaret. 392 mangler stadig, og navnefelternes øvrige regelkontrol udestår.
