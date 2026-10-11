@@ -5,6 +5,13 @@ import { splitProductHeading } from "./product-naming.ts";
 
 const heading = (product) => splitProductHeading(product);
 
+test("fedt efter procent vises ikke i H1/H2, og originalnavnet bevares", () => {
+  const product = { name: "Skyr 0.2% fedt", variant: "Jordbær 0.2% fat" };
+  assert.deepEqual(heading(product), { title: "Skyr 0.2%", variants: ["Jordbær 0.2%"] });
+  assert.equal(product.name, "Skyr 0.2% fedt");
+  assert.deepEqual(heading({ name: "Ost 45% fett" }), { title: "Ost 45%", variants: [] });
+});
+
 test("varianten i slutningen af navnet fjernes fra H1 (Marmelade Pære & havtorn)", () => {
   assert.deepEqual(heading({ name: "Marmelade Pære & havtorn", variant: "Pære & havtorn" }), {
     title: "Marmelade",

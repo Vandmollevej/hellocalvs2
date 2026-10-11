@@ -1,0 +1,1114 @@
+# Håndrettelser oven på off_import.py (Open Food Facts -> lidl/aldi/kvickly.xlsx).
+# Format: EAN | Product Type | Variation | Category | nøgle=værdi;nøgle=værdi
+#   tom = uændret, ~ = tøm feltet, drop = fjern varen, qa=tekst = note i off_kvalitetskontrol.xlsx
+#   nøgler: org gf lf veg sf sw meat wg aw frozen cook dec af fat alc alcp country qty pack brand sub kw1-kw5 pl raw
+# Product Type står i ental (flertal i pl=), Variation med småt, % kun i fat/alc (se Excelark/NAVNEREGLER.md).
+# Kategorien Frost sætter selv _is_frozen. Gættede kategorier er markeret med qa=.
+
+# ---------------- LIDL ----------------
+20005733|Valnøddekerner|~|Kolonial|veg=~
+20379773|Oliven|~|Kolonial|
+20278199|Hvedemel|~|Kolonial|
+4056489265641|Vaniljesukker|~|Kolonial|
+20107338|Is|triple taste|Frost|
+2507180002506|Oksesteak|med peberkant|Kød & fisk|meat=okse
+20135225|Hakket kalkun|~|Kød & fisk|meat=kalkun
+20135201|Kalkunminifilet|af inderfilet|Kød & fisk|meat=kalkun
+20994310|Filodejssnegl|med spinat og ost|Frost|
+20125424|Pølsehorn|med ketchup|Brød & kager|qa=kategori gættet (frost/køl ukendt)
+4335619032644|Forårsrulle|med grøntsager|Frost|pl=Forårsruller
+4335619114852|Biksemad|~|Kolonial|qa=kategori gættet
+4335619167285|Burrito|med kyllingekebab|Mad fra hele verden|meat=kylling
+4335619333536|Schnitzel|af svinekød|Kød & fisk|meat=gris
+4056489417187|Pølsehornsdej|~|Brød & kager|
+20162979|Spaghetti|carbonara|Kolonial|
+4335619145085|Tagliatelle|~|Kolonial|qa=OFF-navnet "Taglitelle pasra" har tastefejl
+0220850004069|Hummus|spicy med rød peber|Mejeri & køl|
+4335619196278|Macaroni|~|Kolonial|
+4335619196230|Pasta|fusilli|Kolonial|
+4335619196247|Pasta|penne|Kolonial|
+0034023255499|Müsli|choko og havre|Kolonial|
+20332662|Cornflakes|~|Kolonial|
+4056489654230|Cornflakes|~|Kolonial|
+20115500|Havregryn|finvalsede|Kolonial|veg=~
+4335619007710|Proteinporridge|mælkechokolade|Kolonial|
+20080662|Müslibar|med chokolade og banan|Slik & snacks|
+4056489790235|Thai cube|grøn karry med rejer|Frost|
+20124694|Kød- og melboller|~|Frost|qa=kategori fra vokabular (frost antaget)
+20060039||||drop;qa=bulgarsk OFF-navn, ingen dansk dokumentation
+57386867|Forårsrulle|~|Kolonial|pack=4;qty=4 stk;pl=Forårsruller;qa=kategori gættet
+20140960|Kyllingevinger|hot|Kød & fisk|meat=kylling
+20124892|Kødboller|~|Kød & fisk|qa=OFF-navnet "Kødbollet" har tastefejl
+4056489009733|Suppe|thai-style med kylling og grøntsager|Mad fra hele verden|meat=kylling
+4335619321618|Pizza|surdej med salame og grana padano|Mejeri & køl|qa=kategori gættet
+4335619391871|Burger|færdiglavet uden sovs|Kød & fisk|qa=OFF-navnet har forkortelserne "Fær." og "U."
+4335619285118|Is|kanelsnegl|Frost|
+4056489936350|Olie|med hvidløg|Kolonial|
+4056489786443|Rejer|white tiger|Frost|meat=rejer;qa=kategori gættet
+4335619027978|Is|pistacie|Frost|
+4056489501671|Klejne|~|Brød & kager|pl=Klejner
+2231587003735|Skinke|traditionel i skiver|Mejeri & køl|meat=gris;cook=stegt
+2231588004304|Skinke|traditionel i skiver|Mejeri & køl|meat=gris;cook=stegt
+2256124004594|Skinke|traditionel i skiver|Mejeri & køl|meat=gris;cook=stegt
+4335619179929|Laksefilet|skotsk|Kød & fisk|meat=laks
+4056489901792|Skinke|skotsk honningstegt i tynde skiver|Mejeri & køl|meat=gris;cook=stegt
+4056489325079|Cheesecake|med citron og mascarpone|Brød & kager|
+4056489501657|Vaniljekrans|~|Brød & kager|pl=Vaniljekranse
+4335619112872|Cappelletti|med ost|Mejeri & køl|
+4335619144613|Girasoli|fyldt med ost|Mejeri & køl|
+4056489141716||||drop;qa=fransk OFF-data (frost-kategorier på fransk), ingen dansk dokumentation
+20479541|Hvidløgspaté|~|Mejeri & køl|qa=OFF-navn "Hvidløgspate" — produkttype gættet
+4056489810568|Kabanos|af kylling|Mejeri & køl|meat=kylling;pl=Kabanosser
+4056489835356|Kyllingebrystpålæg|~|Mejeri & køl|meat=kylling
+2500380002406|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+2500250002253|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+2500250002802|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+4335619105348|Cocktailpølse|af kylling|Kød & fisk|meat=kylling;pl=Cocktailpølser
+4335619318700|Frikadelle|~|Kød & fisk|pl=Frikadeller
+4056489835370|Hamburgerryg|~|Mejeri & køl|meat=gris
+4335619266261|Kyllingebryst|~|Mejeri & køl|meat=kylling
+4335619258488|Kyllingepølse|~|Kød & fisk|meat=kylling;pl=Kyllingepølser
+4056489835349|Rullepølse|~|Mejeri & køl|
+4056489258469|Salami|af svinekød|Mejeri & køl|meat=gris;cook=tørret
+20824761|Koldskål|med citron og vanilje|Mejeri & køl|
+20125028|Yoghurt|naturel|Mejeri & køl|
+20572013|Salatost|45+|Mejeri & køl|kw1=i tern;fat=18%
+20124748|Danbo|45+|Mejeri & køl|
+20648459|Minimælk|~|Mejeri & køl|
+20647124|Sødmælk|~|Mejeri & køl|
+40876443|Yoghurt|jordbær|Mejeri & køl|
+40876436|Yoghurt|vanilje|Mejeri & køl|
+4056489406679|Mælkedrik|chokolade|Drikkevarer|qa=OFF-navn på fransk
+4056489906131|Tzatziki|~|Mejeri & køl|
+4056489834380|Brunkage|~|Brød & kager|pl=Brunkager
+4056489834588|Klejne|~|Brød & kager|pl=Klejner
+4056489000099|Chokoladeæg|mælkechokolade|Slik & snacks|pl=Chokoladeæg
+4056489834373|Pebernød|~|Brød & kager|pl=Pebernødder
+20431921|Æbleskive|~|Brød & kager|pl=Æbleskiver
+4304493266605|Cola|next|Drikkevarer|
+20609566|Cola|zero sugar|Drikkevarer|
+20452278|Cola|zero sugar|Drikkevarer|
+4304493270763|Sportsdrik|iso tonic|Drikkevarer|
+4304493263666|Iste|fersken|Drikkevarer|
+4304493271791|Proteindrik|citron og te, clear whey|Drikkevarer|
+4304493271784|Proteindrik|fersken og te, clear whey|Drikkevarer|
+4304493263642|Læskedrik|grapefrugt|Drikkevarer|
+20118525|Sodavand|sport|Drikkevarer|
+4056489267331|Is|mixed berries på pind|Frost|qty=3 x 110 ml;pack=3
+23772212|Sauce|currywurst|Kolonial|
+25033106|Instantkaffe|mocca|Kolonial|veg=~
+4304493266223|Energidrik|colossus kong strong|Drikkevarer|
+20398194|Kladdkage|~|Frost|
+20770266|Salsa|piccante med jalapeños|Mad fra hele verden|
+40893990|Mozzarella|~|Mejeri & køl|kw1=revet
+4056489189046|Marmelade|hindbær og blåbær|Kolonial|
+4335619140196|Proteindrik|chokolade|Mejeri & køl|
+4335619038004|Proteindrik|peanut og chokolade|Mejeri & køl|
+4056489379232|Yoghurtdrik|~|Mejeri & køl|
+4335619165540|Ost|til pizza og pasta, med chili|Mejeri & køl|kw1=revet
+4056489029922|Sojayoghurt|vanilje|Mejeri & køl|qa=type gættet ud fra "Vanilla flavour made from soya"
+4056489844426|Smør|saltet|Mejeri & køl|fat=65%
+4056489108276||||drop;qa=fransk OFF-navn, ingen dansk dokumentation
+20106065||||drop;qa=fransk OFF-navn (Lait écrémé), ingen dansk dokumentation
+2506590002557|Ost|gwitterchäs|Mejeri & køl|qa=ukendt produkt, type gættet
+20516901|Parmigiano reggiano|~|Mejeri & køl|
+2503660000970|Pecorino|~|Mejeri & køl|
+20045197||||drop;qa=finsk OFF-navn, ingen dansk dokumentation
+4335619375864||||drop;qa=OFF-navnet er kun et mærke (Sødergården), ingen produkttype
+4056489108160||||drop;qa=bulgarsk OFF-navn, ingen dansk dokumentation
+4335619230583|Yoghurt|high protein med kirsebær og crisp|Mejeri & køl|
+20664459|Feta|~|Mejeri & køl|
+2506590002403|Ost|gwitterchäs|Mejeri & køl|qa=ukendt produkt, type gættet
+4056489095637|Mozzarella|~|Mejeri & køl|kw1=i saltlage;qty=200 g;qa=OFF-mængde "125 g (200 g)": 125 g er drænet vægt, 200 g brugt som samlet mængde
+20047214|Mozzarella|~|Mejeri & køl|kw1=revet
+4335619097094|Yoghurt|naturel, high protein|Mejeri & køl|
+20001940|Kvark|~|Mejeri & køl|fat=4.3%
+2506510002438|Ost|schweizisk med chili|Mejeri & køl|
+40874999|Skyr|vanilje|Mejeri & køl|kw1=to go
+20118235|Smørbar|~|Mejeri & køl|qa=type gættet
+20089504|Yoghurt|mixed berries|Mejeri & køl|
+4335619144989|Mælkesnack|~|Mejeri & køl|qa=kategori gættet
+5701018026208|Frisk pasta|fettuccine med spinat|Mejeri & køl|
+20460341|Øl|~|Drikkevarer|
+20006150|Knækbrød|af fuldkornsrug|Brød & kager|
+5701027002514|Salt|groft|Kolonial|veg=~
+20647704|Dipmix|~|Kolonial|
+4335619115040|Chips|kettle cooked med dild og purløg|Slik & snacks|
+4335619175556|Salsa|verde|Kolonial|
+4056489598817|Chips|sour cream og ost|Slik & snacks|qa=type gættet
+4335619211025|Chips|barbecue crinkle cut|Slik & snacks|
+4056489243724|Chips|kettle cooked sour cream og løg|Slik & snacks|
+4056489308928|Chips|saltede crinkle cut|Slik & snacks|
+4056489440024|Chips|sour cream og løg|Slik & snacks|
+4056489243748|Majs til popcorn|~|Slik & snacks|
+4335619339750|Popcorn|toffee|Slik & snacks|
+4304493265271|Appelsinjuice|~|Drikkevarer|
+4056489447757|Multifrugtjuice|~|Drikkevarer|
+4304493267848|Appelsinjuice|~|Drikkevarer|
+4304493263819|Juice|piña colada|Drikkevarer|
+4304493270244|Juice|æble og mango|Drikkevarer|
+4304493268807|Multifrugtjuice|~|Drikkevarer|
+4304493265646|Multifrugtjuice|med frugtkød|Drikkevarer|
+4304493266681|Smoothie|rød|Drikkevarer|
+4304493268845|Smoothie|super defence|Drikkevarer|
+4304493268838|Smoothie|super energy|Drikkevarer|
+4304493268814|Æblejuice|~|Drikkevarer|
+4304493264564|Æblejuice|~|Drikkevarer|kw1=ikke fra koncentrat
+4304493264786|Shot|ingefær og gurkemeje|Drikkevarer|
+4304493268791|Juice|æble, drue og bær|Drikkevarer|
+4304493264540|Juice|æble og bær|Drikkevarer|kw1=ikke fra koncentrat
+4304493270251|Nektar|appelsin|Drikkevarer|
+4335619040670|Læskedrik|blue lagoon|Drikkevarer|
+4304493264403|Frugtdrik|solbær|Drikkevarer|
+20067816|Knækbrød|thin crisp|Brød & kager|
+4056489640431|Chokolade|couverture med kiksestykker|Slik & snacks|
+4056489420569|Croissant|med chokolade|Brød & kager|qa=navnet siger vegan, men OFF-allergener har mælk/æg — vegansk-flag ikke sat
+4335619157347|Overnight oats|med blåbær, hindbær og frugtpuré|Mejeri & køl|qa=kategori gættet
+4335619157323|Overnight oats|med æble, kanel og frugtpuré|Mejeri & køl|qa=kategori gættet
+4056489893974|Grøntsagskugler|~|Mejeri & køl|qa=OFF-navn på kroatisk, kategori gættet
+4335619149564|Budding|chokolade, high protein|Mejeri & køl|
+4335619115163|Skagensalat|~|Mejeri & køl|
+4335619259263|Grillstiks|~|Mejeri & køl|qa=ukendt produkt, type gættet
+4056489687641|Mandeldrik|~|Kolonial|
+4335619157330|Overnight oats|~|Mejeri & køl|qa=kategori gættet
+4335619040502|Pulled chunks|bbq|Mejeri & køl|qa=kategori gættet
+4335619044883|Schnitzel|~|Mejeri & køl|qa=kategori gættet, vegansk-status ukendt
+4335619175891|Nuggets|med rejesmag|Mejeri & køl|qa=kategori gættet
+4056489880325|Cabanossi|classic|Mejeri & køl|
+4056489503156|Topping|med cheddarsmag|Mejeri & køl|
+4056489243489|Brystfilet|~|Kød & fisk|qa=dyreart ikke angivet i OFF
+4047196052013|Kyllingebryst|~|Kød & fisk|meat=kylling
+2505000007595|Flanksteak|~|Kød & fisk|meat=okse
+4056489834649|Inderfilet|~|Kød & fisk|qa=dyreart ikke angivet i OFF
+4056489243434|Kyllingebrystfilet|~|Kød & fisk|meat=kylling;country=Danmark
+4056489834663|Kyllingeunderlår|~|Kød & fisk|meat=kylling
+4056489430636|Hakket kød|~|Kød & fisk|fat=8-12%
+4056489243113|Lårfilet|~|Kød & fisk|qa=dyreart ikke angivet i OFF
+4335619316874|Ungkvægstern|~|Kød & fisk|meat=okse
+4335619022577|Hakket gris og kalv|~|Kød & fisk|meat=gris / kalv
+4335619022553|Hakket gris og kalv|~|Kød & fisk|meat=gris / kalv;fat=8-12%
+4056489850663|Hakket oksekød|~|Kød & fisk|meat=okse;fat=15-20%
+4056489430643|Hakket gris og kalv|~|Kød & fisk|meat=gris / kalv
+20236915|Hakket grisekød|~|Kød & fisk|meat=gris
+20236908|Hakket grisekød|~|Kød & fisk|meat=gris;fat=~
+4335619128187|Hakket oksekød|~|Kød & fisk|meat=okse;fat=8-12%
+4056489834526|Hakket oksekød|~|Kød & fisk|meat=okse;fat=8-12%
+4056489243366|Hel kylling|~|Kød & fisk|meat=kylling;country=Danmark
+4335619166967|Cordon bleu|af kalkun|Kød & fisk|meat=kalkun
+20135065|Kalkununderlår|~|Kød & fisk|meat=kalkun
+4335619091801|Medister|~|Kød & fisk|meat=gris
+4056489834489|Ribeye|~|Kød & fisk|meat=okse
+4056489845577|Skinkeschnitzel|~|Kød & fisk|meat=gris;pl=Skinkeschnitzler
+4335619128101|Svinekotelet|~|Kød & fisk|meat=gris;pl=Svinekoteletter
+4056489243458|Kyllingebryst|~|Kød & fisk|meat=kylling
+4056489243502|Kyllingebrystfilet|bbq-marineret|Kød & fisk|meat=kylling;country=Danmark
+4056489835745|Hakket kylling|~|Kød & fisk|meat=kylling;country=Danmark;fat=3-7%
+4056489835424|Kyllingeinderlår|~|Kød & fisk|meat=kylling;country=Danmark
+4056489243878|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+4056489243557|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+20080723|Margarine|til stegning og bagning|Mejeri & køl|
+20115296|Margarine|plantebaseret|Mejeri & køl|fat=60%
+4056489600596|Kaffe|gold|Kolonial|kw1=formalet
+4056489599326|Suppegrøntsager|blandede|Frost|
+4335619150447|Broccoliris|~|Frost|veg=~
+4056489123361|Grønne bønner|~|Frost|
+4335619028159|Kikærter|~|Kolonial|
+20941796|Kikærter|~|Kolonial|kw1=i saltlage
+4056489123491|Spinat|hakket|Frost|qa=kategori gættet
+4335619047006|Grøntsagsblanding|red curry|Frost|qa=kategori gættet
+4335619109933|Grøntsagsblanding|~|Frost|qa=kategori gættet
+4056489844730|Baked beans|i tomatsauce|Kolonial|
+20004101|Champignon|i skiver|Kolonial|kw1=i saltlage;pl=Champignoner
+20004279|Asparges|hvide|Kolonial|kw1=på dåse
+20525712|Asparges|hvide|Kolonial|kw1=på dåse
+4335619037489|Is|double caramel|Frost|
+20686437|Is|super cono|Frost|
+4056489834120|Is|limonade|Frost|
+4056489835035|Is|protein, hvid chokolade og jordbær|Frost|
+4335619173439|Is|protein sandwich|Frost|qa=OFF-navnet "Protein Sandeich Is" har tastefejl
+4335619237049|Is|lakrids|Frost|
+4056489411086||||drop;qa=OFF-navnet er pladsholderen "Loading…"
+4056489722526|Is|~|Frost|
+4335619030923|Pizza|verdure|Frost|
+2254300011565|Prosciutto crudo|lufttørret|Mejeri & køl|meat=gris;cook=tørret
+2254300010940|Skinke|~|Mejeri & køl|meat=gris;cook=tørret
+4052917300908|Hønsekødssuppe|~|Kolonial|
+4056489072416|Bearnaisesauce|~|Kolonial|
+4056489168096||||drop;qa=spansk OFF-navn (Caldo de Verduras), ingen dansk dokumentation
+20044435|Chilimayonnaise|~|Kolonial|
+4335619184145|Krydderblanding|til guacamole|Kolonial|
+4056489245728|Mayonnaise|~|Kolonial|
+4056489943938|Chilimayonnaise|~|Kolonial|qa=OFF-navn på fransk (lang=fr)
+4056489245711|Mayonnaise|light|Kolonial|qty=400 g
+4056489836995|Mayonnaise|light|Kolonial|qa=OFF-navn på fransk (lang=fr)
+20121259|Mornaysauce|klassisk|Kolonial|qa=OFF-navnet "morneysouce" har tastefejl
+4056489501879|Remoulade|~|Kolonial|qa=OFF-navnet er ødelagt af tegnsæt ("lavet pà frilandsœg")
+4056489836971|Remoulade|light|Kolonial|
+4056489470786|Sauce|tikka masala|Mad fra hele verden|
+4056489988670|Ketchup|light|Kolonial|
+4056489835721|Marmelade|med ananas, fersken og passionsfrugt|Kolonial|
+40876658|Honning|~|Kolonial|
+40877013|Jordbærgrød|~|Kolonial|qa=OFF-navnet "Jørdbærgrød" har tastefejl, lang=no
+5710231003651|Pizza|original|Frost|qa=kategori gættet
+5701018045353|Lasagne|~|Mejeri & køl|
+5701043001966|Frisk pasta|fettuccine med spinat|Mejeri & køl|
+5701018026147|Frisk pasta|fettuccine|Mejeri & køl|
+5701018026222|Frisk pasta|fettuccine|Mejeri & køl|
+5701018033466|Frisk pasta|tortellini med tomat og mozzarella|Mejeri & køl|
+5710231003699|Pølsehornsdej|~|Brød & kager|
+5701018033381|Frisk pasta|tortellini med skinke|Mejeri & køl|meat=gris
+4304493264014|Øl|~|Drikkevarer|
+20095253||||drop;qa=portugisisk/fransk OFF-navn (Pâté de sardinha), ingen dansk dokumentation
+20771676|Custard cake|~|Brød & kager|pl=Custard cakes;pack=6;qty=6 x 40 g
+20410216|Kammerjunker|~|Brød & kager|pl=Kammerjunkere
+4056489770343|Knækbrød|af fuldkornsrug|Brød & kager|qty=750 g;qa=OFF-mængde "750" uden enhed — antaget gram
+4335619285217|Speltstykke|~|Brød & kager|pl=Speltstykker
+4335619283220|Croissant|smør|Brød & kager|
+20244811|Håndværkerbolle|~|Frost|pl=Håndværkerboller;pack=10;qty=10 x 60 g;qa=kategori gættet (bake-off)
+20954758|Baguettebolle|hvede|Frost|pl=Baguetteboller;qa=kategori gættet (bake-off)
+4335619107472|Majskiks|mini, med skinkesmag|Slik & snacks|
+4335619107489|Majskiks|mini, med tomat- og olivensmag|Slik & snacks|
+4335619285200|Baguette|med hvidløgssmør|Frost|qa=kategori gættet
+4335619191075|Brød|hvidt med frø|Brød & kager|gf=glutenfri
+20516666|Pizza|prosciutto|Frost|
+57027661||||drop;qa=fransk OFF-navn (Beurre cuisson), ingen dansk dokumentation
+4056489955153|Shiitakesvampe|hele|Kolonial|kw1=på dåse;pl=Shiitakesvampe
+4335619399389|Spyd|kylling|Kød & fisk|meat=kylling;qa=kategori gættet
+4335619117952|Sauce|korma|Mad fra hele verden|
+
+# ---------------- KVICKLY / COOP (Coop, Änglamark, Irma, Xtra) ----------------
+5700383543259|Sodavand|æblecider|Drikkevarer|alc=~;qa=OFF har både kategorien Sodavand og Ciders — alkoholstatus uklar, ikke markeret som alkohol
+7340011361602|Grønkål|~|Frost|
+7340191151161|Rodfrugtblanding|~|Frost|qa=type gættet ud fra "Root vegetables"
+7340191119796||||drop;qa=svensk OFF-navn (Vaniljgräddglassbyttor), ingen dansk dokumentation
+7340011403623|Skinkestrimler|~|Mejeri & køl|meat=gris;cook=røget
+7340011300052|Hvedetoast|~|Brød & kager|brand=Xtra
+5700381026778|Grønne oliven|med sten|Kolonial|
+5700382349548|Cookie|med chokolade|Brød & kager|qa=OFF-navnet "sølet cokkie" har tastefejl
+5701049521505|Vingummi|~|Slik & snacks|
+7340191104631|Müslibar|med hasselnødder og jordnødder|Slik & snacks|pack=6;qty=6 x 21 g
+7340191161719|Focaccia|~|Brød & kager|
+5715569982340|Hvedebolle|~|Brød & kager|pl=Hvedeboller
+7340011484554|Kiks|kakao|Brød & kager|
+5715569952954|Kammerjunker|~|Brød & kager|pl=Kammerjunkere
+5700382689071|Knækbrød|kerneknæk med frø og kerner|Brød & kager|
+5715569962250|Rugbrød|mørkt|Brød & kager|
+7340191159709|Appelsinjuice|~|Drikkevarer|
+7340191100435|Hyldeblomstdrik|~|Drikkevarer|
+5713221080403|Sodavand|citron|Drikkevarer|
+7340191158306|Bærblanding|~|Frost|
+7340191173996|Falafel|~|Frost|
+7340011312475|Ispind|~|Frost|pl=Ispinde
+7340191184459|Jordbær|~|Frost|
+7340191170209|Pizza|verdure|Frost|
+5715348044825|Pizzabund|surdej|Frost|
+3000007029575|Hvidløg|~|Frugt & grønt|
+5715348166046|Shot|ingefær|Drikkevarer|
+5700381795568|Pasta|fettuccine med spinat|Kolonial|
+5715348159130|Frisk pasta|saccottini med ost og spinat|Mejeri & køl|
+5700383500979|Bagepulver|~|Kolonial|
+5700382823611|Banan|~|Frugt & grønt|pack=8;qty=8 stk;pl=Bananer
+7340191143449|Sojadrik|~|Kolonial|qa=OFF-kategori på tyrkisk — dansk dokumentation mangler
+7340191170216|Pizza|bolognese|Frost|qa=kategori gættet
+7340011496823|Bran flakes|~|Kolonial|
+5700383149666|Grahamsbolle|~|Brød & kager|pl=Grahamsboller
+7340191143036|Bulgur|~|Kolonial|
+7340011497943|Is|cookie dough|Frost|
+7340011486848|Majskiks|med havsalt|Kolonial|qa=OFF-navn på svensk (MAJSKAKOR) — dansk dokumentation mangler
+7340011475613|Dressing|hvidløg|Kolonial|
+5700382759378|Mungbønne|grøn|Kolonial|pl=Mungbønner
+5700382759347|Pintobønne|~|Kolonial|pl=Pintobønner
+5700382978601|Kidneybønne|rød|Kolonial|pl=Kidneybønner
+5700382759330|Sortøjebønne|~|Kolonial|pl=Sortøjebønner
+7340191142992|Couscous|~|Kolonial|
+7340191176454||||drop;qa=svensk OFF-navn (Ekologisk fruktpuré), ingen dansk dokumentation
+7340191177352|Olivenolie|extra virgin|Kolonial|
+5700383169176|Pasta|fettuccine|Kolonial|
+5715348099412|Pasta|fettuccine|Kolonial|
+7340011315063|Havregryn|finvalsede|Kolonial|
+7340011499626|Oliven|græske kalamata|Kolonial|
+5700381338611|Havregryn|grovvalsede|Kolonial|
+7340011301677|Grødris|~|Kolonial|
+7340191180932|Havre|~|Kolonial|qa=produkt uklart (kun "Havre")
+7340191125056||||drop;qa=norsk OFF-navn (Havredrikk), ingen dansk dokumentation
+7340191173347|Honning|~|Kolonial|
+5700384125287|Hvedemel|~|Kolonial|
+5700381884897|Hvedemel|~|Kolonial|
+7340191131309|Hønsebouillon|~|Kolonial|
+7340191166608|Marmelade|jordbær, cremet|Kolonial|
+7340011487913|Kidneybønne|~|Kolonial|pl=Kidneybønner
+7340191160699|Kokosolie|~|Kolonial|
+7340011496113|Sort bønne|~|Kolonial|qty=380 g;pl=Sorte bønner
+7340191145580|Mandel|~|Kolonial|pl=Mandler
+7340191152342|Marmelade|figen|Kolonial|
+7340191152397|Marmelade|jordbær|Kolonial|
+5700380624876|Hakket oksekød|~|Kød & fisk|meat=okse;fat=4-7%
+5715348119400|Hakket kød af okse og gris|~|Kød & fisk|meat=okse / gris;fat=9-15%
+7340191141582|Müslikiks|~|Brød & kager|qa=produkt uklart ("Müsli Kiks")
+7340191174832|Nøddecreme|~|Kolonial|
+7340191113916|Havregryn|~|Kolonial|
+7704191146488|Havredrik|barista|Drikkevarer|qa=ligner dublet af 7340191146488 (anden stregkode)
+7340191146488|Havredrik|barista|Drikkevarer|
+7340191131286|Oksebouillon|~|Kolonial|
+7340191105393|Orzo|~|Kolonial|
+7340011476269|Pasta|paciocche|Kolonial|
+5715348184644|Pasta|~|Kolonial|
+7340191140233|Pasta|gemelli|Kolonial|
+7340191105409|Pasta|radiatori|Kolonial|
+7340191105379|Pasta|genovesine mezzanelli|Kolonial|
+7340011469360|Pesto|alla genovese|Kolonial|
+7340191178601|Rosin|~|Kolonial|veg=~;pl=Rosiner
+5750006340383|Rød peberfrugt|~|Frugt & grønt|pack=2;qty=2 stk;pl=Røde peberfrugter
+7340191109155|Rørsukker|~|Kolonial|
+7340011493846|Mælkechokolade|med karamel og havsalt|Slik & snacks|
+7340191103146|Chokolade|karamel og salt|Slik & snacks|
+7340011497950|Is|salted caramel|Frost|qa=type gættet ud fra stregkodenabo (Cookie Dough Ice Cream)
+7340191171411|Sauce|~|Kolonial|qa=OFF-navnet "Lasts Sauce" uklart
+7340191163041|Sennep|dijon|Kolonial|veg=~
+5701975000495|Sour cream|~|Mejeri & køl|fat=9%
+7340191162020|Speltstykke|~|Brød & kager|pl=Speltstykker
+7340191118713||||drop;qa=norsk OFF-navn (Sprø Økologiske Speltflakes), ingen dansk dokumentation
+7340191152618|Pommes frites|steakhouse|Frost|
+7340011477747|Rødkål|~|Kolonial|veg=~;cook=syltet
+5700380637708||||drop;qa=svensk/norsk OFF-navn (Vårsalat), ingen dansk dokumentation
+7340191135055||||drop;qa=ikke en fødevare (zinksalve)
+5700382929214|Kammerjunker|~|Brød & kager|pl=Kammerjunkere
+5715348184606|Frisk pasta|fettuccine|Mejeri & køl|
+5700381344742|Kyllingepålæg|~|Mejeri & køl|meat=kylling;cook=kogt;kw1=i skiver
+7340011436140|Oksebouillon|~|Kolonial|
+5715569992219|Rugbrød|med solsikkekerner|Brød & kager|qa=OFF-navnet "Økonomi Solsikkerugbrød" — tastefejl for økologisk?
+5715348110780|Hakket oksekød|~|Kød & fisk|meat=okse;fat=4-7%
+5715348110827|Hakket oksekød|~|Kød & fisk|meat=okse;fat=8-12%
+5707196358773|Kotelet|~|Kød & fisk|meat=gris;pl=Koteletter
+5715348137534|Medister|~|Kød & fisk|meat=gris
+5707196358759|Nakkekotelet|~|Kød & fisk|meat=gris;pl=Nakkekoteletter
+5715348206964|Nakkekotelet|bbq-marineret|Kød & fisk|meat=gris;pl=Nakkekoteletter
+5715348141548|Gulerod|revet|Frugt & grønt|
+7340011345275|Salsa|chunky|Kolonial|
+7340191138520|Tofu|~|Mad fra hele verden|
+5715348137558|Frikadelle|af gris|Kød & fisk|meat=gris;pl=Frikadeller
+5715348142927|Frisk pasta|~|Mejeri & køl|
+5700383321079|Hamburgerryg|~|Mejeri & køl|meat=gris
+7340191150362|Havredrik|~|Drikkevarer|
+5701975000402|Kærnemælk|~|Mejeri & køl|
+5715569989837|Laks|~|Mejeri & køl|meat=laks;cook=røget
+5701975300939|Letmælk|~|Mejeri & køl|fat=1.5%
+5791975322239|Letmælk|~|Mejeri & køl|
+5701975300922|Minimælk|~|Mejeri & køl|
+5701975305101|Minimælk|~|Mejeri & køl|fat=0.4%;qty=500 ml
+7340191174450|Pizza|pepperoni|Frost|qa=kategori gættet
+5701975000594|Piskefløde|~|Mejeri & køl|qty=0.5 l;qa=OFF-mængde "0,5" uden enhed — antaget liter
+5701975302803|Smør|~|Mejeri & køl|
+7340191150324||||drop;qa=norsk OFF-navn (Soyadrikk), ingen dansk dokumentation
+5701975306429|Sødmælk|~|Mejeri & køl|
+5701975304845|Yoghurt|mango|Mejeri & køl|
+7340011406815|Yoghurt|skovbær og tranebær|Mejeri & køl|
+7340011302339|Æg|størrelse m/l|Mejeri & køl|pack=10;qty=10 stk
+7340011301271|Chips|saltede|Slik & snacks|
+7340191173484|Chips|saltede|Slik & snacks|
+7340191107595|Majssnacks|~|Slik & snacks|
+7340191145184|Majskiks|med mælkechokolade|Slik & snacks|
+7340191143654|Chokolade|mørk|Slik & snacks|
+
+5700382729920|Kartoffel|amandine|Frugt & grønt|pl=Kartofler
+8430543000427|Tomat|~|Frugt & grønt|pl=Tomater
+7340011342434||||drop;qa=norsk/svensk OFF-navn, solgt hos Coop Extra (Sverige) — ingen dansk dokumentation
+7340011489030|Fyldt kiks|duo|Brød & kager|qa=type gættet ud fra OFF-kategori "Filled biscuits"
+7340011340232|Lasagneplade|~|Kolonial|pl=Lasagneplader
+7340191105225|Makrel|i tomatsauce|Kolonial|meat=fisk;qty=4 x 125 g;pack=4
+7340011306016|Tun|i vand|Kolonial|meat=tun
+7340011429630||||drop;qa=finsk OFF-navn (Pitkäjyväinen riisi), solgt hos Stora Coop — ingen dansk dokumentation
+7340191119123|Pasta|penne rigate|Kolonial|
+7340011344490|Cocktailpølse|~|Kød & fisk|pl=Cocktailpølser
+7340011306115|Minimælk|~|Mejeri & køl|
+5701043001492|Is|med kakao og brownies|Frost|
+5715569952916|Kammerjunker|mini|Brød & kager|pl=Kammerjunkere
+5700383149710|Rugbrød|med solsikke|Brød & kager|
+4340521159679|Appelsinjuice|~|Drikkevarer|
+7340191100251|Tranebærdrik|~|Drikkevarer|
+5713221080106|Sodavand|citron|Drikkevarer|
+7340191112827|Spinat|hakket|Frost|
+7340191151826|Jordbær|~|Frost|
+7340191152632|Pommes frites|~|Frost|
+7340191164864|Rejer|pillede|Frost|meat=rejer
+7340191155992|Blåbær|~|Frost|org=økologisk
+7340011456612|Basmatiris|~|Kolonial|
+5707735944863|Krydderimix|til bolognese|Kolonial|qa=type gættet ud fra "Bolognese Mix"
+7340191117365|Pizza|bolognese, stenovnsbagt|Frost|qa=kategori gættet
+7340191142930|Bulgur|~|Kolonial|
+5700383198206|Ost|ekstra lagret|Mejeri & køl|qa=OFF-navn "Ekstra Lageret" — type gættet
+5715348073085|Pasta|fettuccine|Kolonial|
+7340191148895|Fiskefilet|~|Frost|meat=fisk;qa=kategori gættet
+7340191155565|Flåede tomater|~|Kolonial|
+7340191153561|Pasta|fusilli|Kolonial|
+7340191155749|Hakkede tomater|~|Kolonial|
+7340191161214|Havrepuffs|~|Kolonial|
+5700384679261|Kaffe|espresso|Kolonial|qty=400 g;kw1=hele bønner
+7340191114197|Müsli|højt fiberindhold|Kolonial|
+5701318000557|Hvedemel|~|Kolonial|
+5715569961543|Mayonnaise|let|Kolonial|
+7340191169906|Majs|~|Kolonial|kw1=på dåse
+7340191156586|Mandel|~|Kolonial|pl=Mandler
+7340011443117|Pasta|penne|Kolonial|
+7340011475767|Pastasauce|grillede grøntsager|Kolonial|
+7340191152625|Pommes frites|steakhouse|Frost|
+7340191163430|Grillpølse|~|Kød & fisk|pl=Grillpølser
+5715348166626|Frikadelle|af hakket grisekød|Kød & fisk|meat=gris;pl=Frikadeller
+5700380294048|Kyllingelår|hele, med rygben|Kød & fisk|meat=kylling
+5729100200053|Skinke|~|Mejeri & køl|meat=gris;cook=røget
+7340191138407|Skinkestrimler|~|Mejeri & køl|meat=gris
+7340191153578|Pasta|penne|Kolonial|
+7340011486633|Riskage|med havsalt|Kolonial|pl=Riskager
+5701975803386|Ost|~|Mejeri & køl|kw1=revet
+5700383198190|Danbo|lagret|Mejeri & køl|
+7340191130487|Hvidløgsspegepølse|~|Mejeri & køl|
+5700383123994|Iskaffe|cappuccino|Drikkevarer|
+5701975306085|Koldskål|citron og vanilje|Mejeri & køl|
+7340191138834|Pepperoni|~|Mejeri & køl|
+7340191163522|Rullepølse|~|Mejeri & køl|
+5715348139972|Salat|vietnamesisk|Mejeri & køl|
+7340191139923|Skinketern|~|Mejeri & køl|meat=gris
+5701975302155|Sødmælk|~|Mejeri & køl|
+5715348022274|Yoghurt|~|Mejeri & køl|
+5715348022250|Yoghurt|pære og banan|Mejeri & køl|
+7340191179080|Hotdogbrød|brioche|Brød & kager|
+5700382590698|Knækbrød|~|Brød & kager|
+5715569982326|Pitabrød|~|Brød & kager|
+5715569981701|Baguette|rustik surdej|Brød & kager|
+5700383203443|Æblemost|~|Drikkevarer|
+5715348157549|Laks|portioner med skind|Frost|meat=laks;country=Danmark
+5715569979531|Pitabrød|~|Frost|
+5703043999106|Pizza|~|Frost|qa=OFF-navnet er kun "Pizza"
+5715569969587|Pizza|kebab|Frost|
+5715348158461|Pizza|surdej|Frost|
+5715348158485|Pizzabund|med surdej|Frost|
+5715348143016|Rejer|håndpillede|Frost|meat=rejer
+5715569969525|Pizza|med svampe og kartofler|Frost|
+5715348139545|Tomat|dulcita|Frugt & grønt|pl=Tomater
+5715569971221|Aioli|~|Kolonial|
+5715569971337|Aioli|med chili|Kolonial|
+5700382801947|Bearnaise|~|Kolonial|
+7340191179103|Burgerbolle|brioche|Brød & kager|pl=Burgerboller
+2099640121921|Flap meat|~|Kød & fisk|meat=okse;qa=type gættet
+7340191119895|Granola|crunchy triple xbox|Kolonial|
+5709760085771|Rodfrugtmos|grov|Kolonial|
+5718147401806|Oliven|kalamata og grønne|Kolonial|
+5715348160419|Haydari|~|Mejeri & køl|qa=tyrkisk dip — kategori gættet
+7340011465720|Hønsebouillon|~|Kolonial|
+5718146730860|Forårsrulle|med grøntsager og kylling|Frost|pl=Forårsruller;qa=OFF-navnet "Iemas Forårsrullef … Kyllang" har tastefejl; kategori gættet
+5700002016782|Kakaomandel|~|Slik & snacks|
+5700380867112|Karamel|~|Slik & snacks|qa=OFF-navnet "Karamelterte" — type gættet
+5715348151974|Vindruer|kernefri, autumn crisp|Frugt & grønt|
+5715569949329|Lakridsmix|~|Slik & snacks|
+7340191181342|Pålægschokolade|lys|Slik & snacks|
+5715348136247|Rødspættefilet|panerede, dobbelte|Frost|meat=fisk;qa=kategori gættet
+5715569978619|Parmigiano reggiano|~|Mejeri & køl|
+5700383682798|Pebersauce|~|Kolonial|
+5700382033577|Pesto|cremet tomat|Kolonial|
+5700383527228|Pesto|grøn|Kolonial|
+5700384223129|Ørredsalat|~|Mejeri & køl|
+2099440099321|Ribroast|med krydderurter og flagesalt|Kød & fisk|meat=okse;qa=type gættet
+5025692127120|Marmelade|sevilla appelsin|Kolonial|qa=type gættet ud fra "Sevilla Orange"
+5715569972808|Smørepålæg|~|Kolonial|qa=produkt uklart
+5715569971320|Hummus|med soltørrede tomater|Mejeri & køl|
+2094270146887|Teres major|~|Kød & fisk|meat=okse
+7340011464464|Tun|i stykker i solsikkeolie|Kolonial|meat=tun;qa=OFF-mængde 116 g er sandsynligvis drænet vægt
+5715569971238|Tzatziki|~|Mejeri & køl|
+5715569993469|Focaccia|~|Brød & kager|
+5707293026117|Grød|nr. 1|Kolonial|qa=produkt uklart
+5715569956143|Marmelade|rabarber|Kolonial|
+5715569978800|Oksepølse|~|Kød & fisk|meat=okse;pl=Oksepølser
+5715348084203|Hakket oksekød|~|Kød & fisk|meat=okse;fat=7-10%
+5715348128495|Gravad laks|~|Mejeri & køl|meat=laks
+5715569971177|Pesto|grøn|Mejeri & køl|
+5700382103379|Hollandaisesauce|~|Mejeri & køl|
+5715569971368|Hummus|~|Mejeri & køl|
+5715569971252|Hummus|grov|Mejeri & køl|
+5715569971146|Hummus|med chili|Mejeri & køl|
+5715569971344|Hummus|med chili|Mejeri & køl|
+5715348129720|Hønsesalat|~|Mejeri & køl|
+5715348138920|Kakaomælk|~|Mejeri & køl|
+5700382317394|Wrap|med kylling og chipotle|Mejeri & køl|meat=kylling
+5715569986300|Laks|filet royal|Mejeri & køl|meat=laks
+5715348144914|Laks|halehængt|Mejeri & køl|meat=laks
+5715348129744|Laksesalat|~|Mejeri & køl|meat=laks
+5715569984474|Lasagne|~|Mejeri & køl|
+5715569969549|Pizza|pepperoni|Frost|
+5715348158522|Pinsa|~|Mejeri & køl|qa=kategori gættet
+5715348128471|Laks|koldrøget i skiver|Mejeri & køl|meat=laks;cook=røget
+5700384274480|Chokolade|~|Slik & snacks|
+5700383384159|Flødebolle|~|Slik & snacks|pl=Flødeboller
+5700382602544|Flødebolle|håndlavede, lakrids|Slik & snacks|pl=Flødeboller
+5700380383391|Flødebolle|mørke|Slik & snacks|pl=Flødeboller
+5700382257591|Mørk chokolade|med mintfyld|Slik & snacks|
+5745000617166|Træstamme|med marcipan og mørk chokolade|Slik & snacks|pl=Træstammer
+5700382788330|Toast|~|Brød & kager|
+7340191116962|Isvaffel|~|Slik & snacks|pl=Isvafler;qa=kategori gættet
+7340011340812|Appelsinjuice|fra koncentrat|Drikkevarer|
+7340011424901|Te|kamille|Drikkevarer|
+7340191169029|Læskedrik|hindbærsmag|Drikkevarer|
+4340521162181|Æblejuice|~|Drikkevarer|
+7340011340751|Æblejuice|fra koncentrat|Drikkevarer|
+7340011420378|Iste|fersken|Drikkevarer|qty=1.5 l
+7340011485674|Baguette|med hvidløgsfyld|Frost|qa=kategori gættet
+7340191160521|Kiks|duo, kakao|Brød & kager|
+5715348208296|Kyllingelårfilet|~|Kød & fisk|meat=kylling;qa=OFF-navnet "Chicken Låfilet" har tastefejl
+7340191185685|Is|classic choko|Frost|
+7340191110625|Chokolade|mørk|Slik & snacks|
+7340191153493|Pasta|fusilli|Kolonial|
+7340011450702|Hakkede tomater|med oregano og basilikum|Kolonial|
+7340191187733|Honning|~|Kolonial|
+7340191170087|Hvedemel|~|Kolonial|
+7340191135284|Marmelade|jordbær, cremet|Kolonial|
+7340191106420||||drop;qa=finsk OFF-navn (Kahvi…), solgt i Finland — ingen dansk dokumentation
+7340011477235|Kyllingebryst|~|Mejeri & køl|meat=kylling;cook=kogt
+5700380734728|Krydderbolle|~|Brød & kager|pl=Krydderboller
+5715348208258|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+5715348209934|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+7340191138049|Lasagneplade|~|Kolonial|pl=Lasagneplader
+5715569961291|Mayonnaise|let|Kolonial|
+5700382970469|Remoulade|light|Kolonial|
+7340191142626|Majs|~|Kolonial|
+7340011401841|Margarine|flydende|Mejeri & køl|
+7340191183902|Marmelade|jordbær|Kolonial|
+5700382970414|Mayonnaise|light|Kolonial|
+5715569991687|Partypølse|~|Kød & fisk|pl=Partypølser
+7340011422730|Kartofler|~|Kolonial|qa=OFF-navnet "Potato's katofler" har tastefejl
+7340191185661|Is|rumraket|Frost|qa=kategori gættet
+7340011464587|Rødbeder|~|Kolonial|
+7340011464594|Rødkål|~|Kolonial|
+7340011321347|Sauce|~|Kolonial|qa=OFF-navnet er kun "sovs"
+7340011344483|Skinkestrimler|~|Mejeri & køl|meat=gris
+7340011300175|Margarine|smørbar, plantebaseret|Mejeri & køl|fat=70%
+7340191104822|Solsikkeolie|~|Kolonial|
+7340011482772||||drop;qa=finsk OFF-navn (Tomaattimurska) — ingen dansk dokumentation
+5700382759286|Torskerogn|~|Kolonial|
+7340191177277|Nektar|tropiske frugter|Drikkevarer|
+7340191183414|Tun|i vand|Kolonial|meat=tun
+5715348209910|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+7340011322306|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+7300156596109|Bacon|i tern|Mejeri & køl|meat=gris
+7340011344476|Bacon|i tern|Mejeri & køl|meat=gris
+7340011393290|Fiskefrikadelle|~|Mejeri & køl|meat=fisk;pl=Fiskefrikadeller;qty=4 x 85 g;pack=4
+7340191163461|Frankfurter|med ost|Kød & fisk|
+5700382686001|Hønsesalat|~|Mejeri & køl|
+5715348209873|Kylling|~|Kød & fisk|meat=kylling;qa=produkt uklart (kun "Kylling")
+5715348208111|Kylling|bbq|Kød & fisk|meat=kylling
+0300410073435|Kyllingebryst|~|Mejeri & køl|meat=kylling;cook=kogt;qa=EAN begynder med 0 (amerikansk præfiks) — dansk dokumentation uklar
+5715348208234|Kyllingebryst|~|Kød & fisk|meat=kylling
+5715348209859|Kyllingebryst|~|Kød & fisk|meat=kylling;country=Danmark
+5715348203017|Hakket kylling|~|Kød & fisk|meat=kylling;fat=7-10%
+5715348209897|Kylling|tilsat lage|Kød & fisk|meat=kylling
+5715569991328|Kyllingebryst|~|Kød & fisk|meat=kylling
+5715348208197|Kyllingebryst|med rosmarin og citron|Kød & fisk|meat=kylling
+7340191175778|Lasagne|~|Mejeri & køl|
+7340011380054|Leverpostej|~|Mejeri & køl|
+5700382686025|Makrelsalat|~|Mejeri & køl|
+7340191121959|Rejer|i lage|Mejeri & køl|meat=rejer
+5715569942047|Tunsalat|~|Mejeri & køl|meat=tun
+7340191164178|Drikkeyoghurt|~|Mejeri & køl|
+5715348208357|Kyllingepopcorn|~|Frost|meat=kylling;qa=kategori gættet
+
+# ---- Coop-mærket (brand "Coop"), del 1 ----
+5701318229507|Toast|hvede|Brød & kager|
+0744439063181|Sandwichbrød|~|Brød & kager|
+7340191118300|Burgerbolle|~|Brød & kager|pl=Burgerboller;qa=OFF-navnet "Bruger boller" har tastefejl
+7340011440031|Burgerbolle|store|Brød & kager|pl=Burgerboller
+7624841332897||||drop;qa=schweizisk Coop-vare (qualité & prix), ingen dansk dokumentation
+7340191114562|Kage|creme|Brød & kager|pack=3;qty=3 x 90 g;qa=OFF-navnet er "KAGE KREME"
+5700382929238|Kammerjunker|~|Brød & kager|pl=Kammerjunkere
+7340191143418|Kiks|marie|Brød & kager|
+5700381528180|Knækbrød|~|Brød & kager|
+5700383336523|Ladyfingers|~|Brød & kager|
+7340191159433|Majskiks|sour cream og løg|Slik & snacks|
+7340191105911|Tortilla|chia, wraps|Brød & kager|qa=OFF-navn på fransk (lang=fr)
+7340191120334|Pitabrød|large|Brød & kager|
+5700382722952|Roulade|~|Brød & kager|
+5700381895718|Rugbrød|mørkt|Brød & kager|brand=Xtra
+7340191141766|Rundstykke|rustikke|Brød & kager|pl=Rundstykker
+5700384316920|Sandwichbrød|~|Brød & kager|
+7340191120013|Smelteost|skiver til toast|Mejeri & køl|qa=OFF-navnet "Toast smelteskriver" — type gættet
+7340191168633|Tvebak|~|Brød & kager|pl=Tvebakker
+7340191157712|Tvebak|kavringer|Brød & kager|pl=Tvebakker
+7340191155930|Mandeldrik|~|Drikkevarer|
+7340011472261|Kakaodrik|~|Drikkevarer|qa=type gættet ("Kakao Mælke Drik", OFF-kategori kakaopulver)
+7340011456469|Appelsinjuice|fra koncentrat|Drikkevarer|
+7340191152540|Æblejuice|ufiltreret|Drikkevarer|
+7340191157576|Iste|fersken, low calories|Drikkevarer|
+5700383668747|Sodavand|abrikos|Drikkevarer|
+5700382287642|Cola|~|Drikkevarer|
+5700384676956|Cola|zero|Drikkevarer|
+7340011470342|Æblejuice|~|Drikkevarer|
+5700383159177|Grahamsbolle|~|Brød & kager|pl=Grahamsboller;qa=OFF-navn mangler; type/kategori gættet
+5700383149819|Krydderbolle|~|Brød & kager|pl=Krydderboller
+5715348087044|Butter chicken|~|Frost|qa=kategori gættet
+5700384391873|Couscoussalat|med falafel og granatæbledressing|Mejeri & køl|qa=kategori gættet
+7340191151901|Pommes frites|curly|Frost|
+7340191119536|Røsti|pommes|Frost|lf=~
+7340011361268|Røsti|pommes|Frost|
+7340011489061|Chicken tandoori|~|Frost|meat=kylling;qa=kategori gættet
+7340191122666|Spinat|hakket, i portioner|Frost|
+5700381129943|Hindbær|~|Frost|
+7340011497172|Is|double chokolade|Frost|
+5700384646201|Risret|asiatisk inspireret|Frost|
+7340011475248|Is|jordbær, vaffel|Frost|
+7340011415961|Yoghurt|jordbær|Mejeri & køl|qa=kategori gættet
+7340011403616|Kyllingestrimler|~|Mejeri & køl|meat=kylling;qa=kategori gættet
+7340191158214|Majskiks|med pizzasmag|Slik & snacks|
+5744004250089|Kylling|stegt, kogt|Frost|meat=kylling;cook=stegt
+7340191173217|Pesto|creamy basilikum|Kolonial|
+7340011478935|Croutoner|med basilikum og tomat|Kolonial|
+5700383214692|Hummus|trio med oliven, basilikum og tomat|Mejeri & køl|
+5709243430128|Blåbær|~|Frugt & grønt|
+5700382120192|Coleslaw|~|Mejeri & køl|
+5700381390367|Coleslaw|a la wild west|Mejeri & køl|
+5700383568153|Coleslaw|~|Mejeri & køl|
+7340011459057|Ærter og gulerødder|~|Kolonial|qa=kategori gættet
+5715348051106|Flødekartofler|~|Mejeri & køl|qa=kategori gættet
+5700383475734|Kartoffel|nye, samsø|Frugt & grønt|pl=Kartofler
+5704313723445|Kyllingepølse|med paprika og soltørret tomat|Kød & fisk|meat=kylling
+5750006315046|Pære|~|Frugt & grønt|pl=Pærer
+5700383518981|Frisk pasta|fettuccine med spinat|Mejeri & køl|qa=OFF-navnet "Fettuccibe" har tastefejl
+7340191135635||||drop;qa=blandet svensk/finsk OFF-navn (Tomaattimurska), ingen dansk dokumentation
+5700383137298|Tomat|mini blomme|Frugt & grønt|pl=Tomater;qa=OFF-navn mangler
+7340011476474|Passata|~|Kolonial|
+7340011446668|Baguette|grove, forbagte|Brød & kager|pack=2;qty=2 stk
+5715348037643|Kyllingelårfilet|bbq|Kød & fisk|meat=kylling
+5700384575259|Bagel|sesam|Brød & kager|pl=Bagels
+7611654271734||||drop;qa=schweizisk stregkode (761) og fransk OFF-navn, ingen dansk dokumentation
+7340191146655|Instant nudler|oksesmag|Kolonial|
+4304016144663|Instant nudler|oksesmag|Kolonial|
+5700380860274|Hakket oksekød|~|Kød & fisk|meat=okse
+7340191165335|Kiks|digestive|Brød & kager|
+5715348138968|Proteinshake|chokolade|Drikkevarer|
+7340011435747|Pizza|bolognese|Frost|pack=3;qty=3 stk;qa=kategori gættet
+7340191143647|Håndværkerbolle|~|Brød & kager|pl=Håndværkerboller
+5700383149734|Rugbrød|~|Brød & kager|
+7340191143630|Skagenslapper|~|Brød & kager|qa=produkttype uklar
+5700380908396|Toast|hvede|Brød & kager|
+7340011456599|Ris|brune|Kolonial|
+7340011361022|Brændende kærlighed|~|Mejeri & køl|qa=kategori gættet
+7340191154339|Krydderimix|til burrito|Kolonial|
+7340011472872|Müsli|crunchy, med mælkechokolade|Kolonial|
+5700382710843|Dressing|caesar|Kolonial|qa=type gættet
+7340191149564|Majs|~|Kolonial|kw1=på dåse
+5715348137916|Nudelsalat|med kylling og cashewnødder|Mejeri & køl|meat=kylling
+7340011463863|Skiveost|frederikke, mild|Mejeri & køl|
+5700381423546|Bagel|med ost|Brød & kager|pl=Bagels
+7340191141964|Is|classic mandel|Frost|
+5700281817032|Cocktailtomat|på stilk|Frugt & grønt|pl=Cocktailtomater
+7340191127401|Morgenmadsprodukt|cocoa pillows|Kolonial|pl=Morgenmadsprodukter
+7340011499954|Morgenmadsprodukt|cocoa puffs|Kolonial|pl=Morgenmadsprodukter
+7340191150713|Snacks|peanut flips|Slik & snacks|
+7340191104372|Chips|sour cream og chili|Slik & snacks|
+7340191152083|Kroket|~|Frost|pl=Kroketter;qa=OFF-navn på fransk; kategori gættet
+7340011478911|Croutoner|~|Kolonial|
+7340011478928|Croutoner|~|Kolonial|
+5700383198305|Danbo|mild|Mejeri & køl|
+5700382992812|Rugbrød|danish style|Brød & kager|qa=OFF-navn mangler
+5700383149024|Kyllingeinderfilet|~|Kød & fisk|meat=kylling;country=Danmark
+5700384102561|Kyllingebrystfilet|i strimler|Kød & fisk|meat=kylling;country=Danmark
+5760725222341|Kyllingebrystfilet|~|Kød & fisk|meat=kylling;country=Danmark;qa=OFF-navnet "killing" har tastefejl
+5700383365455|Danskvand|med citronsmag|Drikkevarer|
+7340191146686|Instant nudler|oksesmag|Kolonial|
+7340011419617|Sennep|dijon|Kolonial|
+7340191127029|Dipmix|dild|Kolonial|
+5715348083152|Kyllingesalat|spicy med kimchidressing|Mejeri & køl|meat=kylling
+7340011428978|Majs|mini|Kolonial|kw1=på dåse
+7340011364368|Kildevand|naturlig|Drikkevarer|
+7340011317869|Nudler|æg|Kolonial|
+5700381319313|Æg|~|Mejeri & køl|pack=15;qty=15 stk
+7340011484288|Olivenolie|extra virgin|Kolonial|
+7340191163201|Løg|~|Kolonial|cook=stegt
+5700384255854|Salat|salatskålens favoritter|Frugt & grønt|qa=produkt uklart
+7340191135161|Pasta|fettuccine, æg|Kolonial|
+7340191173385|Havregryn|finvalsede|Kolonial|
+0300410061487|Havregryn|finvalsede|Kolonial|
+7340011466062|Fiskepind|~|Frost|meat=fisk;pl=Fiskepinde
+5715569945741|Brød|flag|Brød & kager|qa=produkt uklart ("Flag Bread")
+7340011403012|Frikadellepølse|~|Mejeri & køl|
+5700381147473|Frugtkaramel|~|Slik & snacks|pack=3;qty=3 x 38 g;qa=type gættet ("Fruit Chews")
+7340191140158|Pasta|fusilli|Kolonial|org=økologisk
+7340191120136|Grana padano|~|Mejeri & køl|
+5715348002542|Grana padano|~|Mejeri & køl|kw1=dop
+7340191153134|Granola|crunchy hagebær|Kolonial|
+7340011362456|Oliven|manzanilla|Kolonial|
+2094180032584|Grillraket|~|Kolonial|qa=produkt uklart
+5700384735622|Hakket gris|~|Kød & fisk|meat=gris;fat=8-12%
+
+# ---- Coop-mærket (brand "Coop"), del 2 ----
+7340011320746|Græskarkerner|~|Kolonial|
+7340191163850|Oliven|grønne hojiblanca med pimiento|Kolonial|
+7340011441564|Hakkebøf|~|Kød & fisk|meat=okse
+7340191113718|Pommes frites|hashbrown|Frost|qa=kategori gættet
+7340011321408|Nøddecreme|hasselnød|Kolonial|qa=OFF-navnet "Hasselnotscreme" har tastefejl, lang=fr
+7340011499794|Morgenmadsprodukt|hoops|Kolonial|pl=Morgenmadsprodukter
+7340011447900|Hotdogbrød|~|Brød & kager|
+7340011340041|Baked beans|i tomatsauce|Kolonial|
+5715348141500|Iceberg|snittet|Frugt & grønt|
+5715348136896|Måltidssalat|japansk inspireret|Mejeri & køl|
+7340011472292|Kakaomælk|~|Mejeri & køl|qa=type gættet ("Kakaobrik", lang=su)
+7340011381914|Karrysalat|~|Mejeri & køl|
+7340011456148|Kikærter|~|Kolonial|qty=400 g
+7340191144460|Kikærter|~|Kolonial|qty=380 g
+5700381102496|Klementin|clemenules|Frugt & grønt|pl=Klementiner
+5715348087181|Pulled|korean style bbq|Mejeri & køl|qa=produkt og kategori gættet
+5700383651800|Kyllingesalat|med en smag af italien|Mejeri & køl|meat=kylling
+5715030326123|Lakserulle uden ben|med skind|Kød & fisk|meat=laks;pl=Lakseruller uden ben
+7340011465645|Ris|hvide, langkornede|Kolonial|
+5700383429522|Jævner|lys|Kolonial|
+7340011340058|Majs|~|Kolonial|kw1=i saltlage
+7340191110106|Mandel|~|Kolonial|pl=Mandler
+7340191111134|Marcipan|ren rå|Kolonial|
+7340011350996|Hvedemel|sigtemel|Kolonial|
+5715348048748|Frikadelle|middags|Kød & fisk|pl=Frikadeller
+7340011448730|Frikadelle|middags|Kød & fisk|pl=Frikadeller
+7340011419846|Millionbøf|~|Kød & fisk|meat=okse
+5335348033652|Hakket oksekød|~|Kød & fisk|meat=okse;fat=14-18%
+7340011361800|Baguette|mini|Brød & kager|pl=Baguetter
+7340191145191|Riskiks|mini|Kolonial|
+7340011416104|Müsli|med frugt|Kolonial|
+5715348086948|Chili con carne|~|Mejeri & køl|meat=okse
+7340191160064|Pålægschokolade|mørk|Slik & snacks|
+5700381350279|Valmuefrø|mørke|Kolonial|
+7340011475699|Müsli|choko|Kolonial|
+7340191146990|Olivenolie|extra virgin|Kolonial|
+7340011498025||||drop;qa=ikke en fødevare (vådservietter)
+5700384312663|Hakket oksekød|~|Kød & fisk|meat=okse;fat=5-8%
+7340191104570|Kiks|chokolade, sandwich|Brød & kager|qa=type gættet (Ovilla, lang=nb)
+5740067410484|Brød|pagnol|Brød & kager|qa=produkt uklart
+7340191145542|Fiskefilet|paneret|Frost|meat=fisk;pl=Fiskefileter;qa=OFF-navnet "Panerende" — kategori gættet
+7340011402503|Ris|~|Kolonial|brand=Änglamark;kw1=parboiled
+5715348002528|Parmigiano reggiano|~|Mejeri & køl|
+5704959119749|Pastasalat|~|Mejeri & køl|
+7340191156098|Pastasauce|classico|Kolonial|
+7340011311126|Yoghurt|peach melba|Mejeri & køl|
+7340191100985|Jordnøddesmør|crunchy|Kolonial|
+7340011486985|Jordnøddesmør|smooth|Kolonial|
+5715569952992|Peanutbar|~|Slik & snacks|
+7340011357049|Perleløg|~|Kolonial|
+7340011311577|Piskefløde|~|Mejeri & køl|qa=OFF-navnet "Piskefløfrøde" har tastefejl
+7340191120310|Pitabrød|~|Brød & kager|wg=fuldkorn
+7340011430445|Pommes frites|~|Frost|qa=OFF-navnet "Pommes fristes" har tastefejl
+7340011458760|Chips|ranchers cut med sort peber og purløg|Slik & snacks|
+7340191132252|Linser|røde|Kolonial|
+5715569979647|Remoulade|~|Kolonial|qa=OFF-navnet "Remolade" har tastefejl
+7340011478805|Gelé|ribs|Kolonial|
+5715348090310|Ribsteak|~|Kød & fisk|meat=okse
+5715348090297|Ribsteak|~|Kød & fisk|meat=okse
+7340011356011|Løg|~|Kolonial|cook=ristet;qa=OFF-navn mangler
+7340011478324|Løg|~|Kolonial|cook=ristet;org=økologisk
+5700383554156|Romerbolle|~|Brød & kager|pl=Romerboller
+5700383864996|Romkugle|~|Brød & kager|pl=Romkugler
+7340191103733|Cheddar|rød|Mejeri & køl|
+7340011440208|Rødbeder|~|Kolonial|kw1=i skiver
+7340191132269|Kidneybønner|røde|Kolonial|
+7340011456773|Sweet and sour kylling|med jasminris|Mejeri & køl|meat=kylling;qa=kategori gættet
+7300150031514|Salatmix|vardags|Frugt & grønt|qa=svensk stregkode (730), OFF-navn på fransk
+5700380964514|Salami|ventricina|Mejeri & køl|
+7340191106680|Nøddemix|med sukker, honning og salt|Slik & snacks|
+7340191150416|Salt|havsaltflager|Kolonial|
+7340191145023|Cashewnødder|saltede|Slik & snacks|cook=ristet
+7340191148727|Tacosauce|tex mex, mild|Mad fra hele verden|
+7340191101425|Chips|ranchers cut med jalapeños|Slik & snacks|
+5714370005231||||drop;qa=Sprite er Coca-Colas mærke, ikke Coops egetmærke
+7340191100329|Saft|solbær|Drikkevarer|qa=OFF-navnet "Solværsaft" har tastefejl
+7340191163119|Pasta|rotini, spaghetti|Kolonial|
+5700382756858|Spidskålmix|~|Frugt & grønt|
+5700382673018|Spirit|~|Kolonial|qa=produkt uklart
+7340191154414|Marmelade|jordbær|Kolonial|
+5700384514968|Strøsukker|~|Kolonial|
+5715348087082|Pølseret|svensk|Mejeri & køl|
+7340191113077|Sydhavnsmix|~|Slik & snacks|qa=produkt uklart
+5715348086900|Tagliatelle|carbonara|Mejeri & køl|qa=OFF-navnet "Taglistelle" har tastefejl
+7340191122659|Tex mix|~|Kolonial|qa=produkt og kategori uklar
+7340191162914|Dressing|thousand island light|Kolonial|
+7340191141629|Ris|med tomat og krydderurter|Kolonial|
+7340191124165|Tun|i stykker i vand|Kolonial|meat=tun;qty=140 g;qa=OFF-mængde "140" uden enhed — antaget gram
+7340191160101|Tun|i stykker i vand|Kolonial|meat=tun
+5709153099156|Tærtedej|~|Brød & kager|qa=kategori gættet
+5700380518915||||drop;qa=OFF-navnet "Ugens Huryige" — produkt uklart
+7340011352259|Ris|parboiled og wild|Kolonial|
+7340011382485|Partypølse|~|Kød & fisk|brand=Xtra;pl=Partypølser
+7340191135185|Tun|skal ikke drænes|Kolonial|meat=tun
+7340191109995|Snacks|cheese flips|Slik & snacks|
+5700384085987|Hakket gris og kalv|~|Kød & fisk|meat=gris / kalv;fat=8-12%
+5700383065676|Hakket grisekød|~|Kød & fisk|meat=gris;fat=4-7%
+5700383017392|Hakket gris og kalv|~|Kød & fisk|meat=gris / kalv;fat=4-7%
+5700381638551|Hakket oksekød|~|Kød & fisk|meat=okse
+5700381684299|Cordon bleu|af kalkun|Kød & fisk|meat=kalkun
+5715348030644|Kotelet|med oregano og hvidløg|Kød & fisk|meat=gris;pl=Koteletter
+5715348030668|Kotelet|med paprika|Kød & fisk|meat=gris;pl=Koteletter
+7340011441588|Kyllingeinderfilet|~|Kød & fisk|meat=kylling;cook=stegt
+7340011403029|Filet|~|Mejeri & køl|cook=røget;qa=type og dyreart uklar ("Røget Filet")
+7340011426400|Skinke|~|Mejeri & køl|meat=gris;cook=røget
+7340191130135|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+7340011403036|Skinke|~|Mejeri & køl|meat=gris;cook=kogt
+7340191131538|Skinke|tyndskåret|Mejeri & køl|meat=gris
+
+# ---- Coop-mærket (brand "Coop"), del 3 ----
+5700383110833|Svinemørbrad|~|Kød & fisk|meat=gris
+5700382759248|Snackmix|med paprika|Slik & snacks|
+7340011456728|Panang curry|med kylling|Mad fra hele verden|meat=kylling
+7340191117976|Bami goreng|med grøntsager|Mad fra hele verden|qty=400 g
+7340191146679|Instant nudler|kyllingesmag|Kolonial|meat=~
+7340191157873|Tagliatelle|carbonara|Mejeri & køl|qa=OFF-navn på italiensk kategori; kategori gættet
+7340191106192|Sushieddike|~|Mad fra hele verden|
+7340011353881|Tacoskaller|~|Mad fra hele verden|
+7340011456520|Tacosauce|medium|Mad fra hele verden|
+5700383652432|Salsa|tomat med et strejf af chili|Kolonial|
+5715348086542|Broccolisalat|med bacon|Mejeri & køl|meat=gris
+7340191104846|Chips|bacon|Slik & snacks|meat=~
+7340011361039|Boller i karry|~|Mejeri & køl|
+7340191149762|Cheddar|~|Mejeri & køl|kw1=revet
+7340191108622|Cheddar|~|Mejeri & køl|kw1=i skiver
+7340191102248|Krydderimix|til chili con carne|Kolonial|
+7340011419860|Æg|~|Mejeri & køl|org=økologisk;pack=10;qty=10 stk;country=Danmark
+7340011493495|Emmentaler|~|Mejeri & køl|
+7340191174399|Frankfurter|med ost|Kød & fisk|
+5715348048700|Frikadelle|af kalkun og kylling|Kød & fisk|meat=kalkun / kylling;pl=Frikadeller
+5715348048724|Frikadelle|mini|Kød & fisk|pl=Frikadeller
+7340191173163|Gouda|~|Mejeri & køl|kw1=i skiver
+7340011402985|Hamburgerryg|~|Mejeri & køl|meat=gris
+7340191103788|Havredrik|~|Drikkevarer|
+7340191146495|Havredrik|barista|Drikkevarer|
+5700383124021|Iskaffe|karamel|Drikkevarer|
+5710326022819|Iskaffe|salted caramel|Drikkevarer|
+5700381358152|Kyllingebrystfilet|~|Kød & fisk|meat=kylling
+5700381960645|Kyllingebrystfilet|~|Kød & fisk|meat=kylling
+5700383393205|Kyllingebrystfilet|bbq|Kød & fisk|meat=kylling
+7340191123441|Burgerbøf|af kylling|Kød & fisk|meat=kylling;pl=Burgerbøffer
+5700384134517|Caesarsalat|med kylling|Mejeri & køl|meat=kylling
+5700383983154|Kyllingeunderlår|~|Kød & fisk|meat=kylling;country=Danmark
+5700381408970|Kyllingebrystfilet|~|Kød & fisk|meat=kylling;country=Danmark
+5715348090273|Pølse|af kylling|Kød & fisk|meat=kylling;raw=fersk;pl=Pølser
+5715348087167|Gyros|af kylling|Kød & fisk|meat=kylling
+5700381076506|Hakket kylling|~|Kød & fisk|meat=kylling;country=Danmark;fat=3-6%
+5760725232586|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+5335348009985|Pastasalat|med kylling og mango, karrydressing|Mejeri & køl|meat=kylling;qa=OFF-navnet "Målridssalat" har tastefejl
+5700380719688|Kyllingeoverlår|~|Kød & fisk|meat=kylling
+7340191138865|Kylling|i tern|Kød & fisk|meat=kylling
+5712849011325|Wrap|med kylling|Mejeri & køl|meat=kylling
+7340011426349|Kyllingebryst|~|Mejeri & køl|meat=kylling;cook=stegt
+5700384577628|Kyllingebrystfilet|~|Kød & fisk|meat=kylling
+5700381690504|Kyllingebryst|~|Kød & fisk|meat=kylling
+5700381353911|Kyllingebryst|i strimler|Mejeri & køl|meat=kylling;cook=stegt
+7340011363422|Kødbolle|~|Kød & fisk|pl=Kødboller
+7340011317241|Laks|koldrøget|Mejeri & køl|meat=laks;cook=røget
+5705830607133|Laks|indhaks|Kød & fisk|meat=laks;qa="Indhaks" uklart
+5715348083176|Måltidssalat|med røget laks og kartoffel|Mejeri & køl|meat=laks;cook=~
+5700383148089|Leverpostej|med bacon|Mejeri & køl|
+7340011444435|Leverpostej|med bacon|Mejeri & køl|
+7340191131804|Mascarpone|~|Mejeri & køl|
+5701975300953|Minimælk|~|Mejeri & køl|
+7340191168305|Skummetmælk|~|Mejeri & køl|country=Danmark
+5701975300946|Skummetmælk|~|Mejeri & køl|qa=OFF-navn mangler
+5700382973644|Skiveost|mellemlagret|Mejeri & køl|
+5700382482115|Pastasalat|med kylling og bacon|Mejeri & køl|meat=kylling / gris
+7340011391753|Pepperoni|~|Mejeri & køl|kw1=i skiver
+7340191160002|Piskefløde|~|Mejeri & køl|
+7340011310754|Flødeskum|af piskefløde|Mejeri & køl|
+1749153099125||||drop;qa=usædvanlig stregkode (174) — ligner dublet af 5709153099125
+5704313723544|Grillpølse|mix, med ost og paprika, med chili|Kød & fisk|pl=Grillpølser
+5704313723506|Pølse|grove, med bacon|Kød & fisk|meat=gris;fat=~;cook=~;pl=Pølser
+7340191158290|Rejer|~|Mejeri & køl|meat=rejer;kw1=i lage
+7340191155824|Salatost|i tern|Mejeri & køl|fat=17%;qty=530 g
+5700383050221|Salat|~|Mejeri & køl|qa=OFF-navnet er kun "Salat"
+5700383950200|Salat|~|Mejeri & køl|qa=OFF-navnet er kun "Salat"
+5700381765264|Broccolisalat|med et strejf af chili|Mejeri & køl|qa=OFF-navnet "Brocoli" har tastefejl
+5700380368695|Pastasalat|græsk inspireret|Mejeri & køl|
+7340011458579|Agurker|sandwich|Kolonial|
+5715569941347|Sandwichbrød|~|Brød & kager|
+5700380669822|Sandwichbrød|hvede|Brød & kager|
+7340191164925|Kiks|kakao, sandwich|Brød & kager|
+7340191163577|Kyllingebryst|i sandwichskiver|Mejeri & køl|meat=kylling
+7340011472179|Kyllingebryst|i sandwichskiver|Mejeri & køl|meat=kylling
+7340191163584|Kyllingebryst|i sandwichskiver med paprika|Mejeri & køl|meat=kylling
+7340011480013|Smelteost|til toast|Mejeri & køl|
+7340011473060|Smør|saltet|Mejeri & køl|
+7340191176171|Yoghurt|fersken|Mejeri & køl|
+7340011311119|Yoghurt|pære og banan|Mejeri & køl|qty=1 l
+5700381623656|Yoghurt|pære og banan|Mejeri & køl|
+5700382305742|Mayonnaise|ægte|Kolonial|brand=Irma
+7340191106659|Nødder|chili|Slik & snacks|qa=OFF-navn mangler
+7340011402749|Pålægschokolade|mørk|Slik & snacks|
+7340191116719|Chokolade|buttons|Slik & snacks|
+7340191122918|Flæskesvær|crispy og salty|Slik & snacks|
+7340011476566|Nøddecreme|med hasselnødder|Kolonial|
+7340191120914|Jordnødder|indbagte, chili|Slik & snacks|brand=Xtra
+7340011484172|Chips|saltede, med skræl|Slik & snacks|
+7340191106635|Mints|dark|Slik & snacks|
+7340011483960|Lakrids|hjul|Slik & snacks|
+7340191137042|Kiks|biscotti|Brød & kager|qa=OFF-navn mangler
+7340011473411|Pålægschokolade|mælkechokolade|Slik & snacks|
+5700383072940|Müslibar|chokolade og banan|Slik & snacks|pack=6;qty=6 x 21 g
+7340191106710|Nøddemix|med rosiner|Slik & snacks|
+7340191106666|Peanuts|overtrukne|Slik & snacks|
+7340191106642|Peanuts|saltede|Slik & snacks|
+7340191143814|Proteinbar|nødder|Slik & snacks|qa=OFF-navn og kategori på finsk (lang=fi)
+7340191143845|Proteinbar|chokolade|Slik & snacks|
+7340011454205|Rosin|~|Kolonial|pl=Rosiner
+7340011442790|Rosin|~|Kolonial|pl=Rosiner;org=økologisk
+7340191116092|Frugtkiks|med rosiner, korender og skovbær|Brød & kager|qa=OFF-navn mangler
+7340191168060|Rosin|jumbo|Kolonial|pl=Rosiner
+7340191117785|Snacks|sticky paprika|Slik & snacks|
+7340191119819|Is|stracciatella|Frost|
+5700383002299|Tyggegummi|centerfyldt, spearmint|Slik & snacks|pack=25;qty=50 g
+
+# ---- Coop-mærket (brand "Coop"), del 4 ----
+5701043001645|Is|brownie|Frost|qa=kategori gættet
+7340011311768|Naanbrød|~|Brød & kager|
+5715348114290|Brød|surdej|Brød & kager|
+5715348200382|Wrap|italiensk inspireret|Mejeri & køl|
+5700382759514|Kammerjunker|mini|Brød & kager|pl=Kammerjunkere
+5711070602746|Rugbrødssnacks|med havsalt|Slik & snacks|
+5700381366942|Tartelet|~|Brød & kager|pl=Tarteletter
+7340191145153|Toast|~|Brød & kager|qa=OFF-navnet er "Toast Slices"
+7340191179851|Toast|~|Brød & kager|qa=OFF-navnet er "Toast Slices"
+7340191163195|Chips|tortilla, jalapeño og lime|Slik & snacks|
+5700383036270|Træstamme|~|Slik & snacks|pl=Træstammer
+7340191151659|Frugtcocktail|~|Kolonial|
+8340072344490||||drop;qa=usædvanlig stregkode (834) — ligner dublet af 7340011344490
+7340191183568|Vingummi|cola, hvid chokolade|Slik & snacks|
+7340191152922|Tranebærdrik|~|Drikkevarer|
+7340191150867|Juice|frugt og gulerod|Drikkevarer|
+7340191175341|Nektar|multifrugt|Drikkevarer|
+7340191150881|Ananasjuice|~|Drikkevarer|
+7340011422228|Saft|rød blandet, ekstra|Drikkevarer|
+7340191110588|Ahornsirup|~|Kolonial|
+7340191178953|Smoothie|banan og jordbær|Drikkevarer|
+7340191160965|Smoothie|med æble og ærter|Drikkevarer|
+5700383990008|Sodavand|appelsin|Drikkevarer|
+7340191169210|Kippers|i vand|Kolonial|meat=fisk
+7340011455165|Brunchbolle|~|Frost|pl=Brunchboller;qa=kategori gættet (bake-off)
+7340191145634|Ciabatta|baguette|Frost|qa=kategori gættet (bake-off)
+7340011419334|Forloren hare|~|Mejeri & køl|qa=kategori gættet
+7340191184510|Hindbær|~|Frost|
+5700382591169|Is|hindbær, light|Frost|qa=type gættet
+5715569952794|Roulade|hindbær|Brød & kager|qa=kategori gættet
+7340011475262|Is|toffee, i vaffelhorn|Frost|
+7340191184497|Jordbær|~|Frost|qa=OFF-navnet "Jordbærd Frost" har tastefejl
+7340191165465|Pizza|bolognese|Frost|
+5715348158508|Pizza|~|Frost|wg=fuldkorn;qa=OFF-navnet "Fuld Pizza" — fuldkorn gættet
+8026302019696|Pizzabund|~|Frost|
+8026302020609|Pizzabund|surdej|Frost|
+5715348201853|Pizzabund|surdej|Frost|
+5715348201839|Pizzabund|surdej|Frost|
+5713906852400|Pommes frites|~|Frost|country=Danmark
+5715348138043|Måltidssalat|med kæmperejer|Mejeri & køl|meat=rejer
+7340191175891|Is|classic, med mørk chokolade|Frost|
+7340191147560|Ananas|stykker|Kolonial|
+7340191174535|Appelsinjuice|~|Drikkevarer|
+7340191171701|Müslibar|banan|Slik & snacks|
+5715348178254|Pastasalat|med kylling og basilikumdressing|Mejeri & køl|meat=kylling
+5700383497927|Salat|blandet|Frugt & grønt|
+7714483497921|Salatmix|~|Frugt & grønt|qa=usædvanligt stregkodepræfiks (771)
+5715569989646|Frugtterninger|blåbær|Frost|qa=kategori gættet
+5715348078943|Frisk pasta|cappelletti med ricotta og svampe|Mejeri & køl|
+7340191169630|Nødder|chili|Slik & snacks|
+5700380660799|Gulerod|revet|Frugt & grønt|pl=Gulerødder
+0741672001154|Kartoffel|udenlandske|Frugt & grønt|pl=Kartofler;qa=usædvanligt stregkodepræfiks (074)
+7340191169296|Chutney|mango|Kolonial|
+5715569975663|Flødekartofler|med rød peberfrugt|Mejeri & køl|
+5707735952097|Nakkekam|krone, marineret med hvidløg og rosmarin|Kød & fisk|meat=gris
+7340191178175|Stykker|rustikke, med kartoffel|Brød & kager|qa=produkt uklart; OFF-navn på norsk
+7340191173248|Rødløg|~|Kolonial|cook=syltet
+7340191107632|Pizza|spinat|Frost|
+5715348078929|Frisk pasta|tortelloni med ricotta og spinat|Mejeri & køl|
+5700381672241|Dip|sød kartoffel og chili|Mejeri & køl|
+0300590101256|Makrel|i tomat|Kolonial|meat=fisk;qa=usædvanligt stregkodepræfiks (030)
+5715348045556|Rødkålssalat|med selleri, æble og valnød|Mejeri & køl|
+7340191110519|Abrikos|~|Kolonial|pl=Abrikoser;qa=OFF-navnet "Abrikoserød" — produkt uklart
+7340191175884|Is|mandel|Frost|
+5700382581047|Sauce|til and|Kolonial|
+7340191159297|Suppe|asparges|Kolonial|
+7340191171633|Baked beans|~|Kolonial|
+5715348143986|Kotelet|bbq|Kød & fisk|meat=gris;pl=Koteletter;qa=OFF-navnet "BBQ Cotolettes" — dyreart gættet
+7340191162617|Sauce|bbq smokey|Kolonial|
+7340191162631|Sauce|bbq sweet and spicy|Kolonial|
+5700383840952|Bagekartoffel|~|Frugt & grønt|pl=Bagekartofler
+7340191141872|Baguette|~|Brød & kager|pl=Baguetter
+7340191176461|Bami goreng|~|Mad fra hele verden|
+5715348087204|Bami goreng|~|Mad fra hele verden|
+7340191162624|Sauce|bbq original|Kolonial|
+7340191177994|Basmatiris|~|Kolonial|
+5700381877431|Kanelsnegl|bløde|Brød & kager|pl=Kanelsnegle
+5707735944825|Krydderimix|til bolognese|Kolonial|
+7340191165458|Pizza|bolognese|Frost|
+5700384308482|Bresaola|~|Mejeri & køl|meat=okse
+5715348138012|Caesarsalat|~|Mejeri & køl|
+7340191141995|Is|karamel|Frost|
+7340011351146|Champignon|~|Kolonial|kw1=på glas;pl=Champignoner
+7340191182394|Ost|formaggio italiano|Mejeri & køl|
+5715569959199|Chiafrø|~|Kolonial|
+7340191176485|Chicken tandoori|~|Mejeri & køl|qa=kategori gættet
+7340011475255|Is|choko, i vaffelhorn|Frost|
+7340191115422|Is|choko og marcipan|Frost|
+7340191113176|Citronsyre|~|Kolonial|
+7340191166264|Hotdogbrød|classic|Brød & kager|
+7340191161191|Morgenmadsprodukt|cocoa puffs|Kolonial|pl=Morgenmadsprodukter
+7340011497110|Cornflakes|~|Kolonial|
+7340191143289|Couscous|~|Kolonial|
+7340191169340|Chicken pops|crispy|Frost|meat=kylling;qa=kategori gættet
+7340191183865|Pommes frites|curly|Frost|
+5715569967897|Danbo|ekstra lagret|Mejeri & køl|
+5700383198268|Danbo|45+, mellemlagret, med kommen|Mejeri & køl|
+5715569967910|Danbo|lagret|Mejeri & køl|
+5715348165711|Kyllingebryst|med lage|Kød & fisk|meat=kylling
+5715348160075|Kyllingeinderfilet|~|Kød & fisk|meat=kylling
+5715348160136|Kyllingelårfilet|~|Kød & fisk|meat=kylling
+5715348037629|Kyllingelårfilet|~|Kød & fisk|meat=kylling
+7340191149786|Chokolade|mørk|Slik & snacks|
+7340011499213|Chokolade|mørk, med mint|Slik & snacks|
+7340191140455|Sukker|stykker|Kolonial|qa=OFF-navnet "Diamant Stykker" — type gættet
+7340011485155|Soltørrede tomater|i tern|Kolonial|
+7340191162594|Sennep|dijon|Kolonial|qa=OFF-navnet "Dijon swnnp" har tastefejl
+7340191153233|Dinner kit|lasagnette|Mad fra hele verden|
+5715348195923|Nudelsalat|med spicy dressing|Mejeri & køl|
+7340191168091|Agurker|drue- og syltede|Kolonial|qa=produkt uklart
+7340191183544|Slik|chokolade, lakrids og salt karamel|Slik & snacks|
+5715569990420|Æg|~|Mejeri & køl|
+7340191105492|Pasta|eliche giganti|Kolonial|
+5700382922062|Entrecote|~|Kød & fisk|meat=okse
+7340191176478|Pasta|farfalle|Kolonial|
+5715348142903|Pasta|fettuccine|Kolonial|
+5715348184545|Pasta|fettuccine med spinat|Kolonial|
+2095110064958|Flanksteak|~|Kød & fisk|meat=okse
+2095110120647|Flanksteak|~|Kød & fisk|meat=okse
+2097100094921|Flanksteak|~|Kød & fisk|meat=okse
+2097100044650|Flanksteak|rødvinsmarineret|Kød & fisk|meat=okse
+2097100094723|Flanksteak|rødvinsmarineret|Kød & fisk|meat=okse
+7340191173736|Flormelis|~|Kolonial|
+7340191182400|Ost|formaggio italiano|Mejeri & køl|
+8717215043570|Frugtmix|~|Kolonial|qa=produkt uklart; hollandsk stregkode (871)
+8717215043594|Frugtpunch|~|Drikkevarer|qa=produkt uklart; hollandsk stregkode (871)
+7340191166509|Baguette|med hvidløg|Frost|qa=kategori gættet
+7340191165816|Pasta|fusilli|Kolonial|
+7340191177505|Pasta|fusilli, durum|Kolonial|
+5700383131401|Havrebrød|~|Brød & kager|gf=glutenfri
+7340191138186|Grillost|~|Mejeri & køl|
+5715348144143|Grillraket|~|Kolonial|qa=produkt uklart
+2093870079120|Svinemørbrad|~|Kød & fisk|meat=gris
+5715348171309|Grisekæber|~|Kød & fisk|meat=gris
+7340191178168|Græskar|stykke|Frugt & grønt|
+5700382649976|Græskarkerner|~|Kolonial|
+5700381294382|Oliven|grønne med feta|Kolonial|
+5707196360851|Hakkebøf|med bearnaise-krydderi|Kød & fisk|meat=okse;pl=Hakkebøffer
+7340191180734|Hakkede tomater|med urter|Kolonial|
+7340191166257|Burgerbolle|extra large|Brød & kager|pl=Burgerboller
+5711070602753|Knækbrødssnack|med havsalt|Slik & snacks|
+7340011465034|Chokolade|mælk, med karamel og havsalt|Slik & snacks|qa=OFF-navnet "Mækle Chokolademed" har tastefejl
+
+# ---------------- ALDI ----------------
+25035353|Kiks|digestive|Brød & kager|
+25039573|Müslibar|chokolade og banan|Slik & snacks|
+28053231||||drop;qa=polsk OFF-navn (Orzechowa), ingen dansk dokumentation
+4047247031356|Antipasti|italiensk|Mejeri & køl|qty=~;pack=~;qa=OFF-navn "Ital. Antipasti" (tysk forkortelse); kategori gættet
+5723419320426|Letmælk|~|Mejeri & køl|qa=OFF-navn på fransk (Lait demi écrémé), men dansk stregkode (572)
+4061459635690||||drop;qa=ungarsk OFF-navn (Tehéntúró), ingen dansk dokumentation
+25008715|Margarine|plantebaseret|Mejeri & køl|
+25064049|Appelsin|~|Frugt & grønt|pl=Appelsiner
+2005040039483|Marmelade|hindbær|Kolonial|qa=OFF-navnet "Himbær" har tastefejl
+25062205|Tomatsauce|~|Kolonial|
+25008074|Olivenolie|~|Kolonial|
+25022803|Rosin|~|Kolonial|pl=Rosiner

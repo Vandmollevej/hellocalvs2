@@ -97,5 +97,11 @@ export function displayNameForQuery(
 ): string {
   if (query.number === "singular") return ingredient.nameSingular ?? ingredient.name;
   if (query.number === "plural") return ingredient.namePlural ?? ingredient.name;
+  const singular = ingredient.nameSingular ?? ingredient.name;
+  const plural = ingredient.namePlural ?? ingredient.name;
+  const inSingular = hasWord(singular, query.term);
+  const inPlural = hasWord(plural, query.term);
+  if (inPlural && !inSingular) return plural;
+  if (inSingular && !inPlural) return singular;
   return ingredient.name;
 }

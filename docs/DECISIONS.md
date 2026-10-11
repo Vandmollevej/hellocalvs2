@@ -5169,3 +5169,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Nye fælles klasser: `.hf-input` (+ `--compact`), `.hf-btn--inline`, `.hf-badge` (+ `--success/--warning/--danger`), `.hf-admin-page`; komponent `AdminPagination` erstatter fire hjemmelavede Forrige/Næste-rækker.
 - Alle admin-knapper/-felter/-kort/-mærker er omlagt til klasserne (kodemod + gennemgang). Lint-regel `design-tokens/admin-controls` fejler på hjemmelavet kant/baggrund/radius/skrift/padding på `<button>/<input>/<select>/<textarea>` i admin.
 - Retter-listerne har samme kolonnebredder med og uden Disable-knap.
+
+## 2026-10-11: Sikker samling af efterladt arbejde
+
+- Regnearksscripts og supplerende navneregler fra den lokale deploy-branch medtages uden at erstatte masters nyere import, adgangsmur, konti eller admin-lister. Regneark og store import-/billeddata forbliver lokale som i importvejledningerne.
+- Den tidligere upushede Labels-side sættes i Varedatabase, bruger certifikatlogoer fra den fælles logofunktion og får admin-genvej Alt+Shift+0.
+- Søgeord uden artikel vælger ental-/flertalstitlen, når kun den ene titel indeholder ordet; uklare match bevarer standardtitlen.
+- Efterladt GuideGate og 25-point OFF-fotoflow indføres ikke: masters flow-system og 10-point genscanning er den aktuelle produktkontrakt.
