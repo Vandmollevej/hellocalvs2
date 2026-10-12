@@ -3316,3 +3316,11 @@ textarea.hf-input {
 @layer components {
   .hf-field-soft--focus { @apply focus-visible:ring-2 focus-visible:ring-hf-green; }
 }
+
+@layer components {
+  /* The wheel shares its font size with its JS geometry through one parameter. */
+  .hf-wheel-number { font-size: var(--hf-wheel-font-size); text-box: trim-both cap alphabetic; }
+  .hf-wheel-caption { line-height: 1.15; }
+  /* Audio animation still changes the bar height dynamically after capture starts. */
+  .hf-waveform-bar { @apply w-[3px] flex-1 rounded-full bg-hf-green; height: 8%; }
+}

@@ -165,8 +165,7 @@ function Waveform({ barRefs }: { barRefs: React.MutableRefObject<(HTMLDivElement
           ref={(element) => {
             barRefs.current[index] = element;
           }}
-          className="w-[3px] flex-1 rounded-full bg-hf-green"
-          style={{ height: "8%" }}
+          className="hf-waveform-bar"
         />
       ))}
     </div>

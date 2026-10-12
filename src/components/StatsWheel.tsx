@@ -614,12 +614,12 @@ function WheelItem({
           otherwise the icon sat lower than the number and the centered row
           looked slightly tilted (user 2026-09-29). */}
       <span
-        className="hf-type-strong relative leading-none"
-        style={{ fontSize: FONT_SIZE, textBox: "trim-both cap alphabetic" } as React.CSSProperties}
+        className="hf-type-strong hf-wheel-number relative leading-none"
+        style={{ "--hf-wheel-font-size": `${FONT_SIZE}px` } as React.CSSProperties}
       >
         <span
-          className={transition}
-          style={{ opacity, color: stat.reached ? "var(--hf-green)" : undefined }}
+          className={`${transition} ${stat.reached ? "text-hf-green" : ""}`}
+          style={{ opacity }}
         >
           {stat.value}
           {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
@@ -630,8 +630,8 @@ function WheelItem({
         {stat.caption && (
           <span
             aria-hidden="true"
-            className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
-            style={{ opacity: captionOpacity, lineHeight: 1.15 }}
+            className={`hf-type-small hf-wheel-caption absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+            style={{ opacity: captionOpacity }}
           >
             {stat.caption.map((line, lineIndex) => (
               <span key={lineIndex} className="block">

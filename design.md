@@ -2186,3 +2186,5 @@ Fælles klasser ændrer ikke layouts: mobilskærmen, desktopskallen og marketing
 | Platformpreview | hf-widget-frame + ios/android, hf-widget-add/action + compact, hf-phone-push-preview |
 
 Alle faste værdier ligger i globals.css. Tailwinds @apply bevarer de tidligere utility-egenskaber, responsive breakpoints og interaktionsstates. Dynamiske mål fra data/geometri forbliver inline. Lint håndhæver også marketingtypografi gennem roller og forbyder faste inline-font/radius/skyggeværdier uden for eksisterende dokumenterede undtagelser.
+
+Talhjul/lyd: hf-wheel-number bruger --hf-wheel-font-size fra hjulets eksisterende geometriparameter; hf-wheel-caption ejer den faste linjeafstand; hf-waveform-bar ejer søjlens startform. Kun løbende lydhøjder, opacity og geometriske positioner er inline.

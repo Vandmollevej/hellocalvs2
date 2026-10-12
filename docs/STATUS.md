@@ -5,6 +5,7 @@
 - Marketing har egne mk-type-*, mk-input og butiksknapklasser. WebShell, mobilens bundmenu og platformernes preview-geometri er fortsat adskilte.
 - Før/efter-fixtures: 672 elementer uden forskelle i 39 beregnede stilegenskaber ved 402 og 1440 px indholdsbredde; fire felter også kontrolleret med tastaturfokus. Ingen ændret produktadfærd i CSS-refaktoreringen.
 - Face ID: midlertidige loginfejl må ikke slette enhedsmarkeringen; allerede-oprettet nøgle kræver serverbekræftet reauth. Seks regressionstests grønne. Brugerens konkrete enrollmentfejl er ikke reproduceret; afventer berørt platform/fejl.
+- Talhjulets font/text-box, captions og nået-mål-farve samt lydsøjlernes startform bruger nu klasser; geometriparametre og lydanimation bevares. Fem ekstra før/efter-tilstande er grønne ved 402/1440 px. PR #401 indeholder hovedrefaktoreringen og sidste klasseopfølgning. Afsluttende lint/build og native-paritet er grønne.
 - Online brugersession er tilgængelig; admin viser stadig login. Slutverificeret: 384 tests grønne, lint uden fejl (12 eksisterende advarsler), build på 403 sider grøn, native sync og paritet grøn. 114 portede ruters kildehashes er opdateret efter style-only verifikation; native vejningstal bruger samme 40/48-headingrolle. PR/deploy pågår.
 
 # HELLO CAL — project status

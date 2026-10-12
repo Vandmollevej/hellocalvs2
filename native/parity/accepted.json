@@ -20,7 +20,7 @@
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/OnboardingWizard.tsx": "bbe54d3abc6ab25b",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
-    "src/components/StatsWheel.tsx": "e9276a2704b455b9",
+    "src/components/StatsWheel.tsx": "286161c478d344d5",
     "src/components/SwipeableRow.tsx": "7d580c5b4a7f2edf",
     "src/components/TopBar.tsx": "c466b089e2a38a9b",
     "src/components/WelcomeSheet.tsx": "2036784cdbd0c803",
@@ -3157,7 +3157,7 @@
   },
   "/voice": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/voice/page.tsx": "924fa100e3a92e00",
+    "src/app/voice/page.tsx": "b43dcb9df69447a7",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "6dbfc954cd0db43d",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
