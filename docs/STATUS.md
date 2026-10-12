@@ -1,6 +1,6 @@
-## 2026-10-12: Fælles CSS-klasser — afsluttende verifikation
+## 2026-10-12: Fælles CSS-klasser — flettet og deployet
 
-- Aktuel master bruges i worktrees/github-samling, branch codex/faelles-css-klasser-20261012; hovedmappens ændringer er bevaret.
+- Koden er flettet i PR #401 som 5e0414b5. Build/deploy #715 og masterens native #856 er grønne, inklusive Android og iPhone. Hovedmappens ændringer er bevaret; dokumentation afsluttes på codex/css-slutkontrol-20261012 i worktrees/github-samling.
 - Gentagne formularer, tabeller, kataloggitre, kamera-/rapportflader, social login, tilføj-labels og widget-preview er samlet i globals.css. 428 identiske småtekster bruger den eksisterende hf-type-caption.
 - Marketing har egne mk-type-*, mk-input og butiksknapklasser. WebShell, mobilens bundmenu og platformernes preview-geometri er fortsat adskilte.
 - Før/efter-fixtures: 672 elementer uden forskelle i 39 beregnede stilegenskaber ved 402 og 1440 px indholdsbredde; fire felter også kontrolleret med tastaturfokus. Ingen ændret produktadfærd i CSS-refaktoreringen.
@@ -8,7 +8,10 @@
 - Talhjulets font/text-box, captions og nået-mål-farve samt lydsøjlernes startform bruger nu klasser; geometriparametre og lydanimation bevares. Fem ekstra før/efter-tilstande er grønne ved 402/1440 px. PR #401 indeholder hovedrefaktoreringen og sidste klasseopfølgning. Afsluttende lint/build og native-paritet er grønne.
 - Slutgennemgang har fjernet resterende inline-styles i widget-/push-preview, mobilens handlingslabels, foto-/offlinevisninger og scanfarver. Ni SVG-grafer bruger nu fælles størrelsesklasser; de to orbit-menuer deler baggrund/skygge, inkl. highlight. Lint-reglerne omfatter nu også faste SVG-fontattributter og bevarer farvereglerne uden for admin. 32 ekstra SVG-/kontroltilstande er sammenlignet i 41 CSS-egenskaber ved 402/1440 px uden forskelle; grafens ægte sorte ramme er bevaret særskilt fra appens #232323-token. Native sync og 101 berørte style-only-ruters kildehashes er verificeret.
 - 67 faste SVG-tokenattributter er tilknyttet eksisterende fill-/stroke-klasser. 62 source-extracted SVG-par samt tre ekstra drag-skygge/stregkode-tilstande er grønne i 41 egenskaber på mobil/desktop. Skyggesæt er CSS-variabler/klasser; stregkodetekst bruger klasse med størrelsesparameter. Ingen statiske SVG-font- eller hf-tokenpaint-attributter tilbage uden for dokumenterede undtagelser. Separat agentreview fandt ingen konkrete regressioner.
-- Online brugersession er tilgængelig; admin viser stadig login. Slutverificeret: 384 tests grønne, lint uden fejl (12 eksisterende advarsler), build på 403 sider grøn, native sync og paritet grøn. 114 portede ruters kildehashes er opdateret efter style-only verifikation; native vejningstal bruger samme 40/48-headingrolle. PR/deploy pågår.
+- Online brugersession er tilgængelig; admin viser stadig login. Slutverificeret: 384 tests grønne, lint uden fejl (12 eksisterende advarsler), build på 403 sider grøn, native sync og paritet grøn. De berørte portede ruters kildehashes er opdateret efter style-only verifikation; native vejningstal bruger samme 40/48-headingrolle. Deploy afsluttet: https://github.com/Vandmollevej/hellocalvs2/actions/runs/38212627514. /api/health?deep=1 svarer HTTP 200/status ok.
+
+- Online efter deploy: 35 matchede desktopelementer ved 1280×720, alle 36 mobilelementer ved faktisk 402×874, fire profilfelter ved faktisk 1440×900 og otte adminlogin-elementer har uændrede beregnede egenskaber. Nye hf-shell__add/hf-navrow--profile-klasser er bekræftet i live DOM. Mobilens header/bundmenu og desktopskallen er visuelt kontrolleret og forskellige som tilsigtet. Browserens viewportoverride krævede synlig kontrolfane og faktisk innerWidth-kontrol; fejlsamplet desktop som mobil er kasseret.
+- Åbent: indre adminsider kan først kontrolleres visuelt efter brugerlogin i admin.hellocal.io; den konkrete Face ID-tilknytningsfejl kræver berørt platform/enhed og brugerens egen biometriske bekræftelse. Ingen legitimationsoplysninger eller brugerindstillinger er ændret.
 
 # HELLO CAL — project status
 
