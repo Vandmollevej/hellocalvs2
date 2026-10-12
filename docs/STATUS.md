@@ -265,3 +265,5 @@ Last updated: 2026-10-11
 - Codex12okt01:52:22Nemligog2Årstiderne-typerverificeret;Årstidernehar0tomme typer,Nemlig515,997samletalle10ark. Øvrigeceller/formlerbevaret;fuldnavnerensningogsamletopfølgningendnuuafsluttet.
 
 - Codex12okt02:02: 41 yderligere produkttyper verificeret (19 Nemlig,1 Wolt,21 SPAR). Ny fuldaudit før SPAR21 bekræftet; nu956 manglende typer i ti ark. Andre celler/formler bevaret. Fuld navnerensning, OFF-rest, rapport og livekontrol stadig udestår; Excel og samlet opfølgning ikke færdige.
+
+- Codex12okt02:12: 37 yderligere SPAR-typer verificeret; SPAR412 tomme,919 samlet alle ti ark. Øvrige celler/formler bevaret. Alle ni opgaver stadig uafsluttede; Excel ikke åbnet.
