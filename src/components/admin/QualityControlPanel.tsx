@@ -108,7 +108,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           Match-sikkerhed {matchCheck.confidence === null ? "—" : `${Math.round(matchCheck.confidence)}%`}
         </span>
       </div>
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         Visuel lighed {matchCheck.visualScore ?? "—"}% · Farve {matchCheck.colorScore ?? "—"}% · Struktur{" "}
         {matchCheck.structuralScore ?? "—"}%
       </p>
@@ -136,7 +136,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           onChange={(event) => saveAward(event.target.checked)}
           className="h-4 w-4"
         />
-        <span className="hf-type-small text-text-secondary">Award — antal points:</span>
+        <span className="hf-type-caption">Award — antal points:</span>
         <input
           type="number"
           min={1}

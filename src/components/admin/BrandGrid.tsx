@@ -144,7 +144,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
       </div>
 
       {rows.length > 0 && (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+        <ul className="hf-catalog-grid">
           {rows.map((brand) => {
             const state = status[brand.id];
             return (

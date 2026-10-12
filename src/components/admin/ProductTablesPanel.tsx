@@ -67,7 +67,7 @@ function Table({ title, rows }: { title: string; rows: [string, Value][] }) {
       <dl className="divide-y divide-border-strong">
         {rows.map(([label, value]) => (
           <div key={label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-4 px-4 py-2">
-            <dt className="hf-type-small text-text-secondary">{label}</dt>
+            <dt className="hf-type-caption">{label}</dt>
             <dd className={`hf-type-small break-words ${show(value) === "—" ? "text-text-muted" : "text-hf-black"}`}>{show(value)}</dd>
           </div>
         ))}

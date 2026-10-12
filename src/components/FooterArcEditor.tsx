@@ -241,7 +241,7 @@ export function FooterArcEditor({
           style={{ left: -ARC_RADIUS, bottom: 0, width: ARC_RADIUS * 2, height: ARC_RADIUS }}
           viewBox={`0 0 ${ARC_RADIUS * 2} ${ARC_RADIUS}`}
         >
-          <path d={`M0,${ARC_RADIUS} A${ARC_RADIUS},${ARC_RADIUS} 0 0 1 ${ARC_RADIUS * 2},${ARC_RADIUS} Z`} fill="var(--hf-green)" />
+          <path d={`M0,${ARC_RADIUS} A${ARC_RADIUS},${ARC_RADIUS} 0 0 1 ${ARC_RADIUS * 2},${ARC_RADIUS} Z`} className="fill-hf-green" />
         </svg>
         {fanSlots.map((slot, index) => {
           const rad = (angles[index] * Math.PI) / 180;

@@ -69,7 +69,7 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
             {warning}
           </p>
         ))}
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {row.subtitle}
           {row.label && (
             <span className={`hf-type-strong ml-2 ${row.label.tone === "green" ? "text-hf-green" : "text-hf-black"}`}>
@@ -77,7 +77,7 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
             </span>
           )}
         </p>
-        {row.extra && <p className="hf-type-small text-text-secondary">{row.extra}</p>}
+        {row.extra && <p className="hf-type-caption">{row.extra}</p>}
       </div>
       <IconChevronRight size={18} className="shrink-0 text-hf-black" />
     </Link>
@@ -101,7 +101,7 @@ export function RecipeCard({ row }: { row: RecipeRowData }) {
         )}
       </div>
       <p className="hf-type-small hf-type-strong mt-2 line-clamp-2 text-hf-black">{row.name}</p>
-      {row.subtitle && <p className="hf-type-small text-text-secondary">{row.subtitle}</p>}
+      {row.subtitle && <p className="hf-type-caption">{row.subtitle}</p>}
     </Link>
   );
 }

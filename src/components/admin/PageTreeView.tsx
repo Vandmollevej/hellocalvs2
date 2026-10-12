@@ -269,7 +269,7 @@ function PageCard({
         )}
       </span>
       <span className="hf-type-small block font-mono text-text-muted">{node.path}</span>
-      {node.note && <span className="hf-type-small block italic text-text-secondary">{node.note}</span>}
+      {node.note && <span className="hf-type-caption block italic">{node.note}</span>}
     </>
   );
 

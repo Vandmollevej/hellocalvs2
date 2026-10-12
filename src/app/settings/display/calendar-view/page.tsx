@@ -23,7 +23,7 @@ export default function CalendarViewDisplaySettingsPage() {
   return (
     <HfScreen title={t("calendarViewSettings.title")}>
       <div className="hf-page">
-        <p className="hf-type-small text-text-secondary px-1">
+        <p className="hf-type-caption px-1">
           {t("calendarViewSettings.intro")}
         </p>
 

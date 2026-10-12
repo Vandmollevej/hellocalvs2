@@ -44,7 +44,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
       <div className="overflow-x-auto">
         <table className="hf-type-body w-full text-left">
           <thead>
-            <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+            <tr className="hf-table-section hf-type-small">
               <th className="py-2 pr-3">Agent</th>
               <th className="py-2 pr-3">Status</th>
               <th className="py-2 pr-3">Varer i alt</th>
@@ -59,7 +59,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
                   <Link href={`/admin/scan-invites/${worker.id}`} className="hf-type-strong text-hf-green-dark underline">
                     {worker.name}
                   </Link>
-                  <div className="hf-type-small text-text-secondary">
+                  <div className="hf-type-caption">
                     {worker.email}
                     {worker.username ? ` · @${worker.username}` : ""}
                   </div>
@@ -77,7 +77,7 @@ export default async function ScanInvitesPage({ searchParams }: { searchParams: 
 
       <form action={updatePayRate} className="hf-panel max-w-md">
         <h2 className="hf-type-body hf-type-strong">Sats pr. godkendt vare (alle agenter)</h2>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Nu: {formatKroner(rate)}. Ændringer gælder kun nye indsendelser — tidligere beløb er fastfrosset.
         </p>
         <div className="flex gap-2">

@@ -244,7 +244,7 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <div className="flex flex-col gap-2">
-          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+          <p className="hf-type-caption hf-type-strong hf-heading px-1 uppercase tracking-wide">
             {t("settings.display")}
           </p>
           <AccordionCard>

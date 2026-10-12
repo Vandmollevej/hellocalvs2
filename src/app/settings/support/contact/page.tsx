@@ -70,7 +70,7 @@ export default function SupportContactPage() {
               <span className="hf-type-label">{t("settings.support.contactCategory")}</span>
               <span className="relative">
                 <select
-                  className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
+                  className="hf-select-auth hf-field hf-type-input"
                   value={category}
                   onChange={(event) => setCategory(event.target.value as SupportRequestCategoryKey)}
                 >
@@ -83,7 +83,7 @@ export default function SupportContactPage() {
                 <IconChevronDown
                   size={18}
                   stroke={2.5}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
+                  className="hf-select-chevron"
                 />
               </span>
             </label>

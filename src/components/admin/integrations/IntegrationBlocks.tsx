@@ -71,7 +71,7 @@ export function Delta({ k, invert = false }: { k: Kpi; invert?: boolean }) {
 export function Tile({ label, k, invert }: { label: string; k: Kpi; invert?: boolean }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-text-secondary hf-type-small">{label}</p>
+      <p className="hf-type-caption">{label}</p>
       <p className="text-text-primary hf-type-page-title hf-type-strong">{num.format(k.current)}</p>
       <p className="hf-type-small">
         <Delta k={k} invert={invert} />
@@ -83,7 +83,7 @@ export function Tile({ label, k, invert }: { label: string; k: Kpi; invert?: boo
 export function Plain({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg bg-hf-tan p-4">
-      <p className="text-text-secondary hf-type-small">{label}</p>
+      <p className="hf-type-caption">{label}</p>
       <p className="text-text-primary hf-type-page-title hf-type-strong">{typeof value === "number" ? num.format(value) : value}</p>
       {hint && <p className="text-text-muted hf-type-small">{hint}</p>}
     </div>

@@ -19,7 +19,7 @@ export function SetupSelectCard({
     <label className="items-center justify-between hf-card--row hf-card">
       <span className="min-w-0 flex-1">
         <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
-        <span className="text-text-secondary hf-type-small block">{description}</span>
+        <span className="hf-type-caption block">{description}</span>
       </span>
       <div className="relative shrink-0">
         <select

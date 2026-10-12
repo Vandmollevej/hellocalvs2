@@ -151,7 +151,7 @@ const TAP_TOLERANCE_PX = 10;
 const REFLOW_MS = 180;
 const REFLOW_EASING = "cubic-bezier(0.2, 0, 0, 1)";
 const SLIDE_ANIMATION_ID = "stat-grid-slide";
-const LIFT_SHADOW = "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)";
+const LIFT_SHADOW = "var(--hf-shadow-card-lift)";
 const EDIT_OUTLINE = "border-[1.5px] border-dashed border-hf-black/40";
 
 /** Where an item is drawn inside the grid: its layout box plus any slide still in flight. */
@@ -241,10 +241,10 @@ function StatCardFace({
     // kortet har sin endelige højde fra første billede.
     return (
       <>
-        <p className="hf-type-small flex items-center" style={{ minHeight: "1lh" }}>
+        <p className="hf-type-small hf-line-min flex items-center">
           <Skeleton type="caption" width="70%" height={14} />
         </p>
-        <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5" style={{ minHeight: "1lh" }}>
+        <p className="hf-type-body-lg hf-heading hf-line-min mt-1 flex items-center gap-1.5">
           <Skeleton type="icon" />
           <Skeleton type="body" width={56} height={20} />
         </p>
@@ -258,7 +258,7 @@ function StatCardFace({
   }
   return (
     <>
-      <p className="hf-type-small text-text-secondary">{card.label}</p>
+      <p className="hf-type-caption">{card.label}</p>
       <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
         <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
         {card.loading ? (
@@ -879,7 +879,7 @@ export function StatCardsGrid({
     return (
       <>
         <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
-        <span className="hf-type-small text-text-secondary">{count}</span>
+        <span className="hf-type-caption">{count}</span>
         <HfChevron direction={item.open ? "down" : "right"} />
       </>
     );
@@ -1146,7 +1146,7 @@ export function StatCardsGrid({
           ) : (
             <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
           )}
-          <span className="hf-type-small text-text-secondary">{count}</span>
+          <span className="hf-type-caption">{count}</span>
           <button
             type="button"
             data-stat-action
@@ -1208,13 +1208,12 @@ export function StatCardsGrid({
       {drag && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed z-50 rounded-2xl bg-hf-cream"
+          className="hf-card-lift pointer-events-none fixed z-50 rounded-2xl bg-hf-cream"
           style={{
             left: drag.x - drag.offsetX,
             top: drag.y - drag.offsetY,
             width: drag.width,
             height: drag.height,
-            boxShadow: LIFT_SHADOW,
           }}
         >
           {renderLifted(drag.item)}

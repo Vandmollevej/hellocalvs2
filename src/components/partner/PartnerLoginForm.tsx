@@ -56,7 +56,7 @@ export function PartnerLoginForm() {
       <button type="submit" disabled={loading} className="hf-btn-primary w-full py-2.5">
         {loading ? "Logger ind…" : "Log ind"}
       </button>
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         Adgang til partnerportalen oprettes af Hello Cal. Mangler I en adgang, eller er linket udløbet, så skriv til os via{" "}
         <a href="/business#kontakt" className="text-hf-green-dark underline">
           Business-siden

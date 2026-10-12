@@ -89,7 +89,7 @@ function DrinkContent() {
       <div className="hf-page">
         {loading && <Skeleton width={180} height={180} className="self-center rounded-full" />}
         {!loading && !drink && (
-          <p className="hf-type-small text-text-secondary text-center">{t("drinks.notFound")}</p>
+          <p className="hf-type-caption text-center">{t("drinks.notFound")}</p>
         )}
         {drink && (
           <>
@@ -121,7 +121,7 @@ function DrinkContent() {
             ))}
 
             {totals && (
-              <p className="hf-type-small text-text-secondary text-center">
+              <p className="hf-type-caption text-center">
                 {t("drinks.kcalTotal", { kcal: Math.round(totals.kcal) })}
               </p>
             )}

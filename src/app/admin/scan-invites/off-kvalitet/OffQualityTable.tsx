@@ -79,7 +79,7 @@ export function OffQualityTable({
           <input type="checkbox" checked={allSelected} onChange={toggleAll} disabled={rows.length === 0} />
           Vælg alle på siden
         </label>
-        <span className="hf-type-small text-text-secondary">{selected.size} valgt</span>
+        <span className="hf-type-caption">{selected.size} valgt</span>
         <div className="ml-auto flex flex-wrap gap-2">
           <button
             type="submit"
@@ -138,7 +138,7 @@ export function OffQualityTable({
                   <Link href={`/admin/products/${row.productId}`} className="hf-type-body hf-type-strong text-hf-black underline">
                     {[row.brand, row.name, row.packageSizeText].filter(Boolean).join(" · ")}
                   </Link>
-                  {row.barcode && <p className="hf-type-small text-text-secondary">Stregkode {row.barcode}</p>}
+                  {row.barcode && <p className="hf-type-caption">Stregkode {row.barcode}</p>}
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <span className={`hf-type-micro hf-type-strong rounded-full px-2 py-0.5 ${RATING_TONE[row.rating]}`}>
@@ -148,7 +148,7 @@ export function OffQualityTable({
                 </div>
               </div>
               {row.groups.length === 0 ? (
-                <p className="hf-type-small text-text-secondary">Intet at udsætte.</p>
+                <p className="hf-type-caption">Intet at udsætte.</p>
               ) : (
                 <dl className="flex flex-col gap-1">
                   {row.groups.map((group) => (

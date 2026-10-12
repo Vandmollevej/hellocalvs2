@@ -83,7 +83,7 @@ export function ProductImageConflicts({ items, canEdit }: { items: ProductImageU
             </button>
           </div>
           {confirmAll && (
-            <div className="flex flex-wrap items-center gap-3 rounded-md border border-hf-red-dark bg-hf-red-muted p-3" role="alertdialog">
+            <div className="hf-warning-confirm" role="alertdialog">
               <p className="hf-type-body min-w-0 flex-1 text-hf-black">
                 Erstat de nuværende billeder på alle {items.length} varer? De gamle kommer tilbage, hvis du sletter partiet bagefter.
               </p>

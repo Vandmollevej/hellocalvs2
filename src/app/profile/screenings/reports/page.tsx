@@ -41,7 +41,7 @@ export default function ScreeningReportsPage() {
                 <FoodRow
                   thumbnail={<IconMoon size={22} />}
                   title={t("screenings.sleep")}
-                  subtitle={<p className="hf-type-small text-text-secondary">{t("screenings.statusActive")}</p>}
+                  subtitle={<p className="hf-type-caption">{t("screenings.statusActive")}</p>}
                   right={<IconChevronRight size={18} />}
                 />
               </Link>
@@ -53,7 +53,7 @@ export default function ScreeningReportsPage() {
                     thumbnail={<IconClipboardHeart size={22} />}
                     title={screening.name}
                     subtitle={
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {screening.active ? t("screenings.statusActive") : t("screenings.statusInactive")}
                       </p>
                     }

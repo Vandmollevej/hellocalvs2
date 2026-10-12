@@ -124,7 +124,7 @@ function GoalInput({
           className="hf-type-body-lg w-full min-w-0 bg-transparent text-hf-black outline-none"
           placeholder={placeholder}
         />
-        <span className="text-text-secondary hf-type-small hf-type-strong pb-1">{unit}</span>
+        <span className="hf-type-caption hf-type-strong pb-1">{unit}</span>
       </span>
     </label>
   );
@@ -332,7 +332,7 @@ export function GoalForm({
       footer={
         <div className="flex flex-col gap-2">
           {(!hasDate || !hasAny) && (
-            <p className="text-text-secondary hf-type-small text-center">
+            <p className="hf-type-caption text-center">
               {!hasDate ? t("goals.dateRequired") : t("goals.atLeastOne")}
             </p>
           )}
@@ -473,7 +473,7 @@ export function GoalForm({
           defaultOpen={typeof focus === "string" && isActivityGoalField(focus)}
           bodyClassName="flex flex-col gap-3 p-4"
         >
-          <p className="text-text-secondary hf-type-small">{t("goals.activityIntro")}</p>
+          <p className="hf-type-caption">{t("goals.activityIntro")}</p>
           <button
             type="button"
             onClick={() => setActivity((current) => ({ ...current, ...WHO_ACTIVITY_SUGGESTION }))}
@@ -495,7 +495,7 @@ export function GoalForm({
               />
             ))}
           </div>
-          <p className="text-text-secondary hf-type-small">{t("goals.activityHeartRateHint")}</p>
+          <p className="hf-type-caption">{t("goals.activityHeartRateHint")}</p>
         </AccordionSection>
       </div>
       {activeSlider && (        <GoalSliderBar

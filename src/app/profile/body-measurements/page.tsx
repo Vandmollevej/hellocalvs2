@@ -203,7 +203,7 @@ export default function BodyMeasurementsPage() {
         </div>
 
         {sexLoaded && sex === null && (
-          <p className="hf-type-small text-text-secondary text-center">
+          <p className="hf-type-caption text-center">
             {t("bodyMeasurements.chooseSexHint")}
           </p>
         )}
@@ -264,7 +264,7 @@ export default function BodyMeasurementsPage() {
             </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
-            <p className="hf-type-small text-text-secondary text-center">
+            <p className="hf-type-caption text-center">
               {t("bodyMeasurements.noEntriesYet")}
             </p>
           )}
@@ -273,7 +273,7 @@ export default function BodyMeasurementsPage() {
               <div>
                 <p className="hf-type-small hf-type-strong text-hf-black">
                   {formatEntrySummary(entry, t, lengthUnit)}
-                  <span className="hf-type-small text-text-secondary ml-2">
+                  <span className="hf-type-caption ml-2">
                     {formatDateTime(entry.measuredAt)}
                   </span>
                 </p>
@@ -282,7 +282,7 @@ export default function BodyMeasurementsPage() {
                 type="button"
                 onClick={() => remove(entry.id)}
                 aria-label={t("bodyMeasurements.deleteAria")}
-                className="hf-type-small hf-type-strong text-text-secondary px-2"
+                className="hf-type-caption hf-type-strong px-2"
               >
                 {t("bodyMeasurements.delete")}
               </button>

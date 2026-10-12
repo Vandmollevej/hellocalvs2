@@ -82,7 +82,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
+    <div className="hf-auth-panel">
       <h1 className="hf-type-title text-hf-black">Nulstil admin-adgang</h1>
       {qrCodeDataUrl ? (
         <>

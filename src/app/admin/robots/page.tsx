@@ -47,7 +47,7 @@ export default async function AdminRobotsPage() {
       <div className="overflow-x-auto hf-surface px-4">
         <table className="hf-type-body w-full min-w-[900px] text-left">
           <thead>
-            <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+            <tr className="hf-table-section hf-type-small">
               <th className="py-2 pr-4">Robot</th>
               <th className="py-2 pr-4">On/Off</th>
               <th className="py-2 pr-4">Kør</th>

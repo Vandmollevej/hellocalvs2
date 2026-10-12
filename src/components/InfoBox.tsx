@@ -66,17 +66,17 @@ function PulseChart({ width, height }: { width: number; height: number }) {
 
   return (
     <svg width={width} height={height} role="img" aria-label="Puls over dagen" className="block">
-      <text x={0} y={9} fontSize={9} fill="#6b7280">{maxBpm}</text>
-      <text x={0} y={h} fontSize={9} fill="#6b7280">{Math.round(minBpm)}</text>
-      <line x1={padL} x2={padL + w} y1={h} y2={h} stroke="#d1d5db" />
-      {resting !== null && <line x1={padL} x2={padL + w} y1={y(resting)} y2={y(resting)} stroke="#d1d5db" strokeDasharray="3 3" />}
+      <text x={0} y={9} className="hf-chart-axis hf-chart-label">{maxBpm}</text>
+      <text x={0} y={h} className="hf-chart-axis hf-chart-label">{Math.round(minBpm)}</text>
+      <line x1={padL} x2={padL + w} y1={h} y2={h} className="hf-chart-grid" />
+      {resting !== null && <line x1={padL} x2={padL + w} y1={y(resting)} y2={y(resting)} className="hf-chart-grid" strokeDasharray="3 3" />}
       {ticks.map((t) => (
-        <text key={t} x={x(t)} y={height - 3} fontSize={9} fill="#6b7280" textAnchor="middle">{String(t % 24).padStart(2, "0")}</text>
+        <text key={t} x={x(t)} y={height - 3} className="hf-chart-axis hf-chart-label" textAnchor="middle">{String(t % 24).padStart(2, "0")}</text>
       ))}
       {path ? (
-        <path d={path} fill="none" stroke="#e11d48" strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />
+        <path d={path} fill="none" className="hf-chart-pulse" strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />
       ) : (
-        <text x={padL + w / 2} y={h / 2} fontSize={10} fill="#9ca3af" textAnchor="middle">Ingen pulsdata endnu</text>
+        <text x={padL + w / 2} y={h / 2} className="hf-chart-axis--large hf-chart-empty" textAnchor="middle">Ingen pulsdata endnu</text>
       )}
     </svg>
   );
@@ -137,7 +137,7 @@ export function InfoBox({ side }: { side: "left" | "right" }) {
       } as React.CSSProperties}
     >
       <svg width={w} height={h} className="pointer-events-none absolute inset-0" aria-hidden>
-        <path d={d} fill="#fff" stroke="#000" strokeWidth={1} />
+        <path d={d} className="fill-hf-white hf-chart-frame" strokeWidth={1} />
       </svg>
       <div className="absolute inset-x-0 top-0 overflow-hidden px-2 pt-2" style={{ bottom: TOOTH_H }}>
         <div key={current.key} className="hf-type-label hf-type-strong lowercase text-black">{current.title}</div>

@@ -113,7 +113,7 @@ function TilmeldContent() {
         <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
+      <form onSubmit={handleSubmit} className="hf-auth-form">
         {verificationId ? (
           <>
             <p className="hf-type-body">{t("sms.codeSent", { phone: normalizedPhone })}</p>

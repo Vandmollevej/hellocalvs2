@@ -34,7 +34,7 @@ export default async function AdminSharedRecipesPage() {
     <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "quality_control_title")}</h1>
       <QualityControlTabs active="sharedRecipes" locale={admin.locale} />
-      <p className="hf-type-small text-text-secondary">{t(admin.locale, "shared_recipes_hint")}</p>
+      <p className="hf-type-caption">{t(admin.locale, "shared_recipes_hint")}</p>
       {rows.length === 0 ? (
         <p className="hf-type-body text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
       ) : (

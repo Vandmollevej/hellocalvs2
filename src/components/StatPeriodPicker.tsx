@@ -93,7 +93,7 @@ export function StatPeriodPicker({
             </div>
 
             <div className="mt-2 border-t border-hf-tan-dark pt-2">
-              <p className="hf-type-small hf-type-strong text-text-secondary mb-2 uppercase tracking-wide">{t("statPeriodPicker.selectPeriod")}</p>
+              <p className="hf-type-caption hf-type-strong mb-2 uppercase tracking-wide">{t("statPeriodPicker.selectPeriod")}</p>
               <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
                 <input
                   type="date"
@@ -102,7 +102,7 @@ export function StatPeriodPicker({
                   onChange={(event) => setCustomFrom(event.target.value)}
                   className="hf-type-body hf-field min-w-0 whitespace-nowrap rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
                 />
-                <span className="hf-type-small text-text-secondary">{t("statPeriodPicker.to")}</span>
+                <span className="hf-type-caption">{t("statPeriodPicker.to")}</span>
                 <input
                   type="date"
                   aria-label={t("statPeriodPicker.toDateAria")}

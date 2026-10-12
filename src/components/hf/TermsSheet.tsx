@@ -70,7 +70,7 @@ function TermsBar({ open, title, onToggle }: { open: boolean; title: string; onT
     >
       <IconFileText size={24} stroke={1.75} aria-hidden="true" className="shrink-0" />
       <span className="hf-type-body min-w-0 flex-1 hf-type-strong">{title}</span>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-hf-black">
+      <span className="hf-icon-circle-sm shrink-0 border-2 border-hf-black">
         <HfChevron direction={open ? "down" : "up"} compact />
       </span>
     </button>

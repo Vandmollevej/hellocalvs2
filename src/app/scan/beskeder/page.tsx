@@ -47,7 +47,7 @@ export default function ScanBeskederPage() {
             onChange={(event) => setDraft(event.target.value)}
             rows={2}
             placeholder="Skriv til Hello Cal"
-            className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
+            className="hf-input-auth-card hf-type-input"
           />
           <ActionButton type="submit" disabled={sending || !draft.trim()} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Send</span>
@@ -64,12 +64,7 @@ export default function ScanBeskederPage() {
         {messages.map((message) => (
           <li
             key={message.id}
-            className={`rounded-card hf-type-body max-w-[80%] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
-            style={
-              message.fromAdmin
-                ? { background: "var(--hf-color-card)" }
-                : { background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }
-            }
+            className={`rounded-card hf-type-body max-w-[80%] px-4 py-2 ${message.fromAdmin ? "self-start bg-hf-tan" : "self-end bg-hf-green text-hf-white"}`}
           >
             {message.body}
             <span className="hf-type-caption block text-inherit">

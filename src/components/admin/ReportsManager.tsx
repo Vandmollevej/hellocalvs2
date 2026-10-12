@@ -81,7 +81,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
               </span>
             </label>
             {p.schedules.map((s) => (
-              <div key={s.id} className="hf-type-small ml-6 flex flex-wrap items-center gap-2 text-text-secondary">
+              <div key={s.id} className="hf-type-caption ml-6 flex flex-wrap items-center gap-2">
                 <span>
                   {FREQ_LABEL[s.frequency]} · {s.enabled ? `næste ${fmt(s.nextRunAt)}` : "pauset"}
                   {s.lastSentAt ? ` · sidst ${fmt(s.lastSentAt)}` : ""}
@@ -143,7 +143,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
             <p className="hf-type-strong text-hf-black">
               {mode === "push" ? "Bekræft afsendelse fra report@hellocal.io" : `Bekræft ${FREQ_LABEL[frequency].toLowerCase()} rapport`}
             </p>
-            <p className="hf-type-small text-text-secondary">Hver partners tal sendes kun til den partners egne kontakter:</p>
+            <p className="hf-type-caption">Hver partners tal sendes kun til den partners egne kontakter:</p>
             {chosen.map((p) => (
               <div key={p.id} className="hf-surface p-3">
                 <p className="hf-type-strong text-hf-black">{p.name}</p>

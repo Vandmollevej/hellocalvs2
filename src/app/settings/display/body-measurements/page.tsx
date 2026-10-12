@@ -63,7 +63,7 @@ export default function BodyMeasurementsDisplayPage() {
         <p className="text-text-secondary hf-type-body p-6 text-center">{t("settings.loadError")}</p>
       ) : (
         <div className="hf-page">
-          <p className="text-text-secondary hf-type-small px-1">
+          <p className="hf-type-caption px-1">
             {t("settings.bodyMeasurementsDisplayDescription")}
           </p>
           {BODY_MEASUREMENT_FIELDS.map(({ field, nameKey }) => (

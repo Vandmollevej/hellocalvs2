@@ -20,7 +20,7 @@ function WheelShape({ cx, cy, diskRadius, arcRadius, circleRadius, mirror }: {
     <g>
       <path
         d={`M${cx},${cy - diskRadius} A${diskRadius},${diskRadius} 0 0 ${mirror ? 0 : 1} ${cx},${cy + diskRadius} Z`}
-        fill="var(--hf-green)"
+        className="fill-hf-green"
       />
       {ARC_ANGLES.map((deg) => {
         const theta = (deg * Math.PI) / 180;
@@ -30,8 +30,7 @@ function WheelShape({ cx, cy, diskRadius, arcRadius, circleRadius, mirror }: {
             cx={cx + dir * arcRadius * Math.cos(theta)}
             cy={cy + arcRadius * Math.sin(theta)}
             r={circleRadius}
-            fill="var(--hf-white)"
-            stroke="var(--hf-black)"
+            className="fill-hf-white stroke-hf-black"
             strokeWidth={1.2}
           />
         );
@@ -64,8 +63,8 @@ export function FrontPagePreview({ side, selected = false }: { side: FabSide; se
         </clipPath>
       </defs>
       <g clipPath={`url(#fpp-clip-${side})`}>
-        <rect x={0} y={0} width={W} height={H} fill="var(--hf-color-page)" />
-        <rect x={0} y={0} width={W} height={13} fill="var(--hf-green)" />
+        <rect x={0} y={0} width={W} height={H} className="fill-hf-page" />
+        <rect x={0} y={0} width={W} height={13} className="fill-hf-green" />
         <WheelShape
           cx={wheelLeft ? 0 : W}
           cy={heroY}
@@ -75,12 +74,12 @@ export function FrontPagePreview({ side, selected = false }: { side: FabSide; se
           mirror={!wheelLeft}
         />
         {/* Number slider: the centered value is bold, the neighbours faded. */}
-        <rect x={sliderX + 3} y={heroY - 13} width={12} height={3} rx={1.5} fill="var(--hf-black)" opacity={0.25} />
-        <rect x={sliderX} y={heroY - 3} width={18} height={6} rx={2} fill="var(--hf-black)" />
-        <rect x={sliderX + 3} y={heroY + 10} width={12} height={3} rx={1.5} fill="var(--hf-black)" opacity={0.25} />
-        <rect x={6} y={70} width={W - 12} height={10} rx={3} fill="var(--hf-tan)" />
-        <rect x={6} y={83} width={W - 12} height={10} rx={3} fill="var(--hf-tan)" />
-        <rect x={0} y={H - 11} width={W} height={11} fill="var(--hf-color-nav)" />
+        <rect x={sliderX + 3} y={heroY - 13} width={12} height={3} rx={1.5} className="fill-hf-black" opacity={0.25} />
+        <rect x={sliderX} y={heroY - 3} width={18} height={6} rx={2} className="fill-hf-black" />
+        <rect x={sliderX + 3} y={heroY + 10} width={12} height={3} rx={1.5} className="fill-hf-black" opacity={0.25} />
+        <rect x={6} y={70} width={W - 12} height={10} rx={3} className="fill-hf-tan" />
+        <rect x={6} y={83} width={W - 12} height={10} rx={3} className="fill-hf-tan" />
+        <rect x={0} y={H - 11} width={W} height={11} className="fill-hf-nav" />
       </g>
       <rect
         x={0.5}

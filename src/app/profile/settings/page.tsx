@@ -32,7 +32,7 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
         label={t("settings.setupProgress", { done: doneCount, total: steps.length })}
       />
       {!weightSet && (
-        <p className="text-text-secondary hf-type-small mt-2">{t("settings.setupProgressHint")}</p>
+        <p className="hf-type-caption mt-2">{t("settings.setupProgressHint")}</p>
       )}
     </div>
   );

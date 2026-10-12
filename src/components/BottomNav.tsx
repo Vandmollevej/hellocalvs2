@@ -294,7 +294,7 @@ function slideIcon(el: HTMLElement, dx: number, dy: number, lift: boolean) {
       {
         transform: `translate(${dx}px, ${dy}px) scale(${lift ? 1.18 : 1})`,
         zIndex: 30,
-        boxShadow: lift ? "0 10px 18px rgb(0 0 0 / 0.18)" : "none",
+        boxShadow: lift ? "var(--hf-shadow-nav-lift)" : "none",
       },
       { transform: "translate(0px, 0px) scale(1)", zIndex: 30, boxShadow: "none" },
     ],
@@ -866,11 +866,10 @@ export function BottomNav() {
       {editMode && (
         <div
           ref={panelRef}
-          className={`hf-nav-panel-in absolute bottom-full left-0 right-0 z-50 rounded-t-2xl border border-b-0 px-4 pb-4 pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.08)] ${
+          className={`hf-nav-panel-in absolute bottom-full left-0 right-0 z-50 rounded-t-2xl border border-b-0 bg-hf-tan px-4 pb-4 pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.08)] ${
             draggedOverBar ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark"
           }`}
           style={{
-            backgroundColor: "var(--hf-tan)",
             transform: sheetOffset ? `translateY(${sheetOffset}px)` : undefined,
             transition: sheetSnapping ? "transform 180ms ease-out" : undefined,
           }}

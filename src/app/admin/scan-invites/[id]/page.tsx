@@ -68,7 +68,7 @@ export default async function ScanWorkerPage({
     <div className="hf-admin-page">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <Link href="/admin/scan-invites" className="hf-type-small text-text-secondary underline">
+          <Link href="/admin/scan-invites" className="hf-type-caption underline">
             ← scan-invites
           </Link>
           <h1 className="hf-type-title text-hf-black">{worker.name}</h1>
@@ -114,7 +114,7 @@ export default async function ScanWorkerPage({
         ].map(([label, value]) => (
           <div key={label} className="hf-surface p-3">
             <p className="hf-type-title text-hf-green-dark">{value}</p>
-            <p className="hf-type-small text-text-secondary">{label}</p>
+            <p className="hf-type-caption">{label}</p>
           </div>
         ))}
       </section>
@@ -130,7 +130,7 @@ export default async function ScanWorkerPage({
                 Uge {group.week.week} · {formatWeekPeriod(group.week)} — {group.rows.length} varer ·{" "}
                 {group.rows.filter((row) => row.reviewStatus === "PENDING").length} afventer
               </summary>
-              <p className="hf-type-small px-4 text-text-secondary">
+              <p className="hf-type-caption px-4">
                 Godkendt: {formatKroner(weekTotals.earnedOre)} · Udbetalt: {formatKroner(weekTotals.paidOre)}
               </p>
               <ul className="flex flex-col divide-y divide-border-strong/50 px-4 pb-3">
@@ -146,7 +146,7 @@ export default async function ScanWorkerPage({
                       <p className="hf-type-strong">
                         {row.product.brand?.name ? `${row.product.brand.name} · ` : ""}
                         {row.product.name}
-                        <span className="hf-type-small ml-2 text-text-secondary">
+                        <span className="hf-type-caption ml-2">
                           {row.kind === "SUPPLEMENT" ? "Supplering" : "Ny vare"}
                           {!row.payable ? " · ikke betalbar (egen vare)" : ""}
                         </span>
@@ -156,7 +156,7 @@ export default async function ScanWorkerPage({
                           ⚠ Mangler {[row.missingEnergy && "energitabel", row.missingIngredients && "ingrediensliste"].filter(Boolean).join(" og ")}
                         </p>
                       )}
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         Billede: {DATE_TIME.format(row.capturedAt)} · Oprettet: {DATE_TIME.format(row.createdAt)} ·{" "}
                         {row.storeName ?? "ukendt butik"} ·{" "}
                         <a

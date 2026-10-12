@@ -94,7 +94,7 @@ export default async function PartnerUsersPage({
               </button>
             </form>
           )}
-          <p className="hf-type-small text-text-secondary">
+          <p className="hf-type-caption">
             Invitationen gælder i {PARTNER_INVITE_TTL_HOURS} timer og kan kun bruges én gang. Modtageren vælger selv adgangskode.
           </p>
           {error === "invalid" && <p className="hf-type-body text-[var(--hf-color-danger)]">Vælg partner, og udfyld navn og en gyldig e-mail.</p>}
@@ -128,7 +128,7 @@ export default async function PartnerUsersPage({
               <div className="overflow-x-auto">
                 <table className="hf-type-body w-full text-left">
                   <thead>
-                    <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+                    <tr className="hf-table-section hf-type-small">
                       <th className="py-2 pr-3">Bruger</th>
                       <th className="py-2 pr-3">Status</th>
                       <th className="py-2 pr-3">Inviteret af</th>
@@ -144,12 +144,12 @@ export default async function PartnerUsersPage({
                         <tr key={user.id} className="border-b border-border-strong/50">
                           <td className="py-2 pr-3">
                             <div className="hf-type-strong">{user.name}</div>
-                            <div className="hf-type-small text-text-secondary">{user.email}</div>
+                            <div className="hf-type-caption">{user.email}</div>
                           </td>
                           <td className={`py-2 pr-3 ${status === "ACTIVE" ? "" : "text-hf-red-dark"}`}>
                             {PARTNER_USER_STATUS_LABEL[status]}
                             {status === "PENDING" && (
-                              <div className="hf-type-small text-text-secondary">udløber {fmt(user.inviteExpiresAt)}</div>
+                              <div className="hf-type-caption">udløber {fmt(user.inviteExpiresAt)}</div>
                             )}
                           </td>
                           <td className="py-2 pr-3">{user.invitedBy.displayName}</td>

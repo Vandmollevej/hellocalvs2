@@ -111,7 +111,7 @@ export default async function AdminIntegrationsPage({
         <div className="overflow-x-auto hf-surface">
           <table className="w-full min-w-[860px] hf-type-body">
             <thead>
-              <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
+              <tr className="hf-type-caption border-b border-border-strong bg-surface-2 text-left">
                 <th className="px-3 py-2 hf-type-strong">Integration</th>
                 <th className="px-3 py-2 hf-type-strong">Aktive nu</th>
                 <th className="px-3 py-2 text-right hf-type-strong">Nye</th>
@@ -159,7 +159,7 @@ export default async function AdminIntegrationsPage({
                     >
                       {num.format(row.errorNow)}
                     </td>
-                    <td className="px-3 py-2 text-right text-text-secondary hf-type-small">{formatDateTime(row.lastSyncAt)}</td>
+                    <td className="hf-type-caption px-3 py-2 text-right">{formatDateTime(row.lastSyncAt)}</td>
                   </tr>
                 );
               })}

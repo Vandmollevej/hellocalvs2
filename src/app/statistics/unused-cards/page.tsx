@@ -313,7 +313,7 @@ export default function UnusedStatCardsPage() {
             className="justify-between gap-1 text-left active:opacity-80 hf-card"
           >
             <span className="flex items-start justify-between gap-2">
-              <span className="hf-type-small text-text-secondary min-w-0">{card.label}</span>
+              <span className="hf-type-caption min-w-0">{card.label}</span>
               <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
                 {t("statUnusedCards.add")}
               </span>
@@ -348,7 +348,7 @@ export default function UnusedStatCardsPage() {
       title={t("statUnusedCards.title")}
     >
       <div className="hf-page hf-page--list">
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {t("statUnusedCards.hint")}
         </p>
 

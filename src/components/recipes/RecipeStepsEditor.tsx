@@ -80,7 +80,7 @@ export function RecipeStepsEditor({
     return (
       <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark py-3">
         <button type="button" onClick={() => edit(index)} className="min-w-0 flex-1 text-left">
-          <p className="hf-type-small hf-type-strong text-text-secondary">{t("recipeSteps.stepNumber", { number: index + 1 })}</p>
+          <p className="hf-type-caption hf-type-strong">{t("recipeSteps.stepNumber", { number: index + 1 })}</p>
           {step.title && <p className="hf-type-body hf-type-strong text-hf-black">{step.title}</p>}
           {step.text && <p className="hf-type-small whitespace-pre-line text-hf-black">{step.text}</p>}
         </button>
@@ -111,7 +111,7 @@ export function RecipeStepsEditor({
 
       <div className="my-4 flex gap-3 rounded-2xl bg-hf-tan p-4">
         <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <p className="hf-type-small hf-type-strong text-text-secondary">
+          <p className="hf-type-caption hf-type-strong">
             {t("recipeSteps.stepNumber", { number: active + 1 })}
           </p>
           <input

@@ -13,7 +13,7 @@ export default async function AdminSupportTemplatesPage() {
 
   return (
     <div className="hf-admin-page">
-      <Link href="/admin/support" className="hf-type-small text-text-secondary hover:text-text-primary">
+      <Link href="/admin/support" className="hf-type-caption hover:text-text-primary">
         ← Tilbage til indbakken
       </Link>
       <div>

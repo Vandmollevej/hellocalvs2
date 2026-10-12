@@ -97,14 +97,14 @@ export default function ForgotPasswordPage() {
       </div>
 
       {sent && method === "email" ? (
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <div className="hf-auth-form">
           <p className="hf-type-body">{t("forgotPassword.sentMessage")}</p>
           <Link href="/login" className="hf-control hf-btn-primary mt-2 flex w-full items-center justify-center">
             {t("forgotPassword.backToLogin")}
           </Link>
         </div>
       ) : sent && method === "sms" ? (
-        <form onSubmit={handleVerify} className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <form onSubmit={handleVerify} className="hf-auth-form">
           <p className="hf-type-body">{t("forgotPassword.smsSentMessage")}</p>
 
           <TextField
@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
           </button>
         </form>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <form onSubmit={handleSubmit} className="hf-auth-form">
           <p className="hf-type-body">
             {method === "sms" ? t("forgotPassword.smsInstructions") : t("forgotPassword.instructions")}
           </p>

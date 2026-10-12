@@ -291,7 +291,7 @@ function FlowBanner({ flow, onClose, onAction }: { flow: ActiveFlow; onClose: ()
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {page.title && <p className="hf-type-body hf-type-strong text-hf-black">{page.title}</p>}
-        {text && <p className="hf-type-small text-text-secondary">{text}</p>}
+        {text && <p className="hf-type-caption">{text}</p>}
         {page.actionLabel && page.actionHref && (
           <button
             type="button"

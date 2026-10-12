@@ -97,7 +97,7 @@ export function ShortcutsList({ locale, canManageAdmins }: { locale: Locale; can
           <div className="hf-surface overflow-x-auto px-4">
             <table className="hf-type-body w-full min-w-[420px] text-left">
               <thead>
-                <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+                <tr className="hf-table-section hf-type-small">
                   <th className="py-2 pr-4">Menupunkt</th>
                   <th className="py-2 pr-4">Genvej</th>
                   <th className="py-2">AutoHotkey</th>

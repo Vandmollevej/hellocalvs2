@@ -34,7 +34,7 @@ export function LabelFillOverlay({
           width={Math.min(width, box.x1 + padding) - Math.max(0, box.x0 - padding)}
           height={Math.min(height, box.y1 + padding) - Math.max(0, box.y0 - padding)}
           rx={radius}
-          fill="var(--hf-color-white, #fff)"
+          className="fill-hf-white"
         />
       ))}
     </svg>

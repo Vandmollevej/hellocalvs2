@@ -54,10 +54,10 @@ export function HistoryLineChart({
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full overflow-visible" role="img" aria-label={ariaLabel}>
         {high !== low && (
           <>
-            <text x={LEFT} y={TOP - 4} fontSize="9" fill="var(--hf-gray)">
+            <text x={LEFT} y={TOP - 4} className="hf-chart-axis fill-hf-gray" >
               {format(high)}
             </text>
-            <text x={LEFT} y={BOTTOM + 11} fontSize="9" fill="var(--hf-gray)">
+            <text x={LEFT} y={BOTTOM + 11} className="hf-chart-axis fill-hf-gray" >
               {format(low)}
             </text>
           </>
@@ -69,12 +69,12 @@ export function HistoryLineChart({
               y1={y(target)}
               x2={RIGHT}
               y2={y(target)}
-              stroke="var(--hf-gray)"
+              className="stroke-hf-gray"
               strokeWidth="1"
               strokeDasharray="3 3"
             />
             {targetLabel && (
-              <text x={RIGHT} y={y(target) - 4} fontSize="9" textAnchor="end" fill="var(--hf-gray)">
+              <text x={RIGHT} y={y(target) - 4} className="hf-chart-axis fill-hf-gray" textAnchor="end" >
                 {targetLabel}
               </text>
             )}
@@ -84,7 +84,7 @@ export function HistoryLineChart({
           <polyline
             points={coords.map((c) => `${c.x},${c.y}`).join(" ")}
             fill="none"
-            stroke="var(--hf-green)"
+            className="stroke-hf-green"
             strokeWidth="2.4"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -92,7 +92,7 @@ export function HistoryLineChart({
         )}
         {/* Mange vejninger → små prikker, så linjen ikke drukner. */}
         {coords.map((c, i) => (
-          <circle key={i} cx={c.x} cy={c.y} r={coords.length > 30 ? 1.6 : 3} fill="var(--hf-green)" />
+          <circle key={i} cx={c.x} cy={c.y} r={coords.length > 30 ? 1.6 : 3} className="fill-hf-green" />
         ))}
       </svg>
       <span className="hf-type-micro text-text-secondary">

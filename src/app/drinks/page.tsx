@@ -44,7 +44,7 @@ function DrinksContent() {
           </SkeletonScreen>
         )}
         {!loading && drinks.length === 0 && (
-          <p className="hf-type-small text-text-secondary text-center">{t("drinks.noDrinksYet")}</p>
+          <p className="hf-type-caption text-center">{t("drinks.noDrinksYet")}</p>
         )}
         {drinks.length > 0 && (
           <div className="grid grid-cols-2 gap-4">

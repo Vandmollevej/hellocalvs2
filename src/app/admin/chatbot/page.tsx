@@ -104,7 +104,7 @@ export default async function AdminChatbotPage({
                       style={{ width: `${maxCount ? Math.max(4, (row.count / maxCount) * 100) : 0}%` }}
                     />
                   </span>
-                  <span className="hf-type-small tabular-nums text-text-secondary">
+                  <span className="hf-type-caption tabular-nums">
                     {row.count} · {percent(row.count, stats.totalQuestions)} %
                   </span>
                 </Link>
@@ -189,7 +189,7 @@ export default async function AdminChatbotPage({
 function Kpi({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="p-3 hf-surface">
-      <dt className="hf-type-small text-text-secondary">{label}</dt>
+      <dt className="hf-type-caption">{label}</dt>
       <dd className="hf-type-page-title tabular-nums text-hf-black">{value}</dd>
     </div>
   );
@@ -213,7 +213,7 @@ function UserCell({
   return (
     <div className="flex flex-col">
       <span className="text-hf-black">{user.displayName}</span>
-      <span className="hf-type-small text-text-secondary">
+      <span className="hf-type-caption">
         {[ageLabel(age), sex !== undefined ? sexLabel(sex) : null, regionLabel(region), tierLabel(tier, plan)]
           .filter(Boolean)
           .join(" · ")}
@@ -225,7 +225,7 @@ function UserCell({
 function Pager({ filter, pages, total, noun }: { filter: ChatbotAdminFilter; pages: number; total: number; noun: string }) {
   if (pages <= 1) return <p className="hf-type-small text-text-muted">{total} {noun}</p>;
   return (
-    <div className="hf-type-small flex items-center justify-between gap-2 text-text-secondary">
+    <div className="hf-type-caption flex items-center justify-between gap-2">
       <span>
         {total} {noun} · side {filter.page} af {pages}
       </span>
@@ -253,7 +253,7 @@ async function QuestionsTable({ filter }: { filter: ChatbotAdminFilter }) {
       <div className="overflow-x-auto hf-surface">
         <table className="hf-type-body w-full min-w-[56rem] text-left align-top">
           <thead>
-            <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+            <tr className="hf-table-section hf-type-small">
               <th className="px-3 py-2">Tid</th>
               <th className="px-3 py-2">Kategori</th>
               <th className="px-3 py-2">Spørgsmål</th>
@@ -265,7 +265,7 @@ async function QuestionsTable({ filter }: { filter: ChatbotAdminFilter }) {
           <tbody>
             {rows.map((row) => (
               <tr key={row.id} className="border-b border-hf-tan-dark align-top last:border-b-0">
-                <td className="hf-type-small whitespace-nowrap px-3 py-2 text-text-secondary">{formatAdminTime(row.createdAt)}</td>
+                <td className="hf-type-caption whitespace-nowrap px-3 py-2">{formatAdminTime(row.createdAt)}</td>
                 <td className="hf-type-small whitespace-nowrap px-3 py-2">{chatbotCategoryLabel(row.category)}</td>
                 <td className="max-w-xs whitespace-pre-wrap px-3 py-2 text-hf-black">{row.body}</td>
                 <td className="max-w-md whitespace-pre-wrap px-3 py-2 text-text-secondary">
@@ -313,7 +313,7 @@ async function ThreadsList({ filter }: { filter: ChatbotAdminFilter }) {
                 tier={conversation.userTierSnapshot}
                 plan={conversation.userPlanSnapshot}
               />
-              <div className="hf-type-small flex flex-col items-end gap-0.5 text-text-secondary">
+              <div className="hf-type-caption flex flex-col items-end gap-0.5">
                 <span>{chatbotCategoryLabel(conversation.category)}</span>
                 <span>
                   {conversation.questionCount} spørgsmål · {formatAdminTime(conversation.createdAt)}

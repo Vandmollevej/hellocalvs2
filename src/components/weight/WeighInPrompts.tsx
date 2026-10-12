@@ -207,7 +207,7 @@ function StaleSyncSheet({
       }
     >
       <div className="flex flex-col gap-4 px-4">
-        <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+        <div className="hf-entry-summary">
           <IntegrationIcon icon={first.icon} label={first.label} size={32} className="rounded-card" />
           <p className="hf-type-body text-hf-black">
             {when
@@ -316,7 +316,7 @@ function PendingWeighInSheet({
               aria-label={t("weighIn.prompt.older")}
               disabled={index === 0}
               onClick={() => setIndex(index - 1)}
-              className="flex size-10 items-center justify-center rounded-full disabled:opacity-25"
+              className="hf-day-picker-button"
             >
               <IconChevronLeft size={24} />
             </button>
@@ -326,7 +326,7 @@ function PendingWeighInSheet({
               aria-label={t("weighIn.prompt.newer")}
               disabled={index === list.length - 1}
               onClick={() => setIndex(index + 1)}
-              className="flex size-10 items-center justify-center rounded-full disabled:opacity-25"
+              className="hf-day-picker-button"
             >
               <IconChevronRight size={24} />
             </button>
@@ -335,7 +335,7 @@ function PendingWeighInSheet({
 
         <div className="flex flex-col items-center gap-1 text-center">
           <p className="hf-type-body text-hf-black">{heading}</p>
-          <p className="hf-type-title text-hf-black" style={{ fontSize: 40, lineHeight: "48px" }}>
+          <p className="hf-type-counter text-hf-black">
             {time}
           </p>
           <p className="hf-type-body text-hf-black">

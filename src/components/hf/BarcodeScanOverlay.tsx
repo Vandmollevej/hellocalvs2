@@ -112,11 +112,10 @@ function BarcodeSvg({
           key={index}
           x={digit.x}
           y={barHeight + DIGIT_GAP}
-          fontSize={DIGIT_SIZE}
           textAnchor="middle"
           fill="currentColor"
-          className={`font-mono ${animated ? "hf-barcode-digit" : ""}`}
-          style={animated ? { animationDelay: `${DIGIT_START_MS + index * DIGIT_STEP_MS}ms` } : undefined}
+          className={`hf-barcode-digit-size font-mono ${animated ? "hf-barcode-digit" : ""}`}
+          style={{ "--hf-barcode-digit-size": `${DIGIT_SIZE}px`, ...(animated ? { animationDelay: `${DIGIT_START_MS + index * DIGIT_STEP_MS}ms` } : {}) } as CSSProperties}
         >
           {digit.char}
         </text>
@@ -195,10 +194,9 @@ export function BarcodeScanOverlay({
       {/* Guide box + light dim around it. Fades (never snaps) away once a
           real barcode is being decoded, and back when it's gone. */}
       <div
-        className="absolute rounded-[6px] border border-hf-white/80 transition-[opacity,left,top,width,height] duration-300"
+        className="hf-barcode-guide absolute rounded-[6px] border border-hf-white/80 transition-[opacity,left,top,width,height] duration-300"
         style={{
           ...toPercentStyle(guideBox),
-          boxShadow: "0 0 0 999px rgb(0 0 0 / 0.28)",
           opacity: detection ? 0 : 1,
         }}
       >

@@ -40,7 +40,7 @@ export function EconomyForecast({ initial, basis }: { initial: Forecast; basis: 
           {loading ? "Beregner …" : "Beregn med AI"}
         </button>
       </div>
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         {forecast.windowLabel} · fornyelser efter forventet afmelding: måned {kr.format(forecast.monthly.amountDkk)} kr. ({pct(forecast.churn.monthly)}),
         3 mdr. {kr.format(forecast.quarterly.amountDkk)} kr. ({pct(forecast.churn.quarterly)}), år {kr.format(forecast.annual.amountDkk)} kr. (
         {pct(forecast.churn.annual)}).

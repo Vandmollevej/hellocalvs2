@@ -71,7 +71,7 @@ export default function ScreeningReportPage({ params }: { params: Promise<{ id: 
               <div className="relative flex-1">
                 <select
                   aria-label={t("screenings.sortAria")}
-                  className="hf-field hf-type-body w-full appearance-none rounded-xl border border-hf-tan-dark bg-hf-white pl-3 pr-9 text-hf-black"
+                  className="hf-select-surface hf-field hf-type-body"
                   value={sortKey}
                   onChange={(event) => setSortKey(event.target.value as SortKey)}
                 >
@@ -81,7 +81,7 @@ export default function ScreeningReportPage({ params }: { params: Promise<{ id: 
                 <IconChevronDown
                   size={14}
                   stroke={2.5}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
+                  className="hf-select-chevron"
                 />
               </div>
               <button
@@ -104,7 +104,7 @@ export default function ScreeningReportPage({ params }: { params: Promise<{ id: 
                     }
                     title={dateFormat.format(new Date(entry.date))}
                     subtitle={
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {entry.note ? entry.note : formatScreeningValue(entry.value, screening.scale)}
                       </p>
                     }

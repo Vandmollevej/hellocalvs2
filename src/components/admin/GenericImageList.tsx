@@ -22,7 +22,7 @@ export function GenericImageList({ rows }: { rows: GenericImageRow[] }) {
                 )}
               </div>
               <span className="hf-type-body min-w-0 flex-1 truncate text-hf-black">{row.name}</span>
-              {row.cooked && <span className="hf-type-small text-text-secondary">Tilberedt</span>}
+              {row.cooked && <span className="hf-type-caption">Tilberedt</span>}
             </li>
           ))}
         </ul>

@@ -119,7 +119,7 @@ function TrafficChart({ overview }: { overview: AnalyticsOverview }) {
     <section className="hf-panel">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Trafik</h2>
-        <div className="hf-type-small flex gap-4 text-text-secondary">
+        <div className="hf-type-caption flex gap-4">
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-sm bg-hf-green-light" /> Sidevisninger
           </span>

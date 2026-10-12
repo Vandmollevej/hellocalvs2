@@ -381,7 +381,7 @@ private fun PendingWeighInSheet(entries: List<WeighPendingEntry>, onDone: () -> 
                 Text(
                     time,
                     Modifier.fillMaxWidth(),
-                    style = HcTypeRoles.Title.style(HcColors.Black).copy(fontSize = 40.sp, lineHeight = 48.sp),
+                    style = HcTypeRoles.Counter.style(HcColors.Black),
                     textAlign = TextAlign.Center,
                 )
                 Text(

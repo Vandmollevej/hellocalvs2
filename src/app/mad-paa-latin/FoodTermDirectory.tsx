@@ -34,15 +34,15 @@ export function FoodTermDirectory() {
 
   return (
     <div className="min-h-dvh bg-hf-white text-hf-black">
-      <div className="sticky top-0 z-10 border-b border-hf-tan-dark bg-hf-white px-4 pb-3 pt-4">
+      <div className="hf-directory-toolbar">
         <div className="mx-auto flex max-w-xl flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Link href="/" aria-label="Tilbage" className="flex h-8 w-8 items-center justify-center rounded-full">
+            <Link href="/" aria-label="Tilbage" className="hf-icon-circle-sm">
               <IconArrowLeft size={20} />
             </Link>
             <h1 className="hf-type-title hf-heading">Mad på latin</h1>
           </div>
-          <label className="flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2">
+          <label className="hf-directory-filter">
             <IconSearch size={18} className="text-text-secondary" />
             <input
               type="search"
@@ -81,9 +81,9 @@ export function FoodTermDirectory() {
               <h2 className="hf-type-body hf-heading">
                 <a href={`#${anchor}`}>{item.term}</a>
               </h2>
-              <p className="hf-type-small text-text-secondary">På dansk: {item.danish}</p>
+              <p className="hf-type-caption">På dansk: {item.danish}</p>
               <p className="hf-type-body mt-2">{item.explanation}</p>
-              <p className="hf-type-small mt-2 text-text-secondary">
+              <p className="hf-type-caption mt-2">
                 Kilde:{" "}
                 <a href={item.source.href} target="_blank" rel="noreferrer" className="text-hf-green underline underline-offset-2">
                   {item.source.label}

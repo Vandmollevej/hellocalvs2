@@ -47,7 +47,7 @@ export function Toggle({
       <span className="flex-1">
         <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
         {description && (
-          <span className="hf-type-small text-text-secondary mt-2 block border-t border-hf-tan-dark pt-2">
+          <span className="hf-type-caption mt-2 block border-t border-hf-tan-dark pt-2">
             {description}
           </span>
         )}

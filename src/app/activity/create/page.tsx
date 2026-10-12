@@ -131,7 +131,7 @@ function ActivityCreateContent() {
               {option.label} · {t("activity.change")}
             </button>
             <div className="flex flex-col gap-2">
-              <span className="hf-type-small text-text-secondary">{t("activity.startedAt")}</span>
+              <span className="hf-type-caption">{t("activity.startedAt")}</span>
               <input
                 className={FIELD}
                 type="date"
@@ -147,7 +147,7 @@ function ActivityCreateContent() {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <span className="hf-type-small text-text-secondary">{t("activity.duration")}</span>
+              <span className="hf-type-caption">{t("activity.duration")}</span>
               <div className="mx-auto flex w-full max-w-[320px] items-center gap-2">
                 <button
                   type="button"
@@ -194,8 +194,8 @@ function ActivityCreateContent() {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <span className="hf-type-small text-text-secondary">{t("activity.intensity")}</span>
-              <p className="hf-type-small text-text-secondary">{t("activity.intensityHint")}</p>
+              <span className="hf-type-caption">{t("activity.intensity")}</span>
+              <p className="hf-type-caption">{t("activity.intensityHint")}</p>
               <div className="flex items-end gap-2" role="radiogroup" aria-label={t("activity.intensity")}>
                 {TRAINING_INTENSITIES.map((key, index) => (
                   <button
@@ -216,12 +216,12 @@ function ActivityCreateContent() {
             </div>
             {showsDistance && (
               <label className="flex flex-col gap-1">
-                <span className="hf-type-small text-text-secondary">{t("activity.distanceKm")}</span>
+                <span className="hf-type-caption">{t("activity.distanceKm")}</span>
                 <input className={FIELD} type="number" inputMode="decimal" min={0} step={0.1} value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} />
               </label>
             )}
             <label className="flex flex-col gap-1">
-              <span className="hf-type-small text-text-secondary">{t("activity.kcal")}</span>
+              <span className="hf-type-caption">{t("activity.kcal")}</span>
               <input
                 className={FIELD}
                 type="number"
@@ -249,7 +249,7 @@ function minutesToClock(value: number) {
 }
 
 const FIELD =
-  "hf-type-body hf-field w-full rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body hf-field w-full hf-field-soft hf-field-soft--focus";
 
 export default function ActivityCreatePage() {
   return (

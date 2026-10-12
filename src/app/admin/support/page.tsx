@@ -33,7 +33,7 @@ export default async function AdminSupportPage({
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="hf-type-title text-hf-black">{t(admin.locale, "support_title")}</h1>
-          <Link href="/admin/support/templates" className="hf-type-small text-text-secondary underline hover:text-text-primary">
+          <Link href="/admin/support/templates" className="hf-type-caption underline hover:text-text-primary">
             Svarskabeloner
           </Link>
         </div>

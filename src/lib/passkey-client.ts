@@ -9,14 +9,20 @@ import type {
 // Face ID / passkey i browseren/appen (WebAuthn). Serveren styrer
 // udfordringerne under /api/auth/passkey/*.
 
+class PasskeyRequestError extends Error {
+  constructor(message: string, readonly code?: string) {
+    super(message);
+  }
+}
+
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body ?? {}),
   });
-  const data = (await res.json().catch(() => ({}))) as T & { message?: string };
-  if (!res.ok) throw new Error(data.message ?? "Noget gik galt");
+  const data = (await res.json().catch(() => ({}))) as T & { message?: string; code?: string };
+  if (!res.ok) throw new PasskeyRequestError(data.message ?? "Noget gik galt", data.code);
   return data;
 }
 
@@ -52,10 +58,13 @@ export async function loginWithPasskey(): Promise<void> {
     const options = await postJson<PublicKeyCredentialRequestOptionsJSON>("/api/auth/passkey/login/options", {});
     const response = await startAuthentication({ optionsJSON: options });
     await postJson("/api/auth/passkey/login/verify", { response });
+    setPasskeyOnDevice(true);
   } catch (err) {
     // Serveren kender ikke nøglen (fx slettet): skjul Face ID igen, så brugeren
     // logger ind normalt og kan slå det til på ny.
-    if (!(err instanceof Error && err.name === "NotAllowedError")) setPasskeyOnDevice(false);
+    // Netværksfejl, afbrudt dialog og udløbet udfordring betyder ikke, at
+    // nøglen er væk. Fjern kun markeringen, når serveren bekræfter det.
+    if (err instanceof PasskeyRequestError && err.code === "PASSKEY_NOT_REGISTERED") setPasskeyOnDevice(false);
     throw err;
   }
 }
@@ -68,6 +77,9 @@ export async function registerPasskey(): Promise<void> {
   } catch (err) {
     // Enheden har allerede en nøgle til kontoen (fx synkroniseret via iCloud).
     if (!(err instanceof Error && err.name === "InvalidStateError")) throw err;
+    // Verificér, at den eksisterende nøgle faktisk kan bruges til denne
+    // konto, før vi viser Face ID som aktiveret. Ingen ny session oprettes.
+    await reauthWithPasskey();
   }
   setPasskeyOnDevice(true);
 }

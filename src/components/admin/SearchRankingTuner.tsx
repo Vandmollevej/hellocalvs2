@@ -289,7 +289,7 @@ export function SearchRankingTuner({
                 <span className="hf-type-small ml-2 text-text-muted">({weights[category.key]})</span>
               </summary>
               <div className="flex flex-col gap-2 border-t border-hf-tan-dark px-4 py-3">
-                <p className="hf-type-small text-text-secondary">{category.description}</p>
+                <p className="hf-type-caption">{category.description}</p>
                 <input
                   type="range"
                   min={-100}

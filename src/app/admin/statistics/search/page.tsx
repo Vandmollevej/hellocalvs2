@@ -136,7 +136,7 @@ export default async function SearchAnalyticsPage({
         <Kpi label="Klik på et resultat" value={pct(kpis.clicked, kpis.searches)} hint={`${num.format(kpis.clicked)} søgninger`} />
       </div>
       {kpis.fallback > 0 && (
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {num.format(kpis.fallback)} søgninger blev besvaret af databasen, fordi søgemotoren ikke svarede.
         </p>
       )}
@@ -165,7 +165,7 @@ export default async function SearchAnalyticsPage({
           ))}
         </nav>
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="hf-type-small text-text-secondary">Sortér:</span>
+          <span className="hf-type-caption">Sortér:</span>
           {SEARCH_SORTS.filter((s) => !(view.tab === "misses" && s.id === "misses")).map((sort) => (
             <Link key={sort.id} href={href({ sort: sort.id })} className={btn(view.sort === sort.id)}>
               {sort.label}
@@ -192,14 +192,14 @@ export default async function SearchAnalyticsPage({
         {rows.kind === "misses" && (
           <>
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="hf-type-small text-text-secondary">Vis:</span>
+              <span className="hf-type-caption">Vis:</span>
               {MISS_FILTERS.map((f) => (
                 <Link key={f.id} href={href({ miss: f.id })} className={btn(view.miss === f.id)}>
                   {f.label}
                 </Link>
               ))}
             </div>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               Uden resultat = ingen vare matchede alle ordene. Hver nat vurderes nye søgninger: stavefejl (appen rettede dem
               selv, eller AI fandt rettelsen) og meningsløse søgninger sorteres fra, så &quot;Kun rene fejl&quot; viser varer
               og mærker, der mangler i databasen.

@@ -119,7 +119,7 @@ export function DiffDialog({
             </span>
           </h2>
           {conflicting.length > 1 && (
-            <p className="hf-type-small text-text-secondary">Viser billedet fra {conflicting[0].name}; {conflicting.length - 1} andre har også et billede.</p>
+            <p className="hf-type-caption">Viser billedet fra {conflicting[0].name}; {conflicting.length - 1} andre har også et billede.</p>
           )}
         </div>
 
@@ -133,7 +133,7 @@ export function DiffDialog({
                 Intet nuværende billede
               </div>
             )}
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {existingSize ? formatDimensions(existingSize.width, existingSize.height) : "Henter…"}
               {existingBytes != null && ` · ${formatBytes(existingBytes)}`}
             </p>
@@ -149,7 +149,7 @@ export function DiffDialog({
                 Filen findes ikke længere
               </div>
             )}
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {formatDimensions(item.width, item.height)} · {formatBytes(item.bytes)}
               {item.originalBytes ? ` (original ${formatDimensions(item.originalWidth, item.originalHeight)}, ${formatBytes(item.originalBytes)})` : ""}
             </p>

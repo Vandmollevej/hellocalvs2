@@ -211,7 +211,7 @@ export default async function AdminOffPage({ searchParams }: { searchParams: Pro
           <div className="hf-surface hf-table-scroll">
             <table className="hf-type-body w-full text-left">
               <thead>
-                <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+                <tr className="hf-table-section hf-type-small">
                   <th className="px-3 py-2">Sikkerhed</th>
                   <th className="px-3 py-2">OFF-navn</th>
                   <th className="px-3 py-2">Mærke</th>
@@ -262,7 +262,7 @@ export default async function AdminOffPage({ searchParams }: { searchParams: Pro
                     <td className="px-3 py-3">{row.keywords.length ? row.keywords.join(", ") : "—"}</td>
                     <td className="px-3 py-3 whitespace-nowrap">{row.packageSizeText ?? "—"}</td>
                     <td className="px-3 py-3 whitespace-nowrap">
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {row.productId ? "Findes som vare" : "Kun i OFF-tabellen"}
                       </p>
                       {row.reviewedAt && <p className="hf-type-small text-hf-green-dark">Gennemgået</p>}

@@ -147,7 +147,7 @@ export function DuplicateList({
       {mode === "scroll" && hasMore && <LoadMoreSentinel onVisible={loadMore} loading={loading} error={error} />}
 
       {mode === "pages" && pages > 1 && (
-        <div className="hf-type-small flex items-center justify-between text-text-secondary">
+        <div className="hf-type-caption flex items-center justify-between">
           {page > 1 ? (
             <Link href={`/admin/duplicate-products?tab=varer&side=${page - 1}`} className="text-hf-green-dark">
               ← Forrige

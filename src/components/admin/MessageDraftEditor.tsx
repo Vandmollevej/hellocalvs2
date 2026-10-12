@@ -69,7 +69,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
         </p>
       </div>
 
-      <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <label className="hf-type-caption flex flex-col gap-1">
         Start fra en eksisterende besked
         <select
           value=""
@@ -100,7 +100,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
         />
       </div>
 
-      <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <label className="hf-type-caption flex flex-col gap-1">
         {email ? "Emne (bruges også som titel på notifikationen)" : "Titel"}
         <input
           value={draft.subject}
@@ -109,7 +109,7 @@ export function MessageDraftEditor({ templates }: { templates: MessageTemplateDa
         />
       </label>
 
-      <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <label className="hf-type-caption flex flex-col gap-1">
         Indhold (HTML, {"{{variabel}}"} vises med eksempelværdier i telefonen)
         <textarea
           rows={18}

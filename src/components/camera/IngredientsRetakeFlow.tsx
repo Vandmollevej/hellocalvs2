@@ -142,7 +142,7 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card">
+      <div className="hf-camera-preview">
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -161,14 +161,14 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
             style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
-              className="absolute bottom-0 left-0 h-1 rounded-full transition-[width]"
-              style={{ width: `${autoCaptureProgress * 100}%`, background: "var(--hf-color-brand)" }}
+              className="absolute bottom-0 left-0 h-1 rounded-full bg-hf-green transition-[width]"
+              style={{ width: `${autoCaptureProgress * 100}%` }}
             />
           </div>
         )}
         {cameraMessage && (
           <div
-            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+            className="hf-camera-overlay"
             onClick={
               cameraStatus === "denied" || cameraStatus === "error"
                 ? () => {
@@ -184,7 +184,7 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
         {working && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
       </div>
 
-      <p className="hf-type-small text-text-secondary text-center">
+      <p className="hf-type-caption text-center">
         {result === "unreadable"
           ? t("cameraCreate.retakeStillUnreadable")
           : result === "failed"

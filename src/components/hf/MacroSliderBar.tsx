@@ -83,7 +83,7 @@ export function MacroSliderBar({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="hf-type-small text-text-secondary">{label}</span>
+        <span className="hf-type-caption">{label}</span>
         {disabled ? (
           <span className="hf-type-body hf-type-strong min-w-[36px] px-1 text-right text-hf-black">{grams} g</span>
         ) : editing ? (

@@ -92,7 +92,7 @@ export default function GoalDetailPage() {
                     ? t("goals.targetDateLabel", { date: formatGoalDate(goal.targetDate) })
                     : t("goals.title")}
               </p>
-              <p className="text-text-secondary hf-type-small">{t("goals.createdLabel", { date: formatGoalDate(goal.createdAt) })}</p>
+              <p className="hf-type-caption">{t("goals.createdLabel", { date: formatGoalDate(goal.createdAt) })}</p>
             </div>
           </div>
 

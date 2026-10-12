@@ -55,7 +55,7 @@ function Card({
             {active && <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-hf-green" />}
             {title}
           </p>
-          <p className="hf-type-small text-text-secondary">{description}</p>
+          <p className="hf-type-caption">{description}</p>
         </div>
         {chevron && <IconChevronRight size={18} className="mt-1 shrink-0 text-hf-black opacity-40" />}
       </div>
@@ -137,7 +137,7 @@ function IntegrationerContent() {
         icon={<IntegrationIcon icon={integration.icon} label={integration.label} size={36} className="h-9 w-9 rounded-card" />}
       >
         {unavailable ? (
-          <p className="hf-type-small text-text-secondary">{t("integrations.unavailable")}</p>
+          <p className="hf-type-caption">{t("integrations.unavailable")}</p>
         ) : active ? (
           <div className="flex flex-col gap-1">
             {integration.lastSyncedAt && (
@@ -221,7 +221,7 @@ function IntegrationerContent() {
   return (
     <HfScreen title={t("integrations.title")}>
       <div className="hf-page">
-        <p className="hf-type-small text-text-secondary px-1">{t("integrations.intro")}</p>
+        <p className="hf-type-caption px-1">{t("integrations.intro")}</p>
 
         {loading ? (
           <SkeletonScreen className="contents">

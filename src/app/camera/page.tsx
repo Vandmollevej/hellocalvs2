@@ -322,7 +322,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
     <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       {mode === "hellofresh" && forDish && <ModeTabs mode={mode} />}
 
-      <div className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card">
+      <div className="hf-camera-preview">
         {capture ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={capture} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
@@ -347,7 +347,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
 
         {message && (
           <div
-            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+            className="hf-camera-overlay"
             onClick={cameraStatus === "denied" || cameraStatus === "error" ? restartCamera : undefined}
           >
             <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{message}</p>
@@ -364,7 +364,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
           <button
             type="button"
             onClick={restartCamera}
-            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+            className="hf-camera-overlay"
           >
             <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{t("camera.notRecognizedRetry")}</p>
           </button>
@@ -403,13 +403,13 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
           </div>
 
           {capture && !pickObjects && mealAnalyzeStatus === "idle" && (
-            <p className="hf-type-small hf-type-strong text-text-secondary text-center">{t("camera.analyzingMeal")}</p>
+            <p className="hf-type-caption hf-type-strong text-center">{t("camera.analyzingMeal")}</p>
           )}
           {photo && mealAnalyzeStatus === "error" && (
             <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{connectionMessage(t("camera.mealAnalyzeError"))}</p>
           )}
           {photo && mealAnalyzeStatus === "done" && mealItems.length === 0 && (
-            <p className="hf-type-small hf-type-strong text-text-secondary text-center">
+            <p className="hf-type-caption hf-type-strong text-center">
               {t("camera.noMealItemsFound")}
             </p>
           )}
@@ -427,7 +427,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
                           </span>
                         )}
                       </p>
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {item.amountLabel} · {item.kcal} kcal
                       </p>
                     </div>

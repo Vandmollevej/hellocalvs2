@@ -95,7 +95,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
           </p>
         )}
         {user.closedAt && (
-          <p className="hf-type-small text-text-secondary">
+          <p className="hf-type-caption">
             Lukket {new Date(user.closedAt).toLocaleDateString("da-DK")} — anonymiseres efter 3 måneder
           </p>
         )}
@@ -110,7 +110,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
         </span>
       </td>
       <td className="hf-type-body py-2 pr-3 text-text-secondary">{user.pointsBalance}</td>
-      <td className="hf-type-small py-2 pr-3 text-text-secondary">
+      <td className="hf-type-caption py-2 pr-3">
         {[
           user.wantsUpdateNewsEmails && "Nyheder",
           user.wantsAdviceEmails && "Gode råd",

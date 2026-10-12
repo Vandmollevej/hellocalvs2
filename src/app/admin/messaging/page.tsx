@@ -73,7 +73,7 @@ export default async function AdminMessagingPage() {
         <div className="mt-2 overflow-x-auto">
           <table className="hf-type-body w-full text-left">
             <thead>
-              <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+              <tr className="hf-table-section hf-type-small">
                 <th className="py-2 pr-3">Event</th>
                 <th className="py-2 pr-3">Til</th>
                 <th className="py-2 pr-3">Kanal</th>

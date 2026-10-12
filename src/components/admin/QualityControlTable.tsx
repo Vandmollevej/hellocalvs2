@@ -175,7 +175,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
 
       <div className="hf-surface hf-table-scroll">
         <table className="hf-type-body w-full text-left">
-          <thead className="hf-type-small bg-hf-white text-text-secondary">
+          <thead className="hf-type-caption bg-hf-white">
             <tr>
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort("date")}>
                 {t(locale, "quality_control_col_date")}

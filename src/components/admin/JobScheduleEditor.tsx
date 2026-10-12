@@ -19,7 +19,7 @@ export function JobScheduleEditor({ control }: { control: ReturnType<typeof useJ
   } = control;
 
   return (
-    <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-secondary">
+    <div className="hf-type-caption flex flex-wrap items-center gap-2">
       <select
         value={scheduleType}
         onChange={(e) => setScheduleType(e.target.value as ScheduleType)}

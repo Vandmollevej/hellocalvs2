@@ -41,7 +41,7 @@ export function ReportActions({ partnerId, query }: { partnerId: string; query: 
   return (
     <section className="hf-panel">
       <h3 className="hf-type-title">Rapport</h3>
-      <p className="hf-type-small text-text-secondary">Rapporten dækker den valgte periode og det valgte filter.</p>
+      <p className="hf-type-caption">Rapporten dækker den valgte periode og det valgte filter.</p>
       <div className="flex flex-wrap gap-2">
         <a className={BTN} href={`${base}?${query}&format=pdf`}>Hent PDF</a>
         <a className={BTN} href={`${base}?${query}&format=csv`}>Hent CSV</a>

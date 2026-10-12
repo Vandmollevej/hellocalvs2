@@ -125,11 +125,11 @@ export function StaleSyncPrompt() {
           </ActionLink>
         )}
         <div className="mt-5 flex items-center justify-between">
-          <button type="button" disabled={busy} className="hf-type-small text-text-secondary" onClick={later}>
+          <button type="button" disabled={busy} className="hf-type-caption" onClick={later}>
             {t("staleSyncPrompt.later")}
           </button>
           {current.slug && (
-            <Link href={href} onClick={() => setStale(null)} className="hf-type-small text-text-secondary underline">
+            <Link href={href} onClick={() => setStale(null)} className="hf-type-caption underline">
               {t("staleSyncPrompt.open")}
             </Link>
           )}

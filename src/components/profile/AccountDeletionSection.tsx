@@ -79,7 +79,7 @@ export function AccountDeletionSection() {
             <>
               <p className="hf-type-body">{t(mode === "close" ? "accountSettings.closeWarning" : "accountSettings.confirmWarning", { word: controlWord })}</p>
               <input
-                  className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+                  className="hf-field-soft hf-field-soft--focus hf-type-body hf-field"
                   value={confirm}
                   onChange={(event) => setConfirm(event.target.value)}
                   placeholder={t("accountSettings.confirmPlaceholder", { word: controlWord })}

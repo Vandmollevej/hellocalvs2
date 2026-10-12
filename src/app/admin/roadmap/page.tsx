@@ -80,7 +80,7 @@ export default async function RoadmapPage({ searchParams }: { searchParams: Prom
                 <article key={item.id} className="hf-surface flex flex-col gap-2 p-3">
                   <p className="hf-type-body hf-type-strong text-hf-black">{item.title}</p>
                   {item.description && (
-                    <p className="hf-type-small whitespace-pre-wrap text-text-secondary">{item.description}</p>
+                    <p className="hf-type-caption whitespace-pre-wrap">{item.description}</p>
                   )}
                   <div className="hf-type-small flex items-center gap-1 text-text-muted">
                     {item.createdBy && <IconRobot size={14} aria-label="Oprettet af agent" />}

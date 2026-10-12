@@ -79,7 +79,7 @@ export function BillingForm({ partnerId, values, mode, canEdit }: { partnerId: s
       {canEdit ? (
         <div className="flex items-center gap-3">
           <button className={PRIMARY} disabled={busy}>Gem</button>
-          {saved && <span className="hf-type-small text-text-secondary">Gemt</span>}
+          {saved && <span className="hf-type-caption">Gemt</span>}
         </div>
       ) : (
         <p className="hf-type-small text-text-muted">Læseadgang: kun administratorer kan redigere.</p>

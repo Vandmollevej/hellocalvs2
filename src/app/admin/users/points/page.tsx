@@ -124,7 +124,7 @@ export default async function AdminGrantPointsPage({
         <div className="hf-panel">
           <div>
             <p className="hf-type-body hf-type-strong text-hf-black">{selected.displayName}</p>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               Saldo: {balance?._sum.amount ?? 0} points ·{" "}
               {lastGrant ? `senest tildelt ${lastGrant.amount} points ${date(lastGrant.createdAt)}` : "aldrig tildelt points af admin"}
             </p>
@@ -147,7 +147,7 @@ export default async function AdminGrantPointsPage({
         <div className="overflow-x-auto">
           <table className="hf-type-body w-full text-left">
             <thead>
-              <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+              <tr className="hf-table-section hf-type-small">
                 <th className="py-2 pr-3">Dato</th>
                 <th className="py-2 pr-3">Bruger</th>
                 <th className="py-2 pr-3">Points</th>
@@ -163,7 +163,7 @@ export default async function AdminGrantPointsPage({
                     <p className="hf-type-strong text-hf-black">{row.user.displayName}</p>
                   </td>
                   <td className="py-2 pr-3 text-text-secondary">+{row.amount}</td>
-                  <td className="hf-type-small py-2 pr-3 text-text-secondary">{row.note ?? "—"}</td>
+                  <td className="hf-type-caption py-2 pr-3">{row.note ?? "—"}</td>
                   <td className="hf-type-small py-2 text-text-muted">
                     {(row.grantedById && granterEmail.get(row.grantedById)) ?? "—"}
                   </td>

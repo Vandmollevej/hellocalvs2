@@ -67,25 +67,25 @@ export function HeartRateSpikeChart({
           width={Math.max(2, x(new Date(spikeEnd).getTime()) - x(new Date(spikeStart).getTime()))}
           height={H - PAD.top - PAD.bottom}
           rx={4}
-          fill="var(--hf-green)"
+          className="fill-hf-green"
           opacity={0.15}
         />
         {yTicks.map((v) => (
           <g key={v}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="var(--hf-tan-dark)" strokeWidth={1} />
-            <text x={PAD.left - 4} y={y(v) + 3} textAnchor="end" fontSize={9} fill="var(--text-secondary)">
+            <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} className="stroke-hf-tan-dark" strokeWidth={1} />
+            <text x={PAD.left - 4} y={y(v) + 3} textAnchor="end" className="hf-chart-axis" fill="var(--text-secondary)">
               {v}
             </text>
           </g>
         ))}
-        <path d={path} fill="none" stroke="var(--hf-green-dark)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+        <path d={path} fill="none" className="stroke-hf-green-dark" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {ticks.map((tick, i) => (
           <text
             key={tick}
             x={x(tick)}
             y={H - 6}
             textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"}
-            fontSize={10}
+            className="hf-chart-axis--large"
             fill="var(--text-secondary)"
           >
             {timeLabel(tick)}
@@ -94,11 +94,11 @@ export function HeartRateSpikeChart({
         {hovered && (
           <g>
             <line x1={x(hovered.t)} x2={x(hovered.t)} y1={PAD.top} y2={H - PAD.bottom} stroke="var(--text-secondary)" strokeWidth={1} />
-            <circle cx={x(hovered.t)} cy={y(hovered.bpm)} r={4} fill="var(--hf-green-dark)" stroke="var(--hf-cream)" strokeWidth={2} />
+            <circle cx={x(hovered.t)} cy={y(hovered.bpm)} r={4} className="fill-hf-green-dark stroke-hf-cream" strokeWidth={2} />
           </g>
         )}
       </svg>
-      <figcaption className="hf-type-small h-5 text-center text-text-secondary">
+      <figcaption className="hf-type-caption h-5 text-center">
         {hovered ? `${timeLabel(hovered.t)} · ${hovered.bpm} bpm` : ""}
       </figcaption>
     </figure>

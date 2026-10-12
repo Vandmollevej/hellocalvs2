@@ -89,7 +89,7 @@ function Card({ title, children, className = "" }: { title: string; children: Re
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+    <label className="hf-type-caption flex flex-col gap-1">
       {label}
       {children}
     </label>
@@ -413,7 +413,7 @@ export function GuideBuilder({
             </button>
           ))}
         </div>
-        <div className="hf-type-small flex items-center gap-1 text-text-secondary">
+        <div className="hf-type-caption flex items-center gap-1">
           {tr("gb_preview_lang")}
           {(["da", "en"] as GuideLang[]).map((l) => (
             <button
@@ -522,7 +522,7 @@ export function GuideBuilder({
 
           <Card title={tr("gb_fonts")}>
             {!backgroundChosen && (
-              <p className="hf-type-small flex items-center gap-1 text-text-secondary">
+              <p className="hf-type-caption flex items-center gap-1">
                 <IconLock size={14} /> {tr("gb_drag_bg_first")}
               </p>
             )}
@@ -620,7 +620,7 @@ export function GuideBuilder({
               <IconPlus size={16} /> {tr(kind === "startup" ? "gb_add_screen" : "gb_add_tooltip")}
             </button>
             <div className="mt-1 flex flex-col gap-2 border-t border-hf-tan-dark pt-2">
-              <p className="hf-type-small text-text-secondary">
+              <p className="hf-type-caption">
                 {tr("gb_background")}: {screen.background ? backgroundById(screen.background).label[uiLang] : tr("gb_background_none")}
               </p>
               {localizedInput("gb_step_label_da", screen.stepLabel.da, (v) =>
@@ -707,7 +707,7 @@ export function GuideBuilder({
 
           <Card title={tr("gb_selected")}>
             {!selected ? (
-              <p className="hf-type-small text-text-secondary">{tr("gb_none_selected")}</p>
+              <p className="hf-type-caption">{tr("gb_none_selected")}</p>
             ) : selected.type === "text" ? (
               <>
                 <Field label={tr("gb_font")}>

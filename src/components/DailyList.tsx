@@ -191,7 +191,7 @@ export function DailyList() {
                   }
                   title={entry.title}
                   subtitle={
-                    <p className="hf-type-small mt-1 text-text-secondary">
+                    <p className="hf-type-caption mt-1">
                       {Math.round(entry.kcalPer100g)} kcal / 100 g
                     </p>
                   }

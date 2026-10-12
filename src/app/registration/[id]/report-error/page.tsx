@@ -102,14 +102,14 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
         {points === undefined ? (
           <p className="hf-type-body text-text-secondary mt-8 text-center">{t("common.loading")}</p>
         ) : points === null ? (
-          <div className="mt-8 flex flex-col items-center gap-4 text-center">
+          <div className="hf-report-empty">
             <p className="hf-type-body text-text-secondary">{t("registrationReportError.noProduct")}</p>
             <Link href="/profile/report-bug" className="hf-control hf-btn-secondary w-full">
               {t("registrationReportError.generalReport")}
             </Link>
           </div>
         ) : result ? (
-          <div className="mt-8 flex flex-col items-center gap-4 text-center">
+          <div className="hf-report-empty">
             <p className="hf-type-body">
               {t(result === "sent" ? "registrationReportError.sent" : "registrationReportError.alreadyPending")}
             </p>
@@ -161,7 +161,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         value={notes[point.key] ?? ""}
                         onChange={(e) => setNotes((prev) => ({ ...prev, [point.key]: e.target.value }))}
                         placeholder={t("registrationReportError.correctionPlaceholder")}
-                        className="hf-type-input mt-2 w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+                        className="hf-textarea-auth hf-type-input mt-2"
                       />
                     )}
                   </li>

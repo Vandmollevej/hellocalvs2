@@ -27,7 +27,7 @@ export function ReviewMissesButton() {
       <button type="button" onClick={run} disabled={busy} className="hf-btn-secondary hf-btn--compact">
         {busy ? "Vurderer …" : "Vurdér nye søgninger nu"}
       </button>
-      {message && <span className="hf-type-small text-text-secondary">{message}</span>}
+      {message && <span className="hf-type-caption">{message}</span>}
     </div>
   );
 }

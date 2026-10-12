@@ -14,7 +14,7 @@ const dateFmt = new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "long"
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <p className="hf-type-small text-text-secondary">{label}</p>
+      <p className="hf-type-caption">{label}</p>
       <p className="hf-type-strong text-hf-black">{value}</p>
       {hint && <p className="hf-type-small text-text-muted">{hint}</p>}
     </div>
@@ -76,7 +76,7 @@ export default async function EconomyPage() {
           </div>
           {cover.runway.length > 0 && (
             <div className="flex flex-col gap-1">
-              <p className="hf-type-small text-text-secondary">Sikret indtægt pr. måned fra årsabonnementer</p>
+              <p className="hf-type-caption">Sikret indtægt pr. måned fra årsabonnementer</p>
               {cover.runway.map((r) => (
                 <div key={r.label} className="hf-type-small flex items-center gap-2">
                   <span className="w-20 shrink-0 text-text-secondary">{r.label}</span>

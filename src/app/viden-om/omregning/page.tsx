@@ -72,7 +72,7 @@ export default function KitchenConversionsPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <p className="hf-type-body text-hf-black">{item.name}</p>
-                    <p className="hf-type-small text-text-secondary">
+                    <p className="hf-type-caption">
                       {`1 dl = ${grams(item.gramsPerDl, 100)} · 1 spsk = ${grams(item.gramsPerDl, 15)} · 1 tsk = ${grams(item.gramsPerDl, 5)}`}
                     </p>
                   </div>

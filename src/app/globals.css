@@ -3097,3 +3097,267 @@ textarea.hf-input {
   background: none;
   cursor: pointer;
 }
+
+/* Shared element roles: exact existing properties, with marketing kept separate. */
+@layer components {
+  .hf-auth-form {
+    @apply flex flex-1 flex-col gap-4 px-4 pt-8;
+  }
+
+  .hf-auth-panel {
+    @apply mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4;
+  }
+
+  .hf-screen-body {
+    @apply flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream;
+  }
+
+  .hf-field-soft {
+    @apply rounded-xl bg-hf-tan px-4 text-hf-black outline-none;
+  }
+
+  .hf-select-surface {
+    @apply w-full appearance-none rounded-xl border border-hf-tan-dark bg-hf-white pl-3 pr-9 text-hf-black;
+  }
+
+  .hf-select-auth {
+    @apply w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card;
+  }
+
+  .hf-textarea-auth {
+    @apply w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm;
+  }
+
+  .hf-input-auth-card {
+    @apply w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card;
+  }
+
+  .hf-select-chevron {
+    @apply pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black;
+  }
+
+  .hf-directory-toolbar {
+    @apply sticky top-0 z-10 border-b border-hf-tan-dark bg-hf-white px-4 pb-3 pt-4;
+  }
+
+  .hf-directory-filter {
+    @apply flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2;
+  }
+
+  .hf-icon-circle-sm {
+    @apply flex h-8 w-8 items-center justify-center rounded-full;
+  }
+
+  .hf-report-empty {
+    @apply mt-8 flex flex-col items-center gap-4 text-center;
+  }
+
+  .hf-entry-summary {
+    @apply flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card;
+  }
+
+  .hf-warning-confirm {
+    @apply flex flex-wrap items-center gap-3 rounded-md border border-hf-red-dark bg-hf-red-muted p-3;
+  }
+
+  .hf-recovery-code {
+    @apply break-all rounded-md bg-hf-white px-3 py-2 text-center text-text-muted;
+  }
+
+  .hf-catalog-grid {
+    @apply grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6;
+  }
+
+  .hf-table-section {
+    @apply border-b border-hf-tan-dark uppercase tracking-wide text-text-muted;
+  }
+
+  .hf-camera-preview {
+    @apply relative aspect-square w-full overflow-hidden bg-hf-black rounded-card;
+  }
+
+  .hf-camera-overlay {
+    @apply absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center;
+  }
+
+  .hf-day-picker-button {
+    @apply flex size-10 items-center justify-center rounded-full disabled:opacity-25;
+  }
+
+  .hf-form-label {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .mk-type-section-title {
+    @apply text-3xl font-bold sm:text-4xl;
+  }
+
+  .mk-type-hero-title {
+    @apply text-4xl font-bold sm:text-5xl;
+  }
+
+  .mk-type-card-title {
+    @apply text-lg font-bold;
+  }
+
+  .mk-type-subtitle {
+    @apply text-2xl font-bold;
+  }
+
+  .mk-type-label-strong {
+    @apply text-sm font-bold;
+  }
+
+  .mk-type-label {
+    @apply text-sm font-semibold;
+  }
+
+  .mk-type-title {
+    @apply text-3xl font-bold;
+  }
+
+  .mk-type-value {
+    @apply text-4xl font-bold;
+  }
+
+  .mk-type-body {
+    @apply text-base;
+  }
+
+  .mk-type-small {
+    @apply text-sm;
+  }
+
+  .mk-type-caption {
+    @apply text-xs;
+  }
+
+  .mk-type-intro {
+    @apply text-lg;
+  }
+
+  .mk-type-value-small {
+    @apply text-xl;
+  }
+
+  .mk-type-micro {
+    @apply text-[11px];
+  }
+
+  .mk-type-detail {
+    @apply text-[15px];
+  }
+
+  .mk-type-display {
+    @apply text-5xl;
+  }
+
+  .mk-weight-semibold {
+    @apply font-semibold;
+  }
+
+  .mk-weight-medium {
+    @apply font-medium;
+  }
+}
+
+@layer components {
+  /* Same controls, shared classes; web shell placement stays specific to desktop. */
+  .hf-shell__add {
+    @apply absolute bottom-[-10px] left-1/2 z-30 flex h-[52px] w-[52px] -translate-x-1/2 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark;
+  }
+  .hf-navrow--profile { @apply py-0.5 pl-1.5 pr-3; }
+  .hf-navrow--child { padding-left: 60px; }
+  .hf-social-login { @apply grid w-full items-center overflow-hidden text-hf-white rounded-card; grid-template-columns: 47px 1fr 47px; }
+  .hf-social-login--google { background: var(--hf-color-google); }
+  .hf-social-login--apple { background: var(--hf-color-action); }
+  .hf-social-login--facebook { background: var(--hf-color-facebook); }
+  .hf-uncertainty-tilde { font-family: Arial, sans-serif; font-weight: 700; font-size: 2.4em; line-height: 0; vertical-align: -0.2em; margin-right: 4px; -webkit-text-stroke: 0.75px currentColor; }
+  .hf-uncertainty-tilde--small { font-size: 2.6em; -webkit-text-stroke: 0.5px currentColor; }
+  .mk-input { @apply w-full rounded-xl border border-hf-gray-border bg-hf-white px-4 py-3 text-[15px] text-hf-black outline-none transition focus:border-hf-green focus:ring-2 focus:ring-hf-green/20; }
+  .mk-type-tiny { @apply text-[10px]; }
+  .mk-type-about-title { @apply text-3xl font-semibold; }
+  .mk-header-login { @apply rounded-full bg-hf-green px-6 py-2.5 text-sm font-semibold text-hf-white transition hover:bg-hf-green-dark; }
+  .mk-store-button { @apply flex h-14 w-[184px] items-center gap-3 rounded-xl px-4 transition; }
+  .mk-store-button--dark { @apply bg-hf-black text-hf-white hover:bg-hf-action-hover; }
+  .mk-store-button--light { @apply bg-hf-white text-hf-black hover:bg-hf-cream; }
+}
+
+@layer components {
+  .hf-type-counter { margin: 0; font-family: var(--font-hf-heading); font-size: 40px; font-weight: 700; line-height: 48px; }
+  .hf-line-min { min-height: 1lh; }
+  .hf-photo-capture { @apply flex h-28 w-28 items-center justify-center rounded-full border-0 bg-hf-green text-hf-white disabled:opacity-50; box-shadow: 0 4px 12px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.10); }
+  .hf-offline-banner { @apply pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center bg-hf-brand px-4 py-1 text-center text-hf-white; padding-top: max(4px, env(safe-area-inset-top)); }
+  .hf-action-hint { @apply pointer-events-none absolute whitespace-nowrap bg-hf-tan; font-weight: 700; font-size: 15px; border-radius: 3px; color: var(--hf-green); box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04); }
+  .hf-action-hint--radial { padding: 7px 10px; transform: translateY(-50%); }
+  .hf-action-hint--arc { padding: 6px 0; }
+}
+
+@layer components {
+  .hf-disclosure-chevron { display: block; transition: transform .15s; }
+  .hf-disclosure-chevron.is-expanded { transform: rotate(180deg); }
+  .mk-recipe-thumb { @apply h-11 w-11 shrink-0 rounded-lg; }
+  /* Preview-only iOS background; independent of app and desktop shells. */
+  .hf-phone-push-preview { @apply -mt-[54px] flex min-h-0 flex-1 flex-col items-center px-3 pt-[54px] text-white; background: linear-gradient(160deg,#2c5d3b 0%,#35784A 45%,#1d3b27 100%); }
+  .hf-widget-frame { @apply relative shrink-0 overflow-hidden bg-hf-cream text-hf-black shadow-[0_2px_12px_rgb(35_35_35/18%)]; }
+  .hf-widget-frame--ios { border-radius: 22px; }
+  .hf-widget-frame--android { border-radius: 16px; }
+  .hf-widget-add { @apply flex items-center justify-center rounded-full bg-hf-green text-hf-white; width: 72px; height: 72px; }
+  .hf-widget-add--compact { width: 48px; height: 48px; }
+  .hf-widget-action { @apply flex min-w-0 flex-1 flex-col items-center justify-center gap-1 bg-hf-tan text-hf-black; height: 96px; border-radius: 12px; }
+  .hf-widget-action--compact { height: 72px; }
+}
+
+@layer components {
+  .hf-type-regular { font-weight: 400; }
+  .mk-type-price { @apply text-5xl font-light; }
+}
+
+@layer components {
+  .hf-field-soft--focus { @apply focus-visible:ring-2 focus-visible:ring-hf-green; }
+}
+
+@layer components {
+  /* The wheel shares its font size with its JS geometry through one parameter. */
+  .hf-wheel-number { font-size: var(--hf-wheel-font-size); text-box: trim-both cap alphabetic; }
+  .hf-wheel-caption { line-height: 1.15; }
+  /* Audio animation still changes the bar height dynamically after capture starts. */
+  .hf-waveform-bar { @apply w-[3px] flex-1 rounded-full bg-hf-green; height: 8%; }
+}
+
+/* SVG uses its own coordinate scale; these roles retain the existing exact sizes. */
+@layer components {
+  .hf-chart-axis--micro { font-size: 7px; }
+  .hf-chart-axis--compact { font-size: 7.5px; }
+  .hf-chart-axis--small { font-size: 8px; }
+  .hf-chart-axis { font-size: 9px; }
+  .hf-chart-axis--large { font-size: 10px; }
+  .hf-chart-axis--widget { font-size: 11px; }
+}
+
+@layer components {
+  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.28); }
+  .hf-chart-label { fill: #6b7280; }
+  .hf-chart-grid { stroke: #d1d5db; }
+  .hf-chart-frame { stroke: #000; }
+  .hf-chart-pulse { stroke: #e11d48; }
+  .hf-chart-empty { fill: #9ca3af; }
+}
+
+@layer components {
+  .hf-fingerprint-hit { border-radius: 14px; }
+  .hf-orbit-action { background-color: var(--hf-tan); box-shadow: 0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05); }
+  .hf-orbit-action.is-highlighted { background-color: var(--hf-green); box-shadow: 0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08); }
+}
+
+:root {
+  --hf-shadow-card-lift: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --hf-shadow-nav-lift: 0 10px 18px rgb(0 0 0 / 0.18);
+}
+@layer components {
+  .hf-card-lift { box-shadow: var(--hf-shadow-card-lift); }
+}
+
+@layer components {
+  .hf-barcode-digit-size { font-size: var(--hf-barcode-digit-size); }
+}

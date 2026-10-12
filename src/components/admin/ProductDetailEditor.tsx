@@ -99,7 +99,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
       <div className="hf-panel">
         <div className="grid grid-cols-2 gap-4">
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Navn
             <input
               value={form.name}
@@ -107,7 +107,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               className="hf-input"
             />
           </label>
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Producent
             <input
               value={form.brand}
@@ -117,7 +117,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
           </label>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Kcal / 100 g
             <input
               type="number"
@@ -126,7 +126,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               className="hf-input"
             />
           </label>
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Protein (g)
             <input
               type="number"
@@ -135,7 +135,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               className="hf-input"
             />
           </label>
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Kulhydrat (g)
             <input
               type="number"
@@ -144,7 +144,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               className="hf-input"
             />
           </label>
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Fedt (g)
             <input
               type="number"
@@ -184,7 +184,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
 
         {mergeOpen && (
           <div className="hf-panel">
-            <p className="hf-type-small mb-2 text-text-secondary">
+            <p className="hf-type-caption mb-2">
               Flet denne vare ind i en anden — alle registreringer, favoritter og stregkoder flyttes,
               og denne vare slettes.
             </p>

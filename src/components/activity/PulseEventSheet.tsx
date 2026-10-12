@@ -173,7 +173,7 @@ export function PulseEventSheet({
                 aria-label={t("activity.older")}
                 disabled={index === 0}
                 onClick={() => setIndex(index - 1)}
-                className="flex size-10 items-center justify-center rounded-full disabled:opacity-25"
+                className="hf-day-picker-button"
               >
                 <IconChevronLeft size={24} />
               </button>
@@ -183,7 +183,7 @@ export function PulseEventSheet({
                 aria-label={t("activity.newer")}
                 disabled={index === list.length - 1}
                 onClick={() => setIndex(index + 1)}
-                className="flex size-10 items-center justify-center rounded-full disabled:opacity-25"
+                className="hf-day-picker-button"
               >
                 <IconChevronRight size={24} />
               </button>
@@ -191,15 +191,15 @@ export function PulseEventSheet({
           )}
 
           <div className="flex flex-col items-center gap-1 text-center">
-            <p className="hf-type-small text-text-secondary">{dateText}</p>
+            <p className="hf-type-caption">{dateText}</p>
             <div className="flex w-full items-baseline justify-center gap-5">
-              <span className="hf-type-small text-text-secondary tabular-nums">{clock.format(new Date(event.startedAt))}</span>
-              <span className="hf-type-title hf-type-strong text-hf-black tabular-nums" style={{ fontSize: 40, lineHeight: "48px" }}>
+              <span className="hf-type-caption tabular-nums">{clock.format(new Date(event.startedAt))}</span>
+              <span className="hf-type-counter hf-type-strong text-hf-black tabular-nums">
                 {clock.format(new Date(peak.at))}
               </span>
-              <span className="hf-type-small text-text-secondary tabular-nums">{clock.format(new Date(event.endedAt))}</span>
+              <span className="hf-type-caption tabular-nums">{clock.format(new Date(event.endedAt))}</span>
             </div>
-            <p className="hf-type-small text-text-secondary">{t("activity.peakBpm", { peak: Math.round(peak.bpm) })}</p>
+            <p className="hf-type-caption">{t("activity.peakBpm", { peak: Math.round(peak.bpm) })}</p>
           </div>
 
           <HeartRateSpikeChart

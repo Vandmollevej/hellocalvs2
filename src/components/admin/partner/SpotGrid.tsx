@@ -106,7 +106,7 @@ export function SpotGrid({ spots }: { spots: SpotStats[] }) {
               <Stat label="Visninger" value={s.impressions} of={s.agreedImpressions} />
               <Stat label="Kliks" value={s.clicks} of={s.agreedClicks} />
             </div>
-            <p className="hf-type-small text-text-secondary">Klikrate {pct(s.ctr)}</p>
+            <p className="hf-type-caption">Klikrate {pct(s.ctr)}</p>
             <button className="hf-btn-text self-start text-hf-green-dark" onClick={() => setOpen(s)}>
               Vis mere
             </button>

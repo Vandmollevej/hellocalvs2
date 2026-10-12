@@ -1197,7 +1197,7 @@ export function AddProductView({
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
                     {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
-                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
+                      <p key={`${serving.label}-${index}`} className="hf-type-caption">
                         {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
                       </p>
                     ))}
@@ -1245,7 +1245,7 @@ export function AddProductView({
                           }`}
                         >
                           <span className="hf-type-small hf-type-strong text-hf-black">{code.toUpperCase()}</span>
-                          <span className="hf-type-small text-text-secondary underline underline-offset-2">{name}</span>
+                          <span className="hf-type-caption underline underline-offset-2">{name}</span>
                         </button>
                       );
                     })}
@@ -1345,7 +1345,7 @@ export function AddProductView({
                           }`}
                         >
                           <IconAlertTriangle size={18} className="shrink-0 text-hf-black" />
-                          <span className="hf-type-small text-text-secondary flex-1">
+                          <span className="hf-type-caption flex-1">
                             <span className="underline underline-offset-2">{toxin.name}</span>{" "}
                             ({matchedTerm})
                           </span>
@@ -1385,7 +1385,7 @@ export function AddProductView({
                     </span>
                     {t("addProduct.allergens")}
                   </p>
-                  <p className="hf-type-small text-text-secondary">
+                  <p className="hf-type-caption">
                     {visibleAllergens.map((key) => labelForAllergen(key)).join(", ")}
                   </p>
                   <p className="hf-type-micro text-text-secondary mt-2">
@@ -1405,7 +1405,7 @@ export function AddProductView({
                       ))}
                     </div>
                   ) : (
-                    <p className="hf-type-small text-text-secondary">
+                    <p className="hf-type-caption">
                       {splitENumbers(view.ingredientsText ?? "").map((part, index) =>
                         part.code ? (
                           <button

@@ -227,7 +227,7 @@ export function OnboardingWizard({
           {canDismissPermanently && (
             <BottomSheetCloseButton
               onClick={() => (exitRef.current = "dismiss")}
-              className="hf-type-small hf-type-strong text-text-secondary h-10 w-full"
+              className="hf-type-caption hf-type-strong h-10 w-full"
             >
               {t("onboarding.doNotShowAgain")}
             </BottomSheetCloseButton>

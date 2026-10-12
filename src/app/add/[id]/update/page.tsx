@@ -121,16 +121,16 @@ export default function ProductUpdatePage() {
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {t(KIND_KEYS[kind].title, { points })}
               </p>
-              <p className="hf-type-small text-text-secondary">{t(KIND_KEYS[kind].hint)}</p>
+              <p className="hf-type-caption">{t(KIND_KEYS[kind].hint)}</p>
               {outcome === "done" ? (
                 <p className="hf-type-small hf-type-strong text-hf-black">{t("productUpdate.done")}</p>
               ) : (
                 <>
                   {outcome === "unreadable" && (
-                    <p className="hf-type-small text-text-secondary">{t("productUpdate.unreadable")}</p>
+                    <p className="hf-type-caption">{t("productUpdate.unreadable")}</p>
                   )}
                   {outcome === "error" && (
-                    <p className="hf-type-small text-text-secondary">{t("productUpdate.error")}</p>
+                    <p className="hf-type-caption">{t("productUpdate.error")}</p>
                   )}
                   <button
                     type="button"

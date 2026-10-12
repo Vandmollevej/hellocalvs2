@@ -7,8 +7,8 @@ export function CaptureCheckOverlay({ label, size = 36 }: { label: string; size?
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-hf-black/35" role="img" aria-label={label}>
       <span
-        className="flex items-center justify-center rounded-full"
-        style={{ width: size, height: size, background: "var(--hf-color-positive)", color: "var(--hf-color-white)" }}
+        className="flex items-center justify-center rounded-full bg-hf-positive text-hf-white"
+        style={{ width: size, height: size }}
       >
         <IconCheck size={Math.round(size * 0.6)} stroke={3} />
       </span>

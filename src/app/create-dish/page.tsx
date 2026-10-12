@@ -578,7 +578,7 @@ export default function CreateDishPage() {
                       aria-label={t("createDish.durationLabel")}
                       className="hf-type-body w-16 rounded-card bg-hf-white py-2 text-center text-hf-black outline-none"
                     />
-                    <span className="hf-type-small text-text-secondary">
+                    <span className="hf-type-caption">
                       {t("createDish.minutes")}
                     </span>
                     <button
@@ -609,7 +609,7 @@ export default function CreateDishPage() {
                       {t("createDish.importDone")}
                     </p>
                     {importNote.nutrition && (
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {t("createDish.importNutrition")}:{" "}
                         {importNote.nutrition}
                       </p>
@@ -619,7 +619,7 @@ export default function CreateDishPage() {
                         <p className="hf-type-small hf-type-strong mt-2 text-hf-black">
                           {t("createDish.importMissing")}
                         </p>
-                        <ul className="hf-type-small text-text-secondary list-disc pl-5">
+                        <ul className="hf-type-caption list-disc pl-5">
                           {importNote.missing.map((line, index) => (
                             <li key={index}>{line}</li>
                           ))}
@@ -771,7 +771,7 @@ export default function CreateDishPage() {
                             <p className="hf-type-body hf-type-strong text-hf-black">
                               {ingredient.name}
                             </p>
-                            <p className="hf-type-small text-text-secondary">
+                            <p className="hf-type-caption">
                               {isPrivateIngredientId(ingredient.productId)
                                 ? t("createDish.kcalUnknown", {
                                     grams: ingredient.grams,
@@ -811,7 +811,7 @@ export default function CreateDishPage() {
                         kcal: round(totals.kcal),
                       })}
                     </p>
-                    <p className="hf-type-small text-text-secondary">
+                    <p className="hf-type-caption">
                       {t("createDish.macrosSummary", {
                         protein: round(totals.protein, 1),
                         carbs: round(totals.carbs, 1),

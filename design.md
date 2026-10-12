@@ -2166,3 +2166,29 @@ o.l. uden for marketing-zonen. Undtaget: admin → Designmanual (viser værdier)
 - Kalenderens to `maxHeight: calc(100vh − N px)` er layoutmatematik.
 - Afsnit 9 ovenfor var det oprindelige forslag; det er nu implementeret i den
   form, der står i `globals.css` (klassenavnene afviger på enkelte punkter).
+
+### 13.6 Identiske elementer og bevidste platformforskelle — 2026-10-12
+
+Fælles klasser ændrer ikke layouts: mobilskærmen, desktopskallen og marketing beholder deres egne strukturer. Kun egenskaber, der er identiske, deles.
+
+| Familie | Fælles klasser |
+| --- | --- |
+| Formularlayout | hf-auth-form, hf-auth-panel, hf-form-label, hf-screen-body |
+| Appens feltvarianter | hf-field-soft, hf-select-surface, hf-select-auth, hf-textarea-auth, hf-input-auth-card, hf-select-chevron |
+| Opslagsværker | hf-directory-toolbar, hf-directory-filter, hf-icon-circle-sm |
+| Tabeller/katalog | hf-table-section, hf-catalog-grid |
+| Rapport/kamera | hf-report-empty, hf-camera-preview, hf-camera-overlay, hf-photo-capture |
+| Eksisterende identisk tekst | hf-type-caption (13/18 sekundær tekst), hf-type-strong (700) |
+| Store tal | hf-type-counter (40/48, headingfont, 700), deles af puls-/vejningsvalg og synkroniseres til native |
+| Login/handlingslabels | hf-social-login + udbyder, hf-action-hint + radial/arc med hver sin padding |
+| Online-skal | hf-shell__add, hf-navrow--profile, hf-navrow--child; mobilens navigation bevares særskilt |
+| Marketing | mk-type-* (eksisterende responsive skala), mk-input, mk-store-button + dark/light, mk-header-login |
+| Platformpreview | hf-widget-frame + ios/android, hf-widget-add/action + compact, hf-phone-push-preview |
+
+Alle faste værdier ligger i globals.css. Tailwinds @apply bevarer de tidligere utility-egenskaber, responsive breakpoints og interaktionsstates. Dynamiske mål fra data/geometri forbliver inline. Lint håndhæver også marketingtypografi gennem roller og forbyder faste inline-font/radius/skyggeværdier uden for eksisterende dokumenterede undtagelser.
+
+Talhjul/lyd: hf-wheel-number bruger --hf-wheel-font-size fra hjulets eksisterende geometriparameter; hf-wheel-caption ejer den faste linjeafstand; hf-waveform-bar ejer søjlens startform. Kun løbende lydhøjder, opacity og geometriske positioner er inline.
+
+SVG-grafer bruger hf-chart-axis (9 px) og --micro/--compact/--small/--large/--widget (7/7,5/8/10/11 px); vægt deles via hf-type-strong eller hf-type-regular. hf-chart-label/grid/pulse/empty/frame bevarer de oprindelige paintværdier; den sorte frame (#000) må ikke erstattes af hf-black (#232323). Mobilens to orbit-menuer deler hf-orbit-action og is-highlighted; koordinater, scaling og gestures forbliver platformspecifikke. Animationens keyframes og datadrevne mål bevares.
+
+Faste SVG-tokenfarver genbruger fill-hf-*/stroke-hf-*; dynamiske paints, none/currentColor og original ikonkunst er bevaret. Lint forbyder faste hf-tokenpaint-attributter. Drag-skygger bruger hf-card-lift og --hf-shadow-card-lift/--hf-shadow-nav-lift, så keyframes henter de samme værdier fra CSS. Stregkodetekst bruger hf-barcode-digit-size med --hf-barcode-digit-size fra den eksisterende geometri.

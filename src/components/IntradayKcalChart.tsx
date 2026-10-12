@@ -64,11 +64,11 @@ export function IntradayKcalChart({
       <p className="hf-type-body hf-type-strong mb-4 text-hf-black">Kalorieindtag i løbet af dagen</p>
 
       <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
-        <polygon points={areaPoints} fill="var(--hf-green)" opacity="0.15" />
+        <polygon points={areaPoints} className="fill-hf-green" opacity="0.15" />
         <polyline
           points={polylinePoints}
           fill="none"
-          stroke="var(--hf-green)"
+          className="stroke-hf-green"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -79,9 +79,7 @@ export function IntradayKcalChart({
             x={p.x}
             y={Math.max(8, p.y - 6)}
             textAnchor="middle"
-            fontSize="7"
-            fontWeight="700"
-            fill="var(--hf-black)"
+            className="hf-chart-axis--micro hf-type-strong fill-hf-black"
           >
             {Math.round(p.value)} kcal
           </text>

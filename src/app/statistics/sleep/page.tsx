@@ -64,7 +64,7 @@ export default function SleepStatisticsPage() {
         {!inputs.loading && connected.length === 0 && available.length > 0 && (
           <section className="flex flex-col gap-2">
             <h2 className="hf-type-body-lg hf-heading text-hf-black">{t("sleepStats.devicesHeading")}</h2>
-            <p className="hf-type-small text-text-secondary">{t("sleepStats.devicesIntro")}</p>
+            <p className="hf-type-caption">{t("sleepStats.devicesIntro")}</p>
             <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-white">
               {available.map((integration) => (
                 <Link
@@ -75,7 +75,7 @@ export default function SleepStatisticsPage() {
                   <IntegrationIcon icon={integration.icon} label={integration.label} size={32} className="rounded-lg" />
                   <span className="min-w-0 flex-1">
                     <span className="hf-type-body hf-type-strong block">{integration.label}</span>
-                    <span className="hf-type-small block text-text-secondary">{integration.description}</span>
+                    <span className="hf-type-caption block">{integration.description}</span>
                   </span>
                   <IconChevronRight size={18} />
                 </Link>

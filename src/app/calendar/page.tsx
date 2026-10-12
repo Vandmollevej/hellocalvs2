@@ -977,7 +977,7 @@ function CalendarPageContent() {
                 datoen og statuslinjen nedenunder — absolut placeret, så det
                 hverken forlænger datolinjen eller gør området højere. */}
             {view === "week" && (
-              <p className="hf-type-small text-text-secondary pointer-events-none absolute inset-x-0 top-[calc(100%+2px)] -translate-y-1/2 text-center leading-none lowercase">
+              <p className="hf-type-caption pointer-events-none absolute inset-x-0 top-[calc(100%+2px)] -translate-y-1/2 text-center leading-none lowercase">
                 {t("calendar.weekNumberLabel", { number: weekNumber })}
               </p>
             )}
@@ -1237,7 +1237,7 @@ function MonthView({
       <div className="mb-2 flex items-center gap-1.5">
         <span className="w-3.5 shrink-0" aria-hidden="true" />
         <div className="grid flex-1 grid-cols-7 text-center">
-          {weekdays.map((day) => <span key={day} className="hf-type-small hf-type-strong text-text-secondary">{day}</span>)}
+          {weekdays.map((day) => <span key={day} className="hf-type-caption hf-type-strong">{day}</span>)}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -1370,7 +1370,7 @@ function WeekView({
             onClick={() => onOpenDate(date)}
             className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
-            <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
+            <span className="hf-type-caption hf-type-strong w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
@@ -1610,7 +1610,7 @@ function ListView({
             onClick={() => onOpenDate(date)}
             className="flex min-h-[66px] w-full shrink-0 items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
-            <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
+            <span className="hf-type-caption hf-type-strong w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
               className={`hf-type-body flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current
@@ -3216,7 +3216,7 @@ function MeasurementRow({
           )
         }
         title={measurement.weightKg !== null ? t("calendar.measurement.weight") : t("calendar.measurement.title")}
-        subtitle={source ? <p className="hf-type-small text-text-secondary">{source}</p> : undefined}
+        subtitle={source ? <p className="hf-type-caption">{source}</p> : undefined}
         right={
           measurement.weightKg !== null && !hideWeight ? (
             <span className="hf-type-body hf-type-strong text-hf-black">{formatWeightKg(measurement.weightKg)}</span>
@@ -3227,7 +3227,7 @@ function MeasurementRow({
         <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 pb-3 pl-[54px]">
           {measurement.metrics.map((metric) => (
             <div key={metric.type} className="contents">
-              <dt className="hf-type-small text-text-secondary">{t(`calendar.measurement.type.${metric.type}`)}</dt>
+              <dt className="hf-type-caption">{t(`calendar.measurement.type.${metric.type}`)}</dt>
               <dd className="hf-type-small hf-type-strong text-right text-hf-black">{formatMeasurementValue(metric)}</dd>
             </div>
           ))}

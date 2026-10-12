@@ -176,7 +176,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
   return (
     <section className="hf-panel">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {group.reason}
           {group.hiddenCount > 0 && ` · ${group.hiddenCount} mere vises efter denne fletning`}
         </p>
@@ -193,7 +193,7 @@ export function DuplicateCompareGroup({ group, onDone }: { group: CompareGroup; 
           <div className="grid grid-rows-subgrid" style={{ gridColumn: 1, gridRow: `1 / span ${rows.length}` }}>
             {rows.map((row, i) =>
               row.type === "field" ? (
-                <div key={i} className="hf-type-small border-t border-hf-gray-border py-1.5 pr-2 text-text-secondary">
+                <div key={i} className="hf-type-caption border-t border-hf-gray-border py-1.5 pr-2">
                   {row.field.label}
                 </div>
               ) : row.type === "section" ? (

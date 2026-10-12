@@ -44,7 +44,7 @@ export default async function AdminLabelsPage() {
       {rows.length === 0 ? (
         <p className="hf-type-body text-text-secondary">Ingen labels fundet på varerne endnu.</p>
       ) : (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+        <ul className="hf-catalog-grid">
           {rows.map((row) => (
             <li key={row.label}>
               <div className="flex h-full flex-col gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-2">

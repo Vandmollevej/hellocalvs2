@@ -279,7 +279,7 @@ export default function BilledeDagbogPage() {
               {/* Billederne (eller "ingen billeder endnu") står altid over knappen med god luft. */}
               <div className="mb-8 mt-4">
                 {!photosLoaded ? null : ordered.length === 0 ? (
-                  <p className="hf-type-small text-text-secondary text-center py-8">
+                  <p className="hf-type-caption text-center py-8">
                     {t("photoDiary.noPhotosYet")}
                   </p>
                 ) : (
@@ -311,8 +311,7 @@ export default function BilledeDagbogPage() {
               onClick={openCamera}
               disabled={saving}
               aria-label={t("photoDiary.takePhoto")}
-              className="flex h-28 w-28 items-center justify-center rounded-full border-0 bg-hf-green text-hf-white disabled:opacity-50"
-              style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.10)" }}
+              className="hf-photo-capture"
             >
               <IconCamera size={56} stroke={1.6} />
             </button>

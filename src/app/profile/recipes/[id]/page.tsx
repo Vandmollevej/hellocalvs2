@@ -317,7 +317,7 @@ function RecipeDetailContent() {
                   {t("recipeDetail.shareRejected")}
                 </p>
                 {rejection.reason && (
-                  <p className="hf-type-small text-text-secondary mt-1">
+                  <p className="hf-type-caption mt-1">
                     {t("recipeDetail.shareRejectedReason", { reason: rejection.reason })}
                   </p>
                 )}
@@ -327,7 +327,7 @@ function RecipeDetailContent() {
               <p className="hf-type-body text-hf-black whitespace-pre-line">{dishDescription}</p>
             )}
             {kind === "own" && dishDuration && (
-              <p className="hf-type-small text-text-secondary">{t("recipeDetail.durationLabel", { minutes: dishDuration })}</p>
+              <p className="hf-type-caption">{t("recipeDetail.durationLabel", { minutes: dishDuration })}</p>
             )}
             {kind === "own" && (
               <button type="button" onClick={() => setForwardOpen(true)} className="hf-control hf-btn-secondary flex w-full items-center justify-center gap-2">
@@ -336,7 +336,7 @@ function RecipeDetailContent() {
               </button>
             )}
             {kind === "own" && dishServings && (
-              <p className="hf-type-small text-text-secondary">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>
+              <p className="hf-type-caption">{t("recipeDetail.servingsLabel", { count: dishServings })}</p>
             )}
 
             <div className={hideWhileLoading}>
@@ -379,7 +379,7 @@ function RecipeDetailContent() {
                     <Skeleton type="caption" width={128} height={12} className="my-[3px]" />
                   </div>
                 ) : (
-                  <p className="hf-type-small text-text-secondary pt-3">
+                  <p className="hf-type-caption pt-3">
                     {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
                   </p>
                 )}
@@ -419,7 +419,7 @@ function RecipeDetailContent() {
                     </div>
                     <div className="flex-1">
                       <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
-                      <p className="hf-type-small text-text-secondary">
+                      <p className="hf-type-caption">
                         {(() => {
                           const measure = unitMode === "measures" ? gramsAsMeasureText(ingredient.grams, ingredient.name) : null;
                           return measure
@@ -442,7 +442,7 @@ function RecipeDetailContent() {
                   <p className="hf-type-body text-hf-black">
                     {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
                   </p>
-                  <p className="hf-type-small text-text-secondary">
+                  <p className="hf-type-caption">
                     {t("recipeDetail.macrosSummary", {
                       protein: round(totals.protein, 1),
                       carbs: round(totals.carbs, 1),
@@ -460,7 +460,7 @@ function RecipeDetailContent() {
                   {view.steps.map((step, index) => (
                     <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark px-4 py-3 last:border-b-0">
                       <div className="min-w-0 flex-1">
-                        <p className="hf-type-small hf-type-strong text-text-secondary">
+                        <p className="hf-type-caption hf-type-strong">
                           {t("recipeSteps.stepNumber", { number: index + 1 })}
                         </p>
                         {step.title && <p className="hf-type-body hf-type-strong text-hf-black">{step.title}</p>}

@@ -59,7 +59,7 @@ function formatLatestDate(value: string) {
 function StatusTile({ label, value, href }: { label: string; value: string; href: string }) {
   return (
     <Link href={href} className="flex-1 gap-1 text-hf-black hf-card">
-      <span className="hf-type-small text-text-secondary">{label}</span>
+      <span className="hf-type-caption">{label}</span>
       <span className="hf-type-title">{value}</span>
     </Link>
   );
@@ -70,10 +70,10 @@ function StatusTile({ label, value, href }: { label: string; value: string; href
 function CurrentWeightTile({ label, value, date }: { label: string; value: string; date?: string }) {
   return (
     <div className="flex-1 gap-1 text-hf-black hf-card">
-      <span className="hf-type-small text-text-secondary">{label}</span>
+      <span className="hf-type-caption">{label}</span>
       <span className="flex flex-wrap items-baseline gap-x-2">
         <span className="hf-type-title">{value}</span>
-        {date && <span className="hf-type-small text-text-secondary">{date}</span>}
+        {date && <span className="hf-type-caption">{date}</span>}
       </span>
     </div>
   );
@@ -113,7 +113,7 @@ function HistoryPanel({
   const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
   if (points.length === 0) {
-    return <p className="hf-type-small text-text-secondary text-center">{emptyText}</p>;
+    return <p className="hf-type-caption text-center">{emptyText}</p>;
   }
   const newestFirst = [...points].reverse();
   const visible = showAll ? newestFirst : newestFirst.slice(0, HISTORY_ROWS);
@@ -123,7 +123,7 @@ function HistoryPanel({
       <div className="flex flex-col divide-y divide-hf-tan-dark border-t border-hf-tan-dark">
         {visible.map((point, index) => (
           <div key={point.id ?? `${point.at}-${index}`} className="hf-control-row flex items-center justify-between gap-3">
-            <span className="hf-type-small text-text-secondary">{formatDateTime(point.at)}</span>
+            <span className="hf-type-caption">{formatDateTime(point.at)}</span>
             <span className="hf-type-body hf-type-strong text-hf-black">{format(point.value)}</span>
           </div>
         ))}
@@ -240,7 +240,7 @@ export default function ProfileStatusPage() {
             )}
           </div>
           {remaining != null && (
-            <p className="hf-type-small text-text-secondary text-center">
+            <p className="hf-type-caption text-center">
               {remaining === 0
                 ? t("profileStatus.goalReached")
                 : t(remaining > 0 ? "profileStatus.toLose" : "profileStatus.toGain", {

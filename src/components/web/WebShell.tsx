@@ -480,7 +480,7 @@ export function WebShell({ children, overlays }: { children: React.ReactNode; ov
               aria-expanded={addOpen}
               aria-label={t("addMenu.title")}
               title={t("addMenu.title")}
-              className="absolute bottom-[-10px] left-1/2 z-30 flex h-[52px] w-[52px] -translate-x-1/2 items-center justify-center rounded-full bg-hf-green text-hf-white shadow-md transition hover:bg-hf-green-dark"
+              className="hf-shell__add"
             >
               <IconPlus size={28} stroke={2} />
             </button>
@@ -492,7 +492,7 @@ export function WebShell({ children, overlays }: { children: React.ReactNode; ov
                 aria-expanded={profileOpen}
                 onClick={() => setProfileOpen((open) => !open)}
                 title={t("web.profileSettings")}
-                className={`hf-navrow hf-navrow--inline py-0.5 pl-1.5 pr-3 ${profileActive || profileOpen ? "is-active" : ""}`}
+                className={`hf-navrow hf-navrow--inline hf-navrow--profile ${profileActive || profileOpen ? "is-active" : ""}`}
               >
                 {/* Kun cirklen (ingen tekst ved siden af), 44 px i den høje topbjælke. */}
                 <ProfileCircle

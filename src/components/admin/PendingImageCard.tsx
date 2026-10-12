@@ -35,7 +35,7 @@ export function PendingImageCard({ product }: { product: Product }) {
     <div className="hf-panel hf-panel--form">
       <div>
         <p className="hf-type-strong text-hf-black">{product.name}</p>
-        {product.brand?.name && <p className="hf-type-small text-text-secondary">{product.brand.name}</p>}
+        {product.brand?.name && <p className="hf-type-caption">{product.brand.name}</p>}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col items-center gap-1">

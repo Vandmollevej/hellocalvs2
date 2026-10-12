@@ -82,7 +82,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-text-primary hf-type-body hf-type-strong">Mængde-robot</h2>
-            <p className="text-text-secondary hf-type-small">
+            <p className="hf-type-caption">
               Container <code>amount-suggestion-agent</code> ·{" "}
               <span className={robot.online ? "text-hf-green-dark" : "text-hf-red-dark"}>
                 {robot.online ? "kører" : "ingen kontakt"}
@@ -141,7 +141,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           />
           <span>
             <span className="text-text-primary">Brug forslagene i app&apos;en</span>
-            <span className="block text-text-secondary hf-type-small">
+            <span className="hf-type-caption block">
               Slået fra: slideren starter som før på 100 g / 1 portion, men robotten regner videre.
             </span>
           </span>
@@ -159,7 +159,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
                 onChange={(event) => setDraft({ ...draft, [field.key]: Number(event.target.value) })}
                 className="hf-input"
               />
-              <span className="text-text-secondary hf-type-small">{field.help}</span>
+              <span className="hf-type-caption">{field.help}</span>
             </label>
           ))}
         </div>
@@ -222,7 +222,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           </button>
         </div>
         {testResult === "none" && (
-          <p className="text-text-secondary hf-type-small">
+          <p className="hf-type-caption">
             Intet forslag (ingen data, eller forslag er slået fra i app&apos;en) — slideren starter på standarden.
           </p>
         )}

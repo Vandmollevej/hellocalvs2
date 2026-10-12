@@ -54,8 +54,8 @@ function Slide({ photo, onSelect }: { photo: ShelfPhoto; onSelect: (item: ShelfI
               }}
             >
               <span
-                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full"
-                style={{ background: style.badge, color: "var(--hf-color-white)" }}
+                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full text-hf-white"
+                style={{ background: style.badge }}
               >
                 <style.Icon size={14} stroke={3} />
               </span>

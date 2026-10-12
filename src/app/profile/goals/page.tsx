@@ -36,7 +36,7 @@ function GoalRow({ goal, onOpen }: { goal: GoalDTO; onOpen: () => void }) {
       <GoalDateSquare date={goalDisplayDate(goal)} completed={completed} />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="hf-type-body hf-type-strong line-clamp-2">{summary}</span>
-        <span className="text-text-secondary hf-type-small flex items-center gap-1">
+        <span className="hf-type-caption flex items-center gap-1">
           {completed && <IconCheck size={14} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />}
           {completed
             ? t("goals.completedAria")

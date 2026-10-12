@@ -212,7 +212,7 @@ export default function WaterCreatePage() {
             </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
-            <p className="hf-type-small text-text-secondary text-center">{t("waterLog.noEntriesYet")}</p>
+            <p className="hf-type-caption text-center">{t("waterLog.noEntriesYet")}</p>
           )}
           {entries.length > 0 && (
             // Datogrupperne bruger den ene fælles overskrift med streger
@@ -231,7 +231,7 @@ export default function WaterCreatePage() {
                           thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
                           title={`${entry.amountMl} ml`}
                           right={
-                            <span className="hf-type-small text-text-secondary">
+                            <span className="hf-type-caption">
                               {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
                             </span>
                           }

@@ -25,14 +25,14 @@ export function MarketingShell({ nav = [], children }: { nav?: MarketingNavItem[
           </Link>
           <nav className="ml-auto hidden items-center gap-7 lg:flex" aria-label="Sider">
             {nav.map((item) => (
-              <a key={item.href} href={item.href} className="text-[15px] text-text-secondary transition hover:text-hf-green">
+              <a key={item.href} href={item.href} className="mk-type-detail text-text-secondary transition hover:text-hf-green">
                 {item.label}
               </a>
             ))}
           </nav>
           <Link
             href="/login"
-            className="ml-auto rounded-full bg-hf-green px-6 py-2.5 text-sm font-semibold text-hf-white transition hover:bg-hf-green-dark lg:ml-0"
+            className="mk-header-login ml-auto lg:ml-0"
           >
             Log ind
           </Link>
@@ -52,13 +52,13 @@ function MarketingFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
         <div className="lg:col-span-2">
           <Image src="/hello-cal-logo-white.png" alt="Hello Cal" width={150} height={50} className="h-auto w-[132px]" />
-          <p className="mt-4 max-w-sm text-sm text-hf-white/75">
+          <p className="mk-type-small mt-4 max-w-sm text-hf-white/75">
             Kalorier, måltider, vand og vægt — nemt, hurtigt og på dansk.
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-hf-green-light">For virksomheder</p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          <p className="mk-type-label uppercase tracking-wider text-hf-green-light">For virksomheder</p>
+          <ul className="mk-type-small mt-4 flex flex-col gap-2">
             <li>
               <Link href="/business" className="text-hf-white/85 hover:text-hf-white hover:underline">
                 Business-partnere
@@ -72,8 +72,8 @@ function MarketingFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-hf-green-light">Hello Cal</p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
+          <p className="mk-type-label uppercase tracking-wider text-hf-green-light">Hello Cal</p>
+          <ul className="mk-type-small mt-4 flex flex-col gap-2">
             <li>
               <Link href="/login" className="text-hf-white/85 hover:text-hf-white hover:underline">
                 Log ind
@@ -93,7 +93,7 @@ function MarketingFooter() {
         </div>
       </div>
       <div className="border-t border-hf-white/10">
-        <p className="mx-auto max-w-6xl px-4 py-5 text-xs text-hf-white/60 sm:px-6">© {new Date().getFullYear()} Hello Cal</p>
+        <p className="mk-type-caption mx-auto max-w-6xl px-4 py-5 text-hf-white/60 sm:px-6">© {new Date().getFullYear()} Hello Cal</p>
       </div>
     </footer>
   );
@@ -102,10 +102,10 @@ function MarketingFooter() {
 export function SectionHeading({ title, accent, text, light }: { title: string; accent?: string; text?: string; light?: boolean }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <h2 className={`text-3xl font-bold sm:text-4xl ${light ? "text-hf-white" : "text-hf-black"}`}>
+      <h2 className={`mk-type-section-title ${light ? "text-hf-white" : "text-hf-black"}`}>
         {title} {accent && <span className={light ? "text-hf-green-light" : "text-hf-green"}>{accent}</span>}
       </h2>
-      {text && <p className={`mt-4 text-base leading-relaxed ${light ? "text-hf-white/80" : "text-text-secondary"}`}>{text}</p>}
+      {text && <p className={`mk-type-body mt-4 leading-relaxed ${light ? "text-hf-white/80" : "text-text-secondary"}`}>{text}</p>}
     </div>
   );
 }

@@ -72,7 +72,7 @@ export default function BodyWaterStatisticsPage() {
         {inputs.loading ? (
           <div className="h-56 animate-pulse rounded-2xl bg-hf-tan" />
         ) : !hasWater ? (
-          <p className="hf-type-small text-text-secondary text-center">{t("waterStats.noData")}</p>
+          <p className="hf-type-caption text-center">{t("waterStats.noData")}</p>
         ) : (
           <div className="hf-card">
             <svg viewBox="0 0 320 130" className="w-full" role="img" aria-label={t("waterStats.title")}>

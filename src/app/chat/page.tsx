@@ -85,9 +85,9 @@ function ItemRow({
             <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
           )}
         </span>
-        <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
+        <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
       </div>
-      <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
+      <span className="hf-type-caption flex-shrink-0">{item.kcal} kcal</span>
       {item.saved ? (
         <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
       ) : (
@@ -286,7 +286,7 @@ export default function ChatPage() {
           </button>
         </form>
         <div aria-live="polite">
-          {busy && <p className="hf-type-small mt-2 text-text-secondary">{t("web.chatThinking")}</p>}
+          {busy && <p className="hf-type-caption mt-2">{t("web.chatThinking")}</p>}
           {errorMessage && <p className="hf-type-small mt-2 text-hf-red-dark">{errorMessage}</p>}
         </div>
 

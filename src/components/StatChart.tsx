@@ -151,7 +151,7 @@ export function StatChart({
             y1={CHART_CENTER}
             x2="274"
             y2={CHART_CENTER}
-            stroke="var(--hf-gray)"
+            className="stroke-hf-gray"
             strokeWidth="1"
             strokeDasharray="3 3"
           />
@@ -214,8 +214,7 @@ export function StatChart({
                         x={p.x}
                         y={labelAbove ? p.y - 8 : p.y + 13}
                         textAnchor="middle"
-                        fontSize="7"
-                        fontWeight="700"
+                        className="hf-chart-axis--micro hf-type-strong"
                         fill={status.good ? "var(--hf-green)" : "var(--hf-black)"}
                       >
                         {status.good ? "✓ " : "− "}

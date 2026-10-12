@@ -111,7 +111,7 @@ export function ScreeningInput({
       )}
 
       {(minLabel || maxLabel) && (
-        <div className="hf-type-small flex justify-between gap-4 text-text-secondary">
+        <div className="hf-type-caption flex justify-between gap-4">
           <span>{minLabel}</span>
           <span className="text-right">{maxLabel}</span>
         </div>

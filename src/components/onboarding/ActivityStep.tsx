@@ -221,9 +221,9 @@ export function ActivityStep({
             </button>
           ))}
         </div>
-        {chosen && <p className="hf-type-small text-text-secondary">{t(`profile.activityLevel.${chosen}.description`)}</p>}
+        {chosen && <p className="hf-type-caption">{t(`profile.activityLevel.${chosen}.description`)}</p>}
         {farFromSuggestion && <p className="hf-type-small text-hf-warning">{t("onboarding.activity.farFromSuggestion")}</p>}
-        <p className="hf-type-small text-text-secondary">{t("onboarding.activity.stepsAreExamples")}</p>
+        <p className="hf-type-caption">{t("onboarding.activity.stepsAreExamples")}</p>
       </div>
     </div>
   );

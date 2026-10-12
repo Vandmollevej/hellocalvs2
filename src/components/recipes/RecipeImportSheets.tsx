@@ -233,7 +233,7 @@ export function ScanSheet({
           </SkeletonScreen>
         ) : (
           <>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {t("createDish.scanHint")}
             </p>
             <div className="grid grid-cols-2 gap-2">

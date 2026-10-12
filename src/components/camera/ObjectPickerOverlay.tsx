@@ -58,8 +58,8 @@ export function ObjectPickerOverlay({
                   if (event.key === "Enter" || event.key === " ") onPick(object);
                 }}
               >
-                <circle cx={cx} cy={cy} r={r} fill="transparent" stroke="var(--hf-green-light)" strokeWidth={stroke} />
-                <circle cx={cx} cy={cy} r={stroke * 2.2} fill="var(--hf-green-light)" />
+                <circle cx={cx} cy={cy} r={r} fill="transparent" className="stroke-hf-green-light" strokeWidth={stroke} />
+                <circle cx={cx} cy={cy} r={stroke * 2.2} className="fill-hf-green-light" />
               </g>
             );
           })}
