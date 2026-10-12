@@ -10,6 +10,8 @@ Færdiggør de afbrudte Excelopgaver. Bevar originalfelter, formler og andre ses
 
 609 tomme produkttyper: Nemlig 394, SPAR 208, DRK 5, Wolt 2, Bilka 0. REMA, dm, EDEKA, REWE og Årstiderne har ingen tomme typer. Disse tal er bekræftet ved frisk fuldaudit kl. 07.43. Alle ti ark har identiske 45 kolonner. Genkør audit før fortsættelse.
 
+I perioden efter fristinstruktionen er 99 tomme typer udfyldt (96 Nemlig, 1 DRK, 2 Bilka). De seneste 13 Nemlig-batches er genkontrolleret på Source URL: alle 686 forskellige endelige typeværdier svarer til de arkiverede forslag, inklusive efterfølgende korrektioner. Resultat: PASS i TEMP/final_nemlig_batches_check.json.
+
 Alle 590 Nemlig-typer med kopieret `Varebeskrivelse`, priser og navigation er renset i seks kontrollerede batches. Det betyder ikke, at alle typer, variationer, brands, keywords, tilstandsflag og flertal er færdigkontrolleret.
 
 SPAR er normaliseret fra 46 til 45 kolonner. Alle 5.192 værdier i ekstra OFF-krydstjekkolonnen er bevaret med Source URL og originaltitel i `Excelark/codex-samlet-status.xlsx`, fanen `SPAR OFF krydstjek`. Samtlige celler A:AS er bevaret. Backup før fjernelsen findes i `Excelark/backup/spar_2026-10-12_0720_foer_off_krydstjek_eksport.xlsx`.
