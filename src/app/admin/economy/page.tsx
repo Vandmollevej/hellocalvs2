@@ -80,7 +80,7 @@ export default async function EconomyPage() {
               {cover.runway.map((r) => (
                 <div key={r.label} className="hf-type-small flex items-center gap-2">
                   <span className="w-20 shrink-0 text-text-secondary">{r.label}</span>
-                  <span className="h-2 rounded-full bg-hf-green" style={{ width: `${(r.securedDkk / maxRunway) * 100}%`, minWidth: 2 }} />
+                  <span className="h-2 min-w-[2px] rounded-full bg-hf-green" style={{ width: `${(r.securedDkk / maxRunway) * 100}%` }} />
                   <span className="text-text-muted">{kr.format(r.securedDkk)} kr.</span>
                 </div>
               ))}

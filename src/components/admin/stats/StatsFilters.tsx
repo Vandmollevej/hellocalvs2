@@ -13,7 +13,7 @@ import {
 // Filterlinje øverst på /admin/statistics: periode, land/region og
 // abonnementstype. Filteret ligger i URL'en (kan genindlæses/bogmærkes).
 // Knapper: hvide med sort kant (hf-btn-secondary), valgt = sort (hf-btn-primary).
-const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} h-10 px-3 !text-sm`;
+const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} hf-btn--compact`;
 
 // hideTier: uden abonnementsfilter (fx Analyse → Søgning, hvor søgningerne er
 // anonyme). keep: sidens egne URL-parametre (fane, sortering), som bevares.

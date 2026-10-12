@@ -134,7 +134,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           checked={awardEnabled}
           disabled={busy}
           onChange={(event) => saveAward(event.target.checked)}
-          className="h-4 w-4"
+          className="hf-native-choice h-4 w-4"
         />
         <span className="hf-type-caption">Award — antal points:</span>
         <input

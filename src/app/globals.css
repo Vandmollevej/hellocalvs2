@@ -3361,3 +3361,9 @@ textarea.hf-input {
 @layer components {
   .hf-barcode-digit-size { font-size: var(--hf-barcode-digit-size); }
 }
+
+/* Native admin checkbox/radio/range choices and file uploads keep their OS appearance and state handling. */
+@layer components {
+  .hf-native-choice,
+  .hf-native-file { font: inherit; }
+}

@@ -1,3 +1,16 @@
+## 2026-10-12: Adminadgang tilgængelig — visuel opfølgning i gang
+
+- Brugeren melder "Nu virker det"; admin.hellocal.io/admin er indlogget, så den tidligere adgangsblokering er væk.
+- Root kontrollerer live-sider og fælles kontrolklasser; den anden agent har source-kontrolleret 33 adminsider. Subagentens CUA har ingen browser-surfaces, så den udfører ikke den visuelle kontrol.
+- Kilde/live-kontrollen fandt 29 native checkbox/radio/file-kontroller uden fælles rolleklasse samt tre faste grafegenskaber. Disse samles med identisk appearance; Toggle og Apple-preview er forskellige og bevares.
+- Statistikfiltrene i StatsFilters og Analyse → Søgning bruger nu hf-btn--compact. Den lokale 14/20 px typografi er normaliseret til klassens 15/22 px; 40 px minimumshøjde, 12 px vandret padding, farvestates og handlers er bevaret.
+- Browserkontrol har timeouts på nogle billedtunge sider. De sidetyper erklæres ikke visuelt godkendt på grundlag af en loading-visning.
+- Visuelt kontrolleret live: adminoversigt, varegodkendelser, produkt-/brand-/labeloversigter, OFF-import og OFF-billeder, alle fem retoversigter, flows, guide-builder, sidetræ, statistik/søgning, integrationer, økonomi, Hello Doc, bruger-/points-/personaoversigter, chatbot, testprogrammer, fejlrapporter, support/skabeloner, cron, dyrefoder, passkeys, beskedautomatisering, søgeopsætning, vejning, genveje, scan-kontrol, jobs/agenter/robotter, adminbrugere, partneroversigter, roadmap, Claude og log. Ingen dokument-overflow ved 1280 px; brede tabeller har egen scroll. Samlet produktbilledside får fortsat browserkontrollen til at time out og er ikke visuelt godkendt.
+- Native kontrolfixture: 242 elementpar × 35 beregnede CSS-egenskaber ved faktisk 402 og 1440 px uden forskelle. Lint: 0 fejl/12 eksisterende advarsler; build: 403 ruter grøn efter gentagelse med adgang til eksisterende Google-fonte. Native sync/paritet grøn; ingen native layoutændring.
+- Brugeren bekræfter eksplicit, at Face ID er løst. Enhedssporet lukkes uden flere reproduktionsspørgsmål; root har ikke selv udført biometrisk dialog.
+- Sidste source-kontrol tilknytter også tre native sliders til hf-native-choice med uændrede bredder, accentfarver og events. Samlet 32 native kontroller: 18 checkbox, to radio, tre range og ni file. 15 inputs uden appearanceklasse på adminbrugere/roadmap/log/agenter er bevidste hidden-formularparametre. API-nøgler er kun DOM-/klassekontrolleret uden nøgleaflæsning; designmanual er visuelt kontrolleret.
+- Opfølgning: samlet produktbilledside er nu visuelt kontrolleret via direkte screenshot uden stort AX/DOM-træ. De to uploadkolonner, overskrifter, kontroller og synlig uploadhistorik er indlæst korrekt; tidligere timeout er en kontrolbegrænsning, ikke dokumentation for en produktfejl. Uafhængigt slutreview af cb6c0ce1 fandt ingen konkrete regressioner.
+
 ## 2026-10-12: Fælles CSS-klasser — flettet og deployet
 
 - Koden er flettet i PR #401 som 5e0414b5. Build/deploy #715 og masterens native #856 er grønne, inklusive Android og iPhone. Hovedmappens ændringer er bevaret; dokumentation afsluttes på codex/css-slutkontrol-20261012 i worktrees/github-samling.

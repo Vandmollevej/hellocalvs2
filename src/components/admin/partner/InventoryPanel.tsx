@@ -172,7 +172,7 @@ export function InventoryPanel({
               )}
               <div className="flex flex-wrap items-center gap-2">
                 <input
-                  type="file"
+                  className="hf-native-file" type="file"
                   accept="image/png,image/jpeg,image/webp"
                   disabled={busy}
                   onChange={(e) => {

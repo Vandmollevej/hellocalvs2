@@ -190,7 +190,7 @@ export function BrandGrid({ rows, productHrefs, canEdit }: { rows: AdminBrandRow
                       <input
                         type="file"
                         accept="image/png,image/*"
-                        className="sr-only"
+                        className="hf-native-file sr-only"
                         onChange={(event) => {
                           const file = event.target.files?.[0];
                           event.target.value = "";

@@ -78,7 +78,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
               type="checkbox"
               checked={filter.priorities.includes(priority.key)}
               onChange={(event) => togglePriority(priority.key, event.target.checked)}
-              className="h-4 w-4 accent-hf-green-dark"
+              className="hf-native-choice h-4 w-4 accent-hf-green-dark"
             />
             <PriorityDot priority={priority.key} />
             {priority.label}

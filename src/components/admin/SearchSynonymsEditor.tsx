@@ -138,7 +138,7 @@ function SynonymRow({
         onChange={(e) => setValue(Number(e.target.value))}
         onPointerUp={commit}
         onKeyUp={commit}
-        className="w-40"
+        className="hf-native-choice w-40"
         aria-label="Ens i procent"
       />
       <span className="hf-type-body w-12 text-right">{value} %</span>

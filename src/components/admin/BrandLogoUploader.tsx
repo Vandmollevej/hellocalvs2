@@ -225,12 +225,12 @@ export function BrandLogoUploader({ canEdit }: { canEdit: boolean }) {
             Vælg mappe
           </button>
         </div>
-        <input ref={filesInput} type="file" accept="image/*" multiple className="hidden" onChange={onPick} />
+        <input ref={filesInput} type="file" accept="image/*" multiple className="hf-native-file hidden" onChange={onPick} />
         <input
           ref={folderInput}
           type="file"
           multiple
-          className="hidden"
+          className="hf-native-file hidden"
           onChange={onPick}
           {...({ webkitdirectory: "" } as Record<string, string>)}
         />

@@ -76,7 +76,7 @@ export function OffQualityTable({
       <input type="hidden" name="returnTo" value={returnTo} />
       <div className="hf-panel flex flex-wrap items-center gap-3">
         <label className="hf-type-body flex items-center gap-2">
-          <input type="checkbox" checked={allSelected} onChange={toggleAll} disabled={rows.length === 0} />
+          <input className="hf-native-choice" type="checkbox" checked={allSelected} onChange={toggleAll} disabled={rows.length === 0} />
           Vælg alle på siden
         </label>
         <span className="hf-type-caption">{selected.size} valgt</span>
@@ -124,7 +124,7 @@ export function OffQualityTable({
               checked={selected.has(row.productId)}
               onChange={() => toggle(row.productId)}
               aria-label={`Vælg ${row.name}`}
-              className="mt-1 h-5 w-5 flex-none"
+              className="hf-native-choice mt-1 h-5 w-5 flex-none"
             />
             {row.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element

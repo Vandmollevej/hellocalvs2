@@ -2175,6 +2175,7 @@ Fælles klasser ændrer ikke layouts: mobilskærmen, desktopskallen og marketing
 | --- | --- |
 | Formularlayout | hf-auth-form, hf-auth-panel, hf-form-label, hf-screen-body |
 | Appens feltvarianter | hf-field-soft, hf-select-surface, hf-select-auth, hf-textarea-auth, hf-input-auth-card, hf-select-chevron |
+| Native adminvalg og filvalg | hf-native-choice, hf-native-file; arver font og bevarer OS-appearance, størrelses-/accentvarianter og tilstande |
 | Opslagsværker | hf-directory-toolbar, hf-directory-filter, hf-icon-circle-sm |
 | Tabeller/katalog | hf-table-section, hf-catalog-grid |
 | Rapport/kamera | hf-report-empty, hf-camera-preview, hf-camera-overlay, hf-photo-capture |
@@ -2192,3 +2193,5 @@ Talhjul/lyd: hf-wheel-number bruger --hf-wheel-font-size fra hjulets eksisterend
 SVG-grafer bruger hf-chart-axis (9 px) og --micro/--compact/--small/--large/--widget (7/7,5/8/10/11 px); vægt deles via hf-type-strong eller hf-type-regular. hf-chart-label/grid/pulse/empty/frame bevarer de oprindelige paintværdier; den sorte frame (#000) må ikke erstattes af hf-black (#232323). Mobilens to orbit-menuer deler hf-orbit-action og is-highlighted; koordinater, scaling og gestures forbliver platformspecifikke. Animationens keyframes og datadrevne mål bevares.
 
 Faste SVG-tokenfarver genbruger fill-hf-*/stroke-hf-*; dynamiske paints, none/currentColor og original ikonkunst er bevaret. Lint forbyder faste hf-tokenpaint-attributter. Drag-skygger bruger hf-card-lift og --hf-shadow-card-lift/--hf-shadow-nav-lift, så keyframes henter de samme værdier fra CSS. Stregkodetekst bruger hf-barcode-digit-size med --hf-barcode-digit-size fra den eksisterende geometri.
+
+Admin-opfølgning 2026-10-12: StatsFilters og Analyse → Søgning bruger hf-btn--compact i stedet for h-10 px-3 !text-sm. Den tilsigtede normalisering er 14/20 → 15/22 px typografi; minimumshøjde 40 px og vandret padding 12 px følger den eksisterende fælles variant. Farvestates og interaktioner er bevaret.

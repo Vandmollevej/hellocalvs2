@@ -138,7 +138,7 @@ export function OffToolsPanel({ canEdit }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <input
           ref={fileRef}
-          type="file"
+          className="hf-native-file" type="file"
           accept="application/json,.json"
           multiple
           disabled={busy}

@@ -74,7 +74,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
         {partners.map((p) => (
           <div key={p.id} className="flex flex-col gap-1 border-t border-hf-tan-dark pt-2 first:border-t-0 first:pt-0">
             <label className="hf-type-body flex items-center gap-2 text-hf-black">
-              <input type="checkbox" checked={selected.includes(p.id)} onChange={() => toggle(p.id)} />
+              <input className="hf-native-choice" type="checkbox" checked={selected.includes(p.id)} onChange={() => toggle(p.id)} />
               {p.name}
               <span className="hf-type-small text-text-muted">
                 {p.recipients.length === 0 ? "· ingen aktive kontakter" : `· ${p.recipients.map((r) => r.email).join(", ")}`}
@@ -100,7 +100,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="hf-type-body flex items-center gap-2">
-          <input type="radio" checked={mode === "push"} onChange={() => setMode("push")} /> Send nu
+          <input className="hf-native-choice" type="radio" checked={mode === "push"} onChange={() => setMode("push")} /> Send nu
         </label>
         {mode === "push" && (
           <select className="hf-input hf-input--compact" value={days} onChange={(e) => setDays(Number(e.target.value))}>
@@ -110,7 +110,7 @@ export function ReportsManager({ partners }: { partners: ReportPartner[] }) {
           </select>
         )}
         <label className="hf-type-body flex items-center gap-2">
-          <input type="radio" checked={mode === "schedule"} onChange={() => setMode("schedule")} /> Sæt op til interval
+          <input className="hf-native-choice" type="radio" checked={mode === "schedule"} onChange={() => setMode("schedule")} /> Sæt op til interval
         </label>
         {mode === "schedule" && (
           <select className="hf-input hf-input--compact" value={frequency} onChange={(e) => setFrequency(e.target.value as "WEEKLY" | "MONTHLY")}>

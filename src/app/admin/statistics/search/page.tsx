@@ -32,7 +32,7 @@ function pct(part: number, total: number) {
   return total ? `${num.format((part / total) * 100)} %` : "–";
 }
 
-const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} h-10 px-3 !text-sm`;
+const btn = (active: boolean) => `${active ? "hf-btn-primary" : "hf-btn-secondary"} hf-btn--compact`;
 
 function Kpi({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (

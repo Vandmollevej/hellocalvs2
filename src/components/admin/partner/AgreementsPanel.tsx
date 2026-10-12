@@ -132,7 +132,7 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
             <label className="flex flex-col gap-1"><span className={LABEL}>Pris pr. 1.000 visninger (kr.)</span><input className={INPUT} inputMode="decimal" value={draft.cpmDkk} onChange={set("cpmDkk")} /></label>
             <label className="flex flex-col gap-1"><span className={LABEL}>Pris pr. klik (kr.)</span><input className={INPUT} inputMode="decimal" value={draft.cpcDkk} onChange={set("cpcDkk")} /></label>
             <label className="hf-type-body flex items-center gap-2 self-end pb-2">
-              <input type="checkbox" checked={draft.active} onChange={(e) => setDraft((d) => (d ? { ...d, active: e.target.checked } : d))} /> Aktiv
+              <input className="hf-native-choice" type="checkbox" checked={draft.active} onChange={(e) => setDraft((d) => (d ? { ...d, active: e.target.checked } : d))} /> Aktiv
             </label>
             <label className="flex flex-col gap-1 sm:col-span-2"><span className={LABEL}>Noter</span><textarea className="hf-input w-full" value={draft.notes} onChange={set("notes")} /></label>
           </div>

@@ -556,5 +556,4 @@ Ejer: Codex, chat CSS-gennemgang (2026-10-12). Filer: klasse-refaktorering i src
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| admin-visuel | Visuel kontrol af indre adminsider efter CSS-refaktoreringen | Venter på bruger | Adminfanen viser fortsat /admin/login. Appen er indlogget. CSS-koden er flettet/deployet i #401; adminlogin er visuelt og stylemæssigt kontrolleret. Afventer login i adminfanen. |
-| faceid-enhed | Reproducer brugerens konkrete røde Face ID-tilknytningsfejl | Venter på bruger | Midlertidige fejl bevarer enhedsmarkeringen og eksisterende nøgle kræver serververificeret reauth; seks tests og sikkerhedsreview grønne, deployet i #401. Platform/fejl er ikke oplyst. Brugeren skal selv gennemføre biometrisk dialog på berørt enhed. |
+| admin-visuel | Visuel kontrol af indre adminsider efter CSS-refaktoreringen | I gang | Adminadgang bekræftet 2026-10-12 efter brugerens melding. Root kontrollerer live; agent laver source/CSS-review. Fundne rester: native kontroller uden rolleklasse og tre faste grafstyles; opfølgning i codex/admin-css-slutkontrol-20261012. Browseren har timeouts på billedtunge sider, som ikke markeres visuelt godkendt uden screenshot. |

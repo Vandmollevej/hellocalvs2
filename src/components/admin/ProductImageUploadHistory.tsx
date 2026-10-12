@@ -170,7 +170,7 @@ export function ProductImageUploadHistory({ batches, canEdit }: { batches: Produ
                               checked={selected.has(item.id)}
                               onChange={() => toggle(item.id)}
                               aria-label={`Vælg ${item.fileName}`}
-                              className="mt-1 h-4 w-4 accent-hf-green-dark"
+                              className="hf-native-choice mt-1 h-4 w-4 accent-hf-green-dark"
                             />
                           </td>
                         )}

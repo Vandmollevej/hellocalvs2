@@ -170,7 +170,7 @@ export function BoxOverview() {
   return (
     <div className="flex flex-col gap-4">
       <label className="hf-type-body flex w-fit items-center gap-2 text-hf-black">
-        <input type="checkbox" checked={showGuides} onChange={(event) => setShowGuides(event.target.checked)} />
+        <input className="hf-native-choice" type="checkbox" checked={showGuides} onChange={(event) => setShowGuides(event.target.checked)} />
         Vis numre og tekstzoner (stiplet rød = her placeres tekst)
       </label>
 

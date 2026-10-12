@@ -167,7 +167,7 @@ export function ProductImageGallery({
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            className="hidden"
+            className="hf-native-file hidden"
             onChange={(event) => {
               const file = event.target.files?.[0];
               event.target.value = "";

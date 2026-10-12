@@ -238,7 +238,7 @@ export default async function OffQualityPage({
           <legend className="hf-type-caption mb-1">Mangler i kategori (mindst én)</legend>
           {OFF_QUALITY_CATEGORIES.map((category) => (
             <label key={category} className="hf-type-body flex items-center gap-1">
-              <input type="checkbox" name="category" value={category} defaultChecked={filters.category.includes(category)} />
+              <input className="hf-native-choice" type="checkbox" name="category" value={category} defaultChecked={filters.category.includes(category)} />
               {OFF_QUALITY_CATEGORY_LABELS[category]} ({numberFormat.format(categoryCounts.get(category) ?? 0)})
             </label>
           ))}

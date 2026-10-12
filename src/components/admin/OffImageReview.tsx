@@ -414,7 +414,7 @@ export function OffImageReview({
             value={MAX_COLS + MIN_COLS - cols}
             onChange={(event) => changeCols(MAX_COLS + MIN_COLS - Number(event.target.value))}
             aria-label="Billedstørrelse"
-            className="w-40 accent-hf-green-dark"
+            className="hf-native-choice w-40 accent-hf-green-dark"
           />
           <span className="w-44 text-text-muted">
             {single ? "Ét billede ad gangen" : `${cols} billeder pr. række`}
