@@ -8,7 +8,7 @@ Færdiggør de afbrudte Excelopgaver. Bevar originalfelter, formler og andre ses
 
 ## Seneste verificerede status
 
-635 tomme produkttyper: Nemlig 417, SPAR 208, DRK 6, Wolt 2, Bilka 2. REMA, dm, EDEKA, REWE og Årstiderne har ingen tomme typer. Disse tal er beregnet fra seneste fuldaudit og efterfølgende verificerede rettelser; genkør fuldaudit før fortsættelse.
+629 tomme produkttyper: Nemlig 413, SPAR 208, DRK 6, Wolt 2, Bilka 0. REMA, dm, EDEKA, REWE og Årstiderne har ingen tomme typer. Disse tal er bekræftet ved frisk fuldaudit kl. 07.32. Alle ti ark har identiske 45 kolonner. Genkør audit før fortsættelse.
 
 Alle 590 Nemlig-typer med kopieret `Varebeskrivelse`, priser og navigation er renset i seks kontrollerede batches. Det betyder ikke, at alle typer, variationer, brands, keywords, tilstandsflag og flertal er færdigkontrolleret.
 
@@ -31,7 +31,7 @@ Alle stier er under `C:\Users\Peter\Desktop\Hello Cal`:
 - `Excelark/dm.xlsx`, `Excelark/edeka.xlsx`, `Excelark/rewe.xlsx`
 - `Excelark/wolt.xlsx`, `Excelark/drk.xlsx`, `Excelark/aarstiderne.xlsx`
 
-Rapporter: `Excelark/gengangere-fund.xlsx` og `Excelark/codex-samlet-status.xlsx`. Statusrapportens oversigt og kontrolkandidater er endnu et ældre snapshot og skal genbygges; OFF-krydstjekfanen er kontrolleret komplet.
+Rapporter: `Excelark/gengangere-fund.xlsx` og `Excelark/codex-samlet-status.xlsx`. Statusrapporten er genbygget fra frisk audit kl. 07.32: 881 kontrolkandidater inklusive 629 blanke typer og 5192 OFF-krydstjek. Kandidaterne skal gennemgås manuelt.
 
 ## Tilgang og bevaringskontrol
 
