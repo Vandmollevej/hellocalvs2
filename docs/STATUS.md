@@ -11,11 +11,12 @@
 - Online brugersession er tilgængelig; admin viser stadig login. Slutverificeret: 384 tests grønne, lint uden fejl (12 eksisterende advarsler), build på 403 sider grøn, native sync og paritet grøn. De berørte portede ruters kildehashes er opdateret efter style-only verifikation; native vejningstal bruger samme 40/48-headingrolle. Deploy afsluttet: https://github.com/Vandmollevej/hellocalvs2/actions/runs/38212627514. /api/health?deep=1 svarer HTTP 200/status ok.
 
 - Online efter deploy: 35 matchede desktopelementer ved 1280×720, alle 36 mobilelementer ved faktisk 402×874, fire profilfelter ved faktisk 1440×900 og otte adminlogin-elementer har uændrede beregnede egenskaber. Nye hf-shell__add/hf-navrow--profile-klasser er bekræftet i live DOM. Mobilens header/bundmenu og desktopskallen er visuelt kontrolleret og forskellige som tilsigtet. Browserens viewportoverride krævede synlig kontrolfane og faktisk innerWidth-kontrol; fejlsamplet desktop som mobil er kasseret.
+- Uafhængig slutkontrol: AST-fixture fra faktisk base 53e86336 til deployet 5e0414b5, med faste iframebredder og aflæst html.clientWidth, har 699 faktiske elementpar uden forskelle i 41 stilegenskaber ved både 402 og 1440 px. Klassenavne, oprindelige faste inline-styles og SVG-attributter indgår; ukendte runtimeværdier udelades. Dette er element-/surfacekontrol, ikke fuld montering af hver side.
 - Åbent: indre adminsider kan først kontrolleres visuelt efter brugerlogin i admin.hellocal.io; den konkrete Face ID-tilknytningsfejl kræver berørt platform/enhed og brugerens egen biometriske bekræftelse. Ingen legitimationsoplysninger eller brugerindstillinger er ændret.
 
 # HELLO CAL — project status
 
-Last updated: 2026-10-11
+Last updated: 2026-10-12
 
 ## 2026-10-11: Samling af upushet arbejde
 
