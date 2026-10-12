@@ -9,6 +9,7 @@
 - Native kontrolfixture: 242 elementpar × 35 beregnede CSS-egenskaber ved faktisk 402 og 1440 px uden forskelle. Lint: 0 fejl/12 eksisterende advarsler; build: 403 ruter grøn efter gentagelse med adgang til eksisterende Google-fonte. Native sync/paritet grøn; ingen native layoutændring.
 - Brugeren bekræfter eksplicit, at Face ID er løst. Enhedssporet lukkes uden flere reproduktionsspørgsmål; root har ikke selv udført biometrisk dialog.
 - Sidste source-kontrol tilknytter også tre native sliders til hf-native-choice med uændrede bredder, accentfarver og events. Samlet 32 native kontroller: 18 checkbox, to radio, tre range og ni file. 15 inputs uden appearanceklasse på adminbrugere/roadmap/log/agenter er bevidste hidden-formularparametre. API-nøgler er kun DOM-/klassekontrolleret uden nøgleaflæsning; designmanual er visuelt kontrolleret.
+- Opfølgning: samlet produktbilledside er nu visuelt kontrolleret via direkte screenshot uden stort AX/DOM-træ. De to uploadkolonner, overskrifter, kontroller og synlig uploadhistorik er indlæst korrekt; tidligere timeout er en kontrolbegrænsning, ikke dokumentation for en produktfejl. Uafhængigt slutreview af cb6c0ce1 fandt ingen konkrete regressioner.
 
 ## 2026-10-12: Fælles CSS-klasser — flettet og deployet
 
