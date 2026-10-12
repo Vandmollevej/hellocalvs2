@@ -55,14 +55,14 @@ export function WeightChartBackdrop({ className = "" }: { className?: string }) 
         </linearGradient>
       </defs>
       {[0.2, 0.4, 0.6, 0.8].map((f) => (
-        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="var(--hf-color-white)" strokeOpacity="0.14" strokeDasharray="4 8" />
+        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} className="stroke-hf-white" strokeOpacity="0.14" strokeDasharray="4 8" />
       ))}
       <path d={`${line} L${w - 24},${h} L24,${h} Z`} fill="url(#hc-area)" />
-      <path d={line} fill="none" stroke="var(--hf-color-positive)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={line} fill="none" className="stroke-hf-positive" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
       {WEIGHT_POINTS.map((_, i) => {
         if (i % 3 !== 0 && i !== WEIGHT_POINTS.length - 1) return null;
         const seg = line.split(" ")[i].slice(1).split(",");
-        return <circle key={i} cx={seg[0]} cy={seg[1]} r="6" fill="var(--hf-color-white)" stroke="var(--hf-color-positive)" strokeWidth="3" />;
+        return <circle key={i} cx={seg[0]} cy={seg[1]} r="6" className="fill-hf-white stroke-hf-positive" strokeWidth="3" />;
       })}
     </svg>
   );
@@ -75,13 +75,13 @@ function KcalRing({ value, goal, size = 132 }: { value: number; goal: number; si
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg viewBox={`0 0 ${size} ${size}`} className="h-full w-full -rotate-90" aria-hidden="true">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--hf-color-card)" strokeWidth="12" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" className="stroke-hf-card" strokeWidth="12" />
         <circle
           cx={size / 2}
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--hf-color-brand)"
+          className="stroke-hf-brand"
           strokeWidth="12"
           strokeLinecap="round"
           strokeDasharray={`${c * pct} ${c}`}
@@ -198,7 +198,7 @@ function StatsScreen() {
       <div className="rounded-xl bg-hf-white p-3">
         <p className="mk-type-caption text-text-secondary">Vægt — 3 mdr.</p>
         <svg viewBox="0 0 180 70" className="mt-1 h-20 w-full" aria-hidden="true">
-          <path d={linePath(WEIGHT_POINTS, 180, 70, 6)} fill="none" stroke="var(--hf-color-brand)" strokeWidth="3" strokeLinecap="round" />
+          <path d={linePath(WEIGHT_POINTS, 180, 70, 6)} fill="none" className="stroke-hf-brand" strokeWidth="3" strokeLinecap="round" />
         </svg>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -315,7 +315,7 @@ export function HelloDocScreens() {
         <div className="mt-4 rounded-xl bg-hf-cream p-3">
           <p className="mk-type-caption text-text-secondary">Vægt</p>
           <svg viewBox="0 0 480 110" className="mt-1 h-24 w-full" aria-hidden="true">
-            <path d={linePath(WEIGHT_POINTS, 480, 110, 8)} fill="none" stroke="var(--hf-color-brand)" strokeWidth="3" strokeLinecap="round" />
+            <path d={linePath(WEIGHT_POINTS, 480, 110, 8)} fill="none" className="stroke-hf-brand" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </div>
       </div>

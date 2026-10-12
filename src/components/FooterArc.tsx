@@ -396,7 +396,7 @@ export function FooterArc() {
         style={{ left: cx - ARC_RADIUS, bottom: 0, width: ARC_RADIUS * 2, height: ARC_RADIUS + ARC_BULGE_MAX }}
         viewBox={`0 0 ${ARC_RADIUS * 2} ${ARC_RADIUS + ARC_BULGE_MAX}`}
       >
-        <path d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)} fill="var(--hf-green)" />
+        <path d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)} className="fill-hf-green" />
       </svg>
 
       <span

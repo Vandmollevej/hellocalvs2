@@ -119,8 +119,8 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
       <svg viewBox="0 0 320 146" className="mt-3 w-full" role="img" aria-label={t("sleepStats.chart.bodyFat")}>
         {[0, 20, 40, 60, 80, 100].map((value) => (
           <g key={value}>
-            <line x1={LEFT} x2={RIGHT} y1={y(value)} y2={y(value)} stroke="var(--hf-tan-dark)" strokeWidth="0.6" />
-            <text x={LEFT - 6} y={y(value) + 3} textAnchor="end" className="hf-chart-axis--small" fill="var(--hf-black)">
+            <line x1={LEFT} x2={RIGHT} y1={y(value)} y2={y(value)} className="stroke-hf-tan-dark" strokeWidth="0.6" />
+            <text x={LEFT - 6} y={y(value) + 3} textAnchor="end" className="hf-chart-axis--small fill-hf-black" >
               {value}
             </text>
           </g>
@@ -145,7 +145,7 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
             );
           })}
         {labelIndexes.map((i) => (
-          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact" fill="var(--hf-black)">
+          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact fill-hf-black" >
             {dateLabel(days[i].date)}
           </text>
         ))}
@@ -224,8 +224,8 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
       <svg viewBox="0 0 320 146" className="mt-3 w-full" role="img" aria-label={t(`sleepStats.chart.${kind}`)}>
         {[1, 2, 3, 4, 5].map((rating) => (
           <g key={rating}>
-            <line x1={LEFT} x2={RIGHT} y1={ratingY(rating)} y2={ratingY(rating)} stroke="var(--hf-tan-dark)" strokeWidth="0.6" />
-            <text x={LEFT - 6} y={ratingY(rating) + 3} textAnchor="end" className="hf-chart-axis--small" fill="var(--hf-black)">
+            <line x1={LEFT} x2={RIGHT} y1={ratingY(rating)} y2={ratingY(rating)} className="stroke-hf-tan-dark" strokeWidth="0.6" />
+            <text x={LEFT - 6} y={ratingY(rating) + 3} textAnchor="end" className="hf-chart-axis--small fill-hf-black" >
               {rating}
             </text>
           </g>
@@ -247,10 +247,10 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
 
         {axisOverlay && axisDomain && (
           <>
-            <text x={RIGHT + 4} y={TOP + 3} className="hf-chart-axis--micro" fill="var(--hf-black)">
+            <text x={RIGHT + 4} y={TOP + 3} className="hf-chart-axis--micro fill-hf-black" >
               {axisOverlay.format(axisDomain[1])}
             </text>
-            <text x={RIGHT + 4} y={BOTTOM + 3} className="hf-chart-axis--micro" fill="var(--hf-black)">
+            <text x={RIGHT + 4} y={BOTTOM + 3} className="hf-chart-axis--micro fill-hf-black" >
               {axisOverlay.format(axisDomain[0])}
             </text>
           </>
@@ -258,19 +258,19 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
 
         {segments.map((segment, i) =>
           segment.length > 1 ? (
-            <polyline key={i} points={segment.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--hf-black)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            <polyline key={i} points={segment.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" className="stroke-hf-black" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
           ) : null,
         )}
         {days.map((day, i) =>
           day.rating === null ? null : (
-            <circle key={i} cx={xCenter(i)} cy={ratingY(day.rating)} r={dot} fill="var(--hf-black)">
+            <circle key={i} cx={xCenter(i)} cy={ratingY(day.rating)} r={dot} className="fill-hf-black" >
               <title>{`${dateLabel(day.date)}: ${t("sleepQuality.calendarBar", { rating: day.rating })}`}</title>
             </circle>
           ),
         )}
 
         {labelIndexes.map((i) => (
-          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact" fill="var(--hf-black)">
+          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact fill-hf-black" >
             {dateLabel(days[i].date)}
           </text>
         ))}

@@ -159,16 +159,16 @@ function ChartBody({ chart, width, height }: { chart: WidgetSnapshot["charts"][n
           x2={width - pad.side}
           y1={y(chart.goal)}
           y2={y(chart.goal)}
-          stroke="var(--hf-gray)"
+          className="stroke-hf-gray"
           strokeDasharray="3 3"
           strokeWidth={1}
         />
       )}
       {chart.key === "weight" ? (
         <>
-          <polyline points={linePoints} fill="none" stroke="var(--hf-black)" strokeWidth={2} />
+          <polyline points={linePoints} fill="none" className="stroke-hf-black" strokeWidth={2} />
           {chart.points.map((p, i) =>
-            p.value === null ? null : <circle key={p.date} cx={x(i)} cy={y(p.value)} r={3} fill="var(--hf-black)" />,
+            p.value === null ? null : <circle key={p.date} cx={x(i)} cy={y(p.value)} r={3} className="fill-hf-black" />,
           )}
         </>
       ) : (
@@ -292,7 +292,7 @@ export function StatBoxWidget({
         <span className="hf-type-caption hf-type-strong">{box?.label ?? "—"}</span>
         {progress !== undefined && (
           <svg width={ring} height={ring} className="self-center" aria-hidden>
-            <circle cx={ring / 2} cy={ring / 2} r={r} fill="none" stroke="var(--hf-tan-dark)" strokeWidth={8} />
+            <circle cx={ring / 2} cy={ring / 2} r={r} fill="none" className="stroke-hf-tan-dark" strokeWidth={8} />
             <circle
               cx={ring / 2}
               cy={ring / 2}

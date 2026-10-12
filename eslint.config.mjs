@@ -22,6 +22,10 @@ const RAW_TYPE =
 
 const COLOR_SELECTORS = [
   {
+    selector: 'JSXAttribute[name.name=/^(fill|stroke)$/] > Literal[value=/^var\\(--hf-/]',
+    message: "Fast SVG-tokenfarve: brug den tilsvarende fill-hf-* eller stroke-hf-* klasse. Dynamiske paints og original ikonkunst bevares.",
+  },
+  {
     selector: 'JSXAttribute[name.name="style"] Property[key.type="Identifier"][key.name=/^(fontFamily|fontWeight|fontSize|borderRadius|boxShadow)$/] > Literal',
     message: "Fast font, radius eller skygge i inline-style: flyt egenskaben til en fælles klasse i globals.css. Dynamiske data og platformvarianter bevares særskilt.",
   },

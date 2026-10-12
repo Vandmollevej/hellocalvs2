@@ -20,12 +20,12 @@ export function IconDrumstick({ size = 24, className, style }: ComponentProps<Ic
       fill="none"
     >
       {/* Ben: kødfarvet kant under det hvide, så kanten tegnes på én gang */}
-      <g stroke="var(--hf-meat)" strokeLinecap="round" strokeLinejoin="round">
+      <g className="stroke-hf-meat" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 10 19 5" strokeWidth={5.4} />
-        <circle cx={18.9} cy={3.1} r={2.8} fill="var(--hf-meat)" strokeWidth={0.6} />
-        <circle cx={20.9} cy={5.1} r={2.8} fill="var(--hf-meat)" strokeWidth={0.6} />
+        <circle cx={18.9} cy={3.1} r={2.8} className="fill-hf-meat" strokeWidth={0.6} />
+        <circle cx={20.9} cy={5.1} r={2.8} className="fill-hf-meat" strokeWidth={0.6} />
       </g>
-      <g fill="var(--hf-white)" stroke="var(--hf-white)" strokeLinecap="round" strokeLinejoin="round">
+      <g className="fill-hf-white stroke-hf-white" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 10 19 5" strokeWidth={3.2} />
         <circle cx={18.9} cy={3.1} r={1.9} strokeWidth={0} />
         <circle cx={20.9} cy={5.1} r={1.9} strokeWidth={0} />
@@ -33,7 +33,7 @@ export function IconDrumstick({ size = 24, className, style }: ComponentProps<Ic
       {/* Kød: dråbeform, bred nederst til venstre og spids mod benet */}
       <path
         d="M14.6 9.4c2.2 2.9.3 8.4-3.9 11C6.2 23.2 1.4 19.6 2.3 14.4 3.2 9.2 10 6.6 14.6 9.4Z"
-        fill="var(--hf-meat)"
+        className="fill-hf-meat"
       />
     </svg>
   );

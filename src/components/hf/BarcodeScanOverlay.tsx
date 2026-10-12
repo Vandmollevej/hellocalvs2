@@ -112,11 +112,10 @@ function BarcodeSvg({
           key={index}
           x={digit.x}
           y={barHeight + DIGIT_GAP}
-          fontSize={DIGIT_SIZE}
           textAnchor="middle"
           fill="currentColor"
-          className={`font-mono ${animated ? "hf-barcode-digit" : ""}`}
-          style={animated ? { animationDelay: `${DIGIT_START_MS + index * DIGIT_STEP_MS}ms` } : undefined}
+          className={`hf-barcode-digit-size font-mono ${animated ? "hf-barcode-digit" : ""}`}
+          style={{ "--hf-barcode-digit-size": `${DIGIT_SIZE}px`, ...(animated ? { animationDelay: `${DIGIT_START_MS + index * DIGIT_STEP_MS}ms` } : {}) } as CSSProperties}
         >
           {digit.char}
         </text>

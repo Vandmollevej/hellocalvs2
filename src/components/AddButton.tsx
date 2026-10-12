@@ -497,9 +497,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
         {/* Only the painted green shape is a drag handle for moving the whole
             circle vertically; the fingerprint button above it is a separate
             element, so presses on it never reach these handlers. */}
-        <path className="pointer-events-auto touch-none select-none"
+        <path className="pointer-events-auto touch-none select-none fill-hf-green"
           d={backdropPath(bulgeAngleDeg, bulgeAmount)}
-          fill="var(--hf-green)"
           onPointerDown={handleMovePointerDown}
           onPointerMove={handleMovePointerMove}
           onPointerUp={handleMovePointerEnd}

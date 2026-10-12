@@ -108,16 +108,16 @@ export function BodyMeasurementChart({
             >
               {points.length > 1 && (
                 <>
-                  <text x={LEFT} y={TOP - 3} className="hf-chart-axis--small" fill="var(--hf-gray)">
+                  <text x={LEFT} y={TOP - 3} className="hf-chart-axis--small fill-hf-gray" >
                     {formatLength(maxValue, lengthUnit)}
                   </text>
-                  <text x={LEFT} y={BOTTOM + 9} className="hf-chart-axis--small" fill="var(--hf-gray)">
+                  <text x={LEFT} y={BOTTOM + 9} className="hf-chart-axis--small fill-hf-gray" >
                     {formatLength(minValue, lengthUnit)}
                   </text>
                   <polyline
                     points={coords.map((c) => `${c.x},${c.y}`).join(" ")}
                     fill="none"
-                    stroke="var(--hf-green)"
+                    className="stroke-hf-green"
                     strokeWidth="2.4"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -125,7 +125,7 @@ export function BodyMeasurementChart({
                 </>
               )}
               {coords.map((c, i) => (
-                <circle key={i} cx={c.x} cy={c.y} r="3" fill="var(--hf-green)" />
+                <circle key={i} cx={c.x} cy={c.y} r="3" className="fill-hf-green" />
               ))}
             </svg>
             <div className="flex items-baseline justify-between gap-2">

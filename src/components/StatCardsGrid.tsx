@@ -151,7 +151,7 @@ const TAP_TOLERANCE_PX = 10;
 const REFLOW_MS = 180;
 const REFLOW_EASING = "cubic-bezier(0.2, 0, 0, 1)";
 const SLIDE_ANIMATION_ID = "stat-grid-slide";
-const LIFT_SHADOW = "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)";
+const LIFT_SHADOW = "var(--hf-shadow-card-lift)";
 const EDIT_OUTLINE = "border-[1.5px] border-dashed border-hf-black/40";
 
 /** Where an item is drawn inside the grid: its layout box plus any slide still in flight. */
@@ -1208,13 +1208,12 @@ export function StatCardsGrid({
       {drag && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed z-50 rounded-2xl bg-hf-cream"
+          className="hf-card-lift pointer-events-none fixed z-50 rounded-2xl bg-hf-cream"
           style={{
             left: drag.x - drag.offsetX,
             top: drag.y - drag.offsetY,
             width: drag.width,
             height: drag.height,
-            boxShadow: LIFT_SHADOW,
           }}
         >
           {renderLifted(drag.item)}

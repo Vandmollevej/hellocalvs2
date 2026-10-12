@@ -294,7 +294,7 @@ function slideIcon(el: HTMLElement, dx: number, dy: number, lift: boolean) {
       {
         transform: `translate(${dx}px, ${dy}px) scale(${lift ? 1.18 : 1})`,
         zIndex: 30,
-        boxShadow: lift ? "0 10px 18px rgb(0 0 0 / 0.18)" : "none",
+        boxShadow: lift ? "var(--hf-shadow-nav-lift)" : "none",
       },
       { transform: "translate(0px, 0px) scale(1)", zIndex: 30, boxShadow: "none" },
     ],

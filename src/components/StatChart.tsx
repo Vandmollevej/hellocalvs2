@@ -151,7 +151,7 @@ export function StatChart({
             y1={CHART_CENTER}
             x2="274"
             y2={CHART_CENTER}
-            stroke="var(--hf-gray)"
+            className="stroke-hf-gray"
             strokeWidth="1"
             strokeDasharray="3 3"
           />
