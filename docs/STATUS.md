@@ -285,3 +285,5 @@ Last updated: 2026-10-11
 - Codex12okt03:32:12yderligereSPARtyperverificeret; SPAR292tomme,Nemlig495,798samletalle ti ark. Andre celler/formler bevaret. Samletopfølgningstadiguafsluttet.
 
 - Codex12okt03:42:5yderligereSPARtyperverificeret; SPAR287tomme,Nemlig495,793samletalle ti ark. Andre celler/formler bevaret. Samletopfølgningstadiguafsluttet.
+
+- Codex12okt03:52:5yderligereSPARtyperverificeret; SPAR282tomme,Nemlig495,788samletalle ti ark. Andre celler/formler bevaret. Samletopfølgningstadiguafsluttet.
