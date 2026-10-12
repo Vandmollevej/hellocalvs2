@@ -37,8 +37,8 @@ export function WidgetFrame({
 }) {
   return (
     <div
-      className={`relative shrink-0 overflow-hidden bg-hf-cream text-hf-black shadow-[0_2px_12px_rgb(35_35_35/18%)] ${className}`}
-      style={{ width: size.width, height: size.height, borderRadius: platform === "ios" ? 22 : 16 }}
+      className={`hf-widget-frame hf-widget-frame--${platform} ${className}`}
+      style={{ width: size.width, height: size.height }}
     >
       {children}
     </div>
@@ -58,8 +58,7 @@ export function QuickAddWidget({ platform, snapshot }: { platform: WidgetPlatfor
     <WidgetFrame platform={platform} size={size}>
       <Link href={snapshot.paths.add} className="flex h-full w-full flex-col items-center justify-center gap-2">
         <span
-          className="flex items-center justify-center rounded-full bg-hf-green text-hf-white"
-          style={{ width: small ? 48 : 72, height: small ? 48 : 72 }}
+          className={`hf-widget-add ${small ? "hf-widget-add--compact" : ""}`}
         >
           <IconPlus size={small ? 28 : 40} stroke={2.5} />
         </span>
@@ -110,8 +109,7 @@ export function AddRowWidget({
             <Link
               key={action.key}
               href={action.path}
-              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 bg-hf-tan text-hf-black"
-              style={{ height: compact ? 72 : 96, borderRadius: 12 }}
+              className={`hf-widget-action ${compact ? "hf-widget-action--compact" : ""}`}
             >
               <ActionIcon actionKey={action.key} size={compact ? 24 : 28} />
               <span className="hf-type-caption w-full truncate px-1 text-center">{action.label}</span>
@@ -197,9 +195,7 @@ function ChartBody({ chart, width, height }: { chart: WidgetSnapshot["charts"][n
           x={x(i)}
           y={height - 4}
           textAnchor="middle"
-          fontSize={11}
-          fill={i === chart.points.length - 1 ? "var(--hf-black)" : "var(--hf-gray-dark)"}
-          fontWeight={i === chart.points.length - 1 ? 700 : 400}
+          className={`hf-chart-axis--widget ${i === chart.points.length - 1 ? "hf-type-strong fill-hf-black" : "hf-type-regular fill-hf-gray-dark"}`}
         >
           {WEEKDAY.format(new Date(`${p.date}T00:00:00Z`))}
         </text>

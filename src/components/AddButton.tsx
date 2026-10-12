@@ -21,7 +21,6 @@ const CENTER_Y = HERO_HEIGHT / 2;
 const CIRCLE = 46;
 
 export const FAB_SIZE = 64;
-const FAB_RADIUS = 14;
 const DRAG_THRESHOLD = 6;
 
 // Joystick backdrop behind the fanned-out actions, flush against the
@@ -60,9 +59,6 @@ const LABEL_GAP = 12;
 const LABEL_OFFSET = CIRCLE / 2 + (CIRCLE * HIGHLIGHT_SCALE) / 2 + LABEL_GAP;
 const ICON_SIZE = 26;
 
-const INACTIVE_SHADOW = "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)";
-const ACTIVE_SHADOW = "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)";
-const LABEL_SHADOW = "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)";
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
 // an option, so a small wobble right after pressing down doesn't select
@@ -520,13 +516,12 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={endInteraction}
-        className="pointer-events-auto absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
+        className="hf-fingerprint-hit pointer-events-auto absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
         style={{
           [side === "left" ? "left" : "right"]: FAB_INSET,
           top: CENTER_Y - FAB_SIZE / 2,
           width: FAB_SIZE,
           height: FAB_SIZE,
-          borderRadius: FAB_RADIUS,
           touchAction: "none",
         } as React.CSSProperties}
       >
@@ -584,15 +579,13 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
               }}
               aria-label={action.label}
               data-guide={`add-${action.key}`}
-              className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-150"
+              className={`hf-orbit-action ${isHighlighted ? "is-highlighted" : ""} absolute flex items-center justify-center rounded-full transition-all duration-150`}
               style={{
                 width: CIRCLE,
                 height: CIRCLE,
                 opacity: open ? 1 : 0,
                 pointerEvents: open ? "auto" : "none",
                 transform: open ? `scale(${isHighlighted ? HIGHLIGHT_SCALE : 1})` : "scale(0.4)",
-                backgroundColor: isHighlighted ? "var(--hf-green)" : undefined,
-                boxShadow: isHighlighted ? ACTIVE_SHADOW : INACTIVE_SHADOW,
               }}
             >
               {Icon ? (
@@ -614,12 +607,6 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
               style={{
                 [side === "left" ? "left" : "right"]: LABEL_OFFSET,
                 top: CIRCLE / 2,
-                transform: "translateY(-50%)",
-                padding: "7px 10px",
-                borderRadius: 3,
-                boxShadow: LABEL_SHADOW,
-                color: "var(--hf-green)",
-                fontSize: 15,
                 opacity: open && isHighlighted ? 1 : 0,
               }}
             >

@@ -122,8 +122,7 @@ function SettingRow({
           aria-label={t(lang, "decrease")}
           disabled={atMin}
           onClick={() => onChange?.(element.value - 1)}
-          className={`${cell} bg-hf-tan`}
-          style={atMin ? { color: "var(--hf-color-disabled)" } : undefined}
+          className={`${cell} bg-hf-tan ${atMin ? "text-hf-disabled" : ""}`}
         >
           <IconMinus size={22} />
         </button>
@@ -133,8 +132,7 @@ function SettingRow({
           aria-label={t(lang, "increase")}
           disabled={atMax}
           onClick={() => onChange?.(element.value + 1)}
-          className={`${cell} bg-hf-tan`}
-          style={atMax ? { color: "var(--hf-color-disabled)" } : undefined}
+          className={`${cell} bg-hf-tan ${atMax ? "text-hf-disabled" : ""}`}
         >
           <IconPlus size={22} />
         </button>

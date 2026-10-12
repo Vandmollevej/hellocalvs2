@@ -54,10 +54,10 @@ export function HistoryLineChart({
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full overflow-visible" role="img" aria-label={ariaLabel}>
         {high !== low && (
           <>
-            <text x={LEFT} y={TOP - 4} fontSize="9" fill="var(--hf-gray)">
+            <text x={LEFT} y={TOP - 4} className="hf-chart-axis" fill="var(--hf-gray)">
               {format(high)}
             </text>
-            <text x={LEFT} y={BOTTOM + 11} fontSize="9" fill="var(--hf-gray)">
+            <text x={LEFT} y={BOTTOM + 11} className="hf-chart-axis" fill="var(--hf-gray)">
               {format(low)}
             </text>
           </>
@@ -74,7 +74,7 @@ export function HistoryLineChart({
               strokeDasharray="3 3"
             />
             {targetLabel && (
-              <text x={RIGHT} y={y(target) - 4} fontSize="9" textAnchor="end" fill="var(--hf-gray)">
+              <text x={RIGHT} y={y(target) - 4} className="hf-chart-axis" textAnchor="end" fill="var(--hf-gray)">
                 {targetLabel}
               </text>
             )}

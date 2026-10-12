@@ -214,8 +214,7 @@ export function StatChart({
                         x={p.x}
                         y={labelAbove ? p.y - 8 : p.y + 13}
                         textAnchor="middle"
-                        fontSize="7"
-                        fontWeight="700"
+                        className="hf-chart-axis--micro hf-type-strong"
                         fill={status.good ? "var(--hf-green)" : "var(--hf-black)"}
                       >
                         {status.good ? "✓ " : "− "}

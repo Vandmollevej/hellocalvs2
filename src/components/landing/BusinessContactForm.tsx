@@ -72,7 +72,7 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
           <input required type="email" className={FIELD} value={form.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" />
         </label>
         <label className="mk-type-label hf-form-label text-hf-black">
-          Telefon <span className="mk-weight-regular text-text-secondary">(valgfri)</span>
+          Telefon <span className="hf-type-regular text-text-secondary">(valgfri)</span>
           <input type="tel" className={FIELD} value={form.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" />
         </label>
       </div>

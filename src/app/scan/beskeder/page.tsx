@@ -64,12 +64,7 @@ export default function ScanBeskederPage() {
         {messages.map((message) => (
           <li
             key={message.id}
-            className={`rounded-card hf-type-body max-w-[80%] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
-            style={
-              message.fromAdmin
-                ? { background: "var(--hf-color-card)" }
-                : { background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }
-            }
+            className={`rounded-card hf-type-body max-w-[80%] px-4 py-2 ${message.fromAdmin ? "self-start bg-hf-tan" : "self-end bg-hf-green text-hf-white"}`}
           >
             {message.body}
             <span className="hf-type-caption block text-inherit">

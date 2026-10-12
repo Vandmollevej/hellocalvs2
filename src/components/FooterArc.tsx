@@ -465,17 +465,13 @@ export function FooterArc() {
                 setOpenState(false);
                 activate(slot);
               }}
-              className="absolute inset-0 flex items-center justify-center rounded-full border-0 bg-hf-tan"
+              className={`hf-orbit-action ${highlighted ? "is-highlighted" : ""} absolute inset-0 flex items-center justify-center rounded-full border-0`}
               style={{
                 // Som venstre-cirklen: knapperne vises med det samme (kort fade/pop),
                 // ikke gradvist efter hvor langt cirklen er trukket op.
                 opacity: showFan ? 1 : 0,
                 pointerEvents: open && !gesturing ? "auto" : "none",
                 transform: `scale(${(showFan ? 1 : 0.4) * (highlighted ? HIGHLIGHT_SCALE : 1)})`,
-                backgroundColor: highlighted ? "var(--hf-green)" : undefined,
-                boxShadow: highlighted
-                  ? "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)"
-                  : "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)",
                 transition: "transform 150ms ease, opacity 150ms ease, background-color 120ms ease",
                 touchAction: "none",
               }}
@@ -511,11 +507,6 @@ export function FooterArc() {
                       left: spot.left - (center.x - ARC_ICON_CIRCLE / 2),
                       bottom: spot.bottom - (center.y - ARC_ICON_CIRCLE / 2),
                       width: w,
-                      padding: "6px 0",
-                      borderRadius: 3,
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-                      color: "var(--hf-green)",
-                      fontSize: 15,
                     }}
                   >
                     {slot.label}

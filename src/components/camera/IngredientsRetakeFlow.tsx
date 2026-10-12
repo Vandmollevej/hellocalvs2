@@ -161,8 +161,8 @@ export function IngredientsRetakeFlow({ productId }: { productId: string }) {
             style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
-              className="absolute bottom-0 left-0 h-1 rounded-full transition-[width]"
-              style={{ width: `${autoCaptureProgress * 100}%`, background: "var(--hf-color-brand)" }}
+              className="absolute bottom-0 left-0 h-1 rounded-full bg-hf-green transition-[width]"
+              style={{ width: `${autoCaptureProgress * 100}%` }}
             />
           </div>
         )}

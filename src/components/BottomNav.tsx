@@ -866,11 +866,10 @@ export function BottomNav() {
       {editMode && (
         <div
           ref={panelRef}
-          className={`hf-nav-panel-in absolute bottom-full left-0 right-0 z-50 rounded-t-2xl border border-b-0 px-4 pb-4 pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.08)] ${
+          className={`hf-nav-panel-in absolute bottom-full left-0 right-0 z-50 rounded-t-2xl border border-b-0 bg-hf-tan px-4 pb-4 pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.08)] ${
             draggedOverBar ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark"
           }`}
           style={{
-            backgroundColor: "var(--hf-tan)",
             transform: sheetOffset ? `translateY(${sheetOffset}px)` : undefined,
             transition: sheetSnapping ? "transform 180ms ease-out" : undefined,
           }}

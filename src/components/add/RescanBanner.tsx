@@ -157,8 +157,7 @@ export function RescanBanner({
               type="button"
               aria-label={t("rescan.collapse")}
               onClick={() => setState("peek")}
-              className="absolute right-2 top-2 z-10 flex h-10 w-10 items-center justify-center rounded-full text-hf-black"
-              style={{ background: "var(--hf-color-card)" }}
+              className="absolute right-2 top-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-hf-tan text-hf-black"
             >
               <IconX size={20} stroke={1.8} aria-hidden="true" />
             </button>

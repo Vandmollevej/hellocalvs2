@@ -108,10 +108,10 @@ export function BodyMeasurementChart({
             >
               {points.length > 1 && (
                 <>
-                  <text x={LEFT} y={TOP - 3} fontSize="8" fill="var(--hf-gray)">
+                  <text x={LEFT} y={TOP - 3} className="hf-chart-axis--small" fill="var(--hf-gray)">
                     {formatLength(maxValue, lengthUnit)}
                   </text>
-                  <text x={LEFT} y={BOTTOM + 9} fontSize="8" fill="var(--hf-gray)">
+                  <text x={LEFT} y={BOTTOM + 9} className="hf-chart-axis--small" fill="var(--hf-gray)">
                     {formatLength(minValue, lengthUnit)}
                   </text>
                   <polyline

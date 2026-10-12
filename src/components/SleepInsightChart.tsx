@@ -120,7 +120,7 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
         {[0, 20, 40, 60, 80, 100].map((value) => (
           <g key={value}>
             <line x1={LEFT} x2={RIGHT} y1={y(value)} y2={y(value)} stroke="var(--hf-tan-dark)" strokeWidth="0.6" />
-            <text x={LEFT - 6} y={y(value) + 3} textAnchor="end" fontSize="8" fill="var(--hf-black)">
+            <text x={LEFT - 6} y={y(value) + 3} textAnchor="end" className="hf-chart-axis--small" fill="var(--hf-black)">
               {value}
             </text>
           </g>
@@ -145,7 +145,7 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
             );
           })}
         {labelIndexes.map((i) => (
-          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" fontSize="7.5" fill="var(--hf-black)">
+          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact" fill="var(--hf-black)">
             {dateLabel(days[i].date)}
           </text>
         ))}
@@ -225,7 +225,7 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
         {[1, 2, 3, 4, 5].map((rating) => (
           <g key={rating}>
             <line x1={LEFT} x2={RIGHT} y1={ratingY(rating)} y2={ratingY(rating)} stroke="var(--hf-tan-dark)" strokeWidth="0.6" />
-            <text x={LEFT - 6} y={ratingY(rating) + 3} textAnchor="end" fontSize="8" fill="var(--hf-black)">
+            <text x={LEFT - 6} y={ratingY(rating) + 3} textAnchor="end" className="hf-chart-axis--small" fill="var(--hf-black)">
               {rating}
             </text>
           </g>
@@ -247,10 +247,10 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
 
         {axisOverlay && axisDomain && (
           <>
-            <text x={RIGHT + 4} y={TOP + 3} fontSize="7" fill="var(--hf-black)">
+            <text x={RIGHT + 4} y={TOP + 3} className="hf-chart-axis--micro" fill="var(--hf-black)">
               {axisOverlay.format(axisDomain[1])}
             </text>
-            <text x={RIGHT + 4} y={BOTTOM + 3} fontSize="7" fill="var(--hf-black)">
+            <text x={RIGHT + 4} y={BOTTOM + 3} className="hf-chart-axis--micro" fill="var(--hf-black)">
               {axisOverlay.format(axisDomain[0])}
             </text>
           </>
@@ -270,7 +270,7 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
         )}
 
         {labelIndexes.map((i) => (
-          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" fontSize="7.5" fill="var(--hf-black)">
+          <text key={i} x={xCenter(i)} y={140} textAnchor="middle" className="hf-chart-axis--compact" fill="var(--hf-black)">
             {dateLabel(days[i].date)}
           </text>
         ))}

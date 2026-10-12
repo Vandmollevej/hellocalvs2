@@ -283,8 +283,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className="block"
-              style={{ transform: expanded ? "rotate(180deg)" : undefined, transition: "transform .15s" }}
+              className={`hf-disclosure-chevron ${expanded ? "is-expanded" : ""}`}
             >
               <path d="M6 9l6 6 6-6" />
             </svg>

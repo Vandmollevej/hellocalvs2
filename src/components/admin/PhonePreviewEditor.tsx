@@ -148,8 +148,7 @@ export function PushPreview({ title, body }: { title: string; body: string }) {
   const text = htmlToPlainText(fillSampleVars(body));
   return (
     <div
-      className="-mt-[54px] flex min-h-0 flex-1 flex-col items-center px-3 pt-[54px] text-white"
-      style={{ background: "linear-gradient(160deg,#2c5d3b 0%,#35784A 45%,#1d3b27 100%)" }}
+      className="hf-phone-push-preview"
     >
       <p className="mt-6 text-[20px] font-semibold opacity-90">søndag 27. september</p>
       <p className="text-[92px] font-bold leading-none tracking-tight">9:41</p>

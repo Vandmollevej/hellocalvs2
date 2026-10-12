@@ -1,4 +1,4 @@
-## 2026-10-12: Fælles CSS-klasser — i gang
+## 2026-10-12: Fælles CSS-klasser — afsluttende verifikation
 
 - Aktuel master bruges i worktrees/github-samling, branch codex/faelles-css-klasser-20261012; hovedmappens ændringer er bevaret.
 - Gentagne formularer, tabeller, kataloggitre, kamera-/rapportflader, social login, tilføj-labels og widget-preview er samlet i globals.css. 428 identiske småtekster bruger den eksisterende hf-type-caption.
@@ -6,6 +6,7 @@
 - Før/efter-fixtures: 672 elementer uden forskelle i 39 beregnede stilegenskaber ved 402 og 1440 px indholdsbredde; fire felter også kontrolleret med tastaturfokus. Ingen ændret produktadfærd i CSS-refaktoreringen.
 - Face ID: midlertidige loginfejl må ikke slette enhedsmarkeringen; allerede-oprettet nøgle kræver serverbekræftet reauth. Seks regressionstests grønne. Brugerens konkrete enrollmentfejl er ikke reproduceret; afventer berørt platform/fejl.
 - Talhjulets font/text-box, captions og nået-mål-farve samt lydsøjlernes startform bruger nu klasser; geometriparametre og lydanimation bevares. Fem ekstra før/efter-tilstande er grønne ved 402/1440 px. PR #401 indeholder hovedrefaktoreringen og sidste klasseopfølgning. Afsluttende lint/build og native-paritet er grønne.
+- Slutgennemgang har fjernet resterende inline-styles i widget-/push-preview, mobilens handlingslabels, foto-/offlinevisninger og scanfarver. Ni SVG-grafer bruger nu fælles størrelsesklasser; de to orbit-menuer deler baggrund/skygge, inkl. highlight. Lint-reglerne omfatter nu også faste SVG-fontattributter og bevarer farvereglerne uden for admin. 32 ekstra SVG-/kontroltilstande er sammenlignet i 41 CSS-egenskaber ved 402/1440 px uden forskelle; grafens ægte sorte ramme er bevaret særskilt fra appens #232323-token. Native sync og 101 berørte style-only-ruters kildehashes er verificeret.
 - Online brugersession er tilgængelig; admin viser stadig login. Slutverificeret: 384 tests grønne, lint uden fejl (12 eksisterende advarsler), build på 403 sider grøn, native sync og paritet grøn. 114 portede ruters kildehashes er opdateret efter style-only verifikation; native vejningstal bruger samme 40/48-headingrolle. PR/deploy pågår.
 
 # HELLO CAL — project status

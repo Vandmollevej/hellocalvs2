@@ -2188,3 +2188,5 @@ Fælles klasser ændrer ikke layouts: mobilskærmen, desktopskallen og marketing
 Alle faste værdier ligger i globals.css. Tailwinds @apply bevarer de tidligere utility-egenskaber, responsive breakpoints og interaktionsstates. Dynamiske mål fra data/geometri forbliver inline. Lint håndhæver også marketingtypografi gennem roller og forbyder faste inline-font/radius/skyggeværdier uden for eksisterende dokumenterede undtagelser.
 
 Talhjul/lyd: hf-wheel-number bruger --hf-wheel-font-size fra hjulets eksisterende geometriparameter; hf-wheel-caption ejer den faste linjeafstand; hf-waveform-bar ejer søjlens startform. Kun løbende lydhøjder, opacity og geometriske positioner er inline.
+
+SVG-grafer bruger hf-chart-axis (9 px) og --micro/--compact/--small/--large/--widget (7/7,5/8/10/11 px); vægt deles via hf-type-strong eller hf-type-regular. hf-chart-label/grid/pulse/empty/frame bevarer de oprindelige paintværdier; den sorte frame (#000) må ikke erstattes af hf-black (#232323). Mobilens to orbit-menuer deler hf-orbit-action og is-highlighted; koordinater, scaling og gestures forbliver platformspecifikke. Animationens keyframes og datadrevne mål bevares.

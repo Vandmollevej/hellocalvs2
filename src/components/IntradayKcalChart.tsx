@@ -79,8 +79,7 @@ export function IntradayKcalChart({
             x={p.x}
             y={Math.max(8, p.y - 6)}
             textAnchor="middle"
-            fontSize="7"
-            fontWeight="700"
+            className="hf-chart-axis--micro hf-type-strong"
             fill="var(--hf-black)"
           >
             {Math.round(p.value)} kcal

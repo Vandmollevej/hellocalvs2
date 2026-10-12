@@ -45,6 +45,10 @@ const COLOR_SELECTORS = [
 
 const TYPE_SELECTORS = [
   {
+    selector: 'JSXAttribute[name.name=/^(fontSize|fontWeight)$/] > Literal, JSXAttribute[name.name=/^(fontSize|fontWeight)$/] > JSXExpressionContainer > Literal',
+    message: "Fast SVG-typografi: brug en fælles hf-chart-axis- eller hf-type-klasse. Dynamisk geometri kan stadig parameteriseres.",
+  },
+  {
     selector: `JSXAttribute[name.name="className"] Literal[value=/${RAW_TYPE}/]`,
     message: "Rå tekststørrelse/-vægt: brug .hf-type-* til app/admin eller .mk-type-* til marketing fra globals.css.",
   },
@@ -83,7 +87,7 @@ const designTokenRules = [
     name: "design-tokens/typography",
     files: ["src/**/*.tsx"],
     ignores: DESIGN_TOKEN_EXEMPT,
-    rules: { "no-restricted-syntax": ["error", ...TYPE_SELECTORS] },
+    rules: { "no-restricted-syntax": ["error", ...COLOR_SELECTORS, ...TYPE_SELECTORS] },
   },
   {
     // Et senere config-objekt erstatter no-restricted-syntax for filerne, så

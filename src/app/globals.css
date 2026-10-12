@@ -3309,7 +3309,7 @@ textarea.hf-input {
 }
 
 @layer components {
-  .mk-weight-regular { font-weight: 400; }
+  .hf-type-regular { font-weight: 400; }
   .mk-type-price { @apply text-5xl font-light; }
 }
 
@@ -3323,4 +3323,29 @@ textarea.hf-input {
   .hf-wheel-caption { line-height: 1.15; }
   /* Audio animation still changes the bar height dynamically after capture starts. */
   .hf-waveform-bar { @apply w-[3px] flex-1 rounded-full bg-hf-green; height: 8%; }
+}
+
+/* SVG uses its own coordinate scale; these roles retain the existing exact sizes. */
+@layer components {
+  .hf-chart-axis--micro { font-size: 7px; }
+  .hf-chart-axis--compact { font-size: 7.5px; }
+  .hf-chart-axis--small { font-size: 8px; }
+  .hf-chart-axis { font-size: 9px; }
+  .hf-chart-axis--large { font-size: 10px; }
+  .hf-chart-axis--widget { font-size: 11px; }
+}
+
+@layer components {
+  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.28); }
+  .hf-chart-label { fill: #6b7280; }
+  .hf-chart-grid { stroke: #d1d5db; }
+  .hf-chart-frame { stroke: #000; }
+  .hf-chart-pulse { stroke: #e11d48; }
+  .hf-chart-empty { fill: #9ca3af; }
+}
+
+@layer components {
+  .hf-fingerprint-hit { border-radius: 14px; }
+  .hf-orbit-action { background-color: var(--hf-tan); box-shadow: 0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05); }
+  .hf-orbit-action.is-highlighted { background-color: var(--hf-green); box-shadow: 0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08); }
 }

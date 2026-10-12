@@ -1162,8 +1162,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             style={{ borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
           >
             <div
-              className="absolute bottom-0 left-0 h-1 rounded-full transition-[width]"
-              style={{ width: `${liveProgress * 100}%`, background: "var(--hf-color-brand)" }}
+              className="absolute bottom-0 left-0 h-1 rounded-full bg-hf-green transition-[width]"
+              style={{ width: `${liveProgress * 100}%` }}
             />
           </div>
         )}
@@ -1257,9 +1257,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
               onClick={() => selectStep(item)}
               disabled={disabled && item !== step}
               aria-current={item === step ? "step" : undefined}
-              className="relative flex h-16 flex-col items-center justify-center gap-1 overflow-hidden px-1 text-center text-hf-black disabled:opacity-50 rounded-card"
+              className="relative flex h-16 flex-col items-center justify-center gap-1 overflow-hidden bg-hf-tan px-1 text-center text-hf-black disabled:opacity-50 rounded-card"
               style={{
-                background: "var(--hf-color-card)",
                 outline: item === step ? "2px solid var(--hf-color-brand)" : undefined,
                 outlineOffset: -2,
               }}

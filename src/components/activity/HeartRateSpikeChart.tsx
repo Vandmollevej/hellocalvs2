@@ -73,7 +73,7 @@ export function HeartRateSpikeChart({
         {yTicks.map((v) => (
           <g key={v}>
             <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="var(--hf-tan-dark)" strokeWidth={1} />
-            <text x={PAD.left - 4} y={y(v) + 3} textAnchor="end" fontSize={9} fill="var(--text-secondary)">
+            <text x={PAD.left - 4} y={y(v) + 3} textAnchor="end" className="hf-chart-axis" fill="var(--text-secondary)">
               {v}
             </text>
           </g>
@@ -85,7 +85,7 @@ export function HeartRateSpikeChart({
             x={x(tick)}
             y={H - 6}
             textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"}
-            fontSize={10}
+            className="hf-chart-axis--large"
             fill="var(--text-secondary)"
           >
             {timeLabel(tick)}

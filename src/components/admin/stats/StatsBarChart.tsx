@@ -70,7 +70,7 @@ export function StatsBarChart({
                 strokeWidth={tick === 0 ? 1 : 0.5}
                 strokeDasharray={tick === 0 ? undefined : "2 3"}
               />
-              <text x={PAD.left - 6} y={y(tick) + 3} textAnchor="end" fontSize="10" fill="var(--text-muted)">
+              <text x={PAD.left - 6} y={y(tick) + 3} textAnchor="end" className="hf-chart-axis--large" fill="var(--text-muted)">
                 {fmt.format(tick)}
               </text>
             </g>
@@ -97,7 +97,7 @@ export function StatsBarChart({
                   return <path key={s.key} d={path} fill={s.color} opacity={hover === null || hover === i ? 1 : 0.55} />;
                 })}
                 {i % labelEvery === 0 && (
-                  <text x={cx} y={HEIGHT - 8} textAnchor="middle" fontSize="10" fill="var(--text-muted)">
+                  <text x={cx} y={HEIGHT - 8} textAnchor="middle" className="hf-chart-axis--large" fill="var(--text-muted)">
                     {point.label}
                   </text>
                 )}
