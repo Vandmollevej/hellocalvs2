@@ -190,3 +190,9 @@ Ejer: Codex, chat om GitHub-forbindelsen. Audit: `2026-10-11-github-samling.md`.
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | github-samling | Gennemgå lokale branches og 160 worktrees og saml manglende arbejde sikkert | Færdig (PR #400, abd501c7, deploy #714 grøn) | Ingen kodeopgave tilbage. Manuel adminkontrol kræver login; telefonkontrol kræver enhed. Lokale data og andre worktrees bevaret. |
+
+## G-CSS-20261012 — Identiske elementstyles
+
+| Id | Opgave | Status | Verifikation |
+| --- | --- | --- | --- |
+| css-identiske | Genbrug samme klasse ved identiske egenskaber; bevar mobil/online forskelle | Færdig (5e0414b5, PR #401) | Deploy #715 og native #856 grønne, deep health HTTP 200. 384 tests, lint 0 fejl/12 eksisterende advarsler, build 403 sider, native sync/paritet. Før/efter-fixtures (yderligere 699 faktiske AST-par i 41 egenskaber ved bekræftede 402/1440 px) og faktisk onlinekontrol af desktop/mobil, profilfelter og adminlogin matcher. Resterende adminlogin/enhedstest står særskilt i OPEN-TASKS. |

@@ -556,4 +556,5 @@ Ejer: Codex, chat CSS-gennemgang (2026-10-12). Filer: klasse-refaktorering i src
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| css-identiske | Genbrug samme klasse ved identiske egenskaber; bevar mobil/online forskelle | I gang | Lokal verifikation grøn: 672 før/efter-par på mobil/desktop, 384 tests, lint/build/native-paritet. PR #401: afvent sidste checks/deploy og kontrollér online. Talhjul/lydsøjler har fem og SVG/preview/scan/orbit har 32 yderligere grønne før/efter-tilstande; 62 source-extracted SVG-paintpar og tre skygge/stregkode-tilstande er også grønne; statiske inline- og SVG-fonts/paints håndhæves af lint. Admin-login mangler; Face ID-platform er ikke oplyst. |
+| admin-visuel | Visuel kontrol af indre adminsider efter CSS-refaktoreringen | Venter på bruger | Adminfanen viser fortsat /admin/login. Appen er indlogget. CSS-koden er flettet/deployet i #401; adminlogin er visuelt og stylemæssigt kontrolleret. Afventer login i adminfanen. |
+| faceid-enhed | Reproducer brugerens konkrete røde Face ID-tilknytningsfejl | Venter på bruger | Midlertidige fejl bevarer enhedsmarkeringen og eksisterende nøgle kræver serververificeret reauth; seks tests og sikkerhedsreview grønne, deployet i #401. Platform/fejl er ikke oplyst. Brugeren skal selv gennemføre biometrisk dialog på berørt enhed. |
