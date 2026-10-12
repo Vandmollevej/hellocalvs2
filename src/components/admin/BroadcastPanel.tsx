@@ -75,11 +75,11 @@ export function BroadcastPanel({ emailUsers, pushUsers }: { emailUsers: number; 
             className="hf-input"
           />
           <label className="hf-type-body flex items-center gap-2">
-            <input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} />
+            <input className="hf-native-choice" type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} />
             Mail ({emailUsers} modtagere)
           </label>
           <label className="hf-type-body flex items-center gap-2">
-            <input type="checkbox" checked={push} onChange={(e) => setPush(e.target.checked)} />
+            <input className="hf-native-choice" type="checkbox" checked={push} onChange={(e) => setPush(e.target.checked)} />
             Push ({pushUsers} brugere med push slået til)
           </label>
           <input

@@ -142,8 +142,8 @@ export default async function AdminIntegrationsPage({
                         <span className="w-8 text-right tabular-nums text-text-primary">{num.format(active)}</span>
                         <span className="h-2 w-24 overflow-hidden rounded-full bg-surface-2" aria-hidden>
                           <span
-                            className="block h-full rounded-full"
-                            style={{ width: `${(active / maxActive) * 100}%`, background: C.green }}
+                            className="block h-full rounded-full bg-hf-brand"
+                            style={{ width: `${(active / maxActive) * 100}%` }}
                           />
                         </span>
                         <span className="text-text-muted hf-type-small">{pct(active, activeTotal)}</span>

@@ -663,7 +663,7 @@ export function GuideBuilder({
                 ref={fileInputRef}
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
-                className="hidden"
+                className="hf-native-file hidden"
                 onChange={(e) => {
                   void loadImageFile(e.target.files?.[0]);
                   e.target.value = "";

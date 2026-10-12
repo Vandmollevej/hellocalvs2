@@ -261,7 +261,7 @@ export default async function ScanWorkerPage({
           </label>
           <label className="hf-type-body flex flex-col gap-1">PayPal<input name="paypalEmail" defaultValue={worker.paypalEmail ?? ""} className={inputClass} /></label>
           <label className="hf-type-body flex items-center gap-2">
-            <input type="checkbox" name="clearSensitive" /> Slet CPR og bankkonto
+            <input className="hf-native-choice" type="checkbox" name="clearSensitive" /> Slet CPR og bankkonto
           </label>
           <button className="hf-btn-primary sm:col-span-2 hf-btn--compact">Gem profil (ny version)</button>
         </form>

@@ -104,7 +104,7 @@ function ShareBars({ rows, countOnly = false }: { rows: { label: string; on: num
         <li key={row.label} className="flex items-center gap-3 hf-type-body">
           <span className="w-56 shrink-0 text-text-primary">{row.label}</span>
           <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface-1" aria-hidden>
-            <span className="block h-full rounded-full" style={{ width: `${row.of ? (row.on / row.of) * 100 : 0}%`, background: C.green }} />
+            <span className="block h-full rounded-full bg-hf-brand" style={{ width: `${row.of ? (row.on / row.of) * 100 : 0}%` }} />
           </span>
           <span className="hf-type-caption w-28 shrink-0 text-right tabular-nums">
             {countOnly ? num.format(row.on) : `${num.format(row.on)} af ${num.format(row.of)} (${pct(row.on, row.of)})`}

@@ -296,7 +296,7 @@ export function SearchRankingTuner({
                   max={100}
                   value={weights[category.key]}
                   onChange={(e) => updateWeight(category.key, Number(e.target.value))}
-                  className="w-full"
+                  className="hf-native-choice w-full"
                 />
                 <div className="hf-type-small flex justify-between text-text-muted">
                   <span>{category.signed ? category.negativeLabel : "Ingen effekt (0)"}</span>

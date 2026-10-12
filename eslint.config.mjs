@@ -71,6 +71,10 @@ const CONTROL_MESSAGE =
   "Hjemmelavet knap-/feltstil i admin: brug .hf-btn-primary/-brand/-secondary/-danger/-text/-icon, .hf-choice eller .hf-input (+ .hf-btn--compact/.hf-btn--inline/.hf-input--compact) fra globals.css.";
 const ADMIN_CONTROL_SELECTORS = [
   {
+    selector: 'JSXOpeningElement[name.name="input"]:has(JSXAttribute[name.name="type"] > Literal[value=/^(checkbox|radio|range|file)$/]):not(:has(JSXAttribute[name.name="className"]))',
+    message: "Native admin-kontrol uden klasse: brug hf-native-choice for checkbox/radio/range eller hf-native-file for filvalg, og bevar eventuelle variantklasser.",
+  },
+  {
     selector: `JSXOpeningElement[name.name=/^(button|input|select|textarea)$/] > JSXAttribute[name.name="className"] Literal[value=/${CONTROL_STYLE}/]`,
     message: CONTROL_MESSAGE,
   },

@@ -137,7 +137,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
             type="checkbox"
             checked={draft.useInApp}
             onChange={(event) => setDraft({ ...draft, useInApp: event.target.checked })}
-            className="mt-1"
+            className="hf-native-choice mt-1"
           />
           <span>
             <span className="text-text-primary">Brug forslagene i app&apos;en</span>

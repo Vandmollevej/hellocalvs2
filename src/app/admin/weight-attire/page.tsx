@@ -26,7 +26,7 @@ export default async function AdminWeightAttirePage() {
       </div>
       <form action={saveWeightAttireSettings} className="max-w-xl hf-panel hf-panel--form">
         <label className="flex items-center gap-3">
-          <input type="checkbox" name="enabled" defaultChecked={s.enabled} className="size-5" />
+          <input type="checkbox" name="enabled" defaultChecked={s.enabled} className="hf-native-choice size-5" />
           <span className="hf-type-body">Algoritmen er slået til (ellers bruges kun standardreglen)</span>
         </label>
         <label className="flex flex-col gap-1">

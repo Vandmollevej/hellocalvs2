@@ -52,8 +52,8 @@ export function ReportActions({ partnerId, query }: { partnerId: string; query: 
           <label className="flex flex-col gap-1"><span className={LABEL}>Modtagerens navn</span><input className={INPUT} value={name} onChange={(e) => setName(e.target.value)} required /></label>
           <label className="flex flex-col gap-1"><span className={LABEL}>Modtagerens e-mail</span><input className={INPUT} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
           <div className="hf-type-body flex flex-wrap items-center gap-4 sm:col-span-2">
-            <label className="flex items-center gap-2"><input type="checkbox" checked={pdf} onChange={(e) => setPdf(e.target.checked)} /> PDF</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={csv} onChange={(e) => setCsv(e.target.checked)} /> CSV</label>
+            <label className="flex items-center gap-2"><input className="hf-native-choice" type="checkbox" checked={pdf} onChange={(e) => setPdf(e.target.checked)} /> PDF</label>
+            <label className="flex items-center gap-2"><input className="hf-native-choice" type="checkbox" checked={csv} onChange={(e) => setCsv(e.target.checked)} /> CSV</label>
           </div>
           <div className="flex gap-2 sm:col-span-2">
             <button className={PRIMARY} disabled={busy || !name.trim() || !email.trim() || (!pdf && !csv)}>Send</button>

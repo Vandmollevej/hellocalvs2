@@ -167,7 +167,7 @@ export default async function AdminChatbotPage({
             </select>
           </label>
           <label className="flex h-9 items-center gap-2">
-            <input type="checkbox" name="escalated" value="1" defaultChecked={filter.escalated} />
+            <input className="hf-native-choice" type="checkbox" name="escalated" value="1" defaultChecked={filter.escalated} />
             <span>Kun sendt til medarbejder</span>
           </label>
           <button type="submit" className="hf-btn-brand hf-btn--compact hf-btn--inline">
