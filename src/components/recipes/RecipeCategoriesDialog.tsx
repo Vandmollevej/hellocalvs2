@@ -46,7 +46,7 @@ export function RecipeCategoriesDialog({
     <BottomSheet ariaLabel={t("recipeCategories.title")} onClose={() => void close()}>
       <div className="flex flex-col">
         <div className="p-4 pb-2">
-          <p className="hf-type-small text-text-secondary">{t("recipeCategories.intro")}</p>
+          <p className="hf-type-caption">{t("recipeCategories.intro")}</p>
         </div>
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-2">
           {groups.map(([group, values]) => {

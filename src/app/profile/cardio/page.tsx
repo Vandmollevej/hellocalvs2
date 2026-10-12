@@ -65,7 +65,7 @@ export default function CardioPage() {
           value={range}
           onChange={(e) => setRange(e.target.value)}
           aria-label={t("cardio.range")}
-          className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none"
+          className="hf-type-body hf-field hf-field-soft"
         >
           {CARDIO_RANGES.map((r) => (
             <option key={r.key} value={r.key}>
@@ -73,7 +73,7 @@ export default function CardioPage() {
             </option>
           ))}
         </select>
-        {loading && <p className="hf-type-small text-text-secondary text-center">…</p>}
+        {loading && <p className="hf-type-caption text-center">…</p>}
         {series.map(({ m, points }) => {
           const last = points[points.length - 1];
           return (
@@ -105,7 +105,7 @@ export default function CardioPage() {
           );
         })}
         {!loading && rows.length === 0 && (
-          <p className="hf-type-small text-text-secondary text-center">{t("cardio.empty")}</p>
+          <p className="hf-type-caption text-center">{t("cardio.empty")}</p>
         )}
       </div>
     </HfScreen>

@@ -70,7 +70,7 @@ export function AdminLoginForm() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
+    <div className="hf-auth-panel">
       <h1 className="hf-type-title text-hf-black">Admin-login</h1>
       <p className="hf-type-body mb-8 text-text-secondary">Log ind for at godkende nye varer og billeder.</p>
 

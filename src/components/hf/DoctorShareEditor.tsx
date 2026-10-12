@@ -137,7 +137,7 @@ export function DoctorShareEditor({
         <h2 className="hf-type-section-title">{t("helloDoc.historyTitle")}</h2>
         <div className="relative">
           <select
-            className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
+            className="hf-select-auth hf-field hf-type-input"
             value={historyRange}
             onChange={(event) => onHistoryRangeChange(event.target.value as DoctorShareHistoryRange)}
           >
@@ -150,7 +150,7 @@ export function DoctorShareEditor({
           <IconChevronDown
             size={18}
             stroke={2.5}
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
+            className="hf-select-chevron"
           />
         </div>
       </div>

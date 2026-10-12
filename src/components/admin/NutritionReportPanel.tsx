@@ -75,7 +75,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
           Confidence {Math.round(report.confidence)}%
         </span>
       </div>
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         Anonym bruger · {new Date(report.createdAt).toLocaleString("da-DK")} · registreret{" "}
         {Math.round(report.amountGrams)} g · værdier pr. 100 g
       </p>
@@ -132,11 +132,11 @@ function ReportRow({ report }: { report: NutritionReport }) {
               >
                 Send besked
               </button>
-              {messageSent && <span className="hf-type-small text-text-secondary">Besked sendt krypteret</span>}
+              {messageSent && <span className="hf-type-caption">Besked sendt krypteret</span>}
             </div>
           </>
         ) : (
-          <p className="hf-type-small text-text-secondary">Indberetteren kan ikke kontaktes.</p>
+          <p className="hf-type-caption">Indberetteren kan ikke kontaktes.</p>
         )}
       </div>
 

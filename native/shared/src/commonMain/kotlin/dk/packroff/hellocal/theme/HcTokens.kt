@@ -195,4 +195,6 @@ object HcTypeRoles {
     val Micro = HcTypeRole(11f, FontWeight(400), 14f, false, null)
     /** .hf-type-tab */
     val Tab = HcTypeRole(11f, FontWeight(400), 14f, false, null)
+    /** .hf-type-counter */
+    val Counter = HcTypeRole(40f, FontWeight(700), 48f, true, null)
 }

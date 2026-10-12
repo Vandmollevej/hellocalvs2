@@ -80,7 +80,7 @@ function Questionnaire({ screening, onDone }: { screening: ScreeningDto; onDone:
   return (
     <div className="flex flex-col gap-4 px-4 pb-6">
       {screening.questions.length > 1 && (
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {t("screenings.questionOf").replace("{n}", String(index + 1)).replace("{total}", String(screening.questions.length))}
         </p>
       )}

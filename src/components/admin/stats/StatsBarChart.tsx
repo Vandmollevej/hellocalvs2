@@ -48,7 +48,7 @@ export function StatsBarChart({
   return (
     <div className="flex flex-col gap-2">
       {series.length > 1 && (
-        <div className="hf-type-small flex flex-wrap gap-x-4 gap-y-1 text-text-secondary">
+        <div className="hf-type-caption flex flex-wrap gap-x-4 gap-y-1">
           {series.map((s) => (
             <span key={s.key} className="flex items-center gap-1.5">
               <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: s.color }} />

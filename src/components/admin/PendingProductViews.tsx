@@ -82,7 +82,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
     <BulkSelection kind="product" ids={visibleProducts.map((product) => product.id)}>
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {mode === "scroll"
             ? `Viser ${visibleProducts.length} af ${products.length} varer`
             : `Side ${currentPage} af ${pageCount} · ${products.length} varer`}
@@ -118,9 +118,9 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
                 <Thumb product={product} className="h-14 w-14" />
                 <span className="min-w-0 flex-1">
                   <span className="hf-type-strong block truncate text-hf-black">{product.name}</span>
-                  <span className="hf-type-small block truncate text-text-secondary">{subtitle(product)}</span>
+                  <span className="hf-type-caption block truncate">{subtitle(product)}</span>
                 </span>
-                <span className="hf-type-small hidden shrink-0 text-text-secondary sm:block">{product.createdAtLabel}</span>
+                <span className="hf-type-caption hidden shrink-0 sm:block">{product.createdAtLabel}</span>
                 <span className="hf-type-body w-20 shrink-0 text-right">{Math.round(product.kcalPer100g)} kcal</span>
                 <span className="hf-type-body w-12 shrink-0 text-right">{product.confidencePercent === null ? "—" : `${product.confidencePercent} %`}</span>
               </button>
@@ -136,7 +136,7 @@ export function PendingProductViews({ products }: { products: PendingProduct[] }
               <button type="button" onClick={() => setOpenId(product.id)} className="hf-btn-text h-full w-full flex-col hf-surface">
                 <Thumb product={product} className="aspect-square w-full" />
                 <span className="hf-type-strong line-clamp-2 text-hf-black">{product.name}</span>
-                <span className="hf-type-small truncate text-text-secondary">{subtitle(product)}</span>
+                <span className="hf-type-caption truncate">{subtitle(product)}</span>
               </button>
             </BulkRow>
           ))}

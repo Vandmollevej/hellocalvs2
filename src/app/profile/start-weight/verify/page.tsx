@@ -133,7 +133,7 @@ function VerifyStartWeightContent() {
       {(state === "valid" || state === "saving") && (
         <form onSubmit={save} noValidate className="hf-page">
           <label className="flex flex-col gap-2">
-            <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+            <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
               {t("profile.startWeight.fieldLabel")}
             </span>
             <span className="hf-field flex items-center rounded-xl bg-hf-tan px-4 focus-within:ring-2 focus-within:ring-hf-green">

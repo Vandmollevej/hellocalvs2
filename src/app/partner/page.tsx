@@ -74,7 +74,7 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
           <div className="overflow-x-auto hf-panel">
             <table className="hf-type-body w-full text-left">
               <thead>
-                <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+                <tr className="hf-table-section hf-type-small">
                   <th className="py-2 pr-3">Lokation</th>
                   <th className="py-2 pr-3">Placering</th>
                   <th className="py-2 pr-3 text-right">Visninger</th>
@@ -110,7 +110,7 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
         <div className="flex flex-col gap-2">
           <h2 className="hf-type-body hf-type-strong">Seneste rapporter</h2>
           {sends.length === 0 ? (
-            <p className="hf-type-small text-text-secondary">Der er ikke sendt rapporter endnu.</p>
+            <p className="hf-type-caption">Der er ikke sendt rapporter endnu.</p>
           ) : (
             <ul className="hf-type-small gap-1 hf-panel">
               {sends.map((send) => (
@@ -124,7 +124,7 @@ export default async function PartnerHomePage({ searchParams }: { searchParams: 
         <div className="flex flex-col gap-2">
           <h2 className="hf-type-body hf-type-strong">Modtagere af rapporter</h2>
           {contacts.length === 0 ? (
-            <p className="hf-type-small text-text-secondary">Ingen modtagere registreret. Kontakt Hello Cal for at få tilføjet nogen.</p>
+            <p className="hf-type-caption">Ingen modtagere registreret. Kontakt Hello Cal for at få tilføjet nogen.</p>
           ) : (
             <ul className="hf-type-small gap-1 hf-panel">
               {contacts.map((contact) => (

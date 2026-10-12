@@ -35,7 +35,7 @@ export function ChatbotThreadMessages({ messages }: { messages: ThreadMessage[] 
             </span>
             <span className="hf-type-body whitespace-pre-wrap text-hf-black">{message.body}</span>
             {message.links.length > 0 && (
-              <span className="hf-type-small text-text-secondary">Links: {message.links.join(", ")}</span>
+              <span className="hf-type-caption">Links: {message.links.join(", ")}</span>
             )}
           </li>
         ),

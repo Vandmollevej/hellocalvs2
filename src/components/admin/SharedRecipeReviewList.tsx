@@ -45,7 +45,7 @@ function CopyWarning({ check }: { check: CopyCheckView }) {
       <p className="hf-type-small hf-type-strong text-hf-red-dark">
         Advarsel: {Math.round(check.ratio * 100)} % sammenfald med en anden ret
       </p>
-      <p className="hf-type-small mt-1 text-text-secondary">
+      <p className="hf-type-caption mt-1">
         Kilde: {SOURCE_LABELS[check.source.kind] ?? check.source.kind} — {check.source.name}
       </p>
       <div className="mt-2 grid gap-3 md:grid-cols-2">
@@ -124,11 +124,11 @@ export function SharedRecipeReviewList({ rows, locale }: { rows: SharedRecipeRev
                 : t(locale, "shared_recipes_new")}
             </span>
           </div>
-          <p className="hf-type-small mt-1 text-text-secondary">
+          <p className="hf-type-caption mt-1">
             {t(locale, "shared_recipes_owner")}: {row.owner} · {row.kcal} kcal ·{" "}
             {new Date(row.createdAt).toLocaleDateString(locale === "EN" ? "en-GB" : "da-DK")}
           </p>
-          <p className="hf-type-small mt-1 text-text-secondary">{row.ingredients.join(", ")}</p>
+          <p className="hf-type-caption mt-1">{row.ingredients.join(", ")}</p>
           {row.copyCheck && <CopyWarning check={row.copyCheck} />}
           {rejectingId === row.id && (
             <div className="hf-surface mt-3 p-3">

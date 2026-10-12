@@ -71,7 +71,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
       <div className="overflow-x-auto">
         <table className="hf-type-body w-full text-left">
           <thead>
-            <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+            <tr className="hf-table-section hf-type-small">
               <th className="py-2 pr-3">{t(admin.locale, "users_col_user")}</th>
               <th className="py-2 pr-3">{t(admin.locale, "users_col_payment")}</th>
               <th className="py-2 pr-3">{t(admin.locale, "users_col_points")}</th>

@@ -86,7 +86,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
         <Toggle label="Aktiv" checked={form.enabled} onChange={(value) => setForm({ ...form, enabled: value })} />
       </div>
 
-      <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <label className="hf-type-caption flex flex-col gap-1">
         {email ? "Emne (bruges også som titel på notifikationen)" : "Titel"}
         <input
           value={form.subject}
@@ -95,7 +95,7 @@ export function MessageTemplateEditor({ template, label }: { template: MessageTe
         />
       </label>
 
-      <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <label className="hf-type-caption flex flex-col gap-1">
         Indhold (HTML, {"{{variabel}}"} erstattes ved afsendelse — eksempelværdier vises i telefonen)
         <textarea
           rows={18}

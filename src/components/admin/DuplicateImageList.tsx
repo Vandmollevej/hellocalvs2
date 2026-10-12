@@ -99,7 +99,7 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
     <BulkSelection kind="product" ids={visible.map(({ group }) => group.productId)}>
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {views.length} varer · viser {views.length === 0 ? 0 : safePage * perPage + 1}–{safePage * perPage + visible.length}
         </p>
         <ReviewSizePicker sizeIdx={sizeIdx} onChoose={choose} />
@@ -125,7 +125,7 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
           <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text">
             ‹ Forrige
           </button>
-          <span className="hf-type-small text-text-secondary">
+          <span className="hf-type-caption">
             {safePage + 1} / {pageCount}
           </span>
           <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text">

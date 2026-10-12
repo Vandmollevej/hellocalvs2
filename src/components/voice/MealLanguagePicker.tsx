@@ -54,7 +54,7 @@ function SheetLanguagePicker({ language, region, onChange }: PickerProps) {
       </button>
       {open && (
         <BottomSheet title={t("voice.language.title")} onClose={() => setOpen(false)}>
-          <p className="hf-type-small text-text-secondary px-4 pb-2">{t("voice.language.hint")}</p>
+          <p className="hf-type-caption px-4 pb-2">{t("voice.language.hint")}</p>
           <ul>
             {MEAL_INPUT_LANGUAGES.map((option) => {
               const selected = option.code === language;

@@ -83,7 +83,7 @@ function SleepQualityBody({ onRate }: { onRate: (rating: number) => void }) {
           {t("sleepQuality.question")}
         </h2>
         {showTips && (
-          <p className="hf-type-small text-text-secondary">
+          <p className="hf-type-caption">
             {t("sleepQuality.info")}
           </p>
         )}

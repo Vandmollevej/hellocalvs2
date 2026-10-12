@@ -69,7 +69,7 @@ function PeopleTable({ rows, detailHead, empty }: { rows: PersonRow[]; detailHea
     <div className="overflow-x-auto hf-surface">
       <table className="w-full hf-type-body">
         <thead>
-          <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
+          <tr className="hf-type-caption border-b border-border-strong bg-surface-2 text-left">
             <th className="px-3 py-2 hf-type-strong">Bruger</th>
             <th className="px-3 py-2 hf-type-strong">Tidspunkt</th>
             {detailHead && <th className="px-3 py-2 hf-type-strong">{detailHead}</th>}
@@ -106,7 +106,7 @@ function ShareBars({ rows, countOnly = false }: { rows: { label: string; on: num
           <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface-1" aria-hidden>
             <span className="block h-full rounded-full" style={{ width: `${row.of ? (row.on / row.of) * 100 : 0}%`, background: C.green }} />
           </span>
-          <span className="w-28 shrink-0 text-right tabular-nums text-text-secondary hf-type-small">
+          <span className="hf-type-caption w-28 shrink-0 text-right tabular-nums">
             {countOnly ? num.format(row.on) : `${num.format(row.on)} af ${num.format(row.of)} (${pct(row.on, row.of)})`}
           </span>
         </li>
@@ -151,7 +151,7 @@ export default async function AdminIntegrationDetailPage({
               <h1 className="hf-type-title text-hf-black">{d.meta.label}</h1>
               <KindBadge kind={d.meta.kind} configured={d.configured} />
               {serviceById(slug) && (
-                <Link href={`/admin/api-keys#${slug}`} className="text-text-secondary underline hover:text-text-primary hf-type-small">
+                <Link href={`/admin/api-keys#${slug}`} className="hf-type-caption underline hover:text-text-primary">
                   Nøgler og links til udbyderen
                 </Link>
               )}

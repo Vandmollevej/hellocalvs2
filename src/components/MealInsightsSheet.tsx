@@ -89,7 +89,7 @@ function Pages({ insights }: { insights: MealInsights }) {
                 <p className="hf-type-body hf-type-strong text-hf-black">
                   {m.label}: {m.avgClock}
                 </p>
-                <p className="hf-type-small text-text-secondary">
+                <p className="hf-type-caption">
                   Anbefalet {m.recommended}. {m.verdict}
                 </p>
               </li>
@@ -107,7 +107,7 @@ function Pages({ insights }: { insights: MealInsights }) {
           {w.lastBeforeBedHours !== null && (
             <p className="hf-type-body text-hf-black">Sidste indtag er ca. {w.lastBeforeBedHours} timer før sengetid.</p>
           )}
-          <p className="hf-type-small text-text-secondary">{w.verdict}</p>
+          <p className="hf-type-caption">{w.verdict}</p>
         </div>
       ),
     },
@@ -120,7 +120,7 @@ function Pages({ insights }: { insights: MealInsights }) {
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {m.label}: {Math.round(m.kcalShare * 100)} % af dit indtag
               </p>
-              <p className="hf-type-small text-text-secondary">Typisk anbefaling ca. {Math.round(m.recommendedShare * 100)} %.</p>
+              <p className="hf-type-caption">Typisk anbefaling ca. {Math.round(m.recommendedShare * 100)} %.</p>
             </li>
           ))}
         </ul>
@@ -139,7 +139,7 @@ function Pages({ insights }: { insights: MealInsights }) {
           <p className="hf-type-body text-hf-black">
             Weekend: første måltid {v.weekendFirst}, {v.weekendKcal} kcal/dag.
           </p>
-          <p className="hf-type-small text-text-secondary">{v.verdict}</p>
+          <p className="hf-type-caption">{v.verdict}</p>
         </div>
       ),
     });

@@ -10,7 +10,7 @@ export function SearchField({
   placeholder: string;
 }) {
   return (
-    <label className="flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2">
+    <label className="hf-directory-filter">
       <IconSearch size={18} className="text-text-secondary" />
       <input
         type="search"

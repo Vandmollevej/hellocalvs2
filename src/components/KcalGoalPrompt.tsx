@@ -87,10 +87,10 @@ export function KcalGoalPrompt() {
           {t("kcalGoalPrompt.update")}
         </ActionButton>
         <div className="mt-5 flex items-center justify-between">
-          <button type="button" disabled={busy} className="hf-type-small text-text-secondary" onClick={() => run({ action: "snooze" })}>
+          <button type="button" disabled={busy} className="hf-type-caption" onClick={() => run({ action: "snooze" })}>
             {t("kcalGoalPrompt.later")}
           </button>
-          <button type="button" disabled={busy} className="hf-type-small text-text-secondary" onClick={() => run({ action: "disable" })}>
+          <button type="button" disabled={busy} className="hf-type-caption" onClick={() => run({ action: "disable" })}>
             {t("kcalGoalPrompt.dontAskAgain")}
           </button>
         </div>

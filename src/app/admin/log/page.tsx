@@ -72,7 +72,7 @@ function JsonDetails({ data }: { data: unknown }) {
   return (
     <details className="mt-1">
       <summary className="hf-type-small cursor-pointer text-text-muted">Detaljer</summary>
-      <pre className="hf-type-small mt-1 max-h-80 overflow-auto whitespace-pre-wrap break-all rounded-md bg-hf-cream p-2 text-text-secondary">
+      <pre className="hf-type-caption mt-1 max-h-80 overflow-auto whitespace-pre-wrap break-all rounded-md bg-hf-cream p-2">
         {JSON.stringify(data, null, 2)}
       </pre>
     </details>
@@ -164,7 +164,7 @@ function FlowCard({ flow, email }: { flow: FlowSummary; email: string | null }) 
                   {row.durationMs != null && <span className="hf-type-small text-text-muted"> · {formatDuration(row.durationMs)}</span>}
                   <span className="hf-type-small text-text-muted"> · {row.category === "scan" ? "" : `${row.category} · `}{row.event}</span>
                 </p>
-                <p className="hf-type-small break-words text-text-secondary">{row.message}</p>
+                <p className="hf-type-caption break-words">{row.message}</p>
                 {photo && (
                   <div className="mt-1">
                     <PhotoThumb photo={photo} size="large" />
@@ -197,7 +197,7 @@ function LogTable({ rows, emails }: { rows: DebugLogRow[]; emails: Map<string, s
                 <span className="hf-type-small text-text-muted"> · {emails.get(row.userId)}</span>
               )}
             </p>
-            <p className="hf-type-small break-words text-text-secondary">{row.message}</p>
+            <p className="hf-type-caption break-words">{row.message}</p>
             <div className="flex flex-wrap items-center gap-3">
               <ProductLink productId={row.productId} />
               {row.flowId && (
@@ -228,7 +228,7 @@ function SimpleList({ rows, empty }: { rows: SimpleRow[]; empty: string }) {
               <span className="hf-type-small text-text-muted">{formatTime(row.time)} · </span>
               {row.title}
             </p>
-            {row.detail && <p className="hf-type-small break-words text-text-secondary">{row.detail}</p>}
+            {row.detail && <p className="hf-type-caption break-words">{row.detail}</p>}
           </div>
         </li>
       ))}
@@ -334,7 +334,7 @@ async function ScanTab({ q, flow, show }: { q: string; flow: string; show: ScanF
           </Link>
         </p>
       )}
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         {flows.length} scanninger vist. Tryk på en scanning for at se hvert trin med tid; tryk på et billede for at se det i fuld
         størrelse. Billeder fra forside, energi og indhold gemmes, så snart de er taget.
       </p>
@@ -356,7 +356,7 @@ async function ScanTab({ q, flow, show }: { q: string; flow: string; show: ScanF
       {loose.length > 0 && (
         <div className="flex flex-col gap-2">
           <h2 className="hf-type-title text-hf-black">Øvrige stregkodeopslag</h2>
-          <p className="hf-type-small text-text-secondary">Opslag uden kameraflow (fx fra oprettelses-appen).</p>
+          <p className="hf-type-caption">Opslag uden kameraflow (fx fra oprettelses-appen).</p>
           <LogTable rows={loose} emails={emails} />
         </div>
       )}

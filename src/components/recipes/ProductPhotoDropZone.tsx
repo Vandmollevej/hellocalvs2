@@ -65,7 +65,7 @@ export function ProductPhotoDropZone({ returnSuffix }: { returnSuffix: string })
           {working ? t("createDish.scanWebWorking") : t("createDish.scanWeb")}
         </span>
       </button>
-      {notFound && <p className="hf-type-small text-text-secondary text-center">{t("createDish.scanWebNotFound")}</p>}
+      {notFound && <p className="hf-type-caption text-center">{t("createDish.scanWebNotFound")}</p>}
       <input
         ref={fileRef}
         type="file"

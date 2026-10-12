@@ -39,7 +39,7 @@ export function AccordionSection({
           {icon && <span className="flex shrink-0">{icon}</span>}
           <span className="hf-type-body hf-type-strong flex-1">{title}</span>
           {typeof count === "number" && (
-            <span className="hf-type-small text-text-secondary">{count}</span>
+            <span className="hf-type-caption">{count}</span>
           )}
           <HfChevron direction={open ? "down" : "right"} />
         </button>

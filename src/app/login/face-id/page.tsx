@@ -62,7 +62,7 @@ function FaceIdOfferContent() {
         <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
+      <div className="hf-auth-form">
         <div className="flex justify-center py-4">
           <FaceIdAnimation phase={phase} size={112} onDone={() => router.replace(next)} />
         </div>

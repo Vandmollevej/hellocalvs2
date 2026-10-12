@@ -92,7 +92,7 @@ export default function PhotoAwardPage() {
                 {t("photoAward.pointsForPhoto", { points: award.points, photoType: t(PHOTO_TYPE_KEY[award.photoType]) })}
               </p>
               {submitted ? (
-                <p className="hf-type-small text-text-secondary">{t("photoAward.submitted")}</p>
+                <p className="hf-type-caption">{t("photoAward.submitted")}</p>
               ) : (
                 <button
                   type="button"

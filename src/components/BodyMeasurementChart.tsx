@@ -93,7 +93,7 @@ export function BodyMeasurementChart({
           <div className="h-[84px] animate-pulse rounded-xl bg-hf-tan-dark" />
         ) : points.length === 0 ? (
           <div className="flex h-[84px] flex-col items-start justify-center gap-1">
-            <p className="hf-type-small text-text-secondary">{t("bodyMeasurementChart.noData")}</p>
+            <p className="hf-type-caption">{t("bodyMeasurementChart.noData")}</p>
             <Link href="/profile/body-measurements" className="hf-type-small hf-type-strong text-hf-black underline">
               {t("bodyMeasurementChart.register")}
             </Link>

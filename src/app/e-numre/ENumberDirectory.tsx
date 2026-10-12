@@ -70,16 +70,16 @@ export function ENumberDirectory({ items }: { items: DirectoryItem[] }) {
 
   return (
     <div className="min-h-dvh bg-hf-white text-hf-black">
-      <div className="sticky top-0 z-10 border-b border-hf-tan-dark bg-hf-white px-4 pb-3 pt-4">
+      <div className="hf-directory-toolbar">
         <div className="mx-auto flex max-w-xl flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Link href="/" aria-label="Tilbage" className="flex h-8 w-8 items-center justify-center rounded-full">
+            <Link href="/" aria-label="Tilbage" className="hf-icon-circle-sm">
               <IconArrowLeft size={20} />
             </Link>
             <h1 className="hf-type-title hf-heading">E-numre</h1>
-            <span className="hf-type-small ml-auto text-text-secondary">{visible.length} stoffer</span>
+            <span className="hf-type-caption ml-auto">{visible.length} stoffer</span>
           </div>
-          <label className="flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2">
+          <label className="hf-directory-filter">
             <IconSearch size={18} className="text-text-secondary" />
             <input
               type="search"
@@ -118,7 +118,7 @@ export function ENumberDirectory({ items }: { items: DirectoryItem[] }) {
         )}
         {groups.map((group) => (
           <section key={group.label} className="flex flex-col gap-2">
-            <h2 className="hf-type-small hf-heading uppercase text-text-secondary">{group.label}</h2>
+            <h2 className="hf-type-caption hf-heading uppercase">{group.label}</h2>
             <ul className="flex flex-col gap-2">
               {group.items.map((item) => (
                 <li key={item.code}>
@@ -129,7 +129,7 @@ export function ENumberDirectory({ items }: { items: DirectoryItem[] }) {
                     <span className="hf-type-body hf-heading w-16 shrink-0">{item.code}</span>
                     <span className="min-w-0 flex-1">
                       <span className="hf-type-body block">{item.nameDa || item.nameEn}</span>
-                      <span className="hf-type-small line-clamp-2 block text-text-secondary">
+                      <span className="hf-type-caption line-clamp-2 block">
                         {item.euStatus !== "approved" && (
                           <span className="hf-heading text-hf-red-dark">
                             {item.euStatus === "banned" ? "Forbudt i EU · " : "Ikke godkendt i EU · "}
@@ -146,7 +146,7 @@ export function ENumberDirectory({ items }: { items: DirectoryItem[] }) {
             </ul>
           </section>
         ))}
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Generel baggrundsinformation baseret på EFSA, JECFA og fagfællebedømt forskning — ikke
           personlig kostrådgivning.
         </p>

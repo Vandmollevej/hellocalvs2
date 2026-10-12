@@ -67,7 +67,7 @@ export function TopSinnersCard({
                 ))}
               </div>
             ) : items.length === 0 ? (
-              <p className="hf-type-small text-text-secondary">Ingen registreringer i perioden</p>
+              <p className="hf-type-caption">Ingen registreringer i perioden</p>
             ) : (
               <div className="grid grid-cols-5 gap-2">
                 {items.map((item) => (

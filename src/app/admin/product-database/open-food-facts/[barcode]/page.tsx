@@ -98,7 +98,7 @@ export default async function AdminOffDetailPage({ params }: { params: Promise<{
   return (
     <div className="hf-admin-page">
       <div className="flex flex-col gap-2">
-        <Link href="/admin/product-database/open-food-facts" className="hf-type-small text-text-secondary hover:text-hf-black">
+        <Link href="/admin/product-database/open-food-facts" className="hf-type-caption hover:text-hf-black">
           ← Open Food Facts
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -208,7 +208,7 @@ export default async function AdminOffDetailPage({ params }: { params: Promise<{
 
       <details className="hf-surface">
         <summary className="hf-type-strong cursor-pointer px-4 py-3 text-hf-black">OFF&apos;s rå svar</summary>
-        <pre className="hf-type-small overflow-x-auto px-4 pb-4 text-text-secondary">{JSON.stringify(raw, null, 2)}</pre>
+        <pre className="hf-type-caption overflow-x-auto px-4 pb-4">{JSON.stringify(raw, null, 2)}</pre>
       </details>
     </div>
   );

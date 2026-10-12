@@ -39,7 +39,7 @@ function TypedConfirmBody({ message, word, onConfirm }: { message: string; word:
     <div className="flex flex-col gap-3 p-4">
       <p className="hf-type-body">{message}</p>
       <input
-        className="hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+        className="hf-field-soft hf-field-soft--focus hf-type-body hf-field"
         value={typed}
         onChange={(event) => setTyped(event.target.value)}
         placeholder={word}

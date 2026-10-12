@@ -59,7 +59,7 @@ export function EmailVerifySheet() {
               {t("verifyEmail.resend")}
             </button>
           )}
-          <p className="hf-type-small pt-3 text-center text-text-secondary">{t("verifyEmail.linkValidity")}</p>
+          <p className="hf-type-caption pt-3 text-center">{t("verifyEmail.linkValidity")}</p>
         </>
       }
     >

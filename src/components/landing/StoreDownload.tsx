@@ -26,14 +26,14 @@ function StoreButton({ href, store, dark }: { href: string; store: "apple" | "go
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`flex h-14 w-[184px] items-center gap-3 rounded-xl px-4 transition ${
-        dark ? "bg-hf-black text-hf-white hover:bg-hf-action-hover" : "bg-hf-white text-hf-black hover:bg-hf-cream"
+      className={`mk-store-button ${
+        dark ? "mk-store-button--dark" : "mk-store-button--light"
       }`}
     >
       <Icon size={28} aria-hidden="true" />
       <span className="flex flex-col leading-tight">
-        <span className="text-[11px] opacity-75">{store === "apple" ? "Hent i" : "Hent den på"}</span>
-        <span className="text-lg font-semibold">{store === "apple" ? "App Store" : "Google Play"}</span>
+        <span className="mk-type-micro opacity-75">{store === "apple" ? "Hent i" : "Hent den på"}</span>
+        <span className="mk-weight-semibold mk-type-intro">{store === "apple" ? "App Store" : "Google Play"}</span>
       </span>
     </a>
   );
@@ -49,7 +49,7 @@ function QrTile({ svg, label, href }: { svg: string; label: string; href: string
       aria-label={`QR-kode til ${label}`}
     >
       <span className="block h-[94px] w-[94px] [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
-      <span className="text-xs font-semibold text-hf-black">{label}</span>
+      <span className="mk-weight-semibold mk-type-caption text-hf-black">{label}</span>
     </a>
   );
 }

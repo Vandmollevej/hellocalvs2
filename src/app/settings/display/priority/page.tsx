@@ -68,7 +68,7 @@ export default function DisplayPriorityPage() {
         </SkeletonScreen>
       ) : (
         <div className="hf-page">
-          <p className="text-text-secondary hf-type-small px-1">{t("circleBadges.priorityIntro")}</p>
+          <p className="hf-type-caption px-1">{t("circleBadges.priorityIntro")}</p>
           {visible.length === 0 ? (
             <p className="hf-type-body px-1 text-hf-black">{t("circleBadges.priorityEmpty")}</p>
           ) : (

@@ -224,7 +224,7 @@ export function ProductImageGallery({
       </div>
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
-        <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+        <label className="hf-type-caption flex flex-col gap-1">
           Hovedbillede-URL
           <input
             value={primaryUrl}
@@ -245,7 +245,7 @@ export function ProductImageGallery({
 
       {images.length < MAX_SECONDARY && (
         <div className="mt-4 flex flex-wrap items-end gap-3">
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+          <label className="hf-type-caption flex flex-col gap-1">
             Tilføj øvrigt billede (URL)
             <input
               value={newUrl}

@@ -98,12 +98,12 @@ export function WeightEntryDetailsSheet({ id, onClose, onChanged }: { id: string
           </p>
         )}
         {!detail && !failed && (
-          <p role="status" className="hf-type-small text-center text-text-secondary">
+          <p role="status" className="hf-type-caption text-center">
             {t("entrySheet.loading")}
           </p>
         )}
         {detail?.source && (
-          <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+          <div className="hf-entry-summary">
             <IntegrationIcon icon={detail.source.icon} label={detail.source.label} size={32} className="rounded-card" />
             <p className="hf-type-body hf-type-strong text-hf-black">{t("entrySheet.syncedFrom", { name: detail.source.label })}</p>
           </div>

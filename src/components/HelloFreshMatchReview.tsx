@@ -22,7 +22,7 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
   return (
     <div className="hf-card">
       {status === "processing" && (
-        <p className="hf-type-small text-text-secondary mb-4">Genkender retten...</p>
+        <p className="hf-type-caption mb-4">Genkender retten...</p>
       )}
 
       {status === "found" && product && (
@@ -35,7 +35,7 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
           </div>
           <div className="min-w-0">
             <p className="hf-type-body hf-type-strong truncate text-hf-black">{product.name}</p>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {product.servingSizeGrams && product.servingSizeUnitSingular
                 ? `${Math.round((product.kcalPer100g * product.servingSizeGrams) / 100)} kcal / ${product.servingSizeUnitSingular}`
                 : `${Math.round(product.kcalPer100g)} kcal/100g`}

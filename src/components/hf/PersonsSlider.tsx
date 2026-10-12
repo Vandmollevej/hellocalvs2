@@ -43,7 +43,7 @@ export function PersonsSlider({
       <div
         className={`mb-2 items-center ${centered ? "grid grid-cols-[1fr_auto_1fr]" : "flex justify-between"}`}
       >
-        <span className="hf-type-small text-text-secondary">{label}</span>
+        <span className="hf-type-caption">{label}</span>
         {editing ? (
           <span className="flex items-center rounded bg-hf-white px-1">
             <input

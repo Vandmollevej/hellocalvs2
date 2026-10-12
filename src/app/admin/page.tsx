@@ -139,7 +139,7 @@ export default async function AdminDashboardPage() {
               Deploy blokeret: database-ændring fejlede
             </h2>
           </header>
-          <p className="hf-type-small px-4 py-3 text-text-secondary">
+          <p className="hf-type-caption px-4 py-3">
             {failedMigrations.join(", ")} kunne ikke køres. Indtil den er rettet, når ingen nye versioner ud
             til brugerne.
           </p>
@@ -152,7 +152,7 @@ export default async function AdminDashboardPage() {
             <h2 className="hf-type-body hf-type-strong text-hf-red-dark">
               Afvist som dyrefoder: {petFood.unreviewed} til gennemsyn
             </h2>
-            <p className="hf-type-small mt-0.5 text-text-secondary">
+            <p className="hf-type-caption mt-0.5">
               Hver afvisning kan være en kunde, der scannede en legitim vare, og som forlader appen. Gennemgå dem, og
               frikend fejl — frikendelsen ophæver også en spærring, der kun skyldtes den. {petFood.blocked} spærrede konti ·{" "}
               {petFood.last7d} hændelser de seneste 7 dage ·{" "}
@@ -300,7 +300,7 @@ export default async function AdminDashboardPage() {
                         {formatAdminTime(product.createdAt)}
                       </p>
                     </div>
-                    <span className="hf-type-small shrink-0 text-text-secondary">
+                    <span className="hf-type-caption shrink-0">
                       {Math.round(product.kcalPer100g)} kcal/100 g
                     </span>
                   </Link>
@@ -467,11 +467,11 @@ export default async function AdminDashboardPage() {
           </ul>
           {messages.recentFailed.length > 0 && (
             <div className="border-t border-border-strong">
-              <p className="hf-type-small hf-type-strong px-4 pt-3 text-text-secondary">Mislykkede beskeder (7 dage)</p>
+              <p className="hf-type-caption hf-type-strong px-4 pt-3">Mislykkede beskeder (7 dage)</p>
               <ul className="divide-y divide-border-strong">
                 {messages.recentFailed.map((message) => (
                   <li key={message.id} className="flex items-center justify-between gap-3 px-4 py-2">
-                    <p className="hf-type-small min-w-0 truncate text-text-secondary">
+                    <p className="hf-type-caption min-w-0 truncate">
                       {message.event} · {message.channel}
                       {message.error ? ` · ${message.error}` : ""}
                     </p>

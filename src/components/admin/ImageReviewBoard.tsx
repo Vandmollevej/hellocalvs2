@@ -156,7 +156,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
   const board = (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {items.length} {items.length === 1 ? "vare" : "varer"} · side {safePage + 1} af {pageCount}
         </p>
         <ReviewSizePicker sizeIdx={sizeIdx} onChoose={chooseSize} />
@@ -178,7 +178,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
             <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
-                {item.subtitle && <p className="hf-type-small text-text-secondary">{item.subtitle}</p>}
+                {item.subtitle && <p className="hf-type-caption">{item.subtitle}</p>}
               </div>
               <div className="hf-pick-grid">
                 {shown.map((slide, slideIdx) => (
@@ -240,7 +240,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text">
             ‹ Forrige
           </button>
-          <span className="hf-type-small text-text-secondary">
+          <span className="hf-type-caption">
             {safePage + 1} / {pageCount}
           </span>
           <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text">

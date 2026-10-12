@@ -62,7 +62,7 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+      <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
         {label}
       </span>
       {children}
@@ -83,7 +83,7 @@ function ActivityLevelPicker({
   const selectedIndex = value ? ACTIVITY_LEVELS.indexOf(value) : -1;
   return (
     <div className="flex flex-col gap-2">
-      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+      <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
         {t("profile.field.activityLevel")}
       </span>
       <div role="radiogroup" aria-label={t("profile.field.activityLevel")} className="grid grid-cols-5 gap-2">
@@ -107,12 +107,12 @@ function ActivityLevelPicker({
       {value ? (
         <div className="flex flex-col gap-1">
           <span className="hf-type-body hf-type-strong">{t(`profile.activityLevel.${value}.label`)}</span>
-          <span className="hf-type-small text-text-secondary">
+          <span className="hf-type-caption">
             {t(`profile.activityLevel.${value}.description`)} {t("profile.activityLevel.note")}
           </span>
         </div>
       ) : (
-        <span className="hf-type-small text-text-secondary">{t("profile.activityLevel.notSet")}</span>
+        <span className="hf-type-caption">{t("profile.activityLevel.notSet")}</span>
       )}
     </div>
   );
@@ -122,7 +122,7 @@ const tileClass =
   "hf-type-small hf-type-strong flex aspect-square min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 text-center text-hf-black";
 
 const inputClass =
-  "hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body hf-field hf-field-soft hf-field-soft--focus";
 
 export default function ProfileEditPage() {
   const { t } = useTranslation();
@@ -331,7 +331,7 @@ export default function ProfileEditPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
-              <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+              <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
                 {t("profile.field.weight")}
               </span>
               {/* Altid låst (docs/DECISIONS.md 2026-09-25): feltet kan ikke
@@ -365,7 +365,7 @@ export default function ProfileEditPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+              <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
                 {t("profile.field.height")}
               </span>
               {/* Låst ligesom vægten (docs/DECISIONS.md 2026-10-03): kan kun
@@ -477,7 +477,7 @@ export default function ProfileEditPage() {
               {t("profile.startWeight.setDailyWeight")}
             </button>
             {(verifyStatus === "sent" || verifyStatus === "error") && (
-              <p role="status" className="hf-type-small text-center text-text-secondary">
+              <p role="status" className="hf-type-caption text-center">
                 {verifyStatus === "sent" ? t("profile.startWeight.verificationSent") : t("profile.startWeight.verificationError")}
               </p>
             )}

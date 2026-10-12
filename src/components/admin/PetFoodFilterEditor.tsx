@@ -101,7 +101,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
     <div className="flex flex-col gap-6">
       <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Afprøv filteret</h2>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Skriv et varenavn, mærke eller en ingrediensliste (én linje pr. felt), og/eller en stregkode. Filteret viser, om varen
           ville blive afvist, og hvilket udtryk der udløste det. Intet gemmes.
         </p>
@@ -145,7 +145,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
 
       <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Antal svage træf</h2>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Hvor mange forskellige svage ord skal stå i samme vare, før den afvises. Standard: {view.minWeakHits.baseline}. Højere tal = færre fejl, men
           flere dyrefodervarer slipper igennem.
         </p>
@@ -186,7 +186,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
             </button>
           ))}
         </div>
-        <p className="hf-type-small text-text-secondary">{TABS.find((item) => item.key === tab)?.help}</p>
+        <p className="hf-type-caption">{TABS.find((item) => item.key === tab)?.help}</p>
 
         {canEdit && (
           <div className="flex flex-wrap items-end gap-3">
@@ -212,7 +212,7 @@ export function PetFoodFilterEditor({ view, canEdit }: { view: FilterView; canEd
             </button>
           </div>
         )}
-        {message && <p className="hf-type-small text-text-secondary">{message}</p>}
+        {message && <p className="hf-type-caption">{message}</p>}
 
         {listTab ? (
           <>

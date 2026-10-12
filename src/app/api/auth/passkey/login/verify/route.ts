@@ -7,7 +7,7 @@ import { completeLogin } from "@/lib/user-login";
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as { response?: AuthenticationResponseJSON } | null;
   const result = await verifyPasskeyAssertion(req, body?.response);
-  if ("error" in result) return NextResponse.json({ message: result.error }, { status: result.status });
+  if ("error" in result) return NextResponse.json({ message: result.error, ...(result.code ? { code: result.code } : {}) }, { status: result.status });
 
   const response = NextResponse.json({ ok: true });
   response.cookies.delete(USER_WEBAUTHN_AUTH_COOKIE);

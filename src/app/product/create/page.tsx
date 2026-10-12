@@ -414,7 +414,7 @@ function OpretProduktContent() {
                 value={form.ingredientsText}
                 onChange={(event) => update("ingredientsText", event.target.value)}
                 rows={3}
-                className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
+                className="hf-input-auth-card hf-type-input"
               />
             </label>
           </div>

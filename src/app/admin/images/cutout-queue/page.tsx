@@ -28,7 +28,7 @@ export default async function AdminCutoutQueuePage() {
         <p className="hf-type-strong text-hf-black">
           {queue.robot.notice}
         </p>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {queue.robot.name}: {queue.robot.plan}
           {queue.robot.lastRunAt && ` · sidst kørt ${formatCopenhagenDateTime(queue.robot.lastRunAt)}${queue.robot.lastStatus ? ` (${queue.robot.lastStatus})` : ""}`}
           {" · "}
@@ -40,7 +40,7 @@ export default async function AdminCutoutQueuePage() {
       {queue.failed.length > 0 && (
         <section className="flex flex-col gap-2">
           <h2 className="hf-type-strong text-hf-black">Fejlede ({queue.failed.length})</h2>
-          <p className="hf-type-small text-text-secondary">Robotten kunne ikke fritlægge disse. De prøves ikke igen af sig selv.</p>
+          <p className="hf-type-caption">Robotten kunne ikke fritlægge disse. De prøves ikke igen af sig selv.</p>
           <CutoutQueueList rows={queue.failed} emptyText="" />
         </section>
       )}

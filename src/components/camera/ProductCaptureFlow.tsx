@@ -1125,7 +1125,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       {/* Ingen "Tag billede"-knap (brugerens krav 2026-10-02): billedet tages
           automatisk; et tryk på selve kamerabilledet tager det med det samme. */}
       <div
-        className="relative aspect-square w-full overflow-hidden bg-hf-black rounded-card"
+        className="hf-camera-preview"
         onClick={() => {
           if (step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !flash) {
             void capturePhoto();
@@ -1220,7 +1220,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         {cameraMessage && (
           <div
-            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+            className="hf-camera-overlay"
             onClick={cameraStatus === "denied" || cameraStatus === "error" ? restartCamera : undefined}
           >
             <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{cameraMessage}</p>
@@ -1287,7 +1287,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         </div>
       ) : (
         <>
-          <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
+          <p className="hf-type-caption text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
             <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
           )}

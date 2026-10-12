@@ -83,7 +83,7 @@ export default function PeriodCreatePage() {
 
         <div className="hf-card hf-card--form">
           <label className="flex flex-col gap-2">
-            <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+            <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
               {t("periodLog.startDate")}
             </span>
             <input
@@ -122,7 +122,7 @@ export default function PeriodCreatePage() {
             </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
-            <p className="hf-type-small text-text-secondary text-center">{t("periodLog.noEntriesYet")}</p>
+            <p className="hf-type-caption text-center">{t("periodLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
             <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">

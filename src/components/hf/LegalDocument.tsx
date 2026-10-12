@@ -16,7 +16,7 @@ export function LegalSummary({ title, items }: { title: string; items: ReactNode
   return (
     <div className="mt-4 hf-card">
       <p className="hf-type-section-title">{title}</p>
-      <ul className="hf-type-body mt-2 flex list-disc flex-col gap-1.5 pl-5">
+      <ul className="hf-form-label hf-type-body mt-2 list-disc pl-5">
         {items.map((item, i) => (
           <li key={i}>{item}</li>
         ))}

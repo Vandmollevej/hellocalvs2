@@ -39,7 +39,7 @@ export default function AdminVerifyPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
+    <div className="hf-auth-panel">
       <h1 className="hf-type-title text-hf-black">Bekræftelseskode</h1>
       <p className="hf-type-body mb-8 text-text-secondary">
         Indtast den 6-cifrede kode fra din authenticator-app.

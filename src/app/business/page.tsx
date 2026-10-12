@@ -52,8 +52,8 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
       >
         <div className="mx-auto max-w-3xl text-center">
           <p className="mk-eyebrow">Business</p>
-          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Samarbejd med Hello Cal</h1>
-          <p className="mt-6 text-lg leading-relaxed text-hf-white/85">
+          <h1 className="mk-type-hero-title mt-4">Samarbejd med Hello Cal</h1>
+          <p className="mk-type-intro mt-6 leading-relaxed text-hf-white/85">
             Nå danskere, der hver dag træffer bevidste valg om mad og sundhed — på en måde, der respekterer deres data.
           </p>
         </div>
@@ -67,7 +67,7 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
               <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-hf-green text-hf-white">
                 <Icon size={24} aria-hidden="true" />
               </span>
-              <h2 className="mt-4 text-lg font-bold text-hf-black">{title}</h2>
+              <h2 className="mk-type-card-title mt-4 text-hf-black">{title}</h2>
               <p className="mt-2 leading-relaxed text-text-secondary">{text}</p>
             </div>
           ))}
@@ -80,9 +80,9 @@ export default async function BusinessPage({ searchParams }: { searchParams: Pro
         <SectionHeading title="Kontakt" accent="os" text="Fortæl kort om jer og jeres idé, så vender vi tilbage." />
         <div className="mx-auto mt-10 max-w-3xl">
           <BusinessContactForm initialTopic={initialTopic} />
-          <p className="mt-6 text-center text-sm text-text-secondary">
+          <p className="mk-type-small mt-6 text-center text-text-secondary">
             Har I allerede en aftale med Hello Cal?{" "}
-            <Link href="/partner/login" className="font-semibold text-hf-green-dark underline">
+            <Link href="/partner/login" className="mk-weight-semibold text-hf-green-dark underline">
               Log ind på partnerportalen
             </Link>
             . Adgangen oprettes af Hello Cal — der er ingen selvbetjent tilmelding.

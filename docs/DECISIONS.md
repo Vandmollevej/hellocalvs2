@@ -1,3 +1,11 @@
+## 2026-10-12: Genbrug af identiske elementstyles bevarer mobil og online
+
+- Brugerens krav: elementer med identiske stilegenskaber bruger samme fælles klasse; eksisterende klasser genbruges før nye oprettes.
+- Mobil, desktop-online og marketing er bevidst forskellige opbygninger. Del kun identiske primitive styles; behold deres navigation, sideopbygning, størrelser og placering samt platformpreview-varianter.
+- globals.css indeholder de fælles elementroller. Marketing beholder sin egen responsive mk-type-* skala. Eksisterende hf-type-caption og hf-type-strong genbruges på identiske tekster.
+- Faste font-, radius- og skyggeværdier i inline-style afvises af lint uden for de dokumenterede reference-/preview-undtagelser. Dynamiske bredder, transforms og datadrevne farver forbliver inline.
+- CSS-refaktoreringens før/efter kontrolleres i browseren på både mobil- og desktopbredde før paritetsaccept; ændringer i klassenavn alene ændrer ikke native-skærmens adfærd.
+
 # HELLO CAL — decision log
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.

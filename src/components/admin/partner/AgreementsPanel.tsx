@@ -30,7 +30,7 @@ function UsageBar({ spent, budget }: { spent: number; budget: number }) {
       <div className="h-2 w-full overflow-hidden rounded-full bg-hf-tan" role="progressbar" aria-valuemin={0} aria-valuemax={budget} aria-valuenow={Math.round(spent)}>
         <div className={`h-full rounded-full ${over ? "bg-hf-red-dark" : "bg-hf-green-dark"}`} style={{ width: `${ratio * 100}%` }} />
       </div>
-      <div className="hf-type-small flex justify-between text-text-secondary">
+      <div className="hf-type-caption flex justify-between">
         <span>Forbrug {dkk(spent)}</span>
         <span>Budget {dkk(budget)}</span>
       </div>
@@ -95,7 +95,7 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className="hf-type-title text-hf-black">{a.title}</h3>
-          <p className="hf-type-small text-text-secondary">
+          <p className="hf-type-caption">
             {dateDa(a.startsAt)} – {a.endsAt ? dateDa(a.endsAt) : "løbende"} · {a.spotCount} reklamespot{a.spotCount === 1 ? "" : "s"}
             {!a.active && " · inaktiv"}
           </p>
@@ -106,10 +106,10 @@ export function AgreementsPanel({ partnerId, agreements }: { partnerId: string; 
         </div>
       </div>
       {a.budgetDkk > 0 ? <UsageBar spent={a.spentDkk} budget={a.budgetDkk} /> : <p className="hf-type-small text-text-muted">Intet budget angivet. Forbrug {dkk(a.spentDkk)}.</p>}
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         {a.impressions.toLocaleString("da-DK")} visninger · {a.clicks.toLocaleString("da-DK")} klik · CPM {dkk(a.cpmDkk)} · CPC {dkk(a.cpcDkk)}
       </p>
-      {a.notes && <p className="hf-type-small text-text-secondary">{a.notes}</p>}
+      {a.notes && <p className="hf-type-caption">{a.notes}</p>}
     </div>
   );
 

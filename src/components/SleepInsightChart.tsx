@@ -115,7 +115,7 @@ function BodyFatChart({ days }: { days: SleepStatDay[] }) {
   return (
     <div className="hf-card">
       <h3 className="hf-type-body hf-type-strong text-hf-black">{t("sleepStats.chart.bodyFat")}</h3>
-      <p className="hf-type-small mt-1 text-text-secondary">{t("sleepStats.chartInfo.bodyFat")}</p>
+      <p className="hf-type-caption mt-1">{t("sleepStats.chartInfo.bodyFat")}</p>
       <svg viewBox="0 0 320 146" className="mt-3 w-full" role="img" aria-label={t("sleepStats.chart.bodyFat")}>
         {[0, 20, 40, 60, 80, 100].map((value) => (
           <g key={value}>
@@ -219,7 +219,7 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
   return (
     <div className="hf-card">
       <h3 className="hf-type-body hf-type-strong text-hf-black">{t(`sleepStats.chart.${kind}`)}</h3>
-      <p className="hf-type-small mt-1 text-text-secondary">{t(`sleepStats.chartInfo.${kind}`)}</p>
+      <p className="hf-type-caption mt-1">{t(`sleepStats.chartInfo.${kind}`)}</p>
 
       <svg viewBox="0 0 320 146" className="mt-3 w-full" role="img" aria-label={t(`sleepStats.chart.${kind}`)}>
         {[1, 2, 3, 4, 5].map((rating) => (
@@ -276,7 +276,7 @@ function SleepBarChart({ kind, days }: { kind: Exclude<SleepInsightKind, "bodyFa
         ))}
       </svg>
 
-      {!hasRatings && <p className="hf-type-small mt-2 text-text-secondary">{t("sleepStats.noRatings")}</p>}
+      {!hasRatings && <p className="hf-type-caption mt-2">{t("sleepStats.noRatings")}</p>}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span className="hf-type-small flex items-center gap-1.5 text-hf-black">

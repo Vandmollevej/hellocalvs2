@@ -132,7 +132,7 @@ export function ListPager({
 }) {
   if (pages <= 1) return null;
   return (
-    <div className="hf-type-small flex items-center justify-between text-text-secondary">
+    <div className="hf-type-caption flex items-center justify-between">
       {page > 1 ? (
         <button type="button" disabled={busy} onClick={() => onPage(page - 1)} className="hf-btn-text text-hf-green-dark">
           ← Forrige

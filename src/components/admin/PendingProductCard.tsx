@@ -235,7 +235,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
           {product.translation && (
             <p className="hf-type-small text-hf-warning">⚠ Fremmedsproget tekst oversat automatisk — gennemse oversættelsen</p>
           )}
-          <p className="hf-type-small truncate text-text-secondary">
+          <p className="hf-type-caption truncate">
             {[
               product.brand?.name,
               product.externalSource ? SOURCE_LABEL[product.externalSource] ?? product.externalSource : null,
@@ -290,7 +290,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             </svg>
           </button>
         </div>
-        <div className="flex flex-shrink-0 flex-col items-end gap-1.5">
+        <div className="hf-form-label flex-shrink-0 items-end">
           <span className="hf-type-small text-text-muted">Oprettet: {product.createdAtLabel}</span>
           <div className="flex gap-2">
             <button
@@ -317,30 +317,30 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
         <div className="border-t border-hf-tan-dark">
           {product.translation && translationOpen && (
             <Section title="Oversættelse afventer godkendelse">
-              <p className="hf-type-small mb-3 text-text-secondary">
+              <p className="hf-type-caption mb-3">
                 Open Food Facts har kun teksten på {product.translation.sourceLang ?? "et andet sprog"}. Til venstre
                 originalen, til højre den danske oversættelse — ret den, hvis der er fejl, og tryk Godkend.
               </p>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-3">
-                  <p className="hf-type-small hf-type-strong text-text-secondary">
+                  <p className="hf-type-caption hf-type-strong">
                     Original ({product.translation.sourceLang ?? "?"})
                   </p>
                   <div>
-                    <p className="hf-type-small text-text-secondary">Navn</p>
+                    <p className="hf-type-caption">Navn</p>
                     <p className="hf-type-body rounded-md bg-hf-tan p-2 text-hf-black">{product.translation.nameOriginal || "—"}</p>
                   </div>
                   <div>
-                    <p className="hf-type-small text-text-secondary">Ingredienser</p>
+                    <p className="hf-type-caption">Ingredienser</p>
                     <p className="hf-type-body whitespace-pre-line rounded-md bg-hf-tan p-2 text-hf-black">
                       {product.translation.ingredientsOriginal || "—"}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <p className="hf-type-small hf-type-strong text-text-secondary">Dansk (kan redigeres)</p>
+                  <p className="hf-type-caption hf-type-strong">Dansk (kan redigeres)</p>
                   <Field label="Navn" value={form.name} onChange={set("name")} />
-                  <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+                  <label className="hf-type-caption flex flex-col gap-1">
                     Ingredienser
                     <textarea
                       value={form.ingredientsText}
@@ -399,7 +399,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
                 <div key={p.key} className={p.className} style={{ width: `${p.percent}%` }} />
               ))}
             </div>
-            <div className="hf-type-small mt-2 flex flex-wrap gap-x-6 gap-y-1 text-text-secondary">
+            <div className="hf-type-caption mt-2 flex flex-wrap gap-x-6 gap-y-1">
               {split.parts.map((p) => (
                 <span key={p.key} className="flex items-center gap-1.5">
                   <span className={`inline-block h-2.5 w-2.5 rounded-full ${p.className}`} />
@@ -442,11 +442,11 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               <Detail label="Tilsætningsstoffer" value={product.additives.join(", ")} />
             </dl>
             <div className="hf-type-body mt-4">
-              <p className="hf-type-small text-text-secondary">Ingredienser</p>
+              <p className="hf-type-caption">Ingredienser</p>
               <p className="mt-1 whitespace-pre-line text-hf-black">{product.ingredientsText ? <IngredientsText text={product.ingredientsText} /> : "—"}</p>
             </div>
             <div className="mt-4">
-              <p className="hf-type-small text-text-secondary">Øvrig næring pr. 100 g</p>
+              <p className="hf-type-caption">Øvrig næring pr. 100 g</p>
               {nutrientRows.length === 0 ? (
                 <p className="hf-type-body mt-1 text-hf-black">—</p>
               ) : (
@@ -506,7 +506,7 @@ function Field({
   type?: "text" | "number";
 }) {
   return (
-    <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
+    <label className="hf-type-caption flex flex-col gap-1">
       {label}
       <input
         type={type}

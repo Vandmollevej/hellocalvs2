@@ -286,7 +286,7 @@ export default function WeightCalibrationPage() {
 
         <div className="flex flex-col gap-2">
           {status !== "idle" && !saving && (
-            <p role="status" className="hf-type-small text-text-secondary text-center">
+            <p role="status" className="hf-type-caption text-center">
               {t(`weightCalibration.status.${status}`)}
             </p>
           )}

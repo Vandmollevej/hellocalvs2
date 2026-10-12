@@ -121,7 +121,7 @@ export function ConnectedView({
   function entryRow(entry: IntegrationLogEntry) {
     return (
       <li key={entry.id} className="hf-control-row flex items-center gap-3 px-4">
-        <span className="hf-type-small w-16 shrink-0 text-text-secondary">
+        <span className="hf-type-caption w-16 shrink-0">
           {entry.daySum ? t("integrations.connected.wholeDay") : timeFormat.format(new Date(entry.at))}
         </span>
         <span className="hf-type-body min-w-0 flex-1 truncate text-hf-black">{entryLabel(entry)}</span>
@@ -142,7 +142,7 @@ export function ConnectedView({
       return <p className="hf-type-small px-1 text-hf-red-dark">{t("integrations.connected.logError")}</p>;
     }
     if (log.entries.length === 0) {
-      return <p className="hf-type-small px-1 text-text-secondary">{t(emptyKey)}</p>;
+      return <p className="hf-type-caption px-1">{t(emptyKey)}</p>;
     }
     return (
       <>
@@ -159,7 +159,7 @@ export function ConnectedView({
           <ul className="overflow-hidden rounded-2xl bg-hf-tan">{log.entries.map(entryRow)}</ul>
         )}
         {log.total > log.entries.length && (
-          <p className="hf-type-small px-1 text-text-secondary">
+          <p className="hf-type-caption px-1">
             {t("integrations.connected.showing", { shown: log.entries.length, total: log.total })}
           </p>
         )}
@@ -216,7 +216,7 @@ export function ConnectedView({
         )}
 
         <div className="flex items-center justify-between gap-3 px-1">
-          <p className="hf-type-small min-w-0 truncate text-text-secondary">
+          <p className="hf-type-caption min-w-0 truncate">
             {integration.lastSyncedAt ? t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) }) : ""}
           </p>
           <p className="hf-type-body hf-type-strong flex shrink-0 items-center gap-2 text-hf-black">
@@ -242,7 +242,7 @@ export function ConnectedView({
         <div className="relative">
           <select
             aria-label={t("integrations.connected.historyAria")}
-            className="hf-field hf-type-body w-full appearance-none rounded-xl border border-hf-tan-dark bg-hf-white pl-3 pr-9 text-hf-black"
+            className="hf-select-surface hf-field hf-type-body"
             value={historyRange}
             onChange={(event) => setHistoryRange(event.target.value as HistoryRange)}
           >
@@ -262,7 +262,7 @@ export function ConnectedView({
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-hf-black"
+            className="hf-select-chevron"
           >
             <path d="m6 9 6 6 6-6" />
           </svg>

@@ -166,7 +166,7 @@ export function RescanBanner({
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {t("rescan.headline", { points: RESCAN_POINTS })}
               </p>
-              <p className="hf-type-small text-text-secondary mt-1 mb-4">
+              <p className="hf-type-caption mt-1 mb-4">
                 {t(steps.includes("nutrition") ? "rescan.hintFull" : "rescan.hintFront")}
               </p>
               <ProductCaptureFlow

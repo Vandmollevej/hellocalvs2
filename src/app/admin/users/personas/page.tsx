@@ -96,7 +96,7 @@ export default async function AdminPersonasPage({
                   <span className="hf-type-caption whitespace-nowrap text-text-muted">ca. {num.format(persona.share_pct)} %</span>
                 </div>
                 <p className="hf-type-body text-text-primary">{persona.summary}</p>
-                <dl className="hf-type-small grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-text-secondary">
+                <dl className="hf-type-caption grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
                   <dt className="text-text-primary hf-type-strong">Hvem</dt>
                   <dd>{persona.demographics}</dd>
                   <dt className="text-text-primary hf-type-strong">Adfærd</dt>
@@ -235,7 +235,7 @@ function Section({ title, intro, children }: { title: string; intro?: string; ch
   return (
     <section className="flex flex-col gap-3">
       <h2 className="border-b border-border-strong pb-1 text-hf-green-dark hf-type-body-lg hf-type-strong">{title}</h2>
-      {intro && <p className="hf-type-small text-text-secondary">{intro}</p>}
+      {intro && <p className="hf-type-caption">{intro}</p>}
       {children}
     </section>
   );
@@ -255,7 +255,7 @@ function BulletList({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="flex flex-col gap-1">
       <p className="hf-type-small text-text-primary hf-type-strong">{title}</p>
-      <ul className="hf-type-small list-disc pl-5 text-text-secondary">
+      <ul className="hf-type-caption list-disc pl-5">
         {items.map((item, i) => (
           <li key={i}>{item}</li>
         ))}
@@ -341,7 +341,7 @@ function SimpleTable({
     <div className="overflow-x-auto hf-surface">
       <table className="w-full hf-type-body">
         <thead>
-          <tr className="border-b border-border-strong bg-surface-2 text-left text-text-secondary hf-type-small">
+          <tr className="hf-type-caption border-b border-border-strong bg-surface-2 text-left">
             {head.map((h, i) => (
               <th key={h} className={`hf-type-strong whitespace-nowrap px-3 py-2 ${i > 0 && alignRight ? "text-right" : ""}`}>
                 {h}

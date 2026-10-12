@@ -132,7 +132,7 @@ function ListView({ rows, columns, filters }: { rows: ProductDatabaseRow[]; colu
   const rowStyle = { "--list-cols": template } as React.CSSProperties;
   return (
     <div className="overflow-hidden hf-surface">
-      <div style={rowStyle} className="hf-type-small hidden gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid lg:[grid-template-columns:var(--list-cols)]">
+      <div style={rowStyle} className="hf-type-caption hidden gap-4 border-b border-hf-tan-dark px-4 py-2 lg:grid lg:[grid-template-columns:var(--list-cols)]">
         <span />
         <span>Vare</span>
         {shown.map((key) => (
@@ -196,7 +196,7 @@ function ListView({ rows, columns, filters }: { rows: ProductDatabaseRow[]; colu
                       );
                     case "additions":
                       return (
-                        <p key={key} className="hf-type-small hidden text-right text-text-secondary lg:block">
+                        <p key={key} className="hf-type-caption hidden text-right lg:block">
                           {additionsText(row)}
                         </p>
                       );
@@ -264,8 +264,8 @@ function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: F
                 <p className={`hf-type-small text-right ${row.nutritionMissing ? "text-hf-red-dark" : "text-text-secondary"}`}>
                   {row.nutritionMissing ? "Mangler" : `${Math.round(row.kcalPer100g)} kcal`}
                 </p>
-                <p className="hf-type-small text-right text-text-secondary">{row.barcodeCount}</p>
-                <p className="hf-type-small text-right text-text-secondary">{additionsText(row)}</p>
+                <p className="hf-type-caption text-right">{row.barcodeCount}</p>
+                <p className="hf-type-caption text-right">{additionsText(row)}</p>
               </Link>
               <div className="col-start-2 row-start-1 flex justify-end lg:col-auto lg:row-auto">
                 <RowStatus row={row} />
@@ -281,7 +281,7 @@ function DetailsView({ rows, filters }: { rows: ProductDatabaseRow[]; filters: F
 function GridView({ rows, columns }: { rows: ProductDatabaseRow[]; columns: ProductColumn[] }) {
   const has = (key: ProductColumn) => columns.includes(key);
   return (
-    <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+    <ul className="hf-catalog-grid">
       {rows.map((row) => {
         const flag = flags(row);
         return (
@@ -294,7 +294,7 @@ function GridView({ rows, columns }: { rows: ProductDatabaseRow[]; columns: Prod
             <Link href={`/admin/products/${row.id}`} className="flex flex-1 flex-col gap-2">
               <Thumbnail row={row} size="card" />
               <div className="flex min-w-0 flex-1 flex-col gap-0.5 px-1 pb-1">
-                {row.brandName && <p className="hf-type-small hf-type-strong truncate text-text-secondary">{row.brandName}</p>}
+                {row.brandName && <p className="hf-type-caption hf-type-strong truncate">{row.brandName}</p>}
                 <p className={nameClass(row, "line-clamp-2")}>{row.name}</p>
                 {subtitle(row) && <p className="hf-type-small truncate text-text-muted">{subtitle(row)}</p>}
                 {flag.text && <p className="hf-type-small text-hf-red-dark">{flag.text}</p>}

@@ -30,8 +30,8 @@ export default function PressPage() {
       >
         <div className="mx-auto max-w-3xl text-center">
           <p className="mk-eyebrow">Presse</p>
-          <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Hello Cal til pressen</h1>
-          <p className="mt-6 text-lg leading-relaxed text-hf-white/85">Fakta, logoer og kontakt til dig, der skriver om Hello Cal.</p>
+          <h1 className="mk-type-hero-title mt-4">Hello Cal til pressen</h1>
+          <p className="mk-type-intro mt-6 leading-relaxed text-hf-white/85">Fakta, logoer og kontakt til dig, der skriver om Hello Cal.</p>
         </div>
       </section>
 
@@ -40,7 +40,7 @@ export default function PressPage() {
         <dl className="mx-auto mt-10 grid max-w-3xl gap-4">
           {FACTS.map(([k, v]) => (
             <div key={k} className="grid gap-1 rounded-2xl bg-hf-cream p-5 sm:grid-cols-[140px_1fr]">
-              <dt className="font-bold text-hf-black">{k}</dt>
+              <dt className="hf-type-strong text-hf-black">{k}</dt>
               <dd className="text-text-secondary">{v}</dd>
             </div>
           ))}
@@ -58,7 +58,7 @@ export default function PressPage() {
               <a
                 href={logo.src}
                 download
-                className="flex items-center justify-center gap-2 p-4 text-sm font-semibold text-hf-green hover:underline"
+                className="mk-type-label flex items-center justify-center gap-2 p-4 text-hf-green hover:underline"
               >
                 <IconDownload size={18} aria-hidden="true" /> {logo.label} (PNG)
               </a>

@@ -111,12 +111,12 @@ export default function ResultsDisplayPage() {
                 <span className="hf-type-body hf-type-strong block text-hf-black">
                   {t("settings.showAllergens")}
                 </span>
-                <span className="text-text-secondary hf-type-small mt-2 block border-t border-hf-tan-dark pt-2">
+                <span className="hf-type-caption mt-2 block border-t border-hf-tan-dark pt-2">
                   {t("settings.showAllergensDescription")}
                 </span>
               </span>
               <span className="flex items-center gap-2 pt-0.5">
-                <span className="text-text-secondary hf-type-small">
+                <span className="hf-type-caption">
                   {t("settings.showAllergensSelectAll")}
                 </span>
                 <Toggle
@@ -142,7 +142,7 @@ export default function ResultsDisplayPage() {
                       className="flex flex-1 items-center justify-between gap-3 text-left"
                     >
                       <span className="hf-type-body text-hf-black">{allergen.label}</span>
-                      <span className="text-text-secondary hf-type-small">
+                      <span className="hf-type-caption">
                         {isAllergenVisible(allergen.key)
                           ? t(`circleBadges.mode.${prefs.allergenMode[allergen.key] ?? "contains"}`)
                           : t("circleBadges.mode.off")}
@@ -189,7 +189,7 @@ export default function ResultsDisplayPage() {
             onChange={(value) => toggleProductFlag("showToxins", value)}
           />
 
-          <p className="text-text-secondary hf-type-small px-1">
+          <p className="hf-type-caption px-1">
             {t("settings.thirdPartyDisclaimer")}
           </p>
         </div>

@@ -133,7 +133,7 @@ export default function WeightCreatePage() {
         {!calibrated && (
           <Link
             href="/profile/weight-calibration"
-            className="hf-type-small hf-type-strong flex items-center justify-center gap-2 text-text-secondary"
+            className="hf-type-caption hf-type-strong flex items-center justify-center gap-2"
           >
             <IconInfoCircle size={20} aria-hidden="true" />
             {t("weightLog.moreDetailsLink")}
@@ -151,7 +151,7 @@ export default function WeightCreatePage() {
             </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
-            <p className="hf-type-small text-text-secondary text-center">{t("weightLog.noEntriesYet")}</p>
+            <p className="hf-type-caption text-center">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
             <button
@@ -162,7 +162,7 @@ export default function WeightCreatePage() {
             >
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {formatWeight(entry.weightKg, weightUnit)}
-                <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>
+                <span className="hf-type-caption ml-2">{formatDateTime(entry.weighedAt)}</span>
               </p>
             </button>
           ))}

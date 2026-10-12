@@ -35,7 +35,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
 
   return (
     <div className="hf-admin-page">
-      <Link href="/admin/support" className="hf-type-small text-text-secondary hover:text-text-primary">
+      <Link href="/admin/support" className="hf-type-caption hover:text-text-primary">
         ← Tilbage til indbakken
       </Link>
 
@@ -45,7 +45,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
           Sag {supportCaseCode(request.id)} · {SUPPORT_CATEGORY_LABELS[request.category]} · Oprettet{" "}
           {formatAdminTime(request.createdAt)}
         </p>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {request.user.displayName} · bruger siden {instantToDateKey(request.user.createdAt)}
         </p>
         {unanswered && (
@@ -110,7 +110,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
         })}
       </ol>
 
-      <div className="hf-type-small hf-surface p-3 text-text-secondary">
+      <div className="hf-type-caption hf-surface p-3">
         <span className="hf-type-strong text-hf-black">Dataadgang: </span>
         {!grant && "Ingen dataadgang givet."}
         {grant && (

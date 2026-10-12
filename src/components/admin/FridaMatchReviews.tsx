@@ -38,7 +38,7 @@ export async function FridaMatchReviews() {
                 {review.productCount} {review.productCount === 1 ? "vare" : "varer"}
               </span>
             </div>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {review.reason}. Fx {review.exampleNames.join(", ")}
             </p>
             <FridaMatchChoice

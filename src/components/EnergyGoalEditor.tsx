@@ -120,7 +120,7 @@ export function EnergyGoalEditor({
                 );
               })}
             </div>
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {mode === "LOSE" ? t("energyGoal.paceHintLose", { value: formatPace(paceCap, units.weight) }) : t("energyGoal.paceHintGain")}
             </p>
           </div>
@@ -154,7 +154,7 @@ export function EnergyGoalEditor({
       )}
 
       {summary && <EnergyBreakdown summary={summary} />}
-      <p className="hf-type-small text-text-secondary">{t("energyGoal.disclaimer")}</p>
+      <p className="hf-type-caption">{t("energyGoal.disclaimer")}</p>
     </div>
   );
 }

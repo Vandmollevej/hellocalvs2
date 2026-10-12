@@ -506,7 +506,7 @@ export function FooterArc() {
                 return (
                   <span
                     aria-hidden="true"
-                    className="hf-type-strong pointer-events-none absolute whitespace-nowrap bg-hf-tan text-center"
+                    className="hf-action-hint hf-action-hint--arc text-center"
                     style={{
                       left: spot.left - (center.x - ARC_ICON_CIRCLE / 2),
                       bottom: spot.bottom - (center.y - ARC_ICON_CIRCLE / 2),

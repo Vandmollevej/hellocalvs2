@@ -60,7 +60,7 @@ function ProductRow({
           image={product.imageUrl}
           title={product.searchTitle ?? product.name}
           subtitle={
-            <p className="hf-type-small text-text-secondary truncate">
+            <p className="hf-type-caption truncate">
               {[
                 // Brandet står allerede forrest i søgeresultatets titel.
                 product.searchTitle ? null : product.brand?.name,
@@ -319,7 +319,7 @@ function MadvarerContent() {
         )}
 
         {!isSearching && ready && favorites.length > 0 && (
-          <p className="hf-type-small hf-type-strong text-text-secondary px-1 uppercase tracking-[0.08em]">
+          <p className="hf-type-caption hf-type-strong px-1 uppercase tracking-[0.08em]">
             {t("foods.mostUsed")}
           </p>
         )}

@@ -58,7 +58,7 @@ export function GoalTipCard() {
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <p className="hf-type-body hf-type-strong text-hf-black">Tip til dagens mål</p>
-        <p className="hf-type-small text-text-secondary">{text}</p>
+        <p className="hf-type-caption">{text}</p>
       </div>
       <button type="button" onClick={close} aria-label="Luk" className="hf-btn-icon -mr-2 -mt-2 text-hf-black">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">

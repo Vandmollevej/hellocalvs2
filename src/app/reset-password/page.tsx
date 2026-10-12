@@ -113,14 +113,14 @@ function ResetPasswordContent() {
       </div>
 
       {!token ? (
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <div className="hf-auth-form">
           <p className="hf-type-caption text-hf-red-dark">{t("resetPassword.missingToken")}</p>
           <Link href="/forgot-password" className="hf-type-body underline">
             {t("resetPassword.requestNewLink")}
           </Link>
         </div>
       ) : maskedPhone && !verificationId ? (
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <div className="hf-auth-form">
           <p className="hf-type-body">{t("sms.resetRequired", { phone: maskedPhone })}</p>
           {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
           <div className="flex-1" />
@@ -134,7 +134,7 @@ function ResetPasswordContent() {
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} noValidate className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <form onSubmit={handleSubmit} noValidate className="hf-auth-form">
           {verificationId && (
             <>
               <p className="hf-type-body">{t("sms.codeSent", { phone: maskedPhone ?? "" })}</p>

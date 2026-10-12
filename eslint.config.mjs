@@ -14,14 +14,17 @@ const DESIGN_TOKEN_EXEMPT = [
   "src/components/admin/PhonePreviewEditor.tsx", // iOS Mail-/låseskærms-mock
   "src/components/hf/HfAccessSheet.tsx", // iOS Sundhedsadgang (systemfarver)
 ];
-// Marketing-sitet bruger Tailwinds typeskala (desktop), men appens farver.
-const MARKETING_ZONE = ["src/components/landing/**", "src/app/business/**", "src/app/presse/**", "src/app/om-os/**"];
+// Marketing keeps its own desktop scale through .mk-type-* in globals.css.
 
 const HEX = "#[0-9a-fA-F]{3,8}\\b";
 const RAW_TYPE =
   "(^|\\s|:)(text-(xs|sm|base|lg|xl|[2-9]xl)|text-\\[\\d+px\\]|font-(thin|light|normal|medium|semibold|bold|extrabold|black))(\\s|$)";
 
 const COLOR_SELECTORS = [
+  {
+    selector: 'JSXAttribute[name.name="style"] Property[key.type="Identifier"][key.name=/^(fontFamily|fontWeight|fontSize|borderRadius|boxShadow)$/] > Literal',
+    message: "Fast font, radius eller skygge i inline-style: flyt egenskaben til en fælles klasse i globals.css. Dynamiske data og platformvarianter bevares særskilt.",
+  },
   {
     selector: `JSXAttribute[name.name="className"] Literal[value=/${HEX}/]`,
     message: "Hex-farve i className: brug et token (bg-hf-*, text-hf-*, border-hf-*) fra globals.css.",
@@ -43,11 +46,11 @@ const COLOR_SELECTORS = [
 const TYPE_SELECTORS = [
   {
     selector: `JSXAttribute[name.name="className"] Literal[value=/${RAW_TYPE}/]`,
-    message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
+    message: "Rå tekststørrelse/-vægt: brug .hf-type-* til app/admin eller .mk-type-* til marketing fra globals.css.",
   },
   {
     selector: `JSXAttribute[name.name="className"] TemplateElement[value.raw=/${RAW_TYPE}/]`,
-    message: "Rå tekststørrelse/-vægt: brug en .hf-type-*-rolle (+ hf-type-strong) fra globals.css.",
+    message: "Rå tekststørrelse/-vægt: brug .hf-type-* til app/admin eller .mk-type-* til marketing fra globals.css.",
   },
 ];
 
@@ -79,7 +82,7 @@ const designTokenRules = [
   {
     name: "design-tokens/typography",
     files: ["src/**/*.tsx"],
-    ignores: [...DESIGN_TOKEN_EXEMPT, ...MARKETING_ZONE],
+    ignores: DESIGN_TOKEN_EXEMPT,
     rules: { "no-restricted-syntax": ["error", ...TYPE_SELECTORS] },
   },
   {

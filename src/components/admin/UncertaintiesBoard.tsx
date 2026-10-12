@@ -454,7 +454,7 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
           }`;
           const aiValue = row.aiValues[field.key];
           return (
-            <label key={field.key} className="hf-type-small flex flex-col gap-1 text-text-secondary">
+            <label key={field.key} className="hf-type-caption flex flex-col gap-1">
               {field.label}
               {field.kind === "textarea" ? (
                 <textarea
@@ -536,7 +536,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
       <div className="grid gap-3 sm:grid-cols-2">
         {photos.map((photo) => (
           <div key={photo.label} className="flex flex-col gap-1">
-            <p className="hf-type-small text-text-secondary">{photo.label}</p>
+            <p className="hf-type-caption">{photo.label}</p>
             <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-hf-tan">
               {photo.url ? (
                 // eslint-disable-next-line @next/next/no-img-element

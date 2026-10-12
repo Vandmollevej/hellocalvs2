@@ -16,7 +16,7 @@ export default async function RejectionReasonsPage() {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <div>
-        <Link href="/admin/scan-invites" className="hf-type-small text-text-secondary underline">
+        <Link href="/admin/scan-invites" className="hf-type-caption underline">
           ← Scan-invites
         </Link>
         <h1 className="hf-type-title text-hf-black">Afvisningsårsager</h1>

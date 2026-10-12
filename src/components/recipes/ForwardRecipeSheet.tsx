@@ -192,7 +192,7 @@ export function ForwardRecipeSheet({
           aria-label={t("forwardRecipe.message")}
           className="hf-type-body resize-none rounded-card bg-hf-tan px-4 py-3 text-hf-black outline-none"
         />
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           {t("forwardRecipe.encrypted")}
         </p>
       </div>

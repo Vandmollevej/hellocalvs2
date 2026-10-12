@@ -63,14 +63,14 @@ export function CustomMeasureSection() {
               <IconRuler2 size={20} className="shrink-0 text-hf-black" aria-hidden="true" />
               <button type="button" onClick={() => setEditing(m)} className="min-w-0 flex-1 text-left">
                 <span className="hf-type-body block truncate text-hf-black">{m.name}</span>
-                <span className="hf-type-small block truncate text-text-secondary">
+                <span className="hf-type-caption block truncate">
                   {t(MEASURE_PARAM_BY_KEY[m.param].labelKey)} · {t(`customMeasure.period.${m.period}`)}
                 </span>
               </button>
               <button
                 type="button"
                 onClick={() => remove(m.id)}
-                className="hf-type-small hf-type-strong text-text-secondary"
+                className="hf-type-caption hf-type-strong"
               >
                 {t("customMeasure.delete")}
               </button>
@@ -177,7 +177,7 @@ function MeasureSheet({
             maxLength={200}
             rows={2}
             onChange={(event) => setDescription(event.target.value)}
-            className="hf-type-input w-full resize-none border border-hf-field-border bg-hf-cream px-4 py-3 outline-none rounded-card"
+            className="hf-input-auth-card hf-type-input resize-none"
           />
         </label>
 
@@ -209,14 +209,14 @@ function MeasureSheet({
               </label>
               <div className="max-h-64 overflow-y-auto">
                 {options.length === 0 && (
-                  <p className="hf-type-small px-4 py-3 text-text-secondary">{t("customMeasure.noMatch")}</p>
+                  <p className="hf-type-caption px-4 py-3">{t("customMeasure.noMatch")}</p>
                 )}
                 {GROUP_ORDER.map((group) => {
                   const inGroup = options.filter(({ def }) => def.group === group);
                   if (inGroup.length === 0) return null;
                   return (
                     <div key={group}>
-                      <p className="hf-type-small hf-type-strong bg-hf-tan px-4 py-1 text-text-secondary">
+                      <p className="hf-type-caption hf-type-strong bg-hf-tan px-4 py-1">
                         {t(`customMeasure.group.${group}`)}
                       </p>
                       {inGroup.map(({ def, label }) => (
@@ -243,7 +243,7 @@ function MeasureSheet({
             <select
               value={period}
               onChange={(event) => setPeriod(event.target.value as MeasurePeriodKey)}
-              className="hf-field hf-type-input w-full appearance-none border bg-hf-cream pl-4 pr-10 outline-none border-hf-field-border rounded-card"
+              className="hf-select-auth hf-field hf-type-input"
             >
               {MEASURE_PERIOD_KEYS.map((key) => (
                 <option key={key} value={key}>
@@ -257,7 +257,7 @@ function MeasureSheet({
               className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
             />
           </span>
-          <span className="hf-type-small text-text-secondary">{t("customMeasure.periodHint")}</span>
+          <span className="hf-type-caption">{t("customMeasure.periodHint")}</span>
         </label>
 
         <label className="flex flex-col gap-1">
@@ -269,9 +269,9 @@ function MeasureSheet({
               setTextEdited(true);
               setText(clampMeasureText(event.target.value));
             }}
-            className="hf-type-input w-full resize-none border border-hf-field-border bg-hf-cream px-4 py-3 outline-none rounded-card"
+            className="hf-input-auth-card hf-type-input resize-none"
           />
-          <span className="hf-type-small text-text-secondary">
+          <span className="hf-type-caption">
             {t("customMeasure.textHint", { lines: CUSTOM_MEASURE_MAX_LINES, chars: CUSTOM_MEASURE_MAX_LINE_LENGTH })}
             {" · "}
             {lines.map((line) => line.length).join(" / ")}

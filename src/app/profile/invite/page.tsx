@@ -193,7 +193,7 @@ export default function InvitePage() {
               value={note}
               onChange={(event) => updateDraft({ note: event.target.value })}
               placeholder="Skriv en hilsen til din ven"
-              className="hf-type-input w-full resize-none border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
+              className="hf-input-auth-card hf-type-input resize-none"
             />
             <span className="hf-type-caption self-end">
               {note.length}/{INVITE_NOTE_MAX_LENGTH}

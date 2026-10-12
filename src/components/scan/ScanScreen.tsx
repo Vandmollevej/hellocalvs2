@@ -30,7 +30,7 @@ export function ScanScreen({
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
+    <div className="hf-screen-body">
       <div className="hf-appbar hf-appbar--brand">
         <div className="hf-appbar__slot">
           {showBack && (
@@ -49,7 +49,7 @@ export function ScanScreen({
         </div>
         <div className="hf-appbar__slot">
           <Link href="/scan/menu" aria-label="Åbn menu">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-hf-black">
+            <span className="hf-icon-circle-sm bg-hf-tan text-hf-black">
               <IconUser size={18} stroke={2} />
             </span>
           </Link>

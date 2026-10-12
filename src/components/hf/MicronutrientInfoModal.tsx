@@ -15,14 +15,14 @@ export function MicronutrientInfoModal({ nutrientKey, onClose }: { nutrientKey: 
         <div className="p-4">
           <p className="hf-type-body hf-heading mb-3 text-hf-black">{info.name}</p>
           <div className="flex flex-col gap-4">
-            <p className="hf-type-small text-text-secondary">{info.alsoKnownAs}</p>
+            <p className="hf-type-caption">{info.alsoKnownAs}</p>
             <p className="hf-type-body text-hf-black">{info.function}</p>
             <div>
-              <p className="hf-type-small text-text-secondary hf-heading uppercase">Findes i</p>
+              <p className="hf-type-caption hf-heading uppercase">Findes i</p>
               <p className="hf-type-body text-hf-black">{info.sources}</p>
             </div>
             <div>
-              <p className="hf-type-small text-text-secondary hf-heading uppercase">Referenceindtag</p>
+              <p className="hf-type-caption hf-heading uppercase">Referenceindtag</p>
               <p className="hf-type-body text-hf-black">{info.referenceIntake}</p>
             </div>
             <Link
@@ -32,7 +32,7 @@ export function MicronutrientInfoModal({ nutrientKey, onClose }: { nutrientKey: 
               Se hele siden med kilder
             </Link>
           </div>
-          <p className="hf-type-small text-text-secondary mt-4">
+          <p className="hf-type-caption mt-4">
             Generel baggrundsinformation — ikke personlig kostrådgivning.
           </p>
         </div>

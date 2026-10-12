@@ -47,7 +47,7 @@ export function StepChips({ steps, running }: { steps: LogoStep[]; running?: str
 // Fuld liste med forklaring og tid pr. trin.
 export function StepList({ steps, running }: { steps: LogoStep[]; running?: string | null }) {
   return (
-    <ol className="flex flex-col gap-1.5">
+    <ol className="hf-form-label">
       {steps.map((step, index) => (
         <li key={step.key + step.label} className="flex items-start gap-2">
           <span

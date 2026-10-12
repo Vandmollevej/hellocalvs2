@@ -178,7 +178,7 @@ function ReportBugContent() {
         {pending === undefined ? (
           <p className="text-text-secondary hf-type-body mt-8">Henter…</p>
         ) : showOverlay ? (
-          <div className="mt-8 flex flex-col items-center gap-4 text-center">
+          <div className="hf-report-empty">
             <p className="hf-type-body">
               Vi har modtaget din rettelse som afventer gennemgang
             </p>
@@ -251,7 +251,7 @@ function ReportBugContent() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Hvad skete der, og hvad forventede du i stedet?"
-                  className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+                  className="hf-textarea-auth hf-type-input"
                 />
               )}
             </div>
@@ -346,7 +346,7 @@ function BugReportSectionSheet({
           onChange={(e) => onText(e.target.value)}
           placeholder="Hvad er forkert, og hvad burde der stå?"
           aria-label={label}
-          className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+          className="hf-textarea-auth hf-type-input"
         />
         {photo && (
           // eslint-disable-next-line @next/next/no-img-element

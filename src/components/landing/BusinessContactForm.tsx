@@ -4,8 +4,7 @@ import { useState } from "react";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { BUSINESS_TOPICS, type BusinessTopic } from "@/lib/business-contact-topics";
 
-const FIELD =
-  "w-full rounded-xl border border-hf-gray-border bg-hf-white px-4 py-3 text-[15px] text-hf-black outline-none transition focus:border-hf-green focus:ring-2 focus:ring-hf-green/20";
+const FIELD = "mk-input";
 
 export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessTopic }) {
   const [form, setForm] = useState({
@@ -51,7 +50,7 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
     return (
       <div className="flex flex-col items-center gap-3 rounded-3xl bg-hf-white p-10 text-center shadow-sm">
         <IconCircleCheck size={48} className="text-hf-green" aria-hidden="true" />
-        <p className="text-xl font-bold text-hf-black">Tak for din henvendelse</p>
+        <p className="hf-type-strong mk-type-value-small text-hf-black">Tak for din henvendelse</p>
         <p className="text-text-secondary">Vi vender tilbage til dig hurtigst muligt.</p>
       </div>
     );
@@ -60,24 +59,24 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
   return (
     <form onSubmit={submit} className="flex flex-col gap-4 rounded-3xl bg-hf-white p-6 shadow-sm sm:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
+        <label className="mk-type-label hf-form-label text-hf-black">
           Navn
           <input required className={FIELD} value={form.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
+        <label className="mk-type-label hf-form-label text-hf-black">
           Virksomhed
           <input required className={FIELD} value={form.company} onChange={(e) => set("company", e.target.value)} autoComplete="organization" />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
+        <label className="mk-type-label hf-form-label text-hf-black">
           E-mail
           <input required type="email" className={FIELD} value={form.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
-          Telefon <span className="font-normal text-text-secondary">(valgfri)</span>
+        <label className="mk-type-label hf-form-label text-hf-black">
+          Telefon <span className="mk-weight-regular text-text-secondary">(valgfri)</span>
           <input type="tel" className={FIELD} value={form.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" />
         </label>
       </div>
-      <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
+      <label className="mk-type-label hf-form-label text-hf-black">
         Emne
         <select className={FIELD} value={form.topic} onChange={(e) => set("topic", e.target.value as BusinessTopic)}>
           {BUSINESS_TOPICS.map((t) => (
@@ -87,7 +86,7 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-1.5 text-sm font-semibold text-hf-black">
+      <label className="mk-type-label hf-form-label text-hf-black">
         Besked
         <textarea
           required
@@ -108,7 +107,7 @@ export function BusinessContactForm({ initialTopic }: { initialTopic?: BusinessT
         value={form.website}
         onChange={(e) => set("website", e.target.value)}
       />
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="mk-type-small text-hf-red-dark">{error}</p>}
       <button
         type="submit"
         disabled={state === "sending"}

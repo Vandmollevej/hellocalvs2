@@ -47,7 +47,7 @@ export default function ScanBeskederPage() {
             onChange={(event) => setDraft(event.target.value)}
             rows={2}
             placeholder="Skriv til Hello Cal"
-            className="hf-type-input w-full border bg-hf-cream px-4 py-3 outline-none border-hf-field-border rounded-card"
+            className="hf-input-auth-card hf-type-input"
           />
           <ActionButton type="submit" disabled={sending || !draft.trim()} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Send</span>

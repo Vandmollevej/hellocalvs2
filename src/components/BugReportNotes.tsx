@@ -71,7 +71,7 @@ export function BugReportNotes({ bugReportId }: { bugReportId: string }) {
           onChange={(e) => setText(e.target.value)}
           placeholder="Skriv en note til din indberetning"
           aria-label="Ny note"
-          className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+          className="hf-textarea-auth hf-type-input"
         />
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
         <button

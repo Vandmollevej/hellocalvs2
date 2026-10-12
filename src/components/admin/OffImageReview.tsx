@@ -339,7 +339,7 @@ export function OffImageReview({
           ))}
         </nav>
 
-        <label className="hf-type-small flex items-center gap-1.5 text-text-secondary">
+        <label className="hf-type-caption flex items-center gap-1.5">
           Sortér
           <select
             value={query.sort}
@@ -354,7 +354,7 @@ export function OffImageReview({
           </select>
         </label>
 
-        <label className="hf-type-small flex items-center gap-1.5 text-text-secondary">
+        <label className="hf-type-caption flex items-center gap-1.5">
           Pr. side
           <select
             value={query.perPage}
@@ -369,7 +369,7 @@ export function OffImageReview({
           </select>
         </label>
 
-        <label className="hf-type-small flex items-center gap-1.5 text-text-secondary">
+        <label className="hf-type-caption flex items-center gap-1.5">
           Interaktioner
           <select
             value={query.minInteractions}
@@ -404,7 +404,7 @@ export function OffImageReview({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className="hf-type-small flex items-center gap-2 text-text-secondary">
+        <label className="hf-type-caption flex items-center gap-2">
           Størrelse
           <input
             type="range"
@@ -485,7 +485,7 @@ export function OffImageReview({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-hf-tan-dark pt-3">
-        <span className="hf-type-small text-text-secondary">
+        <span className="hf-type-caption">
           {total === 0 ? "0 billeder" : `${from.toLocaleString("da-DK")}–${to.toLocaleString("da-DK")} af ${total.toLocaleString("da-DK")}`}
         </span>
         <nav aria-label="Sider" className="flex flex-wrap items-center gap-1">
@@ -523,7 +523,7 @@ export function OffImageReview({
             Næste
           </button>
         </nav>
-        <span className="hf-type-small text-text-secondary">
+        <span className="hf-type-caption">
           Side {currentPage} af {lastPage}
         </span>
       </div>

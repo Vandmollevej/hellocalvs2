@@ -440,8 +440,7 @@ function SidebarNav({
                         href={link.href}
                         aria-current={active ? "page" : undefined}
                         {...automationProps(`${idPrefix}-${navSlug(link.key)}`)}
-                        className="hf-navrow hf-navrow--sub"
-                        style={link.child ? { paddingLeft: 60 } : undefined}
+                        className={`hf-navrow hf-navrow--sub ${link.child ? "hf-navrow--child" : ""}`}
                       >
                         <span className="hf-navrow__label">{t(locale, link.key)}</span>
                         <LinkBadge href={link.href} badges={badges} />
@@ -583,7 +582,7 @@ function UserMenu({
         aria-expanded={open}
         aria-label={email}
         {...automationProps("hc-user-menu")}
-        className="hf-type-body hf-type-strong relative flex h-8 w-8 items-center justify-center rounded-full bg-hf-green-dark uppercase text-hf-white"
+        className="hf-icon-circle-sm hf-type-body hf-type-strong relative bg-hf-green-dark uppercase text-hf-white"
       >
         {email.charAt(0)}
         {newAdminSignups > 0 && (

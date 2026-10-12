@@ -36,7 +36,7 @@ export default async function ENumberDetailPage({ params }: Props) {
         <Link href="/e-numre" className="hf-type-small text-hf-green underline underline-offset-2">
           Se alle E-numre
         </Link>
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Generel baggrundsinformation baseret på EFSA, JECFA og fagfællebedømt forskning — ikke
           personlig kostrådgivning.
         </p>
@@ -48,7 +48,7 @@ export default async function ENumberDetailPage({ params }: Props) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="hf-card">
-      <h2 className="hf-type-small text-text-secondary hf-heading uppercase">{title}</h2>
+      <h2 className="hf-type-caption hf-heading uppercase">{title}</h2>
       <div className="hf-type-body mt-1 text-hf-black">{children}</div>
     </section>
   );
@@ -75,7 +75,7 @@ function EntryView({ entry, requested }: { entry: ENumberEntry; requested: strin
           <p className="text-text-secondary">{entry.nameEn}</p>
         )}
         {variant && (
-          <p className="hf-type-small mt-1 text-text-secondary">
+          <p className="hf-type-caption mt-1">
             Du kom fra {variant.code}: {variant.nameDa || variant.nameEn}
           </p>
         )}
@@ -142,7 +142,7 @@ function EntryView({ entry, requested }: { entry: ENumberEntry; requested: strin
       {entry.efsa && (
         <Section title="EFSA's vurdering">
           <p>{entry.efsa.title}</p>
-          <p className="hf-type-small text-text-secondary">
+          <p className="hf-type-caption">
             {[
               entry.efsa.date && `Offentliggjort ${entry.efsa.date}`,
               entry.efsa.adi && `ADI ${entry.efsa.adi}`,
@@ -186,7 +186,7 @@ function EntryView({ entry, requested }: { entry: ENumberEntry; requested: strin
                 <span>{link.label}</span>
                 <IconExternalLink size={14} className="mt-1 shrink-0" />
               </a>
-              <p className="hf-type-small text-text-secondary">{link.description}</p>
+              <p className="hf-type-caption">{link.description}</p>
             </li>
           ))}
         </ul>

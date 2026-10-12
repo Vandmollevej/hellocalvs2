@@ -13,7 +13,7 @@ export default async function AdminActivitiesPage() {
   return (
     <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">{t(admin.locale, "activities_title")}</h1>
-      <p className="hf-type-small text-text-secondary">{t(admin.locale, "activities_hint")}</p>
+      <p className="hf-type-caption">{t(admin.locale, "activities_hint")}</p>
       <ActivityTypeTable rows={rows} locale={admin.locale} />
     </div>
   );

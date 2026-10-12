@@ -241,10 +241,10 @@ function StatCardFace({
     // kortet har sin endelige højde fra første billede.
     return (
       <>
-        <p className="hf-type-small flex items-center" style={{ minHeight: "1lh" }}>
+        <p className="hf-type-small hf-line-min flex items-center">
           <Skeleton type="caption" width="70%" height={14} />
         </p>
-        <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5" style={{ minHeight: "1lh" }}>
+        <p className="hf-type-body-lg hf-heading hf-line-min mt-1 flex items-center gap-1.5">
           <Skeleton type="icon" />
           <Skeleton type="body" width={56} height={20} />
         </p>
@@ -258,7 +258,7 @@ function StatCardFace({
   }
   return (
     <>
-      <p className="hf-type-small text-text-secondary">{card.label}</p>
+      <p className="hf-type-caption">{card.label}</p>
       <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
         <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
         {card.loading ? (
@@ -879,7 +879,7 @@ export function StatCardsGrid({
     return (
       <>
         <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
-        <span className="hf-type-small text-text-secondary">{count}</span>
+        <span className="hf-type-caption">{count}</span>
         <HfChevron direction={item.open ? "down" : "right"} />
       </>
     );
@@ -1146,7 +1146,7 @@ export function StatCardsGrid({
           ) : (
             <span className="hf-type-body hf-type-strong min-w-0 flex-1 truncate">{item.title}</span>
           )}
-          <span className="hf-type-small text-text-secondary">{count}</span>
+          <span className="hf-type-caption">{count}</span>
           <button
             type="button"
             data-stat-action

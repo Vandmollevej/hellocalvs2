@@ -41,7 +41,7 @@ export default function AdminLoginApprovalWaitPage() {
   }, [router]);
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
+    <div className="hf-auth-panel">
       <h1 className="hf-type-title text-hf-black">Godkend dette udstyr</h1>
       <p className="hf-type-body mb-6 text-text-secondary">
         Vi har sendt et link til din e-mail. Åbn det og godkend, at det er dig — så fortsætter du automatisk her.

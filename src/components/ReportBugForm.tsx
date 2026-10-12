@@ -102,7 +102,7 @@ export function ReportBugForm({ productId }: { productId: string | null }) {
       {pending === undefined ? (
         <p className="text-text-secondary hf-type-body mt-8">Henter…</p>
       ) : showOverlay ? (
-        <div className="mt-8 flex flex-col items-center gap-4 text-center">
+        <div className="hf-report-empty">
           <p className="hf-type-body">
             Vi har modtaget din rettelse som afventer gennemgang
           </p>
@@ -125,7 +125,7 @@ export function ReportBugForm({ productId }: { productId: string | null }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Hvad skete der, og hvad forventede du i stedet?"
-              className="hf-type-input w-full border bg-hf-cream p-3 outline-none border-hf-field-border rounded-sm"
+              className="hf-textarea-auth hf-type-input"
             />
           </label>
           {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}

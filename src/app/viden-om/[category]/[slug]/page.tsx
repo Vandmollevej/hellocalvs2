@@ -9,7 +9,7 @@ import { FOOD_TERMS, foodTermAnchor } from "@/lib/food-latin";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="hf-card">
-      <p className="hf-type-small text-text-secondary hf-heading uppercase">{title}</p>
+      <p className="hf-type-caption hf-heading uppercase">{title}</p>
       <div className="hf-type-body mt-1 flex flex-col gap-2 text-hf-black">{children}</div>
     </section>
   );

@@ -82,7 +82,7 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
         <div className="overflow-x-auto">
           <table className="hf-type-body w-full text-left">
             <thead>
-              <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+              <tr className="hf-table-section hf-type-small">
                 <th className="py-2 pr-3">Agent</th>
                 <th className="py-2 pr-3">Status</th>
                 <th className="py-2 pr-3">Jobs (åbne)</th>
@@ -95,7 +95,7 @@ export default async function AgentsPage({ searchParams }: { searchParams: Promi
                 <tr key={agent.id} className="border-b border-hf-tan-dark align-top">
                   <td className="py-3 pr-3">
                     <p className="hf-type-strong text-hf-black">{agent.name}</p>
-                    {agent.description && <p className="hf-type-small text-text-secondary">{agent.description}</p>}
+                    {agent.description && <p className="hf-type-caption">{agent.description}</p>}
                   </td>
                   <td className="py-3 pr-3">{agent.disabled ? "Spærret" : "Aktiv"}</td>
                   <td className="py-3 pr-3">

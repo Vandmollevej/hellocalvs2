@@ -37,7 +37,7 @@ export function RecipeStepPage({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p className="hf-type-small hf-type-strong text-text-secondary">
+        <p className="hf-type-caption hf-type-strong">
           {t("recipeSteps.stepNumber", { number: index + 1 })}
         </p>
         {canRemove && (
@@ -45,7 +45,7 @@ export function RecipeStepPage({
             type="button"
             onClick={onRemove}
             aria-label={t("recipeSteps.remove")}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-hf-black"
+            className="hf-icon-circle-sm bg-hf-tan text-hf-black"
           >
             <IconTrash size={16} />
           </button>
@@ -96,7 +96,7 @@ export function RecipeStepPage({
               type="button"
               onClick={() => onChange({ ...step, image: null })}
               aria-label={t("recipeSteps.removePhoto")}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-hf-white text-hf-black"
+              className="hf-icon-circle-sm absolute right-2 top-2 bg-hf-white text-hf-black"
             >
               <IconX size={16} />
             </button>
@@ -109,7 +109,7 @@ export function RecipeStepPage({
             className="flex w-full flex-col items-center gap-2 px-4 py-6 text-center text-hf-black"
           >
             <IconCamera size={24} />
-            <span className="hf-type-small text-text-secondary">
+            <span className="hf-type-caption">
               {t("recipeSteps.dropPhoto")}
             </span>
           </button>

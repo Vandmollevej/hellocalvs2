@@ -234,7 +234,7 @@ export function InventoryPanel({
                   {mine.length ? `${mine.length} aktiv${mine.length === 1 ? "" : "e"}` : "Ikke booket"}
                 </span>
               </div>
-              <p className="hf-type-small text-text-secondary">{i.description}</p>
+              <p className="hf-type-caption">{i.description}</p>
               {mine.length > 0 && <ul className="flex flex-col gap-2">{mine.map(spotRow)}</ul>}
               <button className="hf-btn-text self-start" onClick={() => setDraft(blank(i.key, `${i.name}`))}>
                 + Tilføj reklamespot

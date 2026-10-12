@@ -31,8 +31,8 @@ function FeatureItem({ icon, title, text, align }: (typeof FEATURES_LEFT)[number
         <LandingIconGlyph icon={icon} />
       </span>
       <div>
-        <h3 className="text-lg font-bold text-hf-white">{title}</h3>
-        <p className="mt-1 text-[15px] leading-relaxed text-hf-white/80">{text}</p>
+        <h3 className="mk-type-card-title text-hf-white">{title}</h3>
+        <p className="mk-type-detail mt-1 leading-relaxed text-hf-white/80">{text}</p>
       </div>
     </div>
   );
@@ -61,10 +61,10 @@ export async function LandingPage() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-32 pt-16 sm:px-6 lg:grid-cols-2 lg:pb-40 lg:pt-24">
           <div>
             <p className="mk-eyebrow">Kalorietæller på dansk</p>
-            <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
+            <h1 className="mk-type-hero-title mt-4 leading-tight">
               Hold styr på kalorierne — <span className="text-hf-positive">uden besvær</span>
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-hf-white/85">
+            <p className="mk-type-intro mt-6 max-w-lg leading-relaxed text-hf-white/85">
               Scan maden, følg vand og vægt, og se din udvikling i grafer der giver mening. Hello Cal gør det nemt at
               nå dine mål.
             </p>
@@ -88,7 +88,7 @@ export async function LandingPage() {
             <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-hf-green text-hf-green">
               <LandingIconGlyph icon={h.icon} />
             </span>
-            <p className="text-sm font-bold uppercase tracking-wide text-hf-black">{h.title}</p>
+            <p className="mk-type-label-strong uppercase tracking-wide text-hf-black">{h.title}</p>
           </div>
         ))}
       </div>
@@ -101,7 +101,7 @@ export async function LandingPage() {
         />
         <div className="mx-auto mt-14 grid max-w-6xl items-center gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-2xl font-bold text-hf-black">Et overblik du faktisk bruger</h3>
+            <h3 className="mk-type-subtitle text-hf-black">Et overblik du faktisk bruger</h3>
             <p className="mt-4 leading-relaxed text-text-secondary">
               Registrér et måltid på få sekunder: scan stregkoden, søg i databasen eller vælg fra dine egne retter.
               Hello Cal regner kalorier og næring ud for dig og viser, hvor du står i dag.
@@ -120,8 +120,8 @@ export async function LandingPage() {
           <div className="mk-hero-bg relative overflow-hidden rounded-3xl p-8">
             <WeightChartBackdrop className="h-64 w-full" />
             <div className="absolute bottom-6 left-6 rounded-2xl bg-hf-white px-4 py-3 shadow-lg">
-              <p className="text-xs text-text-secondary">Vægt, seneste 3 måneder</p>
-              <p className="text-xl font-bold text-hf-green">−5,2 kg</p>
+              <p className="mk-type-caption text-text-secondary">Vægt, seneste 3 måneder</p>
+              <p className="hf-type-strong mk-type-value-small text-hf-green">−5,2 kg</p>
             </div>
           </div>
         </div>
@@ -168,8 +168,8 @@ export async function LandingPage() {
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
             {stats.map((s) => (
               <div key={s.key} className="rounded-2xl bg-hf-white px-4 py-8 text-center shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35)]">
-                <p className="text-4xl font-bold text-hf-green">{s.value.toLocaleString("da-DK")}</p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-text-secondary">{s.label}</p>
+                <p className="mk-type-value text-hf-green">{s.value.toLocaleString("da-DK")}</p>
+                <p className="mk-type-label mt-2 uppercase tracking-wide text-text-secondary">{s.label}</p>
               </div>
             ))}
           </div>
@@ -182,7 +182,7 @@ export async function LandingPage() {
             <p className="flex items-center gap-2 mk-eyebrow">
               <IconStethoscope size={18} aria-hidden="true" /> Hello Doc
             </p>
-            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Del din fremgang med lægen eller diætisten</h2>
+            <h2 className="mk-type-section-title mt-4">Del din fremgang med lægen eller diætisten</h2>
             <p className="mt-5 leading-relaxed text-hf-white/80">
               Med Hello Doc inviterer du din behandler til at se præcis de data, du vælger — i den periode du vælger.
               Du kan altid trække adgangen tilbage.
@@ -195,7 +195,7 @@ export async function LandingPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-sm text-hf-white/60">Hello Doc er en del af Seriøs.</p>
+            <p className="mk-type-small mt-6 text-hf-white/60">Hello Doc er en del af Seriøs.</p>
           </div>
           <div className="pb-10">
             <HelloDocScreens />
@@ -213,13 +213,13 @@ export async function LandingPage() {
         </div>
         <div className="mx-auto mt-20 grid max-w-6xl gap-10 text-hf-white lg:grid-cols-3">
           <div>
-            <h2 className="text-3xl font-bold">Spørgsmål og svar</h2>
+            <h2 className="mk-type-title">Spørgsmål og svar</h2>
             <p className="mt-3 text-hf-white/75">De ting vi oftest bliver spurgt om.</p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:col-span-2">
             {FAQ.map((f) => (
               <div key={f.q}>
-                <h3 className="text-lg font-bold">{f.q}</h3>
+                <h3 className="mk-type-card-title">{f.q}</h3>
                 <p className="mt-2 leading-relaxed text-hf-white/80">{f.a}</p>
               </div>
             ))}
@@ -238,11 +238,11 @@ export async function LandingPage() {
                 <figcaption className="mt-5 flex flex-col items-center gap-2">
                   {m.rating && <Stars value={m.rating.value} max={m.rating.max} />}
                   {m.url ? (
-                    <a href={m.url} target="_blank" rel="noopener noreferrer" className="font-bold text-hf-black hover:underline">
+                    <a href={m.url} target="_blank" rel="noopener noreferrer" className="hf-type-strong text-hf-black hover:underline">
                       {m.outlet}
                     </a>
                   ) : (
-                    <span className="font-bold text-hf-black">{m.outlet}</span>
+                    <span className="hf-type-strong text-hf-black">{m.outlet}</span>
                   )}
                 </figcaption>
               </figure>
@@ -253,7 +253,7 @@ export async function LandingPage() {
 
       <section className="px-4 py-24 sm:px-6">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 rounded-3xl bg-hf-cream px-6 py-14 text-center">
-          <h2 className="text-3xl font-bold text-hf-black sm:text-4xl">
+          <h2 className="mk-type-section-title text-hf-black">
             Hent <span className="text-hf-green">Hello Cal</span> i dag
           </h2>
           <p className="max-w-xl text-text-secondary">Scan QR-koden med telefonens kamera, eller tryk på din butik.</p>

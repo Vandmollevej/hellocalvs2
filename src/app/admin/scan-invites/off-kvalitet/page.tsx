@@ -134,7 +134,7 @@ export default async function OffQualityPage({
   return (
     <div className="hf-admin-page">
       <div>
-        <Link href="/admin/scan-invites" className="hf-type-small text-text-secondary underline">
+        <Link href="/admin/scan-invites" className="hf-type-caption underline">
           ← Scan-invites
         </Link>
         <h1 className="hf-type-title text-hf-black">Open Food Facts-kontrol</h1>
@@ -235,7 +235,7 @@ export default async function OffQualityPage({
           </label>
         </div>
         <fieldset className="flex flex-wrap gap-x-4 gap-y-1">
-          <legend className="hf-type-small mb-1 text-text-secondary">Mangler i kategori (mindst én)</legend>
+          <legend className="hf-type-caption mb-1">Mangler i kategori (mindst én)</legend>
           {OFF_QUALITY_CATEGORIES.map((category) => (
             <label key={category} className="hf-type-body flex items-center gap-1">
               <input type="checkbox" name="category" value={category} defaultChecked={filters.category.includes(category)} />
@@ -253,7 +253,7 @@ export default async function OffQualityPage({
         </div>
       </form>
 
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         {numberFormat.format(matchingTotal)} varer matcher · side {filters.page} af {pageCount}
       </p>
 

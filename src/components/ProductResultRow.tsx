@@ -54,7 +54,7 @@ export function ProductResultRow({
         title={title}
         subtitle={
           kcal !== undefined ? (
-            <p className="hf-type-small text-text-secondary truncate">
+            <p className="hf-type-caption truncate">
               {brand ? `${brand} · ` : ""}
               {nutritionMissing ? (
                 t("addProduct.nutritionUnknown")

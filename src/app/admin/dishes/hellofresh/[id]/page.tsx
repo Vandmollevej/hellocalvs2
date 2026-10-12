@@ -65,7 +65,7 @@ export default async function AdminMealKitDishPage({ params }: { params: Promise
 
   return (
     <div className="hf-admin-page">
-      <Link href={DISH_SOURCE_PATHS[provider.source]} className="hf-type-small text-text-secondary hover:text-hf-black">
+      <Link href={DISH_SOURCE_PATHS[provider.source]} className="hf-type-caption hover:text-hf-black">
         ← {provider.name}-retter
       </Link>
 
@@ -81,7 +81,7 @@ export default async function AdminMealKitDishPage({ params }: { params: Promise
         <div className="flex min-w-0 flex-col gap-2">
           <h1 className="hf-type-title text-hf-black">{view.name}</h1>
           {view.headline && <p className="hf-type-body text-text-secondary">{view.headline}</p>}
-          {meta.length > 0 && <p className="hf-type-small text-text-secondary">{meta.join(" · ")}</p>}
+          {meta.length > 0 && <p className="hf-type-caption">{meta.join(" · ")}</p>}
           {view.description && <p className="hf-type-body text-hf-black">{view.description}</p>}
         </div>
       </div>
@@ -116,7 +116,7 @@ export default async function AdminMealKitDishPage({ params }: { params: Promise
               </ul>
             )}
             {allergens.length > 0 && (
-              <p className="hf-type-small text-text-secondary">Allergener: {allergens.join(", ")}</p>
+              <p className="hf-type-caption">Allergener: {allergens.join(", ")}</p>
             )}
           </section>
 

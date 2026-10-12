@@ -53,13 +53,13 @@ export function EntryDetailsSheet({
         {subtitle && <p className="hf-type-body text-center text-text-secondary">{subtitle}</p>}
 
         {source?.kind === "synced" && (
-          <div className="flex items-center gap-3 bg-hf-tan px-4 py-3 rounded-card">
+          <div className="hf-entry-summary">
             <IntegrationIcon icon={source.icon} label={source.label} size={32} className="rounded-card" />
             <div className="min-w-0 flex-1">
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {t("entrySheet.syncedFrom", { name: source.label })}
               </p>
-              <p className="hf-type-small text-text-secondary">{t("entrySheet.syncedLocked", { name: source.label })}</p>
+              <p className="hf-type-caption">{t("entrySheet.syncedLocked", { name: source.label })}</p>
             </div>
           </div>
         )}
@@ -68,7 +68,7 @@ export function EntryDetailsSheet({
         )}
 
         {loading && (
-          <p role="status" className="hf-type-small text-center text-text-secondary">
+          <p role="status" className="hf-type-caption text-center">
             {t("entrySheet.loading")}
           </p>
         )}

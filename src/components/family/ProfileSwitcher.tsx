@@ -104,7 +104,7 @@ export function ProfileSwitchList({ onDone }: { onDone?: () => void }) {
         (["member", "child"] as const).map((kind) => (
           <li key={kind} className="border-b border-hf-tan-dark">
             <Link href={`/profile/family?add=${kind}`} onClick={onDone} className="flex h-12 w-full items-center gap-4 px-4">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-black">
+              <span className="hf-icon-circle-sm border border-hf-black">
                 <IconPlus size={16} />
               </span>
               <span className="hf-type-body flex-1">
@@ -116,7 +116,7 @@ export function ProfileSwitchList({ onDone }: { onDone?: () => void }) {
       {canManage && (
         <li className="border-b border-hf-tan-dark">
           <Link href="/profile/family?invite=1" onClick={onDone} className="flex h-12 w-full items-center gap-4 px-4">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-black">
+            <span className="hf-icon-circle-sm border border-hf-black">
               <IconMail size={16} />
             </span>
             <span className="hf-type-body flex-1">{t("family.invite.title")}</span>

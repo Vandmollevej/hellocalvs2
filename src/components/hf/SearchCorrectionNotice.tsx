@@ -35,7 +35,7 @@ export function SearchCorrectionNotice({
     return (
       <button
         type="button"
-        className="hf-type-small px-1 text-left text-text-secondary"
+        className="hf-type-caption px-1 text-left"
         onClick={() => onUseSuggestion(correction.suggested)}
       >
         {withBold("searchCorrection.didYouMean", correction.suggested)}
@@ -44,7 +44,7 @@ export function SearchCorrectionNotice({
   }
 
   return (
-    <div className="hf-type-small px-1 text-text-secondary">
+    <div className="hf-type-caption px-1">
       <p>{withBold("searchCorrection.showingFor", correction.corrected)}</p>
       <button type="button" className="underline" onClick={onSearchExact}>
         {t("searchCorrection.searchInstead", { query: correction.original })}

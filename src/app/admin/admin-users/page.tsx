@@ -125,7 +125,7 @@ export default async function AdminUsersPage({
             Send invitation
           </button>
         </form>
-        <p className="hf-type-small text-text-secondary">Invitationen gælder i 24 timer og kan kun bruges én gang.</p>
+        <p className="hf-type-caption">Invitationen gælder i 24 timer og kan kun bruges én gang.</p>
         {error === "invalid" && <p className="hf-type-body text-[var(--hf-color-danger)]">Udfyld navn og en gyldig e-mail.</p>}
         {error === "exists" && <p className="hf-type-body text-[var(--hf-color-danger)]">Der findes allerede en bruger med den e-mail.</p>}
         {inviteState === "sent" && <p className="hf-type-body text-hf-green-dark">Invitationen er sendt på mail.</p>}
@@ -145,7 +145,7 @@ export default async function AdminUsersPage({
           <div className="overflow-x-auto">
             <table className="hf-type-body w-full text-left">
               <thead>
-                <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
+                <tr className="hf-table-section hf-type-small">
                   <th className="py-2 pr-3">Modtager</th>
                   <th className="py-2 pr-3">Adgang</th>
                   <th className="py-2 pr-3">Status</th>
@@ -160,7 +160,7 @@ export default async function AdminUsersPage({
                     <tr key={invite.id} className="border-b border-border-strong/50">
                       <td className="py-2 pr-3">
                         <div className="hf-type-strong">{invite.name}</div>
-                        <div className="hf-type-small text-text-secondary">{invite.email}</div>
+                        <div className="hf-type-caption">{invite.email}</div>
                       </td>
                       <td className="py-2 pr-3">{LEVEL_LABEL[invite.accessLevel]}</td>
                       <td className="py-2 pr-3">{status}</td>
@@ -205,9 +205,9 @@ export default async function AdminUsersPage({
                   <div className="hf-type-body hf-type-strong">
                     {admin.displayName} {isMe && <span className="hf-type-small text-text-muted">(dig)</span>}
                   </div>
-                  <div className="hf-type-small text-text-secondary">{admin.email}</div>
+                  <div className="hf-type-caption">{admin.email}</div>
                 </div>
-                <div className="hf-type-small text-right text-text-secondary">
+                <div className="hf-type-caption text-right">
                   <div>
                     {LEVEL_LABEL[admin.adminAccessLevel]} · {disabled ? <span className="text-hf-red-dark">Deaktiveret</span> : "Aktiv"}
                   </div>
@@ -244,7 +244,7 @@ export default async function AdminUsersPage({
                   </div>
                   <form action={setAdminAllowedIps} className="flex flex-col gap-1">
                     <input type="hidden" name="userId" value={admin.id} />
-                    <label className="hf-type-small text-text-secondary" htmlFor={`ips-${admin.id}`}>
+                    <label className="hf-type-caption" htmlFor={`ips-${admin.id}`}>
                       IP-begrænsning (tomt = ingen). Kommasepareret, fx 85.1.2.3, 10.0.0.0/24
                     </label>
                     <div className="flex gap-2">
@@ -273,7 +273,7 @@ export default async function AdminUsersPage({
                   <div>
                     <h3 className="hf-type-small uppercase tracking-wide text-text-muted">Godkendt udstyr</h3>
                     {admin.adminDevices.length === 0 ? (
-                      <p className="hf-type-small text-text-secondary">Intet godkendt udstyr endnu.</p>
+                      <p className="hf-type-caption">Intet godkendt udstyr endnu.</p>
                     ) : (
                       <ul className="hf-type-small mt-1 flex flex-col gap-1">
                         {admin.adminDevices.map((device) => (
@@ -288,7 +288,7 @@ export default async function AdminUsersPage({
                   <div>
                     <h3 className="hf-type-small uppercase tracking-wide text-text-muted">Seneste login-forsøg</h3>
                     {admin.adminLoginEvents.length === 0 ? (
-                      <p className="hf-type-small text-text-secondary">Ingen registrerede login endnu.</p>
+                      <p className="hf-type-caption">Ingen registrerede login endnu.</p>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="hf-type-small mt-1 w-full text-left">

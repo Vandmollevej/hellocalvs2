@@ -39,7 +39,7 @@ function addMinutes(time: string, minutes: number) {
 }
 
 const timeInputClass =
-  "hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body hf-field hf-field-soft hf-field-soft--focus";
 
 function timeToMinutes(time: string | null | undefined): number | null {
   if (!time) return null;
@@ -56,7 +56,7 @@ function minutesToTime(minutes: number) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+      <span className="hf-type-caption hf-type-strong uppercase tracking-[0.06em]">
         {label}
       </span>
       {children}
@@ -226,7 +226,7 @@ export default function SleepSchedulePage() {
               />
             </Field>
           </div>
-          <p className="hf-type-small text-text-secondary -mt-2">
+          <p className="hf-type-caption -mt-2">
             {t("profileSleep.defaultTimesHint")}
           </p>
 
@@ -243,7 +243,7 @@ export default function SleepSchedulePage() {
 
           {perDayOpen && (
             <div className="hf-card hf-card--form">
-              <p className="hf-type-small text-text-secondary">
+              <p className="hf-type-caption">
                 {t("profileSleep.perDayHint")}
               </p>
               {[0, 1, 2, 3, 4, 5, 6].map((weekday) => {
@@ -282,7 +282,7 @@ export default function SleepSchedulePage() {
           )}
 
           {SHOW_SHIFT_WORK && user.shiftWorkEnabled && (
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               {t("profileSleep.shiftWorkHint")}
             </p>
           )}

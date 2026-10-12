@@ -33,7 +33,7 @@ export function CreateAgentSheet() {
           }
         >
           <form id={FORM_ID} action={inviteWorker} className="flex flex-col gap-3 px-4 pb-4">
-            <p className="hf-type-small text-text-secondary">
+            <p className="hf-type-caption">
               Agenten får en mail med et link til selv at vælge kodeord. CPR og bank udfyldes bagefter på agentens side.
             </p>
             <label className="hf-type-body flex flex-col gap-1">

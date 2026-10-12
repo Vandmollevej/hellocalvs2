@@ -193,15 +193,15 @@ export function LandingPlans({
             >
               <div className="bg-gradient-to-br from-hf-green to-hf-green-dark px-6 py-8 text-center text-hf-white">
                 {p.featured && (
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-hf-green-light">Mest valgt</p>
+                  <p className="mk-weight-semibold mk-type-caption mb-2 uppercase tracking-widest text-hf-green-light">Mest valgt</p>
                 )}
-                <p className="text-2xl font-bold">{p.name}</p>
-                <p className="mt-3 text-5xl font-light">{p.price}</p>
-                <p className="mt-1 text-sm text-hf-white/75">{p.note}</p>
+                <p className="mk-type-subtitle">{p.name}</p>
+                <p className="mk-type-price mt-3">{p.price}</p>
+                <p className="mk-type-small mt-1 text-hf-white/75">{p.note}</p>
               </div>
               <ul className="flex flex-col gap-3 px-8 py-6">
                 {p.items.map((item) => (
-                  <li key={item.text} className="flex items-center justify-between gap-3 text-[15px]">
+                  <li key={item.text} className="mk-type-detail flex items-center justify-between gap-3">
                     <span className={item.included ? "text-hf-black" : "text-text-secondary"}>{item.text}</span>
                     {item.included ? (
                       <IconCheck size={18} className="shrink-0 text-hf-green" aria-label="Inkluderet" />

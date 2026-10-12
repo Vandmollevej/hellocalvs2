@@ -279,7 +279,7 @@ export default function BilledeDagbogPage() {
               {/* Billederne (eller "ingen billeder endnu") står altid over knappen med god luft. */}
               <div className="mb-8 mt-4">
                 {!photosLoaded ? null : ordered.length === 0 ? (
-                  <p className="hf-type-small text-text-secondary text-center py-8">
+                  <p className="hf-type-caption text-center py-8">
                     {t("photoDiary.noPhotosYet")}
                   </p>
                 ) : (

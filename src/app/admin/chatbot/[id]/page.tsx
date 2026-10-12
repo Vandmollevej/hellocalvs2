@@ -31,7 +31,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
   return (
     <div className="hf-admin-page">
       <div>
-        <Link href="/admin/chatbot" className="hf-type-small text-text-secondary underline">
+        <Link href="/admin/chatbot" className="hf-type-caption underline">
           ← Chatbot
         </Link>
         <h1 className="hf-type-title text-hf-black">Samtale med {user.displayName}</h1>
@@ -83,7 +83,7 @@ export default async function AdminChatbotThreadPage({ params }: { params: Promi
           {conversation.supportRequest && (
             <section className="gap-1 hf-panel">
               <h2 className="hf-type-title text-hf-black">Sendt til medarbejder</h2>
-              <p className="hf-type-small text-text-secondary">
+              <p className="hf-type-caption">
                 {conversation.escalatedAt ? formatAdminTime(conversation.escalatedAt) : ""} ·{" "}
                 {conversation.supportRequest.status === "OPEN" ? "Åben" : "Løst"}
               </p>

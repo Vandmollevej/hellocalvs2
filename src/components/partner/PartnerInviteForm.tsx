@@ -76,7 +76,7 @@ export function PartnerInviteForm({ token }: { token: string }) {
           <img src={qrCodeDataUrl} alt="QR-kode til authenticator-app" className="mx-auto h-48 w-48" />
         )}
         {secret && (
-          <p className="hf-type-small break-all rounded-md bg-hf-white px-3 py-2 text-center text-text-muted">
+          <p className="hf-recovery-code hf-type-small">
             Kan ikke scanne? Indtast koden manuelt: <span className="font-mono">{secret}</span>
           </p>
         )}

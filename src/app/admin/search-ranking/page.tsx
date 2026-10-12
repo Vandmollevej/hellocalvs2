@@ -50,14 +50,14 @@ export default async function AdminSearchRankingPage() {
       </div>
       <div className="hf-surface flex flex-col gap-2 p-4">
         <h2 className="hf-type-body hf-type-strong text-hf-black">Søgeparametre</h2>
-        <p className="hf-type-small text-text-secondary">Søgningen finder varer på:</p>
-        <ul className="hf-type-small flex list-disc flex-col gap-1 pl-5 text-text-secondary">
+        <p className="hf-type-caption">Søgningen finder varer på:</p>
+        <ul className="hf-type-caption flex list-disc flex-col gap-1 pl-5">
           {SEARCHED_FIELDS.map((field) => (
             <li key={field}>{field}</li>
           ))}
         </ul>
-        <p className="hf-type-small text-text-secondary">Rækkefølgen i resultatet:</p>
-        <ol className="hf-type-small flex list-decimal flex-col gap-1 pl-5 text-text-secondary">
+        <p className="hf-type-caption">Rækkefølgen i resultatet:</p>
+        <ol className="hf-type-caption flex list-decimal flex-col gap-1 pl-5">
           {RANKING_ORDER.map((step) => (
             <li key={step}>{step}</li>
           ))}

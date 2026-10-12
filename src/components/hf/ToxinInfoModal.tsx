@@ -11,11 +11,11 @@ export function ToxinInfoModal({ toxin, onClose }: { toxin: ToxinInfo; onClose: 
         <div className="p-4">
           <p className="hf-type-body hf-heading mb-3 text-hf-black">{toxin.name}</p>
           <div className="flex flex-col gap-3">
-            <p className="hf-type-small text-text-secondary">{toxin.foods}</p>
+            <p className="hf-type-caption">{toxin.foods}</p>
             <p className="hf-type-body text-hf-black">{toxin.description}</p>
             {toxin.pregnancy && (
               <div className="rounded-xl bg-hf-tan px-3 py-2.5">
-                <p className="hf-type-small text-text-secondary hf-heading uppercase">
+                <p className="hf-type-caption hf-heading uppercase">
                   Gravid eller ammende
                 </p>
                 <p className="hf-type-body text-hf-black">{toxin.pregnancy}</p>
@@ -23,14 +23,14 @@ export function ToxinInfoModal({ toxin, onClose }: { toxin: ToxinInfo; onClose: 
             )}
             {toxin.fertility && (
               <div className="rounded-xl bg-hf-tan px-3 py-2.5">
-                <p className="hf-type-small text-text-secondary hf-heading uppercase">
+                <p className="hf-type-caption hf-heading uppercase">
                   Når du prøver at blive gravid
                 </p>
                 <p className="hf-type-body text-hf-black">{toxin.fertility}</p>
               </div>
             )}
             <div>
-              <p className="hf-type-small text-text-secondary hf-heading uppercase">Råd</p>
+              <p className="hf-type-caption hf-heading uppercase">Råd</p>
               <p className="hf-type-body text-hf-black">{toxin.advice}</p>
             </div>
             {toxin.links.map((link) => (
@@ -45,7 +45,7 @@ export function ToxinInfoModal({ toxin, onClose }: { toxin: ToxinInfo; onClose: 
               </a>
             ))}
           </div>
-          <p className="hf-type-small text-text-secondary mt-4">
+          <p className="hf-type-caption mt-4">
             Vist fordi indholdsfortegnelsen nævner en fødevare, der er kendt for stoffet — ikke en
             måling af netop denne vare. Generel information fra Fødevarestyrelsen og EFSA, ikke
             personlig kostrådgivning.

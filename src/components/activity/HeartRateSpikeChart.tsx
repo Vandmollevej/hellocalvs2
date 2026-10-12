@@ -98,7 +98,7 @@ export function HeartRateSpikeChart({
           </g>
         )}
       </svg>
-      <figcaption className="hf-type-small h-5 text-center text-text-secondary">
+      <figcaption className="hf-type-caption h-5 text-center">
         {hovered ? `${timeLabel(hovered.t)} · ${hovered.bpm} bpm` : ""}
       </figcaption>
     </figure>

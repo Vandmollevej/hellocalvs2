@@ -159,4 +159,6 @@ enum HcType {
     static let micro = Font.system(size: 11, weight: .regular)
     /// .hf-type-tab
     static let tab = Font.system(size: 11, weight: .regular)
+    /// .hf-type-counter
+    static let counter = Font.system(size: 40, weight: .bold)
 }

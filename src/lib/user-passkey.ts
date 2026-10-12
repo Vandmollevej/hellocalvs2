@@ -47,7 +47,7 @@ export async function passkeyChallengeResponse(req: Request, allowUserId?: strin
 export async function verifyPasskeyAssertion(
   req: Request,
   assertion: AuthenticationResponseJSON | undefined
-): Promise<{ userId: string } | { error: string; status: number }> {
+): Promise<{ userId: string } | { error: string; status: number; code?: string }> {
   const credentialId = assertion?.id;
   if (!assertion || !credentialId) return { error: "Kunne ikke bekræfte med Face ID", status: 401 };
 
@@ -61,7 +61,7 @@ export async function verifyPasskeyAssertion(
   const passkey = await prisma.passkey.findUnique({ where: { credentialId }, include: { user: true } });
   if (!passkey || passkey.user.forgottenAt) {
     recordFailure(rateLimitKey);
-    return { error: "Face ID er ikke slået til for denne konto", status: 401 };
+    return { error: "Face ID er ikke slået til for denne konto", status: 401, code: "PASSKEY_NOT_REGISTERED" };
   }
 
   const { rpID, origin } = getWebauthnRelyingParty(req);

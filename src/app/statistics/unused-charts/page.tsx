@@ -159,7 +159,7 @@ export default function UnusedStatChartsPage() {
   return (
     <HfScreen title={t("statUnusedCharts.title")}>
       <div className="hf-page hf-page--list">
-        <p className="hf-type-small text-text-secondary">{t("statUnusedCharts.hint")}</p>
+        <p className="hf-type-caption">{t("statUnusedCharts.hint")}</p>
 
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />

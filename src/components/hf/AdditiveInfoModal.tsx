@@ -33,14 +33,14 @@ export function AdditiveInfoModal({
           ) : (
             <div className="flex flex-col gap-4">
               {info.danishName && (
-                <p className="hf-type-small text-text-secondary">{info.danishName}</p>
+                <p className="hf-type-caption">{info.danishName}</p>
               )}
               {info.function && (
                 <p className="hf-type-body text-hf-black">{info.function}</p>
               )}
               {info.risks && (
                 <div>
-                  <p className="hf-type-small text-text-secondary hf-heading uppercase">
+                  <p className="hf-type-caption hf-heading uppercase">
                     Risici
                   </p>
                   <p className="hf-type-body text-hf-black">{info.risks}</p>
@@ -48,7 +48,7 @@ export function AdditiveInfoModal({
               )}
               {info.research && (
                 <div>
-                  <p className="hf-type-small text-text-secondary hf-heading uppercase">
+                  <p className="hf-type-caption hf-heading uppercase">
                     Forskning
                   </p>
                   <p className="hf-type-body text-hf-black">{info.research}</p>
@@ -72,7 +72,7 @@ export function AdditiveInfoModal({
               </Link>
             </div>
           )}
-          <p className="hf-type-small text-text-secondary mt-4">
+          <p className="hf-type-caption mt-4">
             Generel baggrundsinformation baseret på EFSA/EU-kilder — ikke personlig
             kostrådgivning.
           </p>

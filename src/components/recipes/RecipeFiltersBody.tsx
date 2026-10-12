@@ -115,7 +115,7 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
             onChange={(persons) => update({ ...filters, persons })}
           />
           {portionKcal !== null && (
-            <p className="hf-type-small text-text-secondary pt-3">
+            <p className="hf-type-caption pt-3">
               {t("recipeFilters.portionHint", { kcal: portionKcal })}
             </p>
           )}

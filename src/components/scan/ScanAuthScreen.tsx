@@ -4,7 +4,7 @@ import Image from "next/image";
 // sidebaggrund som Hello Cals login, uden bundmenu.
 export function ScanAuthScreen({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
+    <div className="hf-screen-body">
       <div className="hf-appbar hf-appbar--brand">
         <div className="hf-appbar__slot" />
         <div className="flex min-w-0 items-center justify-center">

@@ -44,15 +44,15 @@ export function MicronutrientDirectory() {
 
   return (
     <div className="min-h-dvh bg-hf-white text-hf-black">
-      <div className="sticky top-0 z-10 border-b border-hf-tan-dark bg-hf-white px-4 pb-3 pt-4">
+      <div className="hf-directory-toolbar">
         <div className="mx-auto flex max-w-xl flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Link href="/" aria-label="Tilbage" className="flex h-8 w-8 items-center justify-center rounded-full">
+            <Link href="/" aria-label="Tilbage" className="hf-icon-circle-sm">
               <IconArrowLeft size={20} />
             </Link>
             <h1 className="hf-type-title hf-heading">Vitaminer og mineraler</h1>
           </div>
-          <label className="flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2">
+          <label className="hf-directory-filter">
             <IconSearch size={18} className="text-text-secondary" />
             <input
               type="search"
@@ -89,7 +89,7 @@ export function MicronutrientDirectory() {
                           {item.name}
                         </a>
                       </h3>
-                      <p className="hf-type-small text-text-secondary">{item.alsoKnownAs}</p>
+                      <p className="hf-type-caption">{item.alsoKnownAs}</p>
                       <div className="mt-3 flex flex-col gap-3">
                         <MicronutrientFields info={item} />
                       </div>
@@ -99,7 +99,7 @@ export function MicronutrientDirectory() {
               </div>
             ),
         )}
-        <p className="hf-type-small text-text-secondary">
+        <p className="hf-type-caption">
           Generel baggrundsinformation. Referenceindtag er EU&apos;s referenceindtag for voksne (samme tal som
           &quot;% RI&quot; på varedeklarationer) — ikke personlig kostrådgivning.
         </p>
@@ -116,7 +116,7 @@ export function MicronutrientFields({ info }: { info: MicronutrientInfo }) {
       <Field label="Referenceindtag" text={info.referenceIntake} />
       <Field label="For lidt eller for meget" text={info.tooLittleOrMuch} />
       <div>
-        <p className="hf-type-small hf-heading uppercase text-text-secondary">Troværdige kilder</p>
+        <p className="hf-type-caption hf-heading uppercase">Troværdige kilder</p>
         <ul className="flex flex-wrap gap-x-3 gap-y-1">
           {micronutrientSources(info).map((link) => (
             <li key={link.href}>
@@ -140,7 +140,7 @@ function Field({ label, text }: { label: string; text: string }) {
   if (!text) return null;
   return (
     <div>
-      <p className="hf-type-small hf-heading uppercase text-text-secondary">{label}</p>
+      <p className="hf-type-caption hf-heading uppercase">{label}</p>
       <p className="hf-type-body">{text}</p>
     </div>
   );

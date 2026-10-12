@@ -45,8 +45,8 @@ export async function EnergySplitFlags() {
                   </Link>
                   <span className="hf-badge shrink-0">Afvigelse {flag.deviationPoints} %-point</span>
                 </div>
-                <p className="hf-type-small text-text-secondary">Denne vare: {fmt(flag.split as EnergySplit)}</p>
-                <p className="hf-type-small text-text-secondary">
+                <p className="hf-type-caption">Denne vare: {fmt(flag.split as EnergySplit)}</p>
+                <p className="hf-type-caption">
                   Øvrige ({flag.groupSize - 1}): {fmt(flag.referenceSplit as EnergySplit)}
                 </p>
                 <div>

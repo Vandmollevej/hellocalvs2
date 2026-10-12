@@ -31,7 +31,7 @@ export function PulseSuggestionCard({
         </span>
         <div className="flex min-w-0 flex-col gap-0.5">
           <p className="hf-type-body hf-type-strong text-hf-black">{t("activity.suggestTitle", { sport: suggestion.label })}</p>
-          <p className="hf-type-small text-text-secondary">{why}</p>
+          <p className="hf-type-caption">{why}</p>
         </div>
       </div>
       <button
@@ -44,7 +44,7 @@ export function PulseSuggestionCard({
       </button>
       {suggestion.alternatives.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="hf-type-small text-text-secondary">{t("activity.suggestMaybe")}</span>
+          <span className="hf-type-caption">{t("activity.suggestMaybe")}</span>
           {suggestion.alternatives.map((alternative) => (
             <button
               key={alternative.sport}

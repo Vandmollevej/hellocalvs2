@@ -40,7 +40,7 @@ export default async function ReportsPage() {
       <div className="hf-panel">
         <p className="hf-type-strong mb-2 text-hf-black">Seneste afsendelser</p>
         {sends.length === 0 && <p className="hf-type-small text-text-muted">Ingen endnu.</p>}
-        <ul className="hf-type-small flex flex-col gap-1 text-text-secondary">
+        <ul className="hf-type-caption flex flex-col gap-1">
           {sends.map((s) => (
             <li key={s.id}>
               {s.createdAt.toLocaleString("da-DK", { timeZone: "Europe/Copenhagen" })} · {s.partner.name} → {s.toEmail} ·{" "}

@@ -8,16 +8,7 @@ export function UncertaintyTilde({ small = false, className = "" }: { small?: bo
   return (
     <span
       aria-hidden="true"
-      className={`text-hf-green ${className}`}
-      style={{
-        fontFamily: "Arial, sans-serif",
-        fontWeight: 700,
-        fontSize: small ? "2.6em" : "2.4em",
-        lineHeight: 0,
-        verticalAlign: "-0.2em",
-        marginRight: 4,
-        WebkitTextStroke: `${small ? 0.5 : 0.75}px currentColor`,
-      }}
+      className={`hf-uncertainty-tilde text-hf-green ${small ? "hf-uncertainty-tilde--small" : ""} ${className}`}
     >
       ~
     </span>

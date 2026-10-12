@@ -149,7 +149,7 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
                 </div>
               )}
               {batchConfirm && (
-                <div className="flex flex-wrap items-center gap-3 rounded-md border border-hf-red-dark bg-hf-red-muted p-3" role="alertdialog">
+                <div className="hf-warning-confirm" role="alertdialog">
                   <p className="hf-type-body min-w-0 flex-1 text-hf-black">
                     {batchConfirm.text} Filerne fjernes, og brands, der fik logo herfra, får det tidligere logo tilbage.
                   </p>
@@ -256,7 +256,7 @@ export function BrandLogoUploadHistory({ batches, canEdit }: { batches: LogoUplo
                             <div className="rounded-md bg-hf-tan p-3">
                               <p className="hf-type-small mb-2 text-text-muted">Proces for {item.fileName}</p>
                               <StepList steps={item.steps} />
-                              {item.message && <p className="hf-type-small mt-2 text-text-secondary">{item.message}</p>}
+                              {item.message && <p className="hf-type-caption mt-2">{item.message}</p>}
                             </div>
                           </td>
                         </tr>
@@ -348,7 +348,7 @@ function BrandPicker({ item, onChanged }: { item: LogoUploadItem; onChanged: (me
   }
 
   return (
-    <div className="mt-1 flex max-w-sm flex-col gap-1.5">
+    <div className="hf-form-label mt-1 max-w-sm">
       <p className="hf-type-small text-hf-warning">Intet brand hedder «{item.suggestedName}». Vælg brand:</p>
       <input
         value={query}

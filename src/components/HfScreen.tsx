@@ -28,7 +28,7 @@ export function HfScreen({
   topBanner?: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
+    <div className="hf-screen-body">
       <ScreenHeader
         title={title}
         icon={icon}

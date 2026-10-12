@@ -81,7 +81,7 @@ export default function FrontPageDisplaySettingsPage() {
 
         <CustomMeasureSection />
 
-        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+        <p className="hf-type-caption hf-type-strong hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.sideSectionTitle")}
         </p>
         <div className="grid grid-cols-2 gap-4">
@@ -103,7 +103,7 @@ export default function FrontPageDisplaySettingsPage() {
             );
           })}
         </div>
-        <p className="hf-type-small text-text-secondary px-1">
+        <p className="hf-type-caption px-1">
           {t("frontPageSettings.sideHint", {
             side: t(oppositeSide(fabSide) === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight"),
           })}
@@ -113,17 +113,17 @@ export default function FrontPageDisplaySettingsPage() {
           <span className="hf-type-body flex-1 text-hf-black">{t("frontPageSettings.mirrorNavTitle")}</span>
           <Toggle checked={navMirrored} onChange={saveBottomNavMirrored} />
         </div>
-        <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.mirrorNavHint")}</p>
+        <p className="hf-type-caption px-1">{t("frontPageSettings.mirrorNavHint")}</p>
 
         <div className="mt-2 flex items-center gap-3 px-1">
           <WheelIcon />
           <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
-          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading uppercase tracking-wide">
+          <p className="hf-type-caption hf-type-strong hf-heading uppercase tracking-wide">
             {t("frontPageSettings.buttonsSectionTitle")}
           </p>
           <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
         </div>
-        <p className="hf-type-small hf-type-strong text-text-secondary px-1 text-right">
+        <p className="hf-type-caption hf-type-strong px-1 text-right">
           {t("frontPageSettings.selectedCount", { count: selectedKeys.length, max: MAX_WHEEL_ACTIONS })}
         </p>
 
@@ -157,13 +157,13 @@ export default function FrontPageDisplaySettingsPage() {
         </div>
 
         {atMax && (
-          <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.maxReachedHint")}</p>
+          <p className="hf-type-caption px-1">{t("frontPageSettings.maxReachedHint")}</p>
         )}
 
-        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+        <p className="hf-type-caption hf-type-strong hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.statsSectionTitle")}
         </p>
-        <p className="hf-type-small text-text-secondary px-1">
+        <p className="hf-type-caption px-1">
           {t("frontPageSettings.statsIntro")}
         </p>
 
@@ -188,10 +188,10 @@ export default function FrontPageDisplaySettingsPage() {
           })}
         </div>
 
-        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+        <p className="hf-type-caption hf-type-strong hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.zonesSectionTitle")}
         </p>
-        <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.zonesIntro")}</p>
+        <p className="hf-type-caption px-1">{t("frontPageSettings.zonesIntro")}</p>
         <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
           {pulse.zones.map((zone, index) => {
             const selected = pulse.selected === index;
@@ -232,7 +232,7 @@ export default function FrontPageDisplaySettingsPage() {
                   onBlur={(event) => setZoneBound(index, "max", event.target.value)}
                   className="hf-type-body w-16 rounded-lg bg-hf-white px-2 py-1 text-right text-hf-black"
                 />
-                <span className="hf-type-small text-text-secondary">bpm</span>
+                <span className="hf-type-caption">bpm</span>
               </div>
             );
           })}

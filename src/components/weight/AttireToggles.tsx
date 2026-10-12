@@ -42,7 +42,7 @@ export function AttireToggles({
         );
       })}
       {value.length === 0 && (
-        <p className="hf-type-small text-center text-text-secondary">{t("weighIn.attireNaked")}</p>
+        <p className="hf-type-caption text-center">{t("weighIn.attireNaked")}</p>
       )}
     </div>
   );

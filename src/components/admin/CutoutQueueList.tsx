@@ -43,7 +43,7 @@ function Row({ row }: { row: CutoutQueueRow }) {
       <CropThumb src={row.sourceUrl} cropBox={row.cropBox} />
       <div className="min-w-0 flex-1">
         <p className="hf-type-strong truncate text-hf-black">{title}</p>
-        <p className="hf-type-small text-text-secondary">{details}</p>
+        <p className="hf-type-caption">{details}</p>
         {row.error && <p className="hf-type-small truncate text-hf-red-dark">{row.error}</p>}
       </div>
       <span className="hf-type-small shrink-0 text-text-muted">{formatCopenhagenDateTime(row.createdAt)}</span>

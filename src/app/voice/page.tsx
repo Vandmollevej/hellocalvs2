@@ -218,9 +218,9 @@ function VoiceItemRow({
             <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
           )}
         </span>
-        <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
+        <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
       </div>
-      <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
+      <span className="hf-type-caption flex-shrink-0">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
       {!item.saved && onAdd && (
         <button
@@ -697,7 +697,7 @@ export default function VoicePage() {
             type="button"
             onClick={restartListening}
             aria-label={t("voice.resetTranscript")}
-            className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-hf-black text-hf-white"
+            className="hf-icon-circle-sm absolute right-2 top-2 z-10 bg-hf-black text-hf-white"
           >
             <IconRefresh size={16} />
           </button>

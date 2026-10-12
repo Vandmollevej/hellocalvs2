@@ -45,7 +45,7 @@ function Line({
           <button type="button" className="hf-btn-text text-text-secondary" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
             {t("energy.why")}
           </button>
-          {open && <p className="hf-type-small text-text-secondary">{why}</p>}
+          {open && <p className="hf-type-caption">{why}</p>}
         </div>
       )}
     </div>
@@ -60,7 +60,7 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
     return (
       <div className="hf-card flex flex-col gap-2 rounded-xl bg-hf-tan p-4">
         <p className="hf-type-body text-text-secondary">{t("energy.missingData")}</p>
-        <ul className="hf-type-small text-text-secondary">
+        <ul className="hf-type-caption">
           {summary.missing.map((field) => (
             <li key={field}>· {t(`energy.missing.${field}`)}</li>
           ))}
@@ -107,11 +107,11 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
         sign="="
         strong
       />
-      <p className="hf-type-small text-text-secondary">
+      <p className="hf-type-caption">
         {t("energy.range", { low: formatKcal(daily.low + calibratedDelta), high: formatKcal(daily.high + calibratedDelta) })}
       </p>
       {calibration && calibratedDelta === 0 && (
-        <p className="hf-type-small text-text-secondary">{t(`energy.calibrationStatus.${calibration.reason}`)}</p>
+        <p className="hf-type-caption">{t(`energy.calibrationStatus.${calibration.reason}`)}</p>
       )}
       {budget && goalDelta !== 0 && (
         <>
@@ -128,7 +128,7 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
           ))}
         </div>
       )}
-      <p className="hf-type-small text-text-secondary">{t("energy.disclaimer")}</p>
+      <p className="hf-type-caption">{t("energy.disclaimer")}</p>
     </div>
   );
 }
