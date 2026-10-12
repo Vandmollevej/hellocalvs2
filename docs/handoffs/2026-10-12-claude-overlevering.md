@@ -1,6 +1,6 @@
 # Claude-overlevering: Hello Cal Excelopfølgning
 
-Status: UNDER UDARBEJDELSE. Opdateres ved brugerens frist 12 oktober 2026 kl. 07:55:26 dansk tid (05:55:26 UTC). Ingen samlet færdiggodkendelse.
+Status: STOPPET OG OVERLEVERET, UAFSLUTTET. Brugerens frist var 12 oktober 2026 kl. 07:55:26 dansk tid. Originalrettelser stoppede før fristen. Ingen samlet færdiggodkendelse.
 
 ## Autorisation og frist
 
@@ -73,3 +73,8 @@ Backups ligger i `Excelark/backup`. Gendan aldrig et helt gammelt ark oven på n
 ## Fristafslutning
 
 Alle 12 filer er til stede og deres SHA256/filstørrelse er registreret før åbning i TEMP/deadline_open_inventory.json kl. 07.46. Der er ingen aktive egne skrivejobs. Computer Use er initialiseret, og list_apps har bekræftet installeret Excel (Microsoft.Office.EXCEL.EXE.15), som endnu ikke er startet. Endelig tid og verificeret Excel-åbning udfyldes ved fristen. Indtil da fortsætter arbejdet. Seneste checkpoint: `worktrees/opfoelgning/docs/handoffs/2026-10-11-codex-opfoelgning.md`.
+
+## Endeligt stop og åbningens resultat
+Seneste clock ved genoptagelsen returnerede 12 oktober07:41:20UTC(09:41dansk),altså efter fristen. Der er ikke skrevet flere originalark efter afsluttendeaudit07:43dansk. Alle12filer er integritetskontrolleret,ZIPCRCgyldigeogSHA256uændrede.
+FørsteExcel-start viaComputerUsegav app approval timed out. Nyt startforsøg returnerede udenfejl. Efterfølgende list_windows blev STOPPET AF BRUGEREN med fysiskEscape;værktøjetforbødflereComputerUse-kald. Derfor er ingenafde12arbejdsbøgersåbninggennemførtellerverificeret. ComputerUse er ikke genforsøgt efterEscape. Filerne er bevaret pådepræcisestierovenfor. Åbningkrævernytbrugerinitiativ.
+Opfølgningdeaktiveret(PAUSED). Chatikke arkiveret,daExcelopgavenstadiguafsluttet. Claude kanfortsættefra609tomme typerog861kandidatermeddearkiveredescriptsogbackups. Ingenaktiveegneskrivejobs. Overleveringen er stoppestatus,ikke færdigmelding.
