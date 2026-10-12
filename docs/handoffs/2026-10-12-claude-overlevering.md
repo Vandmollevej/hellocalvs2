@@ -70,4 +70,4 @@ Backups ligger i `Excelark/backup`. Gendan aldrig et helt gammelt ark oven på n
 
 ## Fristafslutning
 
-Endelig tid, jobstatus og verificeret Excel-åbning udfyldes ved fristen. Indtil da fortsætter arbejdet. Seneste checkpoint: `worktrees/opfoelgning/docs/handoffs/2026-10-11-codex-opfoelgning.md`.
+Alle 12 filer er til stede og deres SHA256/filstørrelse er registreret før åbning i TEMP/deadline_open_inventory.json kl. 07.46. Der er ingen aktive egne skrivejobs. Computer Use er initialiseret, og list_apps har bekræftet installeret Excel (Microsoft.Office.EXCEL.EXE.15), som endnu ikke er startet. Endelig tid og verificeret Excel-åbning udfyldes ved fristen. Indtil da fortsætter arbejdet. Seneste checkpoint: `worktrees/opfoelgning/docs/handoffs/2026-10-11-codex-opfoelgning.md`.
