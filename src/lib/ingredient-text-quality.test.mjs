@@ -78,3 +78,10 @@ test("listen stopper ved næringstabellen, også uden overskrift", async () => {
     "chili, vand, salt, citronsyre £202.",
   );
 });
+
+test("volapyk giver tvivl: ':699k1', 'ee', men ikke E-numre, B12 eller 12%", async () => {
+  const { junkTokens } = await import("./ingredient-text-quality.ts");
+  assert.deepEqual(junkTokens("citronsyre E202. ee .06 kcal | ; :699k1 167"), ["ee", "699k1"]);
+  assert.deepEqual(junkTokens("Vand, sukker (12%), E330, vitamin B12, D3, omega-3, 2,5 g salt"), []);
+  assert.ok(reviewIngredientsText("Vand, sukker, salt, xq7z, olie", "da").doubts.some((d) => d.startsWith("Volapyk")));
+});

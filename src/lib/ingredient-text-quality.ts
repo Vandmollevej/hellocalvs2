@@ -148,6 +148,29 @@ function fixOcrWords(text: string): { text: string; fixed: string[] } {
   return { text: result, fixed };
 }
 
+// Korte ord, der godt kan stå i en dansk/engelsk ingrediensliste.
+const SHORT_WORDS = new Set(["og", "af", "i", "à", "a", "e", "el", "de", "en", "et", "ca", "pr", "g", "kg", "mg", "ml", "cl", "l", "ost", "æg", "or", "of", "in", "and", "to", "vit", "msg", "b", "c", "d", "k", "ph", "uv"]);
+
+// Brudstykker, der ikke er ord: bogstaver og tal blandet (":699k1" — men ikke
+// E-numre, procenter, "B12", "D3", "omega-3"), og ét-/to-bogstavsstumper ("ee").
+export function junkTokens(text: string): string[] {
+  const junk: string[] = [];
+  for (const token of text.split(/[\s,;:()[\]/]+/u)) {
+    const bare = token.replace(/^[.\-–*]+|[.\-–*%]+$/gu, "");
+    if (!bare) continue;
+    const hasLetter = /\p{L}/u.test(bare);
+    const hasDigit = /\d/.test(bare);
+    if (hasLetter && hasDigit) {
+      if (/^E\d{3,4}[a-d]?$/i.test(bare) || /^(?:vitamin-?)?[A-Z]\d{1,2}$/i.test(bare) || /^omega-?\d$/i.test(bare)) continue;
+      if (/^\d+(?:[.,]\d+)?(?:g|kg|mg|ml|cl|l|%)$/i.test(bare)) continue;
+      junk.push(token);
+      continue;
+    }
+    if (hasLetter && bare.length <= 2 && !SHORT_WORDS.has(bare.toLowerCase())) junk.push(token);
+  }
+  return junk;
+}
+
 function unbalancedParentheses(text: string): boolean {
   let depth = 0;
   for (const char of text) {
@@ -207,6 +230,8 @@ export function reviewIngredientsText(raw: string, language?: string | null): In
   const odd = text.match(ODD_CHARS);
   if (odd) doubts.push(`Usædvanligt tegn "${odd[0]}" i listen`);
   if (unbalancedParentheses(text)) doubts.push("Parenteserne går ikke op");
+  const junk = junkTokens(text);
+  if (junk.length) doubts.push(`Volapyk i listen: ${junk.slice(0, 5).join(" ")}`);
   const letters = text.replace(/[^\p{L}]/gu, "").length;
   if (letters < text.replace(/\s/g, "").length * 0.6) doubts.push("For få bogstaver — teksten ligner støj");
 
