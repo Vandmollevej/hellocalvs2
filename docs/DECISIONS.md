@@ -1,3 +1,13 @@
+## 2026-10-14: Tilføj-kameraet — "Spring over" på indholds-trinnet
+
+Brugerens krav: "Så skal der være en knap nederst … hvor der står spring over, nederst i vinduet hvor man tager billeder. Som sagt skal punktet springes over, hvis kameraet opfanger, at der både er ingredienser og energi i samme billede."
+
+- **Problemet:** varer uden indholdsfortegnelse (vand, sukker, mel, frisk frugt/grønt, æg — fødevarer med én ingrediens behøver ingen liste) kunne aldrig komme forbi "4. Scan indholdsfortegnelse": billeder uden tekst tæller ikke som forsøg, så kameraet blev stående med "Kan ikke læse teksten". Eneste udvej var et tryk på billedet, som ingen fik at vide.
+- **Løsning:** en knap "Spring over" nederst i selve kamerabilledet (mørk pille som beskeden "Kan ikke læse teksten", der rykker op over knappen) — kun på indholds-trinnet, ikke mens et trin aflæses/vises klaret eller kameraet melder fejl. Tryk markerer trinnet klaret uden foto (`skipIngredients`, logges som `ingredients_skipped` i admin → Log), nulstiller indholdsdata, og flowet går videre til oprettelsen; AI får ingen ingrediensliste at læse. Et tryk på trinnet med flueben tager det stadig om.
+- **Ikke vist**, når ingrediensliste og næringstabel stod på samme energibillede: så er trin 4 allerede klaret og springes over som hidtil (DECISIONS 2026-09-26). Heller ikke ved en genscanning, der alene mangler indholdet (der ville intet være at sende).
+- **Native** (`ProductCaptureFlow.kt`, `SkipButton`): samme pille nederst i søgeren, `skipIngredients()` fjerner indholdsfotoet og går videre. Native læser ikke etiketter lokalt, så "begge på samme billede" afgøres der stadig af serveren.
+- Tekst: `cameraCreate.skipIngredients` ("Spring over"/"Skip"). Regel i REGLER.md → Tilføj-kameraet.
+
 ## 2026-10-14: Graviditet og amning — officielle tillæg til kaloriebehovet
 
 Brugerens krav: "Der findes også officielle tabeller for kaloriebehov for gravide og ammende. Tilføj det i personlige indstillinger under Visning og stil spørgsmål under oprettelse. Hvis ja skal man oplyse hvor langt man er henne (trimester) og uger man har ammet; kalorieindtaget justeres efter det."

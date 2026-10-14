@@ -181,6 +181,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Flere varer i forsidebilledet: den i rammens midte vælges automatisk (`pickObjectInFocus`). Ingen cirkler, intet tryk, kameraet fryser aldrig.
 - Et automatisk forsidebillede uden tekst og uden vare (bukseben, bord, gulv) afvises med besked, og scanningen fortsætter; et tryk på billedet bruger det alligevel. Energi/indhold siger "Kan ikke læse teksten" efter to billeder uden tekst — aldrig scanne i stilhed.
 - Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
+- "Spring over" nederst i kamerabilledet på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, og varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native. Se DECISIONS.md 2026-10-14 ("Spring over").
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 

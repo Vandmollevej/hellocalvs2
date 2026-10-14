@@ -1076,6 +1076,28 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     void processLabelFrame(live, true);
   }
 
+  // "Spring over" nederst i kamerabilledet på indholds-trinnet (bruger
+  // 2026-10-14): varer uden indholdsfortegnelse (vand, sukker, frugt …) kan
+  // ellers aldrig komme videre, fordi billeder uden tekst ikke tæller. Trinnet
+  // markeres klaret uden foto; AI får ingen ingrediensliste at læse. Trinnet
+  // findes slet ikke, når listen allerede stod på energibilledet.
+  function skipIngredients() {
+    if (working || flash || stepDone || step !== "ingredients") return;
+    const data = dataRef.current;
+    scanLog(flowId, "ingredients_skipped", {
+      message: "Indhold sprunget over — brugeren trykkede Spring over (varen har ingen indholdsfortegnelse)",
+      barcode: data.barcode,
+      data: { attempts: labelAttemptsRef.current, noTextFrames: labelNoTextRef.current },
+    });
+    data.ingredientsPhoto = undefined;
+    data.ingredientsOcrText = undefined;
+    data.ingredientsOcrConfidence = undefined;
+    data.localIngredientsText = undefined;
+    data.ingredientsOnNutritionPhoto = false;
+    resetLiveScan();
+    goToNextStep(markDone("ingredients"));
+  }
+
   // Et trin med flueben kan tages om ved at trykke på det (bruger
   // 2026-10-14). Stregkoden starter forfra: en ny stregkode er en anden vare,
   // så fotos og aflæsninger nulstilles.
@@ -1181,6 +1203,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
   const stepNumber = (item: CaptureStep) => visibleSteps.indexOf(item) + 1;
   const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
+  // "Spring over" kun på indholds-trinnet, og ikke ved en genscanning, der
+  // alene mangler indholdet (så ville der intet være at sende).
+  const canSkipIngredients =
+    step === "ingredients" && !cameraMessage && !working && !flash && !stepDone && !createFailed && !(rescan && rescan.steps.length === 1);
 
   return (
     <div className="flex flex-col gap-4">
@@ -1239,10 +1265,28 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         />
 
         {viewfinderNotice && !cameraMessage && !stepDone && (
-          <div className="pointer-events-none absolute inset-x-3 bottom-3 flex justify-center" aria-live="polite">
+          <div
+            className={`pointer-events-none absolute inset-x-3 flex justify-center ${canSkipIngredients ? "bottom-16" : "bottom-3"}`}
+            aria-live="polite"
+          >
             <p className="hf-type-small hf-type-strong bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
               {viewfinderNotice}
             </p>
+          </div>
+        )}
+
+        {canSkipIngredients && (
+          <div className="absolute inset-x-3 bottom-3 flex justify-center">
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                skipIngredients();
+              }}
+              className="hf-type-small hf-type-strong flex h-11 items-center justify-center bg-hf-black/60 px-6 text-hf-white rounded-card"
+            >
+              {t("cameraCreate.skipIngredients")}
+            </button>
           </div>
         )}
 

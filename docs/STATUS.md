@@ -1,3 +1,8 @@
+## 2026-10-14: Tilføj-kameraet — "Spring over" på indholds-trinnet
+
+- Knap "Spring over" nederst i kamerabilledet på "4. Scan indholdsfortegnelse" (web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`): varer uden indholdsfortegnelse kan nu oprettes; trinnet klares uden foto og logges som `ingredients_skipped`. Vises ikke, når listen stod på energibilledet (trin 4 springes da over som før). Tekst `cameraCreate.skipIngredients` i alle sprog. DECISIONS/REGLER 2026-10-14.
+- Ikke prøvet på telefon her (ingen enhed): brugerens test af knappen på iPhone.
+
 ## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret
 
 - Gennemgået: scan-appen (`/scan`, `/scan/opret`) bruger telefonens eget kamera via filfelt med `capture="environment"` i hyldebilledet og alle fire bokse; intet automatisk kamera, stregkoden læses af fotoet. Bluetooth-udløser virker derfor via kamera-appens egen udløser. Ingen kodeændring nødvendig.

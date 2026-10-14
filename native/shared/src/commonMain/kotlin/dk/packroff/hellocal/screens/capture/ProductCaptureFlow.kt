@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -218,6 +220,16 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
+    // "Skip" at the bottom of the viewfinder on the ingredients step (user
+    // 2026-10-14, web: skipIngredients): products without an ingredients list
+    // (water, sugar, fruit …) could otherwise never get past step 4. The step
+    // is marked done without a photo; the server gets no ingredients photo.
+    fun skipIngredients() {
+        if (working || stepDone != null || step != CaptureStep.Ingredients) return
+        photos = photos - CaptureStep.Ingredients
+        goToNextStep(done + CaptureStep.Ingredients)
+    }
+
     // A step with a check mark can be redone by tapping it (user 2026-10-14).
     // The barcode starts over: a new barcode is another product.
     fun selectStep(next: CaptureStep) {
@@ -272,6 +284,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 }
             }
             if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
+            if (step == CaptureStep.Ingredients && message == null && celebrating == null && !working && !createFailed) {
+                SkipButton(t.t("cameraCreate.skipIngredients"), onClick = { skipIngredients() })
+            }
             if (message != null) {
                 CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
             } else if (celebrating != null) {
@@ -316,6 +331,19 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 HcText(t.t("cameraCreate.retakeHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
         }
+    }
+}
+
+/** Web: the "Spring over" pill at the bottom of the viewfinder (bg-hf-black/60, white, 44 dp, radius card). */
+@Composable
+private fun BoxScope.SkipButton(label: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(HcDimens.RadiusCard)
+    Box(
+        Modifier.align(Alignment.BottomCenter).padding(12.dp).height(44.dp).wrapContentWidth().clip(shape)
+            .background(HcColors.Black.copy(alpha = 0.6f), shape).clickable(onClick = onClick).padding(horizontal = 24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        HcText(label, HcTypeRoles.Small, color = HcColors.White, bold = true, maxLines = 1)
     }
 }
 
