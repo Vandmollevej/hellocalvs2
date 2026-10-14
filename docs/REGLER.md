@@ -194,6 +194,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Stavelogik findes ét sted: `src/lib/spelling-engine.ts` (robot, kontrol ved gem og visning). Ny ordbog/regel = grundlisten `src/lib/ingredient-words.ts`, katalogets ordforråd eller admins afgørelser på Stavekontrol — aldrig en særregel for ét ord i koden. Nattens robot (`spelling-check`) retter kun sikre fund og lægger resten på admin → Stavekontrol; hvad admin har afvist/fortrudt, rettes aldrig igen.
 - Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
 
+## Kropsmål: stemmeguiden (user rule 2026-10-14)
+
+- Stemmeguiden på Kropsmål må KUN udfylde kropsmål-felterne. Den er regelstyret (ingen AI-model): tal + "spring over", "tilbage", "gentag", "stop". Nye kommandoer eller felter tilføjes i både `src/lib/body-measurement-voice.ts` og `native/.../profile/BodyMeasurementVoice.kt` (samme regler, samme tests).
+- Et nyt kropsmål kræver også teksterne `bodyMeasurements.voice.target.<felt>` og `bodyMeasurements.voice.how.<felt>` (hvor man måler) på alle sprog.
+- Tallet gemmes præcis som en indtastning; urimelige tal (uden for 5–250 cm / 2–100 tommer) gemmes aldrig.
+
 ## Versionsvagt efter deploy (2026-10-14)
 
 - Hvert web-deploy bygges med `NEXT_DEPLOYMENT_ID` = commit-sha (`build.yml` → `Dockerfile`). En åben fane med kode fra et ældre deploy genindlæses af Next.js ved næste sideskift. Fjern det aldrig: uden det kørte brugerens fane timer efter et deploy stadig den gamle kamerakode.

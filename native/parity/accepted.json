@@ -903,7 +903,7 @@
   },
   "/profile/body-measurements": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/body-measurements/page.tsx": "5c36062ca5951264",
+    "src/app/profile/body-measurements/page.tsx": "7df1b866ce5cf83a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "fc63c1a077a687a1",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
@@ -913,6 +913,7 @@
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
     "src/components/add/AddMenuList.tsx": "97ea86b9a3379040",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
+    "src/components/body-measurements/useBodyMeasurementVoice.ts": "cd5f6288204d7018",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
     "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
