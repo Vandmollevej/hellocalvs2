@@ -11,6 +11,8 @@
 //
 // Ingen imports med "@/": modulet testes direkte med node --test.
 
+import { DANISH_INGREDIENT_WORDS } from "./ingredient-words.ts";
+
 export type IngredientTextReview = { text: string; fixes: string[]; doubts: string[] };
 
 // AI-aflæsninger med tvivl får højst denne sikkerhed (under URGENT_BELOW = 0,7
@@ -48,6 +50,69 @@ function danishSoja(text: string): string {
   return text.replace(new RegExp(`(?<![${LETTER}])(s)(o)(y)(a)`, "gi"), (_m, s, o, y, a) => `${s}${o}${y === "Y" ? "J" : "j"}${a}`);
 }
 
+// Typiske OCR-forvekslinger (brugerens test: "SOIASAUCE", "SFSAMFRØ",
+// "krydderler", "cltronsyre"): [læst, rigtigt].
+const OCR_CONFUSIONS: [string, string][] = [
+  ["l", "i"],
+  ["i", "l"],
+  ["i", "j"],
+  ["f", "e"],
+  ["1", "l"],
+  ["1", "i"],
+  ["rn", "m"],
+];
+const KNOWN = new Set<string>(DANISH_INGREDIENT_WORDS);
+
+// Et kendt ord eller sammensat af kendte ord (evt. med binde-s: "sennepsfrø").
+function knownWord(word: string, depth = 0): boolean {
+  if (KNOWN.has(word)) return true;
+  if (depth > 2) return false;
+  for (let index = 3; index <= word.length - 3; index++) {
+    const head = word.slice(0, index);
+    if (!KNOWN.has(head)) continue;
+    const rest = word.slice(index);
+    if (knownWord(rest, depth + 1)) return true;
+    if (rest.startsWith("s") && rest.length > 3 && knownWord(rest.slice(1), depth + 1)) return true;
+  }
+  return false;
+}
+
+function withCase(original: string, replacement: string): string {
+  return original === original.toUpperCase() && original !== original.toLowerCase() ? replacement.toUpperCase() : replacement;
+}
+
+// Ét ukendt ord, som én OCR-forveksling gør til et kendt ord, rettes —
+// store/små bogstaver bevares. Kendte og ukendte ord uden sikker rettelse
+// røres ikke.
+function fixOcrWord(token: string): string | null {
+  const lower = token.toLowerCase();
+  if (lower.replace(/[^\p{L}]/gu, "").length < 4 || knownWord(lower)) return null;
+  const candidates = new Set<string>();
+  for (const [read, right] of OCR_CONFUSIONS) {
+    for (let index = lower.indexOf(read); index >= 0; index = lower.indexOf(read, index + 1)) {
+      const candidate = lower.slice(0, index) + right + lower.slice(index + read.length);
+      if (knownWord(candidate)) candidates.add(`${index}:${read}:${right}`);
+    }
+  }
+  if (candidates.size !== 1) return null;
+  const [position, read, right] = [...candidates][0].split(":");
+  const index = Number(position);
+  const original = token.slice(index, index + read.length);
+  return token.slice(0, index) + withCase(original, right) + token.slice(index + read.length);
+}
+
+function fixOcrWords(text: string): { text: string; fixed: string[] } {
+  const fixed: string[] = [];
+  const result = text.replace(/[\p{L}1]+/gu, (token) => {
+    if (!/\p{L}/u.test(token)) return token;
+    const fix = fixOcrWord(token);
+    if (!fix) return token;
+    fixed.push(`${token} → ${fix}`);
+    return fix;
+  });
+  return { text: result, fixed };
+}
+
 function unbalancedParentheses(text: string): boolean {
   let depth = 0;
   for (const char of text) {
@@ -58,11 +123,11 @@ function unbalancedParentheses(text: string): boolean {
   return depth !== 0;
 }
 
-// Visning af lister, der blev gemt før kontrollen: kun de sikre tegnrettelser
-// (E-nummer og dansk "soja"); data i databasen ændres ikke.
+// Visning af lister, der blev gemt før kontrollen: de samme sikre rettelser
+// (E-nummer, dansk stavning, OCR-ord, næringstabellen skåret fra); data i
+// databasen ændres ikke.
 export function displayIngredientsText(text: string): string {
-  const withE = text.replace(CURRENCY_E_NUMBER, (_m, digits: string) => `E${digits.toUpperCase()}`);
-  return looksDanish(withE) ? danishSoja(withE) : withE;
+  return reviewIngredientsText(text).text || text;
 }
 
 export function reviewIngredientsText(raw: string, language?: string | null): IngredientTextReview {
@@ -73,7 +138,12 @@ export function reviewIngredientsText(raw: string, language?: string | null): In
 
   const nutrition = NUTRITION_START.exec(text);
   if (nutrition && nutrition.index > 0) {
-    text = text.slice(0, nutrition.index).replace(/[\s,;:.–-]+$/u, "").trim();
+    // Støj mellem listens sidste punktum og tabellen ("£202. ee .06 kcal") fjernes.
+    text = text
+      .slice(0, nutrition.index)
+      .replace(/[\s,;:.|–-]+$/u, "")
+      .replace(/\.(?:\s+\S{1,3}){1,3}$/u, ".")
+      .trim();
     if (text && !/[.)]$/.test(text)) text += ".";
     fixes.push(`Næringstabellen skåret fra listen ("${nutrition[0]}")`);
   } else if (nutrition) {
@@ -91,6 +161,11 @@ export function reviewIngredientsText(raw: string, language?: string | null): In
     if (soja !== text) {
       fixes.push('Dansk stavning: "soya" → "soja"');
       text = soja;
+    }
+    const words = fixOcrWords(text);
+    if (words.fixed.length) {
+      fixes.push(`OCR-fejl rettet: ${words.fixed.join(", ")}`);
+      text = words.text;
     }
   }
 

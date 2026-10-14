@@ -46,3 +46,18 @@ test("energidrik i listen er ikke næringstabellen", () => {
   const review = reviewIngredientsText("Vand, sukker, energidrik-aroma, koffein", "da");
   assert.equal(review.text, "Vand, sukker, energidrik-aroma, koffein");
 });
+
+test("brugerens skærmbillede: OCR-ord, £202 og næringsstøj rettes", () => {
+  const review = reviewIngredientsText(
+    "Chili, vand, vegetabilsk olie, bordsalt, SOIASAUCE, mononatriumglutamat (MSG), brygget sauce, SFSAMFRØ, krydderler, acetyleret diastarkfosfat, E635, cltronsyre, £202. ee .06 kcal | ; :699k1 167 ; Fnergi / kulhydrat:",
+  );
+  assert.equal(
+    review.text,
+    "Chili, vand, vegetabilsk olie, bordsalt, SOJASAUCE, mononatriumglutamat (MSG), brygget sauce, SESAMFRØ, krydderier, acetyleret diastarkfosfat, E635, citronsyre, E202.",
+  );
+  assert.deepEqual(review.doubts, []);
+});
+
+test("kendte og ukendte ord uden sikker rettelse røres ikke", () => {
+  assert.equal(reviewIngredientsText("Vand, sukker, lime, kardemomme, salt", "da").text, "Vand, sukker, lime, kardemomme, salt");
+});

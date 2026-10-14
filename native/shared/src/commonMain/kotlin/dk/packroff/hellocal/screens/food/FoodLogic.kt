@@ -599,23 +599,97 @@ private fun isAllergenLetter(c: Char) = c.lowercaseChar() in ALLERGEN_LETTERS
 data class IngredientSegment(val text: String, val allergen: Boolean)
 
 // src/lib/ingredient-text-quality.ts displayIngredientsText: older lists are
-// shown with the safe character fixes ("£202" → "E202", Danish "soja").
+// shown with the same safe fixes — E-number read as £/€, Danish "soja", typical
+// OCR letter mix-ups ("krydderler" → "krydderier") and the nutrition table cut off.
 private val CURRENCY_E_NUMBER = Regex("""[£€]\s?(\d{3,4}[a-dA-D]?)(?!\d)""")
-private val SOYA = Regex("""(?<![a-zA-ZæøåÆØÅäöüÄÖÜéÉèÈ])([sS][oO])([yY])([aA])""")
+private const val TEXT_LETTERS = "a-zA-ZæøåÆØÅäöüÄÖÜéÉèÈ"
+private val SOYA = Regex("""(?<![$TEXT_LETTERS])([sS][oO])([yY])([aA])""")
+private val NUTRITION_START = Regex(
+    """(?<![$TEXT_LETTERS])(?:[EF][nm]erg[iq1l]|energy|næringsindhold|næringsværdi|næringsdeklaration|nutrition|gennemsnitlig næring)(?![$TEXT_LETTERS])|\d+(?:[.,]\d+)?\s?(?:kj|kcal)(?![$TEXT_LETTERS])""",
+    RegexOption.IGNORE_CASE,
+)
 private val DANISH_INGREDIENT_WORDS = Regex(
     """(?<![a-zæøå])(?:ingredienser|sukker|vand|olie|hvede\w*|mælk\w*|krydderi\w*|eddike|hvidløg|stivelse|surhedsregulerende|konserveringsmiddel|farvestof|fortykningsmiddel|smagsforstærker|rapsolie|solsikkeolie|chili|citronsyre|salt|og|med)(?![a-zæøå])""",
     RegexOption.IGNORE_CASE,
 )
 
+/** Copy of src/lib/ingredient-words.ts. */
+private val DANISH_INGREDIENT_VOCABULARY = setOf(
+    "vand", "sukker", "salt", "bordsalt", "havsalt", "olie", "fedt", "eddike", "mel", "gær", "honning", "sirup",
+    "rapsolie", "solsikkeolie", "olivenolie", "palmeolie", "kokosolie", "sesamolie", "sojaolie", "plantefedt",
+    "vegetabilsk", "vegetabilske", "animalsk", "margarine", "smør", "fløde", "mælk", "ost", "valle", "æg",
+    "æggeblomme", "æggehvide", "kakao", "kakaosmør", "chokolade", "vanilje", "glukose", "fruktose", "dextrose",
+    "maltodextrin", "laktose", "stivelse", "majsstivelse", "kartoffelstivelse", "modificeret", "rørsukker", "soja",
+    "sojabønner", "sojasauce", "sojalecithin", "sesam", "sesamfrø", "hvede", "hvedemel", "rug", "rugmel", "byg",
+    "bygmalt", "havre", "havregryn", "spelt", "durum", "gluten", "jordnødder", "mandler", "hasselnødder",
+    "valnødder", "cashewnødder", "nødder", "sennep", "sennepsfrø", "selleri", "fisk", "rejer", "lupin", "sulfit",
+    "svovldioxid", "skaldyr", "bløddyr", "chili", "chilipeber", "peber", "paprika", "hvidløg", "løg", "ingefær",
+    "krydderi", "krydderier", "krydderurter", "persille", "dild", "basilikum", "oregano", "timian", "rosmarin",
+    "laurbær", "koriander", "spidskommen", "gurkemeje", "karry", "kanel", "muskat", "nellike", "anis", "fennikel",
+    "tomat", "tomater", "tomatpuré", "kartofler", "kartoffel", "ris", "majs", "bønner", "ærter", "linser", "svampe",
+    "champignon", "citron", "appelsin", "frugt", "grøntsager", "bær", "jordbær", "hindbær", "æble", "æbler", "pære",
+    "banan", "rosiner", "citronsyre", "mælkesyre", "eddikesyre", "ascorbinsyre", "sorbinsyre", "kaliumsorbat",
+    "natriumbenzoat", "mononatriumglutamat", "natrium", "kalium", "calcium", "magnesium", "jern", "zink", "vitamin",
+    "vitaminer", "aroma", "aromaer", "naturlig", "naturlige", "farvestof", "konserveringsmiddel", "antioxidant",
+    "emulgator", "fortykningsmiddel", "stabilisator", "surhedsregulerende", "middel", "midler", "smagsforstærker",
+    "hævemiddel", "xanthangummi", "guargummi", "pektin", "gelatine", "lecithin", "acetyleret", "fosfat", "fosfater",
+    "fermenteret", "brygget", "tørret", "røget", "ristet", "kogt", "pulver", "ekstrakt", "koncentrat", "juice",
+    "saft", "sauce", "pasta", "kød", "svinekød", "oksekød", "kylling", "bacon", "skinke", "pølse", "andel", "heraf",
+    "indeholder", "kan", "spor", "af", "og", "med", "fra", "samt", "ingredienser", "sort", "hvid", "rød", "grøn",
+    "gul", "hel", "hele", "knust", "hakket", "sukkerrør", "kokos", "oliven", "druer", "mynte", "lakrids",
+)
+
+private val OCR_CONFUSIONS = listOf("l" to "i", "i" to "l", "i" to "j", "f" to "e", "1" to "l", "1" to "i", "rn" to "m")
+
 private fun looksDanishIngredients(text: String): Boolean =
     text.any { it.lowercaseChar() in "æøå" } || DANISH_INGREDIENT_WORDS.findAll(text).count() >= 3
 
-fun displayIngredientsText(text: String): String {
-    val withE = CURRENCY_E_NUMBER.replace(text) { "E" + it.groupValues[1].uppercase() }
-    if (!looksDanishIngredients(withE)) return withE
-    return SOYA.replace(withE) { m ->
-        m.groupValues[1] + (if (m.groupValues[2] == "Y") "J" else "j") + m.groupValues[3]
+private fun knownIngredientWord(word: String, depth: Int = 0): Boolean {
+    if (word in DANISH_INGREDIENT_VOCABULARY) return true
+    if (depth > 2) return false
+    for (index in 3..(word.length - 3)) {
+        if (word.substring(0, index) !in DANISH_INGREDIENT_VOCABULARY) continue
+        val rest = word.substring(index)
+        if (knownIngredientWord(rest, depth + 1)) return true
+        if (rest.startsWith("s") && rest.length > 3 && knownIngredientWord(rest.substring(1), depth + 1)) return true
     }
+    return false
+}
+
+private fun fixOcrWord(token: String): String {
+    val lower = token.lowercase()
+    if (lower.count { it.isLetter() } < 4 || knownIngredientWord(lower)) return token
+    val candidates = mutableSetOf<Triple<Int, String, String>>()
+    for ((read, right) in OCR_CONFUSIONS) {
+        var index = lower.indexOf(read)
+        while (index >= 0) {
+            val candidate = lower.substring(0, index) + right + lower.substring(index + read.length)
+            if (knownIngredientWord(candidate)) candidates += Triple(index, read, right)
+            index = lower.indexOf(read, index + 1)
+        }
+    }
+    val (index, read, right) = candidates.singleOrNull() ?: return token
+    val original = token.substring(index, index + read.length)
+    val upper = original == original.uppercase() && original != original.lowercase()
+    return token.substring(0, index) + (if (upper) right.uppercase() else right) + token.substring(index + read.length)
+}
+
+fun displayIngredientsText(text: String): String {
+    var out = text.trim()
+    val nutrition = NUTRITION_START.find(out)
+    if (nutrition != null && nutrition.range.first > 0) {
+        out = out.substring(0, nutrition.range.first)
+            .replace(Regex("""[\s,;:.|–-]+$"""), "")
+            .replace(Regex("""\.(?:\s+\S{1,3}){1,3}$"""), ".")
+            .trim()
+        if (out.isNotEmpty() && !(out.endsWith(".") || out.endsWith(")"))) out += "."
+    }
+    out = CURRENCY_E_NUMBER.replace(out) { "E" + it.groupValues[1].uppercase() }
+    if (looksDanishIngredients(out)) {
+        out = SOYA.replace(out) { m -> m.groupValues[1] + (if (m.groupValues[2] == "Y") "J" else "j") + m.groupValues[3] }
+        out = Regex("""[${TEXT_LETTERS}1]+""").replace(out) { m -> if (m.value.any { it.isLetter() }) fixOcrWord(m.value) else m.value }
+    }
+    return out.ifEmpty { text }
 }
 
 /** Splits an ingredient list into plain and allergen parts (EU 1169/2011 art. 21). */

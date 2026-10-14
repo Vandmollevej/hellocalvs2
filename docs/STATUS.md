@@ -1,6 +1,6 @@
 ## 2026-10-14: Ingredienslistens kvalitetskontrol
 
-- Nyt `src/lib/ingredient-text-quality.ts` + test: "£202" → "E202", dansk "soya" → "soja", næringstabellen ("Fnergi" …) skæres fra; tegn på fejllæsning afviser telefonens liste og sender AI'ens til admin → Usikkerheder (≤ 60 %) og Log. AI-prompt v2. Gamle lister vises rettet (web + native), databasen er uændret. Se DECISIONS/REGLER 2026-10-14.
+- Nyt `src/lib/ingredient-text-quality.ts` + test: "£202" → "E202", dansk "soya" → "soja", OCR-ord ("SOIASAUCE", "SFSAMFRØ", "krydderler", "cltronsyre") rettes mod en ordliste, næringstabellen ("Fnergi" …) skæres fra; tegn på fejllæsning afviser telefonens liste og sender AI'ens til admin → Usikkerheder (≤ 60 %) og Log. AI-prompt v2. Gamle lister vises rettet (web + native), databasen er uændret. Se DECISIONS/REGLER 2026-10-14.
 
 ## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
