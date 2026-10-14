@@ -185,7 +185,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - `ImageCapture.takePhoto` bruges ALDRIG på WebKit/iPhone (`isWebKit`, `src/lib/camera-webkit.ts`): den hænger og gør videoen sort. Fotoet er dér det skarpeste af tre 4K-videobilleder. Se DECISIONS.md 2026-10-14.
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
 - Produktsiden viser varens felter løbende, som AI læser dem (`AddProductView` poller `pendingFields`).
+- Når varen oprettes, slukkes kameraet og al billedanalyse; forsidefotoet står bag "Opretter varen …" — aldrig et sort, låst kamera. Oprettelsen har en tidsgrænse (60 s); fejler eller udløber den, slås stregkoden op, og findes varen alligevel, går flowet til den (`product_create_recovered`).
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
+
+## Versionsvagt efter deploy (2026-10-14)
+
+- Hvert web-deploy bygges med `NEXT_DEPLOYMENT_ID` = commit-sha (`build.yml` → `Dockerfile`). En åben fane med kode fra et ældre deploy genindlæses af Next.js ved næste sideskift. Fjern det aldrig: uden det kørte brugerens fane timer efter et deploy stadig den gamle kamerakode.
 
 ## Sikkerhed
 

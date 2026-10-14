@@ -1058,7 +1058,9 @@
     "retakeHint": "Tryk på et trin med flueben for at tage det om. Stregkode starter forfra.",
     "skipIngredients": "Spring over",
     "shutter": "Tag billede",
-    "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet."
+    "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet.",
+    "creating": "Opretter varen …",
+    "sendingPhotos": "Sender billederne …"
   },
   "foods": {
     "title": "Madvarer",
