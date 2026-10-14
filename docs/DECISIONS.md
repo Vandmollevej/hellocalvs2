@@ -7,6 +7,7 @@ Brugerens krav: "Så skal der være en knap nederst … hvor der står spring ov
 - **Ikke vist**, når ingrediensliste og næringstabel stod på samme energibillede: så er trin 4 allerede klaret og springes over som hidtil (DECISIONS 2026-09-26). Heller ikke ved en genscanning, der alene mangler indholdet (der ville intet være at sende).
 - **Native** (`ProductCaptureFlow.kt`, `SkipButton`): samme pille nederst i søgeren, `skipIngredients()` fjerner indholdsfotoet og går videre. Native læser ikke etiketter lokalt, så "begge på samme billede" afgøres der stadig af serveren.
 - Tekst: `cameraCreate.skipIngredients` ("Spring over"/"Skip"). Regel i REGLER.md → Tilføj-kameraet.
+- **Tidsgrænse på energi/indhold (samme dag, "det tager evigheder"):** hvert billede læses lokalt af telefonen (Tesseract, 1–3 s pr. billede), og trinnet stoppede først ved 70 % sikkerhed eller ti billeder med tekst — op til 20–30 s pr. etiket, selv om serverens AI alligevel læser det bedste billede bagefter. Nu stopper trinnet senest efter 5 s (`MAX_LABEL_MS`, `labelTimedOut`), når mindst ét billede med tekst er læst; det bedste bruges, og AI læser resten (log `label_timeout`). Uden tekst fortsætter scanningen med "Kan ikke læse teksten" og "Spring over" på indholds-trinnet. Native tager stadig ét foto pr. tryk og er upåvirket.
 
 ## 2026-10-14: Graviditet og amning — officielle tillæg til kaloriebehovet
 

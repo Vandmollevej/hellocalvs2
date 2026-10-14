@@ -1,6 +1,7 @@
 ## 2026-10-14: Tilføj-kameraet — "Spring over" på indholds-trinnet
 
 - Knap "Spring over" nederst i kamerabilledet på "4. Scan indholdsfortegnelse" (web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`): varer uden indholdsfortegnelse kan nu oprettes; trinnet klares uden foto og logges som `ingredients_skipped`. Vises ikke, når listen stod på energibilledet (trin 4 springes da over som før). Tekst `cameraCreate.skipIngredients` i alle sprog. DECISIONS/REGLER 2026-10-14.
+- Energi/indhold stopper nu senest efter 5 s med det bedste billede med tekst (`MAX_LABEL_MS`, log `label_timeout`); før kørte lokal OCR op til ti billeder à 1–3 s.
 - Ikke prøvet på telefon her (ingen enhed): brugerens test af knappen på iPhone.
 
 ## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret

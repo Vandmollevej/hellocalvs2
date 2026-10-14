@@ -15,6 +15,7 @@ import { StepDoneOverlay } from "@/components/camera/StepDoneOverlay";
 import { useCameraWatchdog } from "@/components/camera/useCameraWatchdog";
 import {
   MAX_LABEL_ATTEMPTS,
+  labelTimedOut,
   countsAsAttempt,
   labelDone,
   labelFound,
@@ -890,7 +891,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
   // Energi/indhold: hvert billede læses lokalt og lægges sammen med de
   // forrige; trinnet er klaret, når feltet er læst sikkert, når ti billeder
-  // med tekst er brugt, eller når brugeren trykker "Tag billede".
+  // med tekst er brugt, når tidsgrænsen (MAX_LABEL_MS) er nået med mindst ét
+  // billede med tekst, eller når brugeren trykker "Tag billede".
   async function processLabelFrame(frame: LiveFrame, force: boolean) {
     const need: LabelNeed = stepRef.current === "ingredients" ? "ingredients" : "nutrition";
     if (busyRef.current) {
@@ -953,7 +955,16 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         });
       }
     }
-    const finished = labelForceRef.current || labelDone(best.read, need) || attempts >= MAX_LABEL_ATTEMPTS;
+    const timedOut = labelTimedOut(labelStartedAtRef.current, attempts);
+    const finished = labelForceRef.current || labelDone(best.read, need) || attempts >= MAX_LABEL_ATTEMPTS || timedOut;
+    if (timedOut && !labelDone(best.read, need)) {
+      scanLog(flowId, "label_timeout", {
+        message: `${stepName}: tidsgrænsen nået efter ${attempts} billede(r) med tekst — det bedste bruges, AI læser resten`,
+        barcode: dataRef.current.barcode,
+        durationMs: Date.now() - labelStartedAtRef.current,
+        data: { attempts, confidence: best.read.confidence },
+      });
+    }
     if (!finished) return;
     labelForceRef.current = false;
     finishLabel(need, best, attempts);

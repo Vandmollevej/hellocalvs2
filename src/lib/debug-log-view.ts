@@ -34,6 +34,7 @@ const EVENT_LABELS: Record<string, string> = {
   label_ocr_error: "Tekstlæsning fejlede (telefon)",
   flow_restart: "Forfra fra stregkoden",
   label_attempt: "Energi/indhold: billede læst",
+  label_timeout: "Energi/indhold: tidsgrænse (5 s) — bedste billede bruges",
   frame_issue: "Lys/fokus-advarsel",
   focus_locked: "Fokus låst (stregkode)",
   torch: "Lygte",

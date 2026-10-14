@@ -317,7 +317,7 @@
     "src/components/camera/IngredientsRetakeFlow.tsx": "f127419703370cf7",
     "src/components/camera/LabelFillOverlay.tsx": "12b9f5a4cc2b4268",
     "src/components/camera/ObjectPickerOverlay.tsx": "b61a78af2889cb7b",
-    "src/components/camera/ProductCaptureFlow.tsx": "34f360a405cce9f2",
+    "src/components/camera/ProductCaptureFlow.tsx": "b670bc1dc45c8220",
     "src/components/camera/ProductOutlineOverlay.tsx": "f83893ae6f78c81e",
     "src/components/camera/ScanHeading.tsx": "7db702dc5dc7a3bc",
     "src/components/camera/StepDoneOverlay.tsx": "88c1e68e7bf2f3b3",
