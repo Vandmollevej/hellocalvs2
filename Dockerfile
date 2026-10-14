@@ -8,6 +8,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
+# Versionsvagt (docs/DECISIONS.md 2026-10-14): hvert deploy får sit eget id
+# (commit-sha fra build.yml). En fane med kode fra et ældre deploy genindlæses
+# ved næste sideskift i stedet for at køre videre med den gamle kode.
+ARG NEXT_DEPLOYMENT_ID=""
+ENV NEXT_DEPLOYMENT_ID=$NEXT_DEPLOYMENT_ID
 RUN npm run build
 
 FROM node:22-alpine AS runtime
