@@ -613,8 +613,8 @@ private val DANISH_INGREDIENT_WORDS = Regex(
     RegexOption.IGNORE_CASE,
 )
 
-/** Copy of src/lib/ingredient-words.ts. */
-private val DANISH_INGREDIENT_VOCABULARY = setOf(
+/** Copy of src/lib/ingredient-words.ts (DANISH_INGREDIENT_WORDS). */
+private val DANISH_INGREDIENT_VOCABULARY = listOf(
     "vand", "sukker", "salt", "bordsalt", "havsalt", "olie", "fedt", "eddike", "mel", "gær", "honning", "sirup",
     "rapsolie", "solsikkeolie", "olivenolie", "palmeolie", "kokosolie", "sesamolie", "sojaolie", "plantefedt",
     "vegetabilsk", "vegetabilske", "animalsk", "margarine", "smør", "fløde", "mælk", "ost", "valle", "æg",
@@ -639,16 +639,58 @@ private val DANISH_INGREDIENT_VOCABULARY = setOf(
     "gul", "hel", "hele", "knust", "hakket", "sukkerrør", "kokos", "oliven", "druer", "mynte", "lakrids",
 )
 
-private val OCR_CONFUSIONS = listOf("l" to "i", "i" to "l", "i" to "j", "f" to "e", "1" to "l", "1" to "i", "rn" to "m")
+/** Copy of src/lib/ingredient-words.ts (DANISH_ALLERGEN_WORDS): UPPERCASE in a list = allergen (EU 1169/2011). */
+private val DANISH_ALLERGEN_WORDS = listOf(
+    "soja", "sojabønner", "sojasauce", "sojaprotein", "sojalecithin", "sojaolie", "sesam", "sesamfrø", "sesamolie",
+    "hvede", "hvedemel", "hvedegluten", "hvedestivelse", "rug", "rugmel", "byg", "bygmalt", "havre", "havremel",
+    "spelt", "kamut", "gluten", "mælk", "mælkepulver", "skummetmælkspulver", "sødmælkspulver", "mælkeprotein",
+    "fløde", "smør", "ost", "valle", "vallepulver", "laktose", "æg", "æggeblomme", "æggehvide", "ægpulver", "fisk",
+    "rejer", "krebsdyr", "skaldyr", "bløddyr", "muslinger", "jordnødder", "mandler", "hasselnødder", "valnødder",
+    "cashewnødder", "pistacienødder", "pekannødder", "paranødder", "macadamianødder", "nødder", "sennep",
+    "sennepsfrø", "sennepspulver", "selleri", "lupin", "sulfit", "svovldioxid",
+)
+
+private val DANISH_ALLERGEN_STEMS = listOf(
+    "soja", "sesam", "hvede", "mælke", "sennep", "senneps", "selleri", "æg", "mandel", "rug", "havre",
+)
+
+private val KNOWN_INGREDIENT_WORDS: Set<String> = (DANISH_INGREDIENT_VOCABULARY + DANISH_ALLERGEN_WORDS).toSet()
+private val ALLERGEN_CANDIDATES: List<String> by lazy {
+    (DANISH_ALLERGEN_WORDS + DANISH_ALLERGEN_STEMS.flatMap { stem -> DANISH_INGREDIENT_VOCABULARY.filter { it.length >= 3 }.map { stem + it } }).distinct()
+}
+
+// OCR-weighted distance (src/lib/ingredient-text-quality.ts ocrDistance): look-alike
+// characters (E/F, I/J, I/L, O/0 …) cost 0.5, anything else 1.1.
+private val LOOK_ALIKE = listOf("ef", "ij", "il", "jl", "o0", "i1", "l1", "s5", "b8", "ce", "uv", "nm", "oq", "gq", "rn", "ao", "øo", "æa")
+    .flatMap { listOf(it, "${it[1]}${it[0]}") }.toSet()
+
+private fun ocrDistance(a: String, b: String): Double {
+    var previous = DoubleArray(b.length + 1) { it * 1.1 }
+    for (i in 1..a.length) {
+        val current = DoubleArray(b.length + 1)
+        current[0] = i * 1.1
+        for (j in 1..b.length) {
+            val sub = when {
+                a[i - 1] == b[j - 1] -> 0.0
+                "${a[i - 1]}${b[j - 1]}" in LOOK_ALIKE -> 0.5
+                else -> 1.1
+            }
+            current[j] = minOf(previous[j - 1] + sub, previous[j] + 1.1, current[j - 1] + 1.1)
+        }
+        previous = current
+    }
+    return previous[b.length]
+}
 
 private fun looksDanishIngredients(text: String): Boolean =
     text.any { it.lowercaseChar() in "æøå" } || DANISH_INGREDIENT_WORDS.findAll(text).count() >= 3
 
 private fun knownIngredientWord(word: String, depth: Int = 0): Boolean {
-    if (word in DANISH_INGREDIENT_VOCABULARY) return true
+    if (word in KNOWN_INGREDIENT_WORDS) return true
     if (depth > 2) return false
-    for (index in 3..(word.length - 3)) {
-        if (word.substring(0, index) !in DANISH_INGREDIENT_VOCABULARY) continue
+    for (index in 2..(word.length - 3)) {
+        val head = word.substring(0, index)
+        if (head !in KNOWN_INGREDIENT_WORDS || (head.length < 3 && head != "æg")) continue
         val rest = word.substring(index)
         if (knownIngredientWord(rest, depth + 1)) return true
         if (rest.startsWith("s") && rest.length > 3 && knownIngredientWord(rest.substring(1), depth + 1)) return true
@@ -656,22 +698,37 @@ private fun knownIngredientWord(word: String, depth: Int = 0): Boolean {
     return false
 }
 
-private fun fixOcrWord(token: String): String {
-    val lower = token.lowercase()
-    if (lower.count { it.isLetter() } < 4 || knownIngredientWord(lower)) return token
-    val candidates = mutableSetOf<Triple<Int, String, String>>()
-    for ((read, right) in OCR_CONFUSIONS) {
-        var index = lower.indexOf(read)
-        while (index >= 0) {
-            val candidate = lower.substring(0, index) + right + lower.substring(index + read.length)
-            if (knownIngredientWord(candidate)) candidates += Triple(index, read, right)
-            index = lower.indexOf(read, index + 1)
+private fun closestIngredientWord(word: String, candidates: Collection<String>, maxCost: Double): String? {
+    var best: String? = null
+    var bestCost = Double.MAX_VALUE
+    var tie = false
+    for (candidate in candidates) {
+        if (kotlin.math.abs(candidate.length - word.length) > 2) continue
+        val cost = ocrDistance(word, candidate)
+        if (cost < bestCost) {
+            best = candidate
+            bestCost = cost
+            tie = false
+        } else if (cost == bestCost && candidate != best) {
+            tie = true
         }
     }
-    val (index, read, right) = candidates.singleOrNull() ?: return token
-    val original = token.substring(index, index + read.length)
-    val upper = original == original.uppercase() && original != original.lowercase()
-    return token.substring(0, index) + (if (upper) right.uppercase() else right) + token.substring(index + read.length)
+    return if (best != null && !tie && bestCost <= maxCost) best else null
+}
+
+private fun fixOcrWord(token: String): String {
+    val lower = token.lowercase()
+    val letters = lower.count { it.isLetter() }
+    if (letters < 4 || knownIngredientWord(lower)) return token
+    val upper = token.any { it.isLetter() } && token == token.uppercase()
+    val word = (if (upper && letters >= 5) closestIngredientWord(lower, ALLERGEN_CANDIDATES, minOf(2.2, lower.length * 0.3)) else null)
+        ?: closestIngredientWord(lower, KNOWN_INGREDIENT_WORDS, 1.0)
+    if (word == null || word == lower) return token
+    return when {
+        upper -> word.uppercase()
+        token[0].isUpperCase() -> word.replaceFirstChar { it.uppercaseChar() }
+        else -> word
+    }
 }
 
 fun displayIngredientsText(text: String): String {

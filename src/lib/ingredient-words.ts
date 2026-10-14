@@ -36,3 +36,20 @@ export const DANISH_INGREDIENT_WORDS = [
   "heraf", "indeholder", "kan", "spor", "af", "og", "med", "fra", "samt", "ingredienser", "sort", "hvid", "rød",
   "grøn", "gul", "hel", "hele", "knust", "hakket", "sukkerrør", "kokos", "oliven", "druer", "mynte", "lakrids",
 ] as const;
+
+// Allergener (EU 1169/2011 bilag II) som de står i danske lister. Et ord med
+// STORE bogstaver i en ingrediensliste er efter loven et allergen, så et
+// ukendt ord med store bogstaver rettes til det nærmeste af disse (også
+// sammensat: "SOJA" + "SAUCE", "SENNEPS" + "FRØ").
+export const DANISH_ALLERGEN_WORDS = [
+  "soja", "sojabønner", "sojasauce", "sojaprotein", "sojalecithin", "sojaolie", "sesam", "sesamfrø", "sesamolie",
+  "hvede", "hvedemel", "hvedegluten", "hvedestivelse", "rug", "rugmel", "byg", "bygmalt", "havre", "havremel",
+  "spelt", "kamut", "gluten", "mælk", "mælkepulver", "skummetmælkspulver", "sødmælkspulver", "mælkeprotein",
+  "fløde", "smør", "ost", "valle", "vallepulver", "laktose", "æg", "æggeblomme", "æggehvide", "ægpulver",
+  "fisk", "rejer", "krebsdyr", "skaldyr", "bløddyr", "muslinger", "jordnødder", "mandler", "hasselnødder",
+  "valnødder", "cashewnødder", "pistacienødder", "pekannødder", "paranødder", "macadamianødder", "nødder",
+  "sennep", "sennepsfrø", "sennepspulver", "selleri", "lupin", "sulfit", "svovldioxid",
+] as const;
+
+// Allergen-forled, der danner sammensatte ord med ordlisten ("soja" + "sauce").
+export const DANISH_ALLERGEN_STEMS = ["soja", "sesam", "hvede", "mælke", "sennep", "senneps", "selleri", "æg", "mandel", "rug", "havre"] as const;

@@ -61,3 +61,20 @@ test("brugerens skærmbillede: OCR-ord, £202 og næringsstøj rettes", () => {
 test("kendte og ukendte ord uden sikker rettelse røres ikke", () => {
   assert.equal(reviewIngredientsText("Vand, sukker, lime, kardemomme, salt", "da").text, "Vand, sukker, lime, kardemomme, salt");
 });
+
+test("STORE bogstaver er allergener: FSAMFRØ, SOIASAUCE, MEIK, HVFDEMEL", () => {
+  const review = reviewIngredientsText("Vand, sukker, FSAMFRØ, SOIASAUCE, MÆIK, HVFDEMEL, salt", "da");
+  assert.equal(review.text, "Vand, sukker, SESAMFRØ, SOJASAUCE, MÆLK, HVEDEMEL, salt");
+});
+
+test("ukendte rigtige ord med små bogstaver røres ikke (salat ≠ salt)", () => {
+  assert.equal(reviewIngredientsText("Vand, salat, sukker, olie", "da").text, "Vand, salat, sukker, olie");
+});
+
+test("listen stopper ved næringstabellen, også uden overskrift", async () => {
+  const { findIngredientsSection } = await import("./product-ocr.ts");
+  assert.equal(
+    findIngredientsSection("Ingredienser: chili, vand, salt, citronsyre £202. ee .06 kcal | ; :699k1 167 ; Fnergi / kulhydrat:"),
+    "chili, vand, salt, citronsyre £202.",
+  );
+});

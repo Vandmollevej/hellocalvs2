@@ -312,7 +312,7 @@ const INGREDIENTS_RULES = [
   "Returnér kun ingredienser, allergener og tekst som faktisk kan ses.",
   "rawText skal bevare teksten så tæt på emballagen som muligt.",
   "ingredientsText må rydde åbenlyse OCR-linjeproblemer, men må ikke opfinde, fjerne eller ændre ingredienser/procenter.",
-  "ingredientsText skal være korrekt stavet på listens sprog: ret OCR-fejl som \"Fnergi\" (Energi) eller \"£202\"/\"€330\" (E202/E330). E-numre skrives som E + tal. På dansk staves det \"soja\" (aldrig \"soya\").",
+  "ingredientsText skal være korrekt stavet på listens sprog: ret OCR-fejl som \"Fnergi\" (Energi) eller \"£202\"/\"€330\" (E202/E330). E-numre skrives som E + tal. På dansk staves det \"soja\" (aldrig \"soya\"). Ord med STORE bogstaver er efter loven allergener: læses et af dem forkert (\"SOIASAUCE\", \"FSAMFRØ\"), så skriv det allergen, der står (\"SOJASAUCE\", \"SESAMFRØ\"), med store bogstaver.",
   "ingredientsText indeholder kun ingredienslisten — aldrig næringstabellen (Energi, kJ/kcal, fedt …), opbevaring eller producentadresse.",
   "Prioritér de oplyste sprog, men de er ikke en whitelist.",
   "Hvis billedet ikke er en ingrediensdeklaration eller er ulæseligt, brug tomme strenge/lister og lav confidence lav.",

@@ -190,7 +190,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Ingredienslister (user rule 2026-10-14)
 
-- Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge).
+- Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge). Ord med STORE bogstaver er allergener og rettes til det nærmeste allergen. Ingredienslisten slutter, hvor næringstabellen begynder (også "Energi"/kJ/kcal uden overskrift).
 - Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
 
 ## Versionsvagt efter deploy (2026-10-14)
