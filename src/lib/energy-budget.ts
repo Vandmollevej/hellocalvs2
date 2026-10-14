@@ -30,6 +30,7 @@ export const GAIN_PACES_KG_PER_WEEK = [0.1, 0.25] as const;
 
 export type BudgetAdjustment =
   | "CHILD_NO_DEFICIT"
+  | "PREGNANCY_NO_DEFICIT"
   | "UNDERWEIGHT_NO_LOSS"
   | "TARGET_RAISED_TO_MIN_BMI"
   | "PACE_CAPPED"
@@ -50,6 +51,8 @@ export type BudgetInput = {
   mode: GoalMode;
   targetWeightKg?: number | null;
   paceKgPerWeek?: number | null;
+  /** Gravid eller ammende (src/lib/pregnancy.ts): aldrig et underskud. */
+  pregnancy?: boolean;
 };
 
 export type DailyBudget = {
@@ -104,6 +107,10 @@ export function computeDailyBudget(input: BudgetInput): DailyBudget {
     if (isChild) {
       mode = "MAINTAIN";
       adjustments.push("CHILD_NO_DEFICIT");
+    } else if (input.pregnancy) {
+      // Gravide/ammende: anbefal læge, intet underskud (docs/ACTIVITY-PAL.md "Kaloriemål").
+      mode = "MAINTAIN";
+      adjustments.push("PREGNANCY_NO_DEFICIT");
     } else if (currentBmi !== null && currentBmi < UNDERWEIGHT_BMI) {
       mode = "MAINTAIN";
       adjustments.push("UNDERWEIGHT_NO_LOSS");

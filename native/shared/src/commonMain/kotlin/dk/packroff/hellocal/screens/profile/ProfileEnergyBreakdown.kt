@@ -73,7 +73,10 @@ fun ProfileEnergyBreakdown(summary: EnergySummary) {
     val everydayKcal = daily.baselineKcal - bmr
     val goalDelta = budget?.deltaKcal ?: 0.0
     val needKcal = summary.needKcal
-    val calibratedDelta = if (needKcal != null && calibration != null && calibration.reason == "OK" && calibration.weight > 0) needKcal - daily.kcal else 0.0
+    // The pregnancy/breastfeeding allowance (src/lib/pregnancy.ts) sits in needKcal and gets its own line.
+    val pregnancy = summary.pregnancy
+    val pregnancyKcal = pregnancy?.extraKcal ?: 0.0
+    val calibratedDelta = if (needKcal != null && calibration != null && calibration.reason == "OK" && calibration.weight > 0) needKcal - pregnancyKcal - daily.kcal else 0.0
     val finalNeed = needKcal ?: daily.kcal
     val approx = t.t("energy.approx")
 
@@ -103,9 +106,21 @@ fun ProfileEnergyBreakdown(summary: EnergySummary) {
                 ),
             )
         }
+        if (pregnancy != null) {
+            EnergyLine(
+                if (pregnancy.status == "PREGNANT") t.t("energy.pregnancy") else t.t("energy.breastfeeding"),
+                formatKcal(pregnancyKcal),
+                sign = "+",
+                why = if (pregnancy.status == "PREGNANT") {
+                    t.t("energy.whyPregnancy", "trimester" to (pregnancy.trimester ?: 3), "week" to (pregnancy.week?.toString() ?: "?"))
+                } else {
+                    t.t("energy.whyBreastfeeding", "weeks" to (pregnancy.breastfeedingWeeks ?: 0))
+                },
+            )
+        }
         EnergyLine(t.t("energy.need"), "$approx ${formatKcal(finalNeed)}", sign = "=", strong = true)
         HcText(
-            t.t("energy.range", "low" to formatKcal(daily.low + calibratedDelta), "high" to formatKcal(daily.high + calibratedDelta)),
+            t.t("energy.range", "low" to formatKcal(daily.low + calibratedDelta + pregnancyKcal), "high" to formatKcal(daily.high + calibratedDelta + pregnancyKcal)),
             HcTypeRoles.Small,
             color = HcColors.TextSecondary,
         )

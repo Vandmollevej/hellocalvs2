@@ -43,9 +43,17 @@ export function termsParagraphs(text: string) {
 }
 
 // Startguidens trin (samme id'er som i OnboardingWizard).
-export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "activity" | "health-import";
+export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "pregnancy" | "activity" | "health-import";
 
 export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
+  pregnancy: {
+    anchor: "ansvar",
+    paragraphs: [
+      "Svaret om graviditet og amning bruges kun til at lægge det officielle tillæg (EFSA) oven på dit energibehov og til aldrig at foreslå et kalorieunderskud. Det hører til din egen konto og deles ikke med andre.",
+      "Du kan altid rette det under Indstillinger → Visning → Graviditet og amning.",
+      "Hello Cal er et værktøj, ikke en læge. Følg altid rådene fra jordemoder, læge eller sundhedsplejerske — tallene her er vejledende.",
+    ],
+  },
   "sleep-pattern": {
     anchor: "hvad-er-hello-cal",
     paragraphs: [

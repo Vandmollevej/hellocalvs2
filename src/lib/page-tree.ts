@@ -317,6 +317,7 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
               { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },
               { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
+              { path: "/settings/display/pregnancy", label: "Visning: graviditet og amning", note: "EFSA-tillæg til energibehovet; intet kalorieunderskud" },
               { path: "/settings/display/body-measurements", label: "Visning: kropsmål", note: "Hvilke kropsmål Kropsmål-siden viser" },
               { path: "/settings/display/priority", label: "Visning: prioritering", note: "Rækkefølgen af mærker/blokke på produktcirklen" },
             ],

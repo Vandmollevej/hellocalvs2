@@ -21,5 +21,6 @@ suspend fun settingsPatchProfile(body: Map<String, Any?>) {
 
 internal fun JsonObject.settingsBool(key: String): Boolean? = (this[key] as? JsonPrimitive)?.booleanOrNull
 internal fun JsonObject.settingsStr(key: String): String? = (this[key] as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull
+internal fun JsonObject.settingsInt(key: String): Int? = (this[key] as? JsonPrimitive)?.contentOrNull?.toDoubleOrNull()?.toInt()
 internal fun JsonObject.settingsNum(key: String): Double? = (this[key] as? JsonPrimitive)?.doubleOrNull
 internal fun JsonObject.settingsObj(key: String): JsonObject? = this[key] as? JsonObject

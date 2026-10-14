@@ -437,6 +437,7 @@
     "frontPage": "Forside",
     "recommendedLimits": "Anbefalte grenser",
     "menstrualCycle": "Menstruasjonssyklus",
+    "pregnancy": "Graviditet og amming",
     "sleepQuality": "Opplevelse av søvn",
     "calendarView": "Kalendervisning",
     "displayHelpTip": "Her bestemmer du hvordan forsiden, kalenderen og advarsler ser ut på denne enheten.",
@@ -533,6 +534,26 @@
     "intro": "Logg menstruasjonssyklusen din og få den som et valg i legg til-menyen.",
     "toggleLabel": "Vis menstruasjonssyklus",
     "toggleDescription": "Legger til \"Menstruasjon\" i legg til-menyen, slik at du kan logge starten på syklusen."
+  },
+  "pregnancySettings": {
+    "intro": "Er du gravid eller ammer, legger vi det offisielle tillegget (EFSA) oppå energibehovet ditt, og vi setter aldri et kaloriunderskudd. Uken teller selv videre, så du trenger bare å rette her hvis noe endrer seg.",
+    "question": "Er du gravid, eller ammer du?"
+  },
+  "pregnancy": {
+    "none": "Nei",
+    "status": {
+      "PREGNANT": "Gravid",
+      "BREASTFEEDING": "Ammer"
+    },
+    "weekLabel": "Hvilken uke er du i?",
+    "weekPlaceholder": "f.eks. 20",
+    "weekHint": "Trimester 1 er uke 1–13, trimester 2 uke 14–27 og trimester 3 fra uke 28. Uken teller selv videre.",
+    "trimester": "{trimester}. trimester",
+    "extraKcal": "+{kcal} kcal om dagen",
+    "breastfeedingWeeksLabel": "Hvor mange uker har du ammet?",
+    "breastfeedingWeeksPlaceholder": "f.eks. 8",
+    "breastfeedingHint": "De første 26 ukene regner vi med full amming (+500 kcal om dagen), deretter delvis amming (+300 kcal). Ukene teller selv videre.",
+    "noDeficit": "Vi setter aldri et kaloriunderskudd mens du er gravid eller ammer. Følg alltid rådene fra jordmor eller lege."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Trinn {current} av {total} fullført",
     "sleepPatternQuestion": "Har du et fast søvnmønster?",
     "shiftWorkQuestion": "Skyldes det varierende arbeidstider eller nattarbeid?",
+    "pregnancyQuestion": "Er du gravid, eller ammer du?",
+    "pregnancyHint": "Da legger vi det offisielle tillegget til energibehovet ditt. Kan alltid endres under Innstillinger → Visning.",
     "dailyLogQuestion": "Vil du registrere arbeidstider eller søvntider daglig?",
     "workHours": "Arbeidstider",
     "sleepTimes": "Søvntider",
@@ -2930,6 +2953,8 @@
     "rest": "Hvile (stoffskiftet ditt)",
     "everyday": "Hverdagen din",
     "training": "Treningen din",
+    "pregnancy": "Graviditet",
+    "breastfeeding": "Amming",
     "need": "Ditt energibehov",
     "goal": "Ditt vektmål",
     "budget": "Ditt daglige budsjett",
@@ -2945,6 +2970,8 @@
     "whyRest": "Det kroppen bruker hvis du lå i ro hele dagen. Regnet ut fra vekt, høyde, alder og kjønn (Mifflin-St Jeor).",
     "whyEveryday": "Arbeid, gange, stående tid og transport — uten trening. Svarene dine tilsvarer nivået \"{level}\" (PAL {pal}).",
     "whyTraining": "Din typiske trening fordelt over uka, regnet netto, så hvilestoffskiftet ikke telles to ganger. Logger du en treningsøkt, erstatter den tillegget den dagen.",
+    "whyPregnancy": "Offisielt tillegg (EFSA): 70 kcal om dagen i 1. trimester, 260 i 2. og 500 i 3. Du er i {trimester}. trimester (uke {week}).",
+    "whyBreastfeeding": "Offisielt tillegg (EFSA): 500 kcal om dagen ved full amming de første 6 månedene, deretter ca. 300 ved delvis amming. Du har ammet i {weeks} uker.",
     "whyGoal": "Forskjellen mellom det du bruker og det du bør spise for å nå målet ditt i et sunt tempo.",
     "disclaimer": "Alle tall er estimater, ikke målinger. De erstatter ikke råd fra lege eller kostholdsfysiolog.",
     "missingData": "For å regne ut energibehovet ditt mangler vi:",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Under 18 år setter vi ikke et kaloriunderskudd — kroppen vokser fortsatt.",
+      "PREGNANCY_NO_DEFICIT": "Du er gravid eller ammer, så vi setter ikke noe kaloriunderskudd — snakk med jordmor eller lege om vekten.",
       "UNDERWEIGHT_NO_LOSS": "Vekten din er under det vi regner som sunt, så vi foreslår ikke vektnedgang.",
       "TARGET_RAISED_TO_MIN_BMI": "Vektmålet ditt er hevet til laveste vekt vi regner som sunn for høyden din.",
       "PACE_CAPPED": "Tempoet er satt ned til det som er sunt å gå ned per uke.",

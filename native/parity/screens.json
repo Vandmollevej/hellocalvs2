@@ -1535,6 +1535,15 @@
       ]
     },
     {
+      "route": "/settings/display/pregnancy",
+      "web": "src/app/settings/display/pregnancy/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt",
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/PregnancyFields.kt"
+      ]
+    },
+    {
       "route": "/settings/display/priority",
       "web": "src/app/settings/display/priority/page.tsx",
       "status": "pending",

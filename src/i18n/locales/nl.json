@@ -437,6 +437,7 @@
     "frontPage": "Startscherm",
     "recommendedLimits": "Aanbevolen grenzen",
     "menstrualCycle": "Menstruatiecyclus",
+    "pregnancy": "Zwangerschap en borstvoeding",
     "sleepQuality": "Slaapbeleving",
     "calendarView": "Agendaweergave",
     "displayHelpTip": "Hier bepaal je hoe het startscherm, de agenda en waarschuwingen eruitzien op dit apparaat.",
@@ -533,6 +534,26 @@
     "intro": "Log je menstruatiecyclus en krijg het als optie in het toevoegmenu.",
     "toggleLabel": "Menstruatiecyclus tonen",
     "toggleDescription": "Voegt \"Menstruatie\" toe aan het toevoegmenu, zodat je het begin van je cyclus kunt loggen."
+  },
+  "pregnancySettings": {
+    "intro": "Ben je zwanger of geef je borstvoeding, dan tellen we de officiële toeslag (EFSA) bij je energiebehoefte op en stellen we nooit een calorietekort in. De week telt vanzelf door, dus pas dit alleen aan als er iets verandert.",
+    "question": "Ben je zwanger of geef je borstvoeding?"
+  },
+  "pregnancy": {
+    "none": "Nee",
+    "status": {
+      "PREGNANT": "Zwanger",
+      "BREASTFEEDING": "Borstvoeding"
+    },
+    "weekLabel": "In welke week zit je?",
+    "weekPlaceholder": "bijv. 20",
+    "weekHint": "Trimester 1 is week 1–13, trimester 2 week 14–27 en trimester 3 vanaf week 28. De week telt vanzelf door.",
+    "trimester": "{trimester}e trimester",
+    "extraKcal": "+{kcal} kcal per dag",
+    "breastfeedingWeeksLabel": "Hoeveel weken geef je al borstvoeding?",
+    "breastfeedingWeeksPlaceholder": "bijv. 8",
+    "breastfeedingHint": "De eerste 26 weken rekenen we met volledige borstvoeding (+500 kcal per dag), daarna met gedeeltelijke borstvoeding (+300 kcal). De weken tellen vanzelf door.",
+    "noDeficit": "We stellen nooit een calorietekort in terwijl je zwanger bent of borstvoeding geeft. Volg altijd het advies van je verloskundige of arts."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Stap {current} van {total} voltooid",
     "sleepPatternQuestion": "Heb je een vast slaappatroon?",
     "shiftWorkQuestion": "Komt dat door wisselende werktijden of nachtwerk?",
+    "pregnancyQuestion": "Ben je zwanger of geef je borstvoeding?",
+    "pregnancyHint": "Dan tellen we de officiële toeslag bij je energiebehoefte op. Altijd aan te passen onder Instellingen → Weergave.",
     "dailyLogQuestion": "Wil je dagelijks werktijden of slaaptijden registreren?",
     "workHours": "Werktijden",
     "sleepTimes": "Slaaptijden",
@@ -2930,6 +2953,8 @@
     "rest": "Rust (je stofwisseling)",
     "everyday": "Je dagelijks leven",
     "training": "Je sport",
+    "pregnancy": "Zwangerschap",
+    "breastfeeding": "Borstvoeding",
     "need": "Je energiebehoefte",
     "goal": "Je gewichtsdoel",
     "budget": "Je dagbudget",
@@ -2945,6 +2970,8 @@
     "whyRest": "Wat je lichaam verbruikt als je de hele dag stil zou liggen. Berekend op basis van gewicht, lengte, leeftijd en geslacht (Mifflin-St Jeor).",
     "whyEveryday": "Werk, lopen, staan en vervoer — zonder sport. Je antwoorden komen overeen met het niveau \"{level}\" (PAL {pal}).",
     "whyTraining": "Je typische sport verdeeld over de week, netto berekend, zodat de ruststofwisseling niet dubbel wordt geteld. Registreer je een training, dan vervangt die de toeslag van die dag.",
+    "whyPregnancy": "Officiële toeslag (EFSA): 70 kcal per dag in trimester 1, 260 in trimester 2 en 500 in trimester 3. Je zit in trimester {trimester} (week {week}).",
+    "whyBreastfeeding": "Officiële toeslag (EFSA): 500 kcal per dag bij volledige borstvoeding in de eerste 6 maanden, daarna ongeveer 300 bij gedeeltelijke borstvoeding. Je geeft al {weeks} weken borstvoeding.",
     "whyGoal": "Het verschil tussen wat je verbruikt en wat je zou moeten eten om je doel in een gezond tempo te bereiken.",
     "disclaimer": "Alle getallen zijn schattingen, geen metingen. Ze vervangen geen advies van een arts of diëtist.",
     "missingData": "Om je energiebehoefte te berekenen missen we:",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Onder de 18 jaar stellen we geen caloriedeficit in — het lichaam groeit nog.",
+      "PREGNANCY_NO_DEFICIT": "Je bent zwanger of geeft borstvoeding, dus we stellen geen calorietekort in — bespreek je gewicht met je verloskundige of arts.",
       "UNDERWEIGHT_NO_LOSS": "Je gewicht ligt onder wat we als gezond beschouwen, dus we stellen geen gewichtsverlies voor.",
       "TARGET_RAISED_TO_MIN_BMI": "Je gewichtsdoel is verhoogd naar het laagste gewicht dat we als gezond beschouwen voor je lengte.",
       "PACE_CAPPED": "Het tempo is verlaagd naar wat gezond is om per week af te vallen.",

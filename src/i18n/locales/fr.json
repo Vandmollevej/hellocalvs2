@@ -437,6 +437,7 @@
     "frontPage": "Accueil",
     "recommendedLimits": "Limites recommandées",
     "menstrualCycle": "Cycle menstruel",
+    "pregnancy": "Grossesse et allaitement",
     "sleepQuality": "Ressenti du sommeil",
     "calendarView": "Vue calendrier",
     "displayHelpTip": "Ici, tu choisis l'aspect de l'accueil, du calendrier et des alertes sur cet appareil.",
@@ -533,6 +534,26 @@
     "intro": "Enregistre ton cycle menstruel et retrouve-le comme option dans le menu Ajouter.",
     "toggleLabel": "Afficher le cycle menstruel",
     "toggleDescription": "Ajoute \"Règles\" au menu Ajouter pour que tu puisses enregistrer le début du cycle."
+  },
+  "pregnancySettings": {
+    "intro": "Si tu es enceinte ou si tu allaites, nous ajoutons le supplément officiel (EFSA) à ton besoin énergétique et nous ne fixons jamais de déficit calorique. La semaine avance toute seule ; ne modifie ceci que si quelque chose change.",
+    "question": "Es-tu enceinte ou allaites-tu ?"
+  },
+  "pregnancy": {
+    "none": "Non",
+    "status": {
+      "PREGNANT": "Enceinte",
+      "BREASTFEEDING": "J'allaite"
+    },
+    "weekLabel": "À quelle semaine en es-tu ?",
+    "weekPlaceholder": "p. ex. 20",
+    "weekHint": "Le 1er trimestre va de la semaine 1 à 13, le 2e de 14 à 27 et le 3e à partir de la semaine 28. La semaine avance toute seule.",
+    "trimester": "{trimester}er trimestre",
+    "extraKcal": "+{kcal} kcal par jour",
+    "breastfeedingWeeksLabel": "Depuis combien de semaines allaites-tu ?",
+    "breastfeedingWeeksPlaceholder": "p. ex. 8",
+    "breastfeedingHint": "Pendant les 26 premières semaines, nous comptons un allaitement complet (+500 kcal par jour), puis partiel (+300 kcal). Les semaines avancent toutes seules.",
+    "noDeficit": "Nous ne fixons jamais de déficit calorique pendant la grossesse ou l'allaitement. Suis toujours les conseils de ta sage-femme ou de ton médecin."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Étape {current} sur {total} terminée",
     "sleepPatternQuestion": "As-tu un rythme de sommeil régulier ?",
     "shiftWorkQuestion": "Est-ce dû à des horaires de travail variables ou au travail de nuit ?",
+    "pregnancyQuestion": "Es-tu enceinte ou allaites-tu ?",
+    "pregnancyHint": "Nous ajoutons alors le supplément officiel à ton besoin énergétique. Modifiable à tout moment sous Réglages → Affichage.",
     "dailyLogQuestion": "Veux-tu enregistrer tes horaires de travail ou de sommeil chaque jour ?",
     "workHours": "Horaires de travail",
     "sleepTimes": "Horaires de sommeil",
@@ -2930,6 +2953,8 @@
     "rest": "Repos (ton métabolisme)",
     "everyday": "Ton quotidien",
     "training": "Ton sport",
+    "pregnancy": "Grossesse",
+    "breastfeeding": "Allaitement",
     "need": "Tes besoins énergétiques",
     "goal": "Ton objectif de poids",
     "budget": "Ton budget quotidien",
@@ -2945,6 +2970,8 @@
     "whyRest": "Ce que le corps dépense si tu restais allongé(e) toute la journée. Calculé d'après le poids, la taille, l'âge et le sexe (Mifflin-St Jeor).",
     "whyEveryday": "Travail, marche, temps debout et transport — hors sport. Tes réponses correspondent au niveau « {level} » (PAL {pal}).",
     "whyTraining": "Ton sport habituel réparti sur la semaine, calculé en net pour ne pas compter deux fois le métabolisme de repos. Si tu enregistres un entraînement, il remplace le supplément ce jour-là.",
+    "whyPregnancy": "Supplément officiel (EFSA) : 70 kcal par jour au 1er trimestre, 260 au 2e et 500 au 3e. Tu es au trimestre {trimester} (semaine {week}).",
+    "whyBreastfeeding": "Supplément officiel (EFSA) : 500 kcal par jour en allaitement complet les 6 premiers mois, puis environ 300 en allaitement partiel. Tu allaites depuis {weeks} semaines.",
     "whyGoal": "La différence entre ce que tu dépenses et ce que tu devrais manger pour atteindre ton objectif à un rythme sain.",
     "disclaimer": "Tous les chiffres sont des estimations, pas des mesures. Ils ne remplacent pas l'avis d'un médecin ou d'un diététicien.",
     "missingData": "Pour calculer tes besoins énergétiques, il nous manque :",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Avant 18 ans, nous ne fixons pas de déficit calorique — le corps est encore en croissance.",
+      "PREGNANCY_NO_DEFICIT": "Tu es enceinte ou tu allaites : nous ne fixons donc aucun déficit calorique — parle de ton poids avec ta sage-femme ou ton médecin.",
       "UNDERWEIGHT_NO_LOSS": "Ton poids est inférieur à ce que nous considérons comme sain, nous ne proposons donc pas de perte de poids.",
       "TARGET_RAISED_TO_MIN_BMI": "Ton objectif de poids a été relevé au poids le plus bas que nous considérons comme sain pour ta taille.",
       "PACE_CAPPED": "Le rythme a été réduit à ce qu'il est sain de perdre par semaine.",
