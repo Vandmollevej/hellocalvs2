@@ -9,18 +9,9 @@ import type { LabelRegions } from "@/lib/label-text-regions";
 
 export type LabelNeed = "nutrition" | "ingredients";
 
-// Så mange billeder med læsbar tekst læses højst, før det bedste bruges.
+// Så mange billeder med læsbar tekst læses højst, før det bedste bruges
+// (bruges ikke længere af Tilføj-kameraet, som tager ét foto pr. tryk).
 export const MAX_LABEL_ATTEMPTS = 10;
-// Højst så længe scanner et etikettrin (bruger 2026-10-14: "det tager
-// evigheder"): hvert billede læses lokalt (1–3 s), og serverens AI læser
-// alligevel det bedste billede bagefter. Er mindst ét billede med tekst læst
-// inden fristen, bruges det bedste; uden tekst fortsætter scanningen med
-// beskeden "Kan ikke læse teksten" (og "Spring over" på indholds-trinnet).
-export const MAX_LABEL_MS = 5000;
-
-export function labelTimedOut(startedAt: number, attempts: number, now: number = Date.now()): boolean {
-  return attempts > 0 && startedAt > 0 && now - startedAt >= MAX_LABEL_MS;
-}
 // Fra denne sikkerhed er den lokale aflæsning god nok til at stoppe.
 export const LABEL_DONE_CONFIDENCE = 70;
 

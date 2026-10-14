@@ -1,9 +1,9 @@
-## 2026-10-14: Tilføj-kameraet — "Spring over" på indholds-trinnet
+## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
-- Knap "Spring over" nederst i kamerabilledet på "4. Scan indholdsfortegnelse" (web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`): varer uden indholdsfortegnelse kan nu oprettes; trinnet klares uden foto og logges som `ingredients_skipped`. Vises ikke, når listen stod på energibilledet (trin 4 springes da over som før). Tekst `cameraCreate.skipIngredients` i alle sprog. DECISIONS/REGLER 2026-10-14.
-- Energi/indhold stopper nu senest efter 5 s med det bedste billede med tekst (`MAX_LABEL_MS`, log `label_timeout`); før kørte lokal OCR op til ti billeder à 1–3 s.
+- Stregkoden som før; forside/energi/indhold tages nu med udløserknappen nederst i kamerabilledet (ingen automatisk scanning, intet tryk på billedet). "Spring over" til højre for udløseren på trin 4. Fluebenet på trin-boksene: lysegrønt, uden baggrund, 48 px. Web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`/`CameraParts.kt`.
 - Sort kamera på iPhone: `ImageCapture.takePhoto` slås fra på WebKit (hænger og fryser videoen); fotoet er det skarpeste af tre 4K-videobilleder. Ny `src/lib/camera-webkit.ts` + test.
-- Ikke prøvet på telefon her (ingen enhed): brugerens test på iPhone af (1) at kameraet ikke længere bliver sort efter energi-trinnet, (2) "Spring over", (3) at energi/indhold stopper inden for ca. 5 s.
+- Produktsiden viste allerede felterne løbende (poll på `pendingFields`, parallel AI-læsning) — ingen ændring.
+- Lint 0 fejl, 398 tests, tsc, build (404 ruter) og native-paritet grønne. Ikke prøvet på telefon her (ingen enhed): brugerens test på iPhone af (1) at kameraet ikke bliver sort efter energi-trinnet, (2) udløseren på trin 2–4, (3) "Spring over" på trin 4.
 
 ## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret
 

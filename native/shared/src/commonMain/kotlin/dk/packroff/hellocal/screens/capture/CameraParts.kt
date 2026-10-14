@@ -231,13 +231,10 @@ internal fun BoxScope.PhotoWorkingOverlay(label: String) {
     }
 }
 
-/** CaptureCheckOverlay: a green round check mark in the corner of a step button. */
+/** CaptureCheckOverlay: a big check mark in the light signature green, no background (user 2026-10-14). */
 @Composable
-internal fun BoxScope.CheckBadge(size: Dp = 24.dp) {
-    Box(
-        Modifier.align(Alignment.TopEnd).padding(4.dp).size(size).clip(CircleShape).background(HcColors.Brand),
-        contentAlignment = Alignment.Center,
-    ) {
-        HcIcon("Check", size = size * 0.7f, color = HcColors.White, stroke = 2.5f)
+internal fun BoxScope.CheckBadge(size: Dp = 48.dp) {
+    Box(Modifier.matchParentSize(), contentAlignment = Alignment.Center) {
+        HcIcon("Check", size = size, color = HcColors.Positive, stroke = 3.5f)
     }
 }

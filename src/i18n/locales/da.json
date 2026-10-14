@@ -1056,7 +1056,9 @@
     "frontNoProduct": "Ingen vare i billedet — hold forsiden af varen i rammen, eller tryk på billedet for at bruge det alligevel.",
     "labelNoText": "Kan ikke læse teksten — hold feltet skarpt og tæt på.",
     "retakeHint": "Tryk på et trin med flueben for at tage det om. Stregkode starter forfra.",
-    "skipIngredients": "Spring over"
+    "skipIngredients": "Spring over",
+    "shutter": "Tag billede",
+    "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet."
   },
   "foods": {
     "title": "Madvarer",

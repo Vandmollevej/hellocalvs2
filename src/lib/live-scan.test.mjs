@@ -1,7 +1,7 @@
 // Kør: npm test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MAX_LABEL_MS, countsAsAttempt, labelDone, labelTimedOut, mergeLabelAttempts, sharpest } from "./live-scan.ts";
+import { countsAsAttempt, labelDone, mergeLabelAttempts, sharpest } from "./live-scan.ts";
 
 const empty = { nutrition: null, ingredients: null };
 const box = { x0: 0, y0: 0, x1: 10, y1: 10 };
@@ -37,9 +37,3 @@ test("tomme billeder tæller ikke som forsøg, og det skarpeste billede vælges"
   assert.equal(sharpest([]), null);
 });
 
-test("labelTimedOut: tidsgrænsen gælder kun, når mindst ét billede med tekst er læst", () => {
-  assert.equal(labelTimedOut(1000, 1, 1000 + MAX_LABEL_MS), true);
-  assert.equal(labelTimedOut(1000, 1, 1000 + MAX_LABEL_MS - 1), false);
-  assert.equal(labelTimedOut(1000, 0, 1000 + MAX_LABEL_MS * 3), false);
-  assert.equal(labelTimedOut(0, 3, 10 * MAX_LABEL_MS), false);
-});

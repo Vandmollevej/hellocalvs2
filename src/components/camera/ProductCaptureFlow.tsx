@@ -13,17 +13,7 @@ import { LabelFillOverlay } from "@/components/camera/LabelFillOverlay";
 import { ScanHeading } from "@/components/camera/ScanHeading";
 import { StepDoneOverlay } from "@/components/camera/StepDoneOverlay";
 import { useCameraWatchdog } from "@/components/camera/useCameraWatchdog";
-import {
-  MAX_LABEL_ATTEMPTS,
-  labelTimedOut,
-  countsAsAttempt,
-  labelDone,
-  labelFound,
-  mergeLabelAttempts,
-  sharpest,
-  type LabelAttempt,
-  type LabelNeed,
-} from "@/lib/live-scan";
+import { labelFound, type LabelAttempt, type LabelNeed } from "@/lib/live-scan";
 import {
   barcodeGuideBoxFraction,
   barcodePoseFromPoints,
@@ -59,33 +49,27 @@ import {
   setTorch,
   type CameraControls,
 } from "@/lib/camera-controls";
-import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
+import type { LiveFrame } from "./useLiveFrames";
 import { cameraVideoConstraints, captureStill, captureVideoFrame, stillPhotoSupported, type Still, type StillCrop } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog, scanLogPhoto } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27, levende scanning
-// 2026-10-02). Fire knapper under kameraet — Stregkode, Forside, Energi,
-// Indhold — og kameraet starter altid på stregkoden. En kendt stregkode går
-// direkte til varen. En ukendt fører videre til forside → energi → indhold.
-// Kameraet fryser aldrig: på hvert trin tages der løbende billeder af den
-// kørende video, når varen er skarp og stille (useLiveFrames). Forsiden
-// bruger det skarpeste af en lille serie; energi og indhold læses billede for
-// billede med lokal OCR, og aflæsningerne lægges sammen (src/lib/live-scan.ts),
-// indtil feltet er læst sikkert eller ti billeder er brugt. Når et trin er
+// Kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27; "gammeldags
+// billede" 2026-10-14). Fire knapper under kameraet — Stregkode, Forside,
+// Energi, Indhold — og kameraet starter altid på stregkoden, som læses
+// levende af videoen som hidtil. En kendt stregkode går direkte til varen. En
+// ukendt fører videre til forside → energi → indhold, hvor brugeren selv
+// trykker på udløseren nederst i kamerabilledet (ingen automatisk scanning,
+// brugerens krav 2026-10-14: "Jeg har ikke tillid til den anden metode").
+// Forsidefotoet analyseres (varen i rammens midte, dublet-tjek); energi- og
+// indholdsfotoet læses én gang med lokal OCR — står indholdet på
+// energibilledet, klares begge trin. Indholds-trinnet har "Spring over" til
+// højre for udløseren (varer uden indholdsfortegnelse). Når et trin er
 // klaret, blinker billedet hvidt, trinnet streges over med et stort flueben
-// (StepDoneOverlay, brugerens krav 2026-10-14), varens kontur (forside) eller
-// det læste tekstfelt (energi/indhold) fyldes hvidt oven på videoen, og
-// knappen får flueben. Står indholdet på energibilledet, får begge flueben.
-// Trinnene er nummererede, og kun brugerens egne fotos klarer dem — stregkode-
-// fotoets baggrunds-OCR springer ikke længere energi/indhold over (2026-10-14).
-// Ved flere varer i forsidebilledet vælges den i rammens midte automatisk
-// (pickObjectInFocus) — intet frosset billede med cirkler. Så snart alle er klaret, oprettes varen
-// (POST /api/products/quick), og skærmen går til /add/[id]; serveren udfylder
-// navn/brand/næring/indhold bagefter — energi og indhold fra telefonens egen
-// aflæsning, når den er sikker, ellers OpenAI. "Tag billede" er en manuel
-// reserve: forsiden tages straks, energi/indhold afsluttes med den bedste
-// aflæsning indtil nu.
+// (StepDoneOverlay), og knappen får flueben. Så snart alle er klaret, oprettes
+// varen (POST /api/products/quick), og skærmen går til /add/[id]; serveren
+// udfylder navn/brand/næring/indhold bagefter, og varesiden viser felterne
+// løbende, som de bliver læst (AddProductView poller Product.pendingFields).
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 
@@ -113,18 +97,10 @@ const STEP_DONE_REDUCED_MS = 600;
 // dag) står lidt under midten, så den store overskrift øverst ikke dækker det.
 const GUIDE_INSET: Record<Exclude<CaptureStep, "barcode">, string> = { front: "4%", nutrition: "24% 20% 16%", ingredients: "24% 20% 16%" };
 const GUIDE_DIM: Record<Exclude<CaptureStep, "barcode">, number> = { front: 0.2, nutrition: 0.65, ingredients: 0.65 };
-// Energi/indhold: efter så mange billeder uden læsbar tekst vises "Kan ikke
-// læse teksten"; hvert femte logges.
-const LABEL_NO_TEXT_HINT_AFTER = 2;
+// Fejlede tekstlæsninger i træk på energi/indhold: hvert femte logges.
 const LABEL_LOG_EVERY = 5;
-// Forsiden: det skarpeste af så mange billeder taget lige efter hinanden.
-const FRONT_BURST_FRAMES = 3;
-const FRONT_BURST_MS = 800;
-// Fokus-måleren: forsiden kræver fire stille målinger, etiketterne to.
-const FRONT_MIN_PROGRESS = 1;
-const LABEL_MIN_PROGRESS = 0.5;
-// Den levende scannings videobilleder (lokal OCR): energi/indhold beskæres
-// til søgerens kvadrat, forsiden ikke (docs/DECISIONS.md 2026-09-17).
+// Billedet til den lokale OCR (udløserens videobillede): energi/indhold
+// beskæres til søgerens kvadrat, forsiden ikke (docs/DECISIONS.md 2026-09-17).
 const LIVE_FRAME_MAX_SIDE = 1600;
 // Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
 const BARCODE_PHOTO_MAX_SIDE = 1920;
@@ -237,20 +213,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
 
-  // Den levende scanning: ét billede ad gangen er under analyse (busy);
-  // runId stiger ved hvert trinskift, så svar fra et forladt trin smides væk.
+  // Ét billede ad gangen er under analyse (busy); runId stiger ved hvert
+  // trinskift, så svar fra et forladt trin smides væk.
   const busyRef = useRef(false);
   const runIdRef = useRef(0);
-  const frontBurstRef = useRef<{ frames: LiveFrame[]; timer: ReturnType<typeof setTimeout> } | null>(null);
-  const labelBestRef = useRef<LabelAttempt<LiveFrame> | null>(null);
-  const labelAttemptsRef = useRef(0);
   const labelStartedAtRef = useRef(0);
-  // "Tag billede" under en igangværende aflæsning: afslut med den bedste.
-  const labelForceRef = useRef(false);
-  // Billeder uden læsbar tekst / fejlede tekstlæsninger i træk på energi/indhold.
-  const labelNoTextRef = useRef(0);
+  // Fejlede tekstlæsninger i træk på energi/indhold.
   const labelFailuresRef = useRef(0);
-  const [labelNoText, setLabelNoText] = useState(false);
   // Forsidebilledet blev afvist (ingen tekst og ingen vare — fx tøj/bord).
   const [frontRejected, setFrontRejected] = useState(false);
 
@@ -418,21 +387,14 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     };
   }, [restartKey, stopCamera, flowId]);
 
-  // Nulstiller den levende scanning, når trinnet skifter — svar, der er
-  // undervejs fra det gamle trin, ignoreres.
+  // Nulstiller aflæsningen, når trinnet skifter — svar, der er undervejs
+  // fra det gamle trin, ignoreres.
   function resetLiveScan() {
     runIdRef.current += 1;
     busyRef.current = false;
-    labelForceRef.current = false;
-    labelBestRef.current = null;
-    labelAttemptsRef.current = 0;
     labelStartedAtRef.current = 0;
-    labelNoTextRef.current = 0;
     labelFailuresRef.current = 0;
-    setLabelNoText(false);
     setFrontRejected(false);
-    if (frontBurstRef.current) clearTimeout(frontBurstRef.current.timer);
-    frontBurstRef.current = null;
   }
 
   useEffect(() => () => resetLiveScan(), []);
@@ -880,43 +842,26 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     await flashThenContinue({ kind: "object" }, markDone("front"), ["front"]);
   }
 
-  function closeFrontBurst() {
-    const burst = frontBurstRef.current;
-    if (!burst) return;
-    clearTimeout(burst.timer);
-    frontBurstRef.current = null;
-    const best = sharpest(burst.frames);
-    if (best) void processFront(best);
-  }
-
-  // Energi/indhold: hvert billede læses lokalt og lægges sammen med de
-  // forrige; trinnet er klaret, når feltet er læst sikkert, når ti billeder
-  // med tekst er brugt, når tidsgrænsen (MAX_LABEL_MS) er nået med mindst ét
-  // billede med tekst, eller når brugeren trykker "Tag billede".
-  async function processLabelFrame(frame: LiveFrame, force: boolean) {
+  // Energi/indhold: udløserens billede læses én gang lokalt (så telefonens
+  // aflæsning kan bruges, når den er sikker, og så indhold på energibilledet
+  // klarer begge trin); derefter er trinnet klaret — AI læser resten.
+  async function processLabelFrame(frame: LiveFrame) {
     const need: LabelNeed = stepRef.current === "ingredients" ? "ingredients" : "nutrition";
-    if (busyRef.current) {
-      if (force) labelForceRef.current = true;
-      return;
-    }
+    if (busyRef.current) return;
     busyRef.current = true;
-    if (force) labelForceRef.current = true;
+    setWorking(true);
     const runId = runIdRef.current;
-    if (!labelStartedAtRef.current) labelStartedAtRef.current = Date.now();
+    labelStartedAtRef.current = Date.now();
     const startedAt = Date.now();
     const read = await readLabelPhoto(frame.url, ocrLanguages());
     if (leavingRef.current || runId !== runIdRef.current) return;
     busyRef.current = false;
-    const best = mergeLabelAttempts(labelBestRef.current, { frame, read }, need);
-    labelBestRef.current = best;
-    if (countsAsAttempt(read)) labelAttemptsRef.current += 1;
-    const attempts = labelAttemptsRef.current;
+    const best: LabelAttempt<LiveFrame> = { frame, read };
     scanLog(flowId, "label_attempt", {
-      message: `${need === "nutrition" ? "Energi" : "Indhold"}: billede ${attempts}/${MAX_LABEL_ATTEMPTS} læst (${read.text.length} tegn, sikkerhed ${Math.round(read.confidence)} %)`,
+      message: `${need === "nutrition" ? "Energi" : "Indhold"}: billedet læst (${read.text.length} tegn, sikkerhed ${Math.round(read.confidence)} %)`,
       barcode: dataRef.current.barcode,
       durationMs: Date.now() - startedAt,
       data: {
-        attempts,
         textLength: read.text.length,
         confidence: read.confidence,
         sharpness: Math.round(frame.sharpness),
@@ -932,42 +877,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       if (labelFailuresRef.current === 1 || labelFailuresRef.current % LABEL_LOG_EVERY === 0) {
         scanLog(flowId, "label_ocr_error", {
           level: "error",
-          message: `${stepName}: den lokale tekstlæsning fejlede (${labelFailuresRef.current} gang(e)) — næste billede prøves med en ny læser`,
+          message: `${stepName}: den lokale tekstlæsning fejlede (${labelFailuresRef.current} gang(e)) — AI læser billedet`,
           barcode: dataRef.current.barcode,
           data: { failures: labelFailuresRef.current },
         });
       }
     }
-    // Billeder uden læsbar tekst (tøj, bord, uskarpt): sig det til brugeren
-    // i stedet for at scanne i stilhed (bruger 2026-10-14).
-    if (countsAsAttempt(read)) {
-      labelNoTextRef.current = 0;
-      setLabelNoText(false);
-    } else {
-      labelNoTextRef.current += 1;
-      if (labelNoTextRef.current >= LABEL_NO_TEXT_HINT_AFTER) setLabelNoText(true);
-      if (labelNoTextRef.current % LABEL_LOG_EVERY === 0) {
-        scanLog(flowId, "label_no_text", {
-          level: "warn",
-          message: `${stepName}: ${labelNoTextRef.current} billeder i træk uden læsbar tekst — brugeren bedes holde feltet skarpt og tæt på`,
-          barcode: dataRef.current.barcode,
-          data: { frames: labelNoTextRef.current, sharpness: Math.round(frame.sharpness) },
-        });
-      }
-    }
-    const timedOut = labelTimedOut(labelStartedAtRef.current, attempts);
-    const finished = labelForceRef.current || labelDone(best.read, need) || attempts >= MAX_LABEL_ATTEMPTS || timedOut;
-    if (timedOut && !labelDone(best.read, need)) {
-      scanLog(flowId, "label_timeout", {
-        message: `${stepName}: tidsgrænsen nået efter ${attempts} billede(r) med tekst — det bedste bruges, AI læser resten`,
-        barcode: dataRef.current.barcode,
-        durationMs: Date.now() - labelStartedAtRef.current,
-        data: { attempts, confidence: best.read.confidence },
-      });
-    }
-    if (!finished) return;
-    labelForceRef.current = false;
-    finishLabel(need, best, attempts);
+    finishLabel(need, best, 1);
   }
 
   // Trinnet er klaret: telefonens egen aflæsning gemmes nu, og stillbilledet
@@ -1052,39 +968,21 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"), ["ingredients"], stillReady);
   }
 
-  // Et billede fra den levende scanning: forsiden samler en lille serie og
-  // tager det skarpeste; etiketterne læses med det samme.
-  function onLiveFrame(frame: LiveFrame) {
-    if (stepRef.current === "front") {
-      let burst = frontBurstRef.current;
-      if (!burst) {
-        burst = { frames: [], timer: setTimeout(closeFrontBurst, FRONT_BURST_MS) };
-        frontBurstRef.current = burst;
-      }
-      burst.frames.push(frame);
-      if (burst.frames.length >= FRONT_BURST_FRAMES) closeFrontBurst();
-      return;
-    }
-    void processLabelFrame(frame, false);
-  }
-
-  // "Tag billede" — manuel reserve: forsiden tages nu; energi/indhold
-  // afsluttes med den bedste aflæsning (dette billede medregnet, medmindre
-  // et andet allerede er under aflæsning).
+  // Udløseren nederst i kamerabilledet (bruger 2026-10-14): forsiden tages
+  // og analyseres nu; energi/indhold tages og læses én gang.
   function capturePhoto() {
-    if (working || step === "barcode" || flash || stepDone) return;
+    if (working || step === "barcode" || flash || stepDone || cameraStatus !== "active") return;
     const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(step));
     if (!live) {
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
       return;
     }
+    scanLog(flowId, "shutter", { message: `Udløseren trykket på trinnet "${step}"`, barcode: dataRef.current.barcode, data: { step, sharpness: Math.round(live.sharpness) } });
     if (step === "front") {
-      if (frontBurstRef.current) clearTimeout(frontBurstRef.current.timer);
-      frontBurstRef.current = null;
       void processFront(live, true);
       return;
     }
-    void processLabelFrame(live, true);
+    void processLabelFrame(live);
   }
 
   // "Spring over" nederst i kamerabilledet på indholds-trinnet (bruger
@@ -1098,7 +996,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     scanLog(flowId, "ingredients_skipped", {
       message: "Indhold sprunget over — brugeren trykkede Spring over (varen har ingen indholdsfortegnelse)",
       barcode: data.barcode,
-      data: { attempts: labelAttemptsRef.current, noTextFrames: labelNoTextRef.current },
+      data: { step: stepRef.current },
     });
     data.ingredientsPhoto = undefined;
     data.ingredientsOcrText = undefined;
@@ -1165,18 +1063,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     nutrition: t("cameraCreate.scanNutrition"),
     ingredients: t("cameraCreate.scanIngredients"),
   };
-  const liveActive =
-    step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone && !createFailed;
-  const liveProgress = useLiveFrames(
-    videoRef,
-    liveActive,
-    step === "front" ? FRONT_MIN_PROGRESS : LABEL_MIN_PROGRESS,
-    liveCrop(step),
-    LIVE_FRAME_MAX_SIDE,
-    () => !busyRef.current && !flashRef.current,
-    onLiveFrame,
-  );
-
   const stepHints: Record<CaptureStep, string> = {
     barcode: lookupBlockedMessage ?? (lookupError ? (online ? t("camera.barcodeLookupError") : t("offline.barcodeLookup")) : t("camera.holdCameraStill")),
     front: t("cameraCreate.hintFront"),
@@ -1193,16 +1079,14 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           : cameraStatus === "error"
             ? t("camera.error")
             : null;
-  // Scanningsstriben fejer over den levende video på alle fototrin og under
+  // Analyse-overlayet ligger over videoen, mens et foto analyseres og under
   // oprettelsen — ikke mens "trinnet er klaret" eller udfyldningen vises.
-  const sweeping = !scanning && !flash && !stepDone && cameraStatus === "active" && (step !== "barcode" || working);
+  const sweeping = !scanning && !flash && !stepDone && cameraStatus === "active" && working;
   // Beskeden nederst i kamerabilledet: afvist forside, ingen tekst, ellers lys/fokus.
   const viewfinderNotice =
     frontRejected && step === "front"
       ? t("cameraCreate.frontNoProduct")
-      : labelNoText && (step === "nutrition" || step === "ingredients")
-        ? t("cameraCreate.labelNoText")
-        : frameIssue
+      : frameIssue
           ? frameIssue === "dark"
             ? cameraControls.torch && !torchOn
               ? t("camera.qualityDarkTorch")
@@ -1216,21 +1100,15 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
   // "Spring over" kun på indholds-trinnet, og ikke ved en genscanning, der
   // alene mangler indholdet (så ville der intet være at sende).
-  const canSkipIngredients =
-    step === "ingredients" && !cameraMessage && !working && !flash && !stepDone && !createFailed && !(rescan && rescan.steps.length === 1);
+  // Udløseren nederst i kamerabilledet på de tre fototrin.
+  const showShutter = step !== "barcode" && cameraStatus === "active" && !cameraMessage && !working && !flash && !stepDone && !createFailed;
+  const canSkipIngredients = showShutter && step === "ingredients" && !(rescan && rescan.steps.length === 1);
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Ingen "Tag billede"-knap (brugerens krav 2026-10-02): billedet tages
-          automatisk; et tryk på selve kamerabilledet tager det med det samme. */}
-      <div
-        className="hf-camera-preview"
-        onClick={() => {
-          if (step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone) {
-            void capturePhoto();
-          }
-        }}
-      >
+      {/* Udløseren nederst i kamerabilledet tager fotoet (brugerens krav
+          2026-10-14: "gammeldags billede") — intet tryk på selve billedet. */}
+      <div className="hf-camera-preview">
         <video
           ref={videoRef}
           className="h-full w-full object-cover"
@@ -1256,14 +1134,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             style={{
               inset: GUIDE_INSET[guideStep],
               boxShadow: `0 0 0 999px rgba(0,0,0,${GUIDE_DIM[guideStep]})`,
-              borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)",
+              borderColor: "rgba(255,255,255,0.8)",
             }}
-          >
-            <div
-              className="absolute bottom-0 left-0 h-1 rounded-full bg-hf-green transition-[width]"
-              style={{ width: `${liveProgress * 100}%` }}
-            />
-          </div>
+          />
         )}
 
         {sweeping && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
@@ -1277,7 +1150,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         {viewfinderNotice && !cameraMessage && !stepDone && (
           <div
-            className={`pointer-events-none absolute inset-x-3 flex justify-center ${canSkipIngredients ? "bottom-16" : "bottom-3"}`}
+            className={`pointer-events-none absolute inset-x-3 flex justify-center ${showShutter ? "bottom-24" : "bottom-3"}`}
             aria-live="polite"
           >
             <p className="hf-type-small hf-type-strong bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
@@ -1286,18 +1159,25 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           </div>
         )}
 
-        {canSkipIngredients && (
-          <div className="absolute inset-x-3 bottom-3 flex justify-center">
+        {showShutter && (
+          <div className="absolute inset-x-3 bottom-3 flex items-center justify-center">
             <button
               type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                skipIngredients();
-              }}
-              className="hf-type-small hf-type-strong flex h-11 items-center justify-center bg-hf-black/60 px-6 text-hf-white rounded-card"
+              onClick={() => void capturePhoto()}
+              aria-label={t("cameraCreate.shutter")}
+              className="hf-shutter"
             >
-              {t("cameraCreate.skipIngredients")}
+              <span className="hf-shutter__inner" />
             </button>
+            {canSkipIngredients && (
+              <button
+                type="button"
+                onClick={skipIngredients}
+                className="hf-type-small hf-type-strong absolute right-0 flex h-11 items-center justify-center bg-hf-black/60 px-5 text-hf-white rounded-card"
+              >
+                {t("cameraCreate.skipIngredients")}
+              </button>
+            )}
           </div>
         )}
 
@@ -1377,7 +1257,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
               <StepIcon size={20} stroke={1.8} />
               <span className="hf-type-micro">{stepLabels[item]}</span>
               {done[item] && (
-                <CaptureCheckOverlay label={t("cameraCreate.stepDone", { step: stepLabels[item] })} size={24} />
+                <CaptureCheckOverlay label={t("cameraCreate.stepDone", { step: stepLabels[item] })} size={48} />
               )}
             </button>
           );
@@ -1399,7 +1279,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         <>
           <p className="hf-type-caption text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
-            <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
+            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.shutterHint")}</p>
           )}
           {!rescan && Object.values(done).some(Boolean) && (
             <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.retakeHint")}</p>
