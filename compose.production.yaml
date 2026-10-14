@@ -446,6 +446,53 @@ services:
       - backend
       - edge
 
+  # Natlig database-backup (docs/DECISIONS.md 2026-10-14): pg_dump af hellocal
+  # og umami til ./backups hver nat kl. 01:00 UTC (02-03 dansk tid) og én gang
+  # ved opstart. Filer med "-nightly-" ældre end 30 dage slettes automatisk
+  # (rullende 30 dage); manuelle dumps i samme mappe røres ikke.
+  db-backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+      PGDATABASE: ${POSTGRES_DB:?Set POSTGRES_DB in .env.production}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -u
+        backup() {
+          d=$$(date +%Y%m%d-%H%M%S)
+          for db in "$$PGDATABASE" umami; do
+            f="/backups/$$db-nightly-$$d.dump"
+            if pg_dump -Fc -d "$$db" -f "$$f.tmp"; then
+              mv "$$f.tmp" "$$f"
+              echo "backup ok: $$f"
+            else
+              rm -f "$$f.tmp"
+              echo "backup FAILED: $$db"
+            fi
+          done
+          find /backups -name '*-nightly-*.dump' -mtime +30 -delete
+        }
+        backup
+        while true; do
+          h=$$(date +%H | sed 's/^0*//')
+          m=$$(date +%M | sed 's/^0*//')
+          diff=$$(( (60 - $${h:-0} * 60 - $${m:-0} + 1440) % 1440 ))
+          [ "$$diff" -eq 0 ] && diff=1440
+          sleep $$((diff * 60))
+          backup
+        done
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
   # Umami-analyse (docs/DECISIONS.md 2026-09-27 "Umami-analyse"): selv-hostet,
   # cookiefri besøgsstatistik vist i admin → Analyse. Egen database "umami" i
   # samme PostgreSQL (oprettes af umami-db-init). Kun på det interne netværk:

@@ -5192,3 +5192,9 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Den tidligere upushede Labels-side sættes i Varedatabase, bruger certifikatlogoer fra den fælles logofunktion og får admin-genvej Alt+Shift+0.
 - Søgeord uden artikel vælger ental-/flertalstitlen, når kun den ene titel indeholder ordet; uklare match bevarer standardtitlen.
 - Efterladt GuideGate og 25-point OFF-fotoflow indføres ikke: masters flow-system og 10-point genscanning er den aktuelle produktkontrakt.
+
+## 2026-10-14: Natlig database-backup med 30 dages rotation
+
+- Brugeren ønskede natlig backup med rullende 30 dage. Ny compose-tjeneste `db-backup` (postgres:17-alpine) tager `pg_dump -Fc` af `hellocal` og `umami` til `./backups` (på NAS: `/volume1/docker/App/hellocal-v2/backups`) ved opstart og hver nat kl. 01:00 UTC (02-03 dansk tid).
+- Filer med `-nightly-` i navnet og ældre end 30 dage slettes automatisk; manuelle dumps og container-backuppen røres ikke. En dump er ca. 10 MB, så 30 dage fylder ca. 0,3 GB.
+- Fuld container-backup (`scripts/backup/backup-all-containers.sh`) er stadig manuel (kræver sudo-adgangskode); størstedelen af dens 22 GB var samme hellofresh-billedmappe kopieret tre gange (app, hellofresh-agent, runnerens /deploy).
