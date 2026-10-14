@@ -163,6 +163,13 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
   dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
 
+## Scan-appen: manuel udløser, aldrig automatisk (user rule 2026-10-14)
+
+- Scan-appen (Oprettelses-appen, `src/app/scan/**`) tager ALDRIG billeder eller scanner automatisk: medarbejderen trykker selv på udløseren — hyldebilledet og alle fire bokse i "Opret vare" (`CreateProductMediaGrid`).
+- Fotos tages med telefonens eget kamera via `<input type="file" accept="image/*" capture="environment">`. Det gør, at en Bluetooth-udløser i den anden hånd virker (den trykker på kameraets egen udløserknap), og det skal blive ved med at virke.
+- Hello Cals automatiske Tilføj-kamera (`src/components/camera/**`, ingen "Tag billede"-knap, `useAutoCapture`) og levende kamera (`getUserMedia`, `<video>`, ZXing fra video) må aldrig bruges i scan-appen. Stregkoden læses af det tagne foto.
+- Vagt: `src/lib/scan-app-manual-capture.test.mjs` (`npm test`) fejler, hvis et filfelt mister `capture` eller scan-appen får et levende kamera. Se DECISIONS.md 2026-10-14.
+
 ## Tilføj-kameraet (user rule 2026-10-14)
 
 - Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Scan energi", "4. Scan indholdsfortegnelse" (`ScanHeading`). Det senest klarede trin står lille, overstreget og med flueben over den aktuelle overskrift.
