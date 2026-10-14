@@ -291,6 +291,10 @@ Confirm that the dump exists and is non-empty. Backups must also be copied to a
 second storage location; a file beside the live database is not sufficient as
 the only backup.
 
+### Natlig database-backup
+
+Tjenesten `db-backup` i `compose.production.yaml` tager hver nat (kl. 01:00 UTC) og ved opstart en `pg_dump -Fc` af `hellocal` og `umami` til `backups/*-nightly-<tid>.dump` og sletter nightly-filer ældre end 30 dage. Se loggen med `sudo docker logs hellocal-v2-db-backup-1`. Backuppen ligger på samme NAS som databasen, så kopiér den jævnligt til et andet sted (fx pc'ens D:-disk).
+
 ### Fuld container-backup
 
 `scripts/backup/backup-all-containers.sh` kopieres af deployet til
