@@ -7,6 +7,8 @@ import {
   brandLogoLeftPx,
   brandLogoRenderedHeight,
   brandSlotHeight,
+  circleLogoFor,
+  circleLogoSize,
   subbrandBottomPx,
 } from "@/lib/brand-logo-layout";
 import { displayedSubbrand } from "@/lib/subbrand-names";
@@ -362,6 +364,8 @@ export function AddProductView({
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
   const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
+  // Logoet, der står stort i cirklen uden produktbillede (samme fil).
+  const [circleLogoRatio, setCircleLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -809,7 +813,16 @@ export function AddProductView({
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
   // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
   const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
-  const subbrandBottom = subbrandBottomPx(brandSlotHeight(view?.brand, brandLogoRatio));
+  // Uden produktbillede (og ikke mens billedet hentes/fritlægges) står et logo
+  // stort i cirklen: subbrandets, hvis det har et, ellers brandets
+  // (docs/DECISIONS.md 2026-10-14). Det logo står så ikke også ved cirklen.
+  const circleLogo =
+    view && !displayImageUrl && !shouldPoll && !isLoading
+      ? circleLogoFor({ brand: view.brand, subbrand, subbrandLogoUrl: view.subbrandLogoUrl })
+      : null;
+  const subbrandBottom = subbrandBottomPx(
+    brandSlotHeight(circleLogo?.kind === "brand" ? null : view?.brand, brandLogoRatio),
+  );
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -951,6 +964,22 @@ export function AddProductView({
                       }
                     />
                   )}
+                  {circleLogo && (
+                    // Uden produktbillede: logoet stort midt i cirklen. Det må
+                    // rage uden for cirklen i højden ELLER bredden, aldrig
+                    // beskæres (DECISIONS 2026-10-14, src/lib/brand-logo-layout.ts).
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={circleLogo.url}
+                      src={circleLogo.url}
+                      alt={circleLogo.name}
+                      onLoad={(event) =>
+                        setCircleLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                      }
+                      style={circleLogoSize(circleLogoRatio)}
+                      className="pointer-events-none absolute left-1/2 top-1/2 z-[5] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
+                    />
+                  )}
                   {!isLoading && !view.isGenericIngredient && (
                     <button
                       type="button"
@@ -965,6 +994,7 @@ export function AddProductView({
                       bund og venstre kant 3/4 inde; uden logo brandnavnet i
                       fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
                   {view.brand &&
+                    circleLogo?.kind !== "brand" &&
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -988,6 +1018,7 @@ export function AddProductView({
                       logoet, hvis det findes, ellers navnet i fed grøn tekst
                       (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
                   {subbrand &&
+                    circleLogo?.kind !== "subbrand" &&
                     (view.subbrandLogoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img

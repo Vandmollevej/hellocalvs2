@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -761,6 +762,18 @@ private fun ProductCircle(
     certifications: List<NameCertification>,
     modifier: Modifier = Modifier,
 ) {
+    // Without a product photo a logo stands big in the circle: the subbrand's if it has one, else the brand's
+    // (docs/DECISIONS.md 2026-10-14). That logo is then not shown beside the circle as well.
+    val noImage = imageUrl == null && !showSkeleton
+    val subbrandHasLogo = subbrand != null && !subbrandLogoUrl.isNullOrEmpty()
+    val circleLogoUrl: String? = when {
+        !noImage -> null
+        subbrandHasLogo -> subbrandLogoUrl
+        brand != null && !brand.logoUrl.isNullOrEmpty() -> brand.logoUrl
+        else -> null
+    }
+    val subbrandInCircle = circleLogoUrl != null && subbrandHasLogo
+    val brandInCircle = circleLogoUrl != null && !subbrandHasLogo
     Box(modifier.size(180.dp)) {
         Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
             when {
@@ -780,6 +793,20 @@ private fun ProductCircle(
                 else Modifier.align(Alignment.BottomCenter).height(198.dp),
             )
         }
+        if (circleLogoUrl != null) {
+            // The logo may stand out of the circle in height OR width, never cropped (src/lib/brand-logo-layout.ts).
+            var logoRatio by remember(circleLogoUrl) { mutableStateOf<Float?>(null) }
+            val (logoWidth, logoHeight) = circleLogoSizeDp(logoRatio)
+            AsyncImage(
+                model = Api.absoluteUrl(circleLogoUrl),
+                contentDescription = if (subbrandInCircle) subbrand else brand?.name,
+                contentScale = ContentScale.Fit,
+                onState = { s ->
+                    if (s is AsyncImagePainter.State.Success) logoRatio = s.result.image.width.toFloat() / s.result.image.height.coerceAtLeast(1)
+                },
+                modifier = Modifier.align(Alignment.Center).requiredSize(logoWidth.dp, logoHeight.dp),
+            )
+        }
         if (showFavorite) {
             Box(
                 Modifier.align(Alignment.TopEnd).offset(x = (-8).dp, y = 8.dp).size(44.dp).clip(CircleShape)
@@ -787,7 +814,7 @@ private fun ProductCircle(
                 contentAlignment = Alignment.Center,
             ) { FoodFavoriteIcon(isFavorite, 24.dp, HcColors.White) }
         }
-        if (brand != null) {
+        if (brand != null && !brandInCircle) {
             Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
                 if (!brand.logoUrl.isNullOrEmpty()) {
                     FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name)
@@ -796,10 +823,10 @@ private fun ProductCircle(
                 }
             }
         }
-        if (subbrand != null) {
+        if (subbrand != null && !subbrandInCircle) {
             // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
             val brandHeight = when {
-                brand == null -> 0
+                brand == null || brandInCircle -> 0
                 !brand.logoUrl.isNullOrEmpty() -> BRAND_LOGO_HEIGHT_DP
                 else -> BRAND_NAME_HEIGHT_DP
             }
@@ -824,6 +851,17 @@ private fun ProductCircle(
 private const val BRAND_LOGO_HEIGHT_DP = 66
 private const val BRAND_NAME_HEIGHT_DP = 22
 private const val SUBBRAND_GAP_DP = 6
+private const val CIRCLE_LOGO_LONG_DP = 216f
+private const val CIRCLE_LOGO_SHORT_DP = 150f
+
+/** Size (dp) of a logo with width/height [ratio] standing big in the circle — circleLogoSize in src/lib/brand-logo-layout.ts. */
+private fun circleLogoSizeDp(ratio: Float?): Pair<Int, Int> {
+    val r = if (ratio != null && ratio.isFinite() && ratio > 0f) ratio else 1f
+    val maxWidth = if (r >= 1f) CIRCLE_LOGO_LONG_DP else CIRCLE_LOGO_SHORT_DP
+    val maxHeight = if (r >= 1f) CIRCLE_LOGO_SHORT_DP else CIRCLE_LOGO_LONG_DP
+    val width = min(maxWidth, maxHeight * r)
+    return width.roundToInt() to (width / r).roundToInt()
+}
 
 /** The subbrand to show above the brand — null when empty or just the brand again (src/lib/subbrand-names.ts). */
 private fun displayedSubbrand(brandName: String?, subbrand: String?): String? {

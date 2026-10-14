@@ -1,3 +1,11 @@
+## 2026-10-14: Uden produktbillede står et logo stort i cirklen
+
+Brugerens regel: "Har produktet ikke et produktbillede, men derimod brand-logo, vises brand-logoet stort inden for cirklen. Har produktet et subbrand med logo, vises dette i cirklen i stedet, og brandet står, hvor det plejer. Logoet må gerne gå ud over cirklens kanter og må ikke skæres af (med måde). Kun enten i højden eller bredden."
+
+- Gælder kun, når varen hverken har et billede eller venter på et (ikke mens robotten henter/fritlægger). Web `AddProductView` + native `AddProductScreen` (`ProductCircle`).
+- Valg (`circleLogoFor` i `src/lib/brand-logo-layout.ts`): subbrand med logo → subbrandets logo i cirklen, brandet (logo eller navn) står ved cirklen som før; ellers brandets logo i cirklen. Det logo, der står i cirklen, står ikke også ved siden af. Har subbrandet kun et navn, står det ved cirklen (i bunden, når brandet er i cirklen). Uden logo i cirklen er intet ændret.
+- Størrelse (`circleLogoSize`): midt i cirklen, aldrig beskåret. Liggende logo: 216 px bredt (120 % af cirklen) og højst 150 px højt; stående: 216 px højt og højst 150 px bredt; et næsten kvadratisk logo holder sig helt inde i cirklen. Dermed rager et logo kun ud i den ene retning.
+
 ## 2026-10-12: Genbrug af identiske elementstyles bevarer mobil og online
 
 - Brugerens krav: elementer med identiske stilegenskaber bruger samme fælles klasse; eksisterende klasser genbruges før nye oprettes.

@@ -81,6 +81,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
+  hverken billede eller et billede på vej, står subbrandets logo stort midt i
+  cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
+  kun ud over cirklen i højden eller bredden (højst 120 %) og beskæres aldrig.
+  Se DECISIONS.md 2026-10-14.
 - **Dublet-billeder: kun "Behold" og "Erstat med dette" (bruger 2026-10-11)**:
   billedet der vises i dag står ved siden af ét alternativ; begge knapper
   sletter de øvrige varianter. Øvrige alternativer vises som miniaturer under

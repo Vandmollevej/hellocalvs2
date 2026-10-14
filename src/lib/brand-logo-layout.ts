@@ -50,3 +50,39 @@ export function brandLogoLeftPx(heightPx: number, bottomPx = 0): number {
   const edgeX = radius + Math.sqrt(radius * radius - dy * dy);
   return Math.round(edgeX + AIR_PX);
 }
+
+// Uden produktbillede står et logo stort midt i cirklen (brugerens regel
+// 2026-10-14): har varen et subbrand med logo, er det subbrandets logo og
+// brandet bliver stående dér, hvor det plejer; ellers brandets eget logo.
+// Logoet må rage uden for cirklen, men højst i den ene retning: den lange side
+// får CIRCLE_LOGO_LONG_PX (≈ 120 % af cirklen), den korte holder sig inde i
+// cirklen (CIRCLE_LOGO_SHORT_PX). Et næsten kvadratisk logo rager slet ikke ud.
+
+/** Den lange side af et logo i cirklen (px) — må være større end cirklen. */
+export const CIRCLE_LOGO_LONG_PX = 216;
+/** Den korte side af et logo i cirklen (px) — holder sig inde i cirklen. */
+export const CIRCLE_LOGO_SHORT_PX = 150;
+
+export type CircleLogo = { kind: "brand" | "subbrand"; url: string; name: string };
+
+/** Logoet, der står stort i cirklen, når varen ikke har et produktbillede — ellers null. */
+export function circleLogoFor(input: {
+  brand: { name: string; logoUrl?: string | null } | null | undefined;
+  subbrand: string | null;
+  subbrandLogoUrl: string | null | undefined;
+}): CircleLogo | null {
+  if (input.subbrand && input.subbrandLogoUrl) {
+    return { kind: "subbrand", url: input.subbrandLogoUrl, name: input.subbrand };
+  }
+  if (input.brand?.logoUrl) return { kind: "brand", url: input.brand.logoUrl, name: input.brand.name };
+  return null;
+}
+
+/** Mål (px) for et logo med forholdet bredde/højde i cirklen: liggende rager ud i bredden, stående i højden. */
+export function circleLogoSize(ratio: number | null): { width: number; height: number } {
+  const r = ratio && Number.isFinite(ratio) && ratio > 0 ? ratio : 1;
+  const maxWidth = r >= 1 ? CIRCLE_LOGO_LONG_PX : CIRCLE_LOGO_SHORT_PX;
+  const maxHeight = r >= 1 ? CIRCLE_LOGO_SHORT_PX : CIRCLE_LOGO_LONG_PX;
+  const width = Math.min(maxWidth, maxHeight * r);
+  return { width: Math.round(width), height: Math.round(width / r) };
+}
