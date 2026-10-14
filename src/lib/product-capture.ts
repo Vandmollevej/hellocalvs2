@@ -153,9 +153,14 @@ export async function saveBarcodePhoto(
   }
 }
 
+// Uden tidsgrænse stod en hængende upload som et sort, låst kamera, mens
+// serveren allerede havde oprettet varen (bruger 2026-10-14).
+export const CREATE_TIMEOUT_MS = 60_000;
+
 export async function createQuickProduct(data: CaptureData, marketRegion: string): Promise<string> {
   const response = await fetch("/api/products/quick", {
     method: "POST",
+    signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
     headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       barcode: data.barcode,
@@ -178,13 +183,29 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
   return body.product.id;
 }
 
+// Fejlede eller udløb oprettelsen, kan serveren alligevel have oprettet
+// varen (svaret gik tabt): findes stregkoden nu, er det varen.
+export async function findCreatedProduct(barcode: string, flowId?: string): Promise<string | null> {
+  try {
+    const response = await fetch(`/api/products/lookup/${encodeURIComponent(barcode)}`, {
+      signal: AbortSignal.timeout(15_000),
+      headers: scanFlowHeaders(flowId),
+    });
+    if (!response.ok) return null;
+    const body = (await response.json()) as { product?: { id?: string } };
+    return body.product?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): samme fotos som "opret
 // straks", men til en eksisterende vare (POST /api/products/[id]/rescan).
 export async function submitProductRescan(productId: string, data: CaptureData, marketRegion: string): Promise<void> {
   // Uden tidsgrænse kan en hængende upload stå som sort kamera for evigt.
   const response = await fetch(`/api/products/${encodeURIComponent(productId)}/rescan`, {
     method: "POST",
-    signal: AbortSignal.timeout(60_000),
+    signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
     headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       marketRegion,

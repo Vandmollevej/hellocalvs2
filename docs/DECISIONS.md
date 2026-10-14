@@ -7,6 +7,14 @@ Brugerens test (kinesisk chilisauce): allergenerne stod med store bogstaver, men
 - **AI-prompten** (`ingredients-v2`/`label-v2`): korrekt stavning på listens sprog, OCR-fejl som "Fnergi"/"£202" rettes, E-numre som E + tal, dansk "soja", aldrig næringstabellen i listen.
 - **Gamle lister** vises med de samme sikre rettelser (`displayIngredientsText`, web `IngredientsText` + native `IngredientsTextView`); databasen ændres ikke (en masseopdatering af eksisterende data blev ikke kørt). "soya" fremhæves nu også som allergen.
 
+## 2026-10-14: Tilføj-kameraet hang ved oprettelsen — tidsgrænse, kameraet slukkes, varen findes alligevel; versionsvagt efter deploy
+
+Brugerens test (kinesisk chilisauce, iPhone/Safari): efter sidste trin stod kameraet sort med scanningsstriben, siden reagerede ikke, og brugeren måtte genindlæse — men varen var alligevel oprettet og læst. Skærmbilledet viste den gamle kamerakode (ingen nummererede trin), skønt PR #404 var deployet fire timer før. Det sorte kamera i sig selv er `ImageCapture.takePhoto` på WebKit (rettet i PR #409, se næste afsnit).
+
+- **Oprettelsen har en tidsgrænse** (`CREATE_TIMEOUT_MS` = 60 s i `src/lib/product-capture.ts`, som genscanningen allerede havde). Fejler eller udløber den, slås stregkoden op (`findCreatedProduct`); findes varen, går flowet til den og logger `product_create_recovered` — serveren opretter varen, før AI'en læser den, så et tabt svar betyder som regel, at varen findes.
+- **Kameraet slukkes under oprettelsen** (`submitting`): vagthunden stoppes først, derefter kameraet, og konturanalysen (`ProductOutlineOverlay`) kører ikke, mens `working` er sat. Telefonen skal kun uploade. Forsidefotoet vises bag "Opretter varen …" (genscanning: "Sender billederne …") med scanningsstriben. Fejler oprettelsen, startes kameraet igen, og "Prøv igen" vises. Native: samme tekst over det sidste foto og samme opslag efter fejl (Ktor har i forvejen 60 s).
+- **Versionsvagt:** Next.js' `deploymentId` sættes ved hvert build (`NEXT_DEPLOYMENT_ID` = `github.sha` som build-arg i `build.yml` → `Dockerfile`). En fane, der kører kode fra et ældre deploy, genindlæses ved næste sideskift i stedet for at køre videre med gammel kode. Lokale builds uden variablen er uændrede.
+
 ## 2026-10-14: Tilføj-kameraet — "gammeldags billede": udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 Brugerens krav (samme aften, efter sort kamera og et forkert forsidebillede): "Behold som nu på stregkode men indsæt shutterknappen nederst i kameravinduet på de sidste tre billeder. Det sidste skal have en spring over knap til højre for shutterknappen i bunden. Jeg har ikke tillid til den anden metode. Ingen scanning mere. Gammeldags billede nu." Og: "detaljerne … må gerne komme løbende som de bliver indlæst. På produktsiden."

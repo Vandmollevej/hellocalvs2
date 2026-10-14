@@ -87,6 +87,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     var lastDone by remember { mutableStateOf<CaptureStep?>(null) }
     var working by remember { mutableStateOf(false) }
     var createFailed by remember { mutableStateOf(false) }
+    // The product is being created: "Opretter varen …" over the last photo (web 2026-10-14).
+    var submitting by remember { mutableStateOf(false) }
     var lookupError by remember { mutableStateOf(false) }
     var lookupBlockedMessage by remember { mutableStateOf<String?>(null) }
     var region by remember { mutableStateOf("DK") }
@@ -104,8 +106,15 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
 
     fun marketRegion() = region.uppercase().takeIf { REGION_CODE.matches(it) } ?: "DK"
 
+    // The server may have created the product even though its answer never
+    // arrived (timeout): if the barcode now exists, that is the product.
+    suspend fun findCreatedProduct(code: String): String? = runCatching {
+        Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+    }.getOrNull()
+
     suspend fun createProduct() {
         working = true
+        submitting = true
         createFailed = false
         try {
             val body = buildMap<String, Any> {
@@ -120,6 +129,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 ?: throw IllegalStateException("no id")
             nav.push("/add/$id$returnSuffix")
         } catch (e: Exception) {
+            val createdId = barcode?.let { findCreatedProduct(it) }
+            if (createdId != null) {
+                nav.push("/add/$createdId$returnSuffix")
+                return
+            }
+            submitting = false
             working = false
             createFailed = true
         }
@@ -288,7 +303,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.20f, dim = 0.65f, topInset = 0.24f)
                 }
             }
-            if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
+            if (working) PhotoWorkingOverlay(t.t(if (submitting) "cameraCreate.creating" else "cameraCreate.analyzingDefault"))
             if (step != CaptureStep.Barcode && message == null && celebrating == null && !working && !createFailed) {
                 ShutterRow(
                     shutterLabel = t.t("cameraCreate.shutter"),
@@ -297,7 +312,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     onSkip = { skipIngredients() },
                 )
             }
-            if (message != null) {
+            if (submitting) {
+                CameraMessageOverlay(t.t("cameraCreate.creating"))
+            } else if (message != null) {
                 CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
             } else if (celebrating != null) {
                 StepDoneOverlay(celebrating.map { numbered(it) })

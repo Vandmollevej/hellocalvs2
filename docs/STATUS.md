@@ -2,6 +2,11 @@
 
 - Nyt `src/lib/ingredient-text-quality.ts` + test: "£202" → "E202", dansk "soya" → "soja", OCR-ord ("SOIASAUCE", "SFSAMFRØ", "krydderler", "cltronsyre") rettes mod en ordliste, næringstabellen ("Fnergi" …) skæres fra; tegn på fejllæsning afviser telefonens liste og sender AI'ens til admin → Usikkerheder (≤ 60 %) og Log. AI-prompt v2. Gamle lister vises rettet (web + native), databasen er uændret. Se DECISIONS/REGLER 2026-10-14.
 
+## 2026-10-14: Tilføj-kameraet hang ved oprettelsen — rettet
+
+- Oprettelsen har nu 60 s tidsgrænse; ved fejl/timeout slås stregkoden op, og findes varen, går flowet til den (`product_create_recovered`). Kameraet og billedanalysen slukkes under oprettelsen; forsidefotoet står bag "Opretter varen …" i stedet for et sort kamera. Web + native.
+- Versionsvagt: `NEXT_DEPLOYMENT_ID` = commit-sha i Docker-buildet, så en gammel fane genindlæses ved næste sideskift (brugerens fane kørte koden fra før PR #404). Se DECISIONS/REGLER 2026-10-14. Ikke prøvet på iPhone her.
+
 ## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 - Stregkoden som før; forside/energi/indhold tages nu med udløserknappen nederst i kamerabilledet (ingen automatisk scanning, intet tryk på billedet). "Spring over" til højre for udløseren på trin 4. Fluebenet på trin-boksene: lysegrønt, uden baggrund, 48 px. Web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`/`CameraParts.kt`.

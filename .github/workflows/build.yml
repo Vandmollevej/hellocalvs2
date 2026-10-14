@@ -41,6 +41,9 @@ jobs:
         with:
           context: .
           push: true
+          # Next.js' versionsvagt (deploymentId): gammel kode i en åben fane genindlæses.
+          build-args: |
+            NEXT_DEPLOYMENT_ID=${{ github.sha }}
           tags: |
             ghcr.io/vandmollevej/hellocalvs2:latest
             ghcr.io/vandmollevej/hellocalvs2:${{ github.sha }}
