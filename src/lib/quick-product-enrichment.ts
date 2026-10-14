@@ -9,6 +9,7 @@ import {
   recordLocalAnalysis,
 } from "@/lib/product-photo-analysis";
 import { localIngredients, localNutrition } from "@/lib/local-label";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 import { hasIngredientsHeading } from "@/lib/product-ocr";
 import { createBarcodeLogoCutoutJob, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { matchBrand } from "@/lib/brand-match";
@@ -359,7 +360,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const ingredientsConfidence = input.ingredientsPhoto ? input.ingredientsOcrConfidence : input.nutritionOcrConfidence;
 
   const localN = localNutrition(nutritionText, input.nutritionOcrConfidence ?? 0);
-  const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0);
+  const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0, await loadSpellingDictionary());
 
   let nutrition: Read<NutritionAnalysis> = null;
   let ingredients: Read<IngredientsAnalysis> = null;

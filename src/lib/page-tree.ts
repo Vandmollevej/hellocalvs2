@@ -474,6 +474,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Usikkerheder",
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
+          {
+            path: "/admin/spelling",
+            label: "Stavekontrol",
+            note: "Nattens stavekontrol-robot: rettelser og forslag til ingredienslister — godkend, afvis eller skriv egen rettelse",
+          },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
           { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },
           { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },

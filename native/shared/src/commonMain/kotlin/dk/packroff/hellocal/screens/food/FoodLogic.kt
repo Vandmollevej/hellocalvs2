@@ -721,8 +721,11 @@ private fun fixOcrWord(token: String): String {
     val letters = lower.count { it.isLetter() }
     if (letters < 4 || knownIngredientWord(lower)) return token
     val upper = token.any { it.isLetter() } && token == token.uppercase()
-    val word = (if (upper && letters >= 5) closestIngredientWord(lower, ALLERGEN_CANDIDATES, minOf(2.2, lower.length * 0.3)) else null)
-        ?: closestIngredientWord(lower, KNOWN_INGREDIENT_WORDS, 1.0)
+    // Same safe limits as the web (src/lib/spelling-engine.ts AUTO_FIX_CONFIDENCE):
+    // one look-alike character, or for an UPPERCASE allergen of 6+ letters one
+    // missing letter + one look-alike ("FSAMFRØ" → "SESAMFRØ").
+    val word = closestIngredientWord(lower, KNOWN_INGREDIENT_WORDS, 0.5)
+        ?: (if (upper && letters >= 5) closestIngredientWord(lower, ALLERGEN_CANDIDATES, if (lower.length >= 6) 1.6 else 0.5) else null)
     if (word == null || word == lower) return token
     return when {
         upper -> word.uppercase()

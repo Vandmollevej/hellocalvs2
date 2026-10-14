@@ -32,6 +32,8 @@ import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
 import { DOUBTFUL_INGREDIENTS_CONFIDENCE, reviewIngredientsText } from "@/lib/ingredient-text-quality";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
+import type { SpellingDictionary } from "@/lib/spelling-engine";
 import type {
   BarcodeLogoAnalysis,
   IngredientsAiResult,
@@ -238,8 +240,11 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
 // sikre rettelser laves, og ved tvivl sættes sikkerheden ned, så aflæsningen
 // står rødt på admin → Usikkerheder → Indhold (brugerens spørgsmål 2026-10-14:
 // "Bliver den meldt med fejl og stavefejl til admin?").
-function reviewedIngredients(value: IngredientsAiResult): IngredientsAiResult & Pick<IngredientsAnalysis, "textReview"> {
-  const review = reviewIngredientsText(value.ingredientsText || "", value.language);
+function reviewedIngredients(
+  value: IngredientsAiResult,
+  dictionary: SpellingDictionary,
+): IngredientsAiResult & Pick<IngredientsAnalysis, "textReview"> {
+  const review = reviewIngredientsText(value.ingredientsText || "", value.language, dictionary);
   if (!review.fixes.length && !review.doubts.length) return value;
   return {
     ...value,
@@ -261,7 +266,7 @@ export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, oc
     system: INGREDIENTS_SYSTEM,
     text: ingredientsText({ barcode, context, ocrText }),
   });
-  const aiValue = reviewedIngredients(aiRaw);
+  const aiValue = reviewedIngredients(aiRaw, await loadSpellingDictionary());
   // Fuldkorn udledes deterministisk af selve varedeklarationen, ikke af
   // modellen (src/lib/whole-grain.ts, docs/DECISIONS.md 2026-09-23).
   const wholeGrain = parseWholeGrain({ ingredientsText: aiValue.ingredientsText || aiValue.rawText });
@@ -321,7 +326,7 @@ export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText 
     ...aiValue.nutrition,
     fiberPercent: deriveFiberPercent(aiValue.nutrition.basis, aiValue.nutrition.fiberPer100g),
   };
-  const reviewed = reviewedIngredients(aiValue.ingredients);
+  const reviewed = reviewedIngredients(aiValue.ingredients, await loadSpellingDictionary());
   const wholeGrain = parseWholeGrain({
     ingredientsText: reviewed.ingredientsText || reviewed.rawText,
   });

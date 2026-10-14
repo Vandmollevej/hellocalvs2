@@ -118,6 +118,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:30",
   },
   {
+    // Stavekontrol (docs/DECISIONS.md 2026-10-14): rapporten og forslagene
+    // ligger under admin → Stavekontrol.
+    key: "spelling-check",
+    name: "Stavekontrol: ingredienslister",
+    description:
+      "Læser alle nye og ændrede danske ingredienslister for stave- og OCR-fejl (\"SOIASAUCE\", \"krydderler\", \"£202\", næringstabel læst med ind). Ordbogen er grundlisten, katalogets egne ord og admins afgørelser. Sikre fejl rettes i varen (kan fortrydes); usikre bliver forslag under Stavekontrol, hvor admin godkender, afviser eller skriver sin egen rettelse.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:15",
+  },
+  {
     // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
     // listen under admin → Scan-invites → Open Food Facts-kontrol.
     key: "off-quality",

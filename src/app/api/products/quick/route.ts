@@ -10,6 +10,7 @@ import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -40,7 +41,11 @@ export async function POST(req: Request) {
   const ingredientsOcrText = typeof body?.ingredientsOcrText === "string" ? body.ingredientsOcrText.slice(0, 8000) : "";
   // Telefonens egen liste gemmes kun, hvis den består kvalitetskontrollen
   // (src/lib/ingredient-text-quality.ts) — ellers venter feltet på AI'en.
-  const localReview = reviewIngredientsText(typeof body?.localIngredientsText === "string" ? body.localIngredientsText : "");
+  const localReview = reviewIngredientsText(
+    typeof body?.localIngredientsText === "string" ? body.localIngredientsText : "",
+    null,
+    await loadSpellingDictionary(),
+  );
   const localIngredients = localReview.doubts.length ? "" : localReview.text;
   const barcodeAnalysisId = typeof body?.barcodeAnalysisId === "string" ? body.barcodeAnalysisId : null;
   // Sprogsignaler og OCR-sikkerhed (brugerens valg 2026-09-27). Signalerne

@@ -16,6 +16,7 @@ const DICTIONARY = {
   nav_images: { DA: "Billedbehandling", EN: "Image management" },
   nav_cutout_queue: { DA: "Billeder i kø til frilæggelse", EN: "Images queued for cut-out" },
   nav_uncertainties: { DA: "Usikkerheder", EN: "Uncertainties" },
+  nav_spelling: { DA: "Stavekontrol", EN: "Spell check" },
   nav_cron_jobs: { DA: "Cronjobs", EN: "Cron jobs" },
   nav_pet_food_filter: { DA: "Dyrefoder-filter", EN: "Pet food filter" },
   nav_duplicate_products: { DA: "Dubletter", EN: "Duplicates" },
