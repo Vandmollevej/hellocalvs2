@@ -4,7 +4,7 @@
 - Ved flere varer i forsidebilledet vælges den i rammens midte automatisk (`pickObjectInFocus` + test); det frosne billede med grønne cirkler er væk fra Tilføj-kameraet. Stregkodefotoets baggrunds-OCR klarer ikke længere energi/indhold.
 - Sort kamera på iPhone: `useCameraWatchdog` logger sporets pause/stop, baggrund/forgrund og et helt sort billede i admin → Log og genstarter kameraet (højst tre gange); lærreder genbruges i `camera-still.ts`/`product-outline.ts`. Brugerens konkrete sorte kamera kunne ikke læses ud af loggen herfra (ingen adgang til produktions-DB, og tilstanden blev ikke logget før nu).
 - Anden runde (bukseben/tekst/tag om): forsidebilleder uden tekst og uden vare afvises med besked; "Kan ikke læse teksten" på energi/indhold; tesseract-arbejderen genstartes efter fejl; tag om ved tryk på et trin med flueben, Stregkode = forfra; energi/indhold-feltet 60 % med 65 % mørkt.
-- Native porteret (`ProductCaptureFlow.kt`, `CameraParts.kt`), ikke kompileret her. Se DECISIONS/REGLER 2026-10-14. **Brugerens test på telefon:** stregkode → blink + "1. Scan stregkode" overstreget → "2. Tag billede af forsiden"; energi/indhold-feltet; at kameraet ikke længere bliver sort (ellers: admin → Log → Scanninger → `camera_black`/`camera_muted`).
+- Flettet via PR #404 som e44c1e9; "Build and deploy" #721 grøn (app, migrationer, robotter) kl. 17:27 dansk tid. Native bygget grønt i CI (Android + iPhone). Se DECISIONS/REGLER 2026-10-14. **Brugerens test på telefon:** stregkode → blink + "1. Scan stregkode" overstreget → "2. Tag billede af forsiden"; energi/indhold-feltet; at kameraet ikke længere bliver sort (ellers: admin → Log → Scanninger → `camera_black`/`camera_muted`).
 
 ## 2026-10-14: Logo-robot — numpy-fejl ved gem rettet
 
