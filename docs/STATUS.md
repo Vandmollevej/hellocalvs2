@@ -1,3 +1,7 @@
+## 2026-10-14: Logo-robot — numpy-fejl ved gem rettet
+
+- Robotten (`hellocal-v2-logo-agent-1`) fejlede for hvert brand med kandidater: `schema "np" does not exist`, fordi `visual_similarity()`/`confidence` var `np.float64` (numpy 2 + psycopg2). Nu rene `float` ved kilden og eksplicit cast af alle SQL-parametre i `process_brand`. `import_logos.py` er uændret. Regressionstest `scripts/logo-agent/test_agent.py` (fejler på gammel kode, grøn på ny). Se `docs/LOGO-AGENT.md`.
+
 ## 2026-10-12: Adminadgang tilgængelig — visuel opfølgning i gang
 
 - Brugeren melder "Nu virker det"; admin.hellocal.io/admin er indlogget, så den tidligere adgangsblokering er væk.

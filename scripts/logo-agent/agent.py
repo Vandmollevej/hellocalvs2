@@ -199,7 +199,9 @@ def visual_similarity(a, b):
 
     pa, pb = prep(a), prep(b)
     distance = (imagehash.phash(pa) - imagehash.phash(pb)) + (imagehash.dhash(pa) - imagehash.dhash(pb))
-    return max(0.0, 1.0 - distance / 64.0)
+    # imagehash regner med numpy; psycopg2 sender np.float64 som "np.float64(0.9)"
+    # (numpy 2) og INSERT fejler med 'schema "np" does not exist'. Altid ren float.
+    return float(max(0.0, 1.0 - float(distance) / 64.0))
 
 
 # --- trin 1: isolér logoet ---------------------------------------------------
@@ -336,7 +338,7 @@ def score_candidates(brand_name, logo_name, crop, candidates):
             confidence += 0.03
         if min(candidate["image"].size) >= 400:
             confidence += 0.02
-        candidate["confidence"] = min(1.0, confidence)
+        candidate["confidence"] = float(min(1.0, confidence))
     downloaded.sort(key=lambda c: (c["confidence"], c["image"].size[0] * c["image"].size[1]), reverse=True)
     return downloaded
 
@@ -381,7 +383,7 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
         cur.execute(
             """INSERT INTO brand_logo_searches (id, "brandId", "sourceProductId", "originalUrl", status, "bestConfidence", "createdAt", "resolvedAt")
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-            (search_id, brand_id, product_id, original_url, status, best["confidence"] if best else None, now,
+            (search_id, brand_id, product_id, original_url, status, float(best["confidence"]) if best else None, now,
              now if status != "PENDING_REVIEW" else None),
         )
         for index, candidate in enumerate(scored):
@@ -393,8 +395,8 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
                    (id, "searchId", "imageUrl", "sourceUrl", "pageUrl", "pageTitle", confidence, "brandInPage", transparent, width, height, "createdAt")
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (candidate_id, search_id, url, candidate["url"], candidate.get("pageUrl"), (candidate.get("pageTitle") or "")[:300] or None,
-                 candidate["confidence"], candidate["brandInPage"], candidate["transparent"],
-                 candidate["image"].size[0], candidate["image"].size[1], now),
+                 float(candidate["confidence"]), bool(candidate["brandInPage"]), bool(candidate["transparent"]),
+                 int(candidate["image"].size[0]), int(candidate["image"].size[1]), now),
             )
         if auto:
             logo_url = save_png(best["image"], f"{brand_id}.png")

@@ -95,6 +95,16 @@ docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py
 - `ALIASES` i scriptet bruges til filer, der ikke hedder som brandet
   (fx Meica).
 
+## Numpy-skalarer og SQL (2026-10-14)
+
+`imagehash` regner med numpy. Med numpy 2 sender psycopg2 en `np.float64` som
+teksten `np.float64(0.9)`, og indsættelsen fejler med `schema "np" does not
+exist` (så kandidater og søgninger aldrig blev gemt). Alle værdier, der går til
+`cur.execute`, skal derfor være rene Python-typer: `visual_similarity()` og
+`confidence` returnerer `float`, og kandidat-/søgningsrækkerne castes eksplicit
+(`float`/`int`/`bool`). Regressionstest uden database: `python test_agent.py`
+i `scripts/logo-agent/` (kopieres ikke ind i containeren).
+
 ## Ikke med i denne opgave
 
 - **Logo-match i selve scanningen** (trin 1 i den oprindelige brief: når
