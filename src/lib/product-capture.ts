@@ -43,9 +43,9 @@ async function ocr(photo: string, languages: string[], tableLayout = false) {
   try {
     const result = await extractTextPrioritized(photo, languages, undefined, { tableLayout });
     const text = usableOcrText(result);
-    return { text, confidence: text ? result.confidence : 0 };
+    return { text, confidence: text ? result.confidence : 0, ocrFailed: false };
   } catch {
-    return { text: "", confidence: 0 };
+    return { text: "", confidence: 0, ocrFailed: true };
   }
 }
 
@@ -56,9 +56,9 @@ export async function readFrontPhoto(
   photo: string,
   languages: string[],
   flowId?: string,
-): Promise<{ duplicateId: string | null; textLength: number; confidence: number; lookupFailed: boolean }> {
-  const { text, confidence } = await ocr(photo, languages);
-  const stats = { textLength: text.length, confidence };
+): Promise<{ duplicateId: string | null; textLength: number; confidence: number; lookupFailed: boolean; ocrFailed: boolean }> {
+  const { text, confidence, ocrFailed } = await ocr(photo, languages);
+  const stats = { textLength: text.length, confidence, ocrFailed };
   if (!text) return { duplicateId: null, lookupFailed: false, ...stats };
   try {
     const response = await fetch("/api/products/recognize-text", {
@@ -82,6 +82,8 @@ export type LabelRead = {
   regions: LabelRegions;
   nutrition: ParsedNutrition | null;
   ingredientsText: string | null;
+  // Den lokale tekstlæsning kastede en fejl (ikke blot "ingen tekst").
+  ocrFailed?: boolean;
 };
 
 // Næring + ingredienser på ét foto. "Ingredienser" (på regionernes sprog)
@@ -99,7 +101,7 @@ async function readLabel(photo: string, languages: string[], tableLayout: boolea
       ingredientsText: text ? findIngredientsSection(text) : null,
     };
   } catch {
-    return { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null };
+    return { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null, ocrFailed: true };
   }
 }
 

@@ -163,6 +163,18 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
   dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
 
+## Tilføj-kameraet (user rule 2026-10-14)
+
+- Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Scan energi", "4. Scan indholdsfortegnelse" (`ScanHeading`). Det senest klarede trin står lille, overstreget og med flueben over den aktuelle overskrift.
+- Hvert klaret trin vises, før flowet går videre (`StepDoneOverlay`): hvidt blink over hele billedet, trinnet stort i midten, overstreges, stort flueben, og linjen flyver op og bliver lille. Også stregkoden, når varen er ukendt — flowet må aldrig bare springe videre.
+- Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
+- Kun brugerens egne fotos klarer et trin. Stregkodefotoet klarer aldrig energi/indhold. "Indhold på energibilledet" giver stadig begge flueben.
+- Flere varer i forsidebilledet: den i rammens midte vælges automatisk (`pickObjectInFocus`). Ingen cirkler, intet tryk, kameraet fryser aldrig.
+- Et automatisk forsidebillede uden tekst og uden vare (bukseben, bord, gulv) afvises med besked, og scanningen fortsætter; et tryk på billedet bruger det alligevel. Energi/indhold siger "Kan ikke læse teksten" efter to billeder uden tekst — aldrig scanne i stilhed.
+- Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
+- Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
+- Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
+
 ## Sikkerhed
 
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login

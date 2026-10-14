@@ -300,7 +300,7 @@
     "src/components/weight/WeightEntryDetailsSheet.tsx": "c707ce055849a1a3"
   },
   "/camera": {
-    "src/app/camera/page.tsx": "d1fe8925950a1e70",
+    "src/app/camera/page.tsx": "83959dfa887e3fef",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "fc63c1a077a687a1",
@@ -315,9 +315,12 @@
     "src/components/camera/IngredientsRetakeFlow.tsx": "f127419703370cf7",
     "src/components/camera/LabelFillOverlay.tsx": "12b9f5a4cc2b4268",
     "src/components/camera/ObjectPickerOverlay.tsx": "b61a78af2889cb7b",
-    "src/components/camera/ProductCaptureFlow.tsx": "e4fa8f804b51f7a9",
+    "src/components/camera/ProductCaptureFlow.tsx": "0879cf48ac185bb7",
     "src/components/camera/ProductOutlineOverlay.tsx": "f83893ae6f78c81e",
+    "src/components/camera/ScanHeading.tsx": "7db702dc5dc7a3bc",
+    "src/components/camera/StepDoneOverlay.tsx": "88c1e68e7bf2f3b3",
     "src/components/camera/useAutoCapture.ts": "97764bfb920086ec",
+    "src/components/camera/useCameraWatchdog.ts": "7c590d926d9fd388",
     "src/components/camera/useFrameQuality.ts": "83c07666224e2feb",
     "src/components/camera/useLiveFrames.ts": "b42f4f151a5fd8c6",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",

@@ -1005,7 +1005,7 @@
     "labelTextFound": "Valeurs nutritionnelles ou ingrédients lus",
     "frontCaptured": "L'avant a été scanné",
     "scanBarcode": "Scanner le code-barres",
-    "scanFront": "Scanner l'image",
+    "scanFront": "Prenez la face avant en photo",
     "scanNutrition": "Scanner l'énergie",
     "scanIngredients": "Scanner la liste d'ingrédients",
     "readingImage": "Lecture de l'image...",
@@ -1031,7 +1031,10 @@
     "stepDone": "{step} : pris et lu",
     "bothFound": "Énergie et contenu trouvés sur la même image",
     "chooseObject": "Appuie sur le produit à mettre au point",
-    "useWholePhoto": "Utiliser toute la photo"
+    "useWholePhoto": "Utiliser toute la photo",
+    "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
+    "labelNoText": "Can't read the text — hold the field sharp and close.",
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over."
   },
   "foods": {
     "title": "Aliments",

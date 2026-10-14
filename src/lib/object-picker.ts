@@ -29,19 +29,20 @@ export function normalizeObjectBoxes(objects: ObjectBox[]): ObjectBox[] {
     .slice(0, MAX_OBJECTS);
 }
 
-// Tom liste ved fejl — så fortsætter kameraet bare med hele billedet.
-export async function detectObjects(photo: string): Promise<ObjectBox[]> {
+// null ved fejl (kaldet kunne ikke gennemføres) — så fortsætter kameraet med
+// hele billedet; en tom liste betyder, at AI'en så billedet og ingen vare fandt.
+export async function detectObjects(photo: string): Promise<ObjectBox[] | null> {
   try {
     const res = await fetch("/api/ai/detect-objects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ photo }),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return null;
     const data = (await res.json()) as { objects?: ObjectBox[] };
     return Array.isArray(data.objects) ? normalizeObjectBoxes(data.objects) : [];
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -76,4 +77,40 @@ export async function cropToObject(photo: string, box: ObjectBox, quality = 0.9)
   } catch {
     return photo;
   }
+}
+
+// Varen i rammen vælges automatisk (brugerens krav 2026-10-14): kameraet
+// fryser ikke længere med grønne cirkler, som brugeren skal trykke på. Det
+// objekt, der dækker rammens midte, er varen — dækker flere, vinder det
+// største (etiketten på kartonen taber til kartonen). En boks, der er hele
+// billedet, er baggrund og tæller ikke. Dækker intet objekt midten, bruges
+// det nærmeste, hvis det står i rammen; ellers hele billedet (null).
+const WHOLE_PHOTO_FRACTION = 0.85;
+const MAX_FOCUS_DISTANCE = 0.3;
+
+function contains(object: ObjectBox, x: number, y: number): boolean {
+  return object.x <= x && x <= object.x + object.width && object.y <= y && y <= object.y + object.height;
+}
+
+function area(object: ObjectBox): number {
+  return object.width * object.height;
+}
+
+function isWholePhoto(object: ObjectBox): boolean {
+  return object.width >= WHOLE_PHOTO_FRACTION && object.height >= WHOLE_PHOTO_FRACTION;
+}
+
+function focusDistance(object: ObjectBox, x: number, y: number): number {
+  return Math.hypot(object.x + object.width / 2 - x, object.y + object.height / 2 - y);
+}
+
+export function pickObjectInFocus(objects: ObjectBox[], focus = { x: 0.5, y: 0.5 }): ObjectBox | null {
+  const candidates = objects.filter((object) => !isWholePhoto(object));
+  if (candidates.length < 2) return null;
+  const covering = candidates.filter((object) => contains(object, focus.x, focus.y));
+  if (covering.length) return covering.reduce((best, object) => (area(object) > area(best) ? object : best));
+  const nearest = candidates.reduce((best, object) =>
+    focusDistance(object, focus.x, focus.y) < focusDistance(best, focus.x, focus.y) ? object : best,
+  );
+  return focusDistance(nearest, focus.x, focus.y) <= MAX_FOCUS_DISTANCE ? nearest : null;
 }

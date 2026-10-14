@@ -1005,7 +1005,7 @@
     "labelTextFound": "Näringsinnehåll eller ingredienser lästa",
     "frontCaptured": "Framsidan är skannad",
     "scanBarcode": "Skanna streckkod",
-    "scanFront": "Skanna bild",
+    "scanFront": "Ta en bild av framsidan",
     "scanNutrition": "Skanna energi",
     "scanIngredients": "Skanna innehållsförteckning",
     "readingImage": "Läser bilden...",
@@ -1031,7 +1031,10 @@
     "stepDone": "{step}: tagen och avläst",
     "bothFound": "Energi och innehåll hittades på samma bild",
     "chooseObject": "Tryck på den vara som ska vara i fokus",
-    "useWholePhoto": "Använd hela bilden"
+    "useWholePhoto": "Använd hela bilden",
+    "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
+    "labelNoText": "Can't read the text — hold the field sharp and close.",
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over."
   },
   "foods": {
     "title": "Livsmedel",

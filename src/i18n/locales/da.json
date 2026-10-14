@@ -1005,7 +1005,7 @@
     "labelTextFound": "Næringsindhold eller ingredienser læst",
     "frontCaptured": "Forsiden er scannet",
     "scanBarcode": "Scan stregkode",
-    "scanFront": "Scan billede",
+    "scanFront": "Tag billede af forsiden",
     "scanNutrition": "Scan energi",
     "scanIngredients": "Scan indholdsfortegnelse",
     "readingImage": "Læser billedet...",
@@ -1031,7 +1031,10 @@
     "stepDone": "{step}: taget og aflæst",
     "bothFound": "Energi og indhold fundet på samme billede",
     "chooseObject": "Tryk på den vare, der skal være i fokus",
-    "useWholePhoto": "Brug hele billedet"
+    "useWholePhoto": "Brug hele billedet",
+    "frontNoProduct": "Ingen vare i billedet — hold forsiden af varen i rammen, eller tryk på billedet for at bruge det alligevel.",
+    "labelNoText": "Kan ikke læse teksten — hold feltet skarpt og tæt på.",
+    "retakeHint": "Tryk på et trin med flueben for at tage det om. Stregkode starter forfra."
   },
   "foods": {
     "title": "Madvarer",

@@ -61,8 +61,15 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   ]);
 }
 
+// Lærrederne genbruges (docs/DECISIONS.md 2026-10-14): den levende scanning
+// tegner flere billeder i sekundet, og et nyt lærred pr. billede fyldte
+// iPhones grafikhukommelse op, indtil kameraet gik i sort. Hvert resultat
+// serialiseres (toDataURL) med det samme, så ét lærred rækker.
+let renderCanvas: HTMLCanvasElement | null = null;
+let sampleCanvas: HTMLCanvasElement | null = null;
+
 function centerSharpness(source: HTMLCanvasElement): number {
-  const sample = document.createElement("canvas");
+  const sample = sampleCanvas ?? (sampleCanvas = document.createElement("canvas"));
   sample.width = FOCUS_SAMPLE_SIZE;
   sample.height = FOCUS_SAMPLE_SIZE;
   const context = sample.getContext("2d", { willReadFrequently: true });
@@ -85,7 +92,7 @@ function render(
   const sw = crop === "square" ? side : width;
   const sh = crop === "square" ? side : height;
   const scale = Math.min(1, maxSide / Math.max(sw, sh));
-  const canvas = document.createElement("canvas");
+  const canvas = renderCanvas ?? (renderCanvas = document.createElement("canvas"));
   canvas.width = Math.round(sw * scale);
   canvas.height = Math.round(sh * scale);
   const context = canvas.getContext("2d");
@@ -137,20 +144,17 @@ async function takePhoto(video: HTMLVideoElement, crop: StillCrop): Promise<Stil
 }
 
 async function sharpestVideoFrame(video: HTMLVideoElement, crop: StillCrop, maxSide: number): Promise<Still | null> {
-  let bestCanvas: HTMLCanvasElement | null = null;
-  let bestSharpness = -1;
+  let best: Still | null = null;
   for (let index = 0; index < VIDEO_FRAMES; index++) {
     if (index) await wait(VIDEO_FRAME_GAP_MS);
     if (!video.videoWidth || !video.videoHeight) continue;
     const canvas = render(video, video.videoWidth, video.videoHeight, crop, maxSide);
     if (!canvas) continue;
-    const sharpness = centerSharpness(canvas);
-    if (sharpness > bestSharpness) {
-      bestSharpness = sharpness;
-      bestCanvas = canvas;
-    }
+    // Serialiseres straks: lærredet genbruges af næste billede.
+    const still = toStill(canvas, "video");
+    if (!best || still.sharpness > best.sharpness) best = still;
   }
-  return bestCanvas ? toStill(bestCanvas, "video") : null;
+  return best;
 }
 
 // Ét videobillede med det samme (stregkodefotoet — må ikke forsinke flowet —
