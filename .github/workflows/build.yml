@@ -173,3 +173,12 @@ jobs:
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d umami-db-init umami
+
+      # Natlig database-backup (30 dages rotation, docs/DECISIONS.md 2026-10-14).
+      - name: Start nightly database backup
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          cd /deploy
+          mkdir -p /deploy/backups
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --no-deps db-backup
