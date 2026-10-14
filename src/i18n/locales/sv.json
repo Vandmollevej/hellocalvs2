@@ -1876,7 +1876,51 @@
     "noEntriesYet": "Inga kroppsmått registrerade ännu.",
     "chooseSexHint": "Välj kön under Profil → Redigera profil för att se teckningarna över var du mäter.",
     "deleteAria": "Ta bort mått",
-    "delete": "Ta bort"
+    "delete": "Ta bort",
+    "voice": {
+      "start": "Säg dina mått",
+      "startHint": "Tryck så guidar jag dig genom måtten ett i taget.",
+      "stop": "Stoppa röstguiden",
+      "speaking": "Talar…",
+      "listening": "Lyssnar…",
+      "youSaid": "Du sa: {text}",
+      "unsupported": "Taligenkänning finns inte här. Skriv måtten i fälten.",
+      "micDenied": "Appen har inte tillgång till mikrofonen. Ge tillgång i telefonens inställningar.",
+      "unitCm": "centimeter",
+      "unitIn": "tum",
+      "intro": "Jag guidar dig genom dina kroppsmått. Säg siffran efter varje mått. Säg hoppa över för att hoppa över ett mått, tillbaka för att gå ett mått bakåt, eller stopp för att avsluta.",
+      "ask": "Nu behöver jag måttet runt {target}.",
+      "next": "Nu ska du ge mig måttet runt {target}.",
+      "recorded": "Jag har registrerat {value} {unit}.",
+      "skipped": "Det hoppar vi över.",
+      "notHeard": "Jag hörde ingenting. Säg måttet runt {target}.",
+      "notUnderstood": "Det uppfattade jag inte. Säg måttet runt {target} som en siffra, till exempel 82 komma 5.",
+      "outOfRange": "{value} låter inte rätt. Säg måttet runt {target} igen.",
+      "done": "Tack, nu är alla dina mått registrerade.",
+      "stopped": "Okej, jag stannar här. Det du har sagt är sparat.",
+      "giveUp": "Jag stannar eftersom jag inte kunde höra dig. Tryck på mikrofonen för att fortsätta.",
+      "noFields": "Det finns inga mått att fylla i. Välj mått under Inställningar, Visning, Kroppsmått.",
+      "target": {
+        "chestCm": "bröstet",
+        "waistCm": "midjan",
+        "hipCm": "höften",
+        "upperArmCm": "överarmen",
+        "thighCm": "låret",
+        "buttockCm": "rumpan",
+        "calfCm": "vaden",
+        "ankleCm": "fotleden"
+      },
+      "how": {
+        "chestCm": "Mät runt bröstet där det är bredast, med måttbandet under armarna.",
+        "waistCm": "Mät runt midjan där du är smalast, oftast strax ovanför naveln. Andas lugnt ut först.",
+        "hipCm": "Mät runt höfterna där de är bredast.",
+        "upperArmCm": "Mät runt överarmen mitt mellan axel och armbåge, med armen hängande avslappnad.",
+        "thighCm": "Mät runt låret mitt mellan höft och knä.",
+        "buttockCm": "Mät runt rumpan där den är bredast, med fötterna ihop.",
+        "calfCm": "Mät runt vaden på mitten, där den är tjockast.",
+        "ankleCm": "Mät runt fotleden strax ovanför fotknölen, där den är smalast."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",

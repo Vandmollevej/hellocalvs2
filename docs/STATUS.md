@@ -51,6 +51,12 @@
 - Uafhængig slutkontrol: AST-fixture fra faktisk base 53e86336 til deployet 5e0414b5, med faste iframebredder og aflæst html.clientWidth, har 699 faktiske elementpar uden forskelle i 41 stilegenskaber ved både 402 og 1440 px. Klassenavne, oprindelige faste inline-styles og SVG-attributter indgår; ukendte runtimeværdier udelades. Dette er element-/surfacekontrol, ikke fuld montering af hver side.
 - Åbent: indre adminsider kan først kontrolleres visuelt efter brugerlogin i admin.hellocal.io; den konkrete Face ID-tilknytningsfejl kræver berørt platform/enhed og brugerens egen biometriske bekræftelse. Ingen legitimationsoplysninger eller brugerindstillinger er ændret.
 
+## 2026-10-14: Kropsmål — stemmeguide med mikrofon øverst
+
+- Mikrofon øverst på Kropsmål (web + native). Guiden siger, hvilket mål den skal bruge og hvor man måler, lytter efter tallet, udfylder og gemmer feltet og siger "Jeg har registreret … Nu skal du give mig målet om …". Forstår kun tal, "spring over", "tilbage", "gentag" og "stop" (alle syv sprog); ingen AI-model. Se DECISIONS/REGLER 2026-10-14.
+- Nyt: `src/lib/body-measurement-voice.ts` (+ test), `src/lib/web-speech.ts`, `useBodyMeasurementVoice`; native `BodyMeasurementVoice.kt`, `DevicePlatform.speak/stopSpeaking` (Android TextToSpeech, iPhone AVSpeechSynthesizer). Native Kropsmål viser nu også bagdel/læg/ankel og følger synlighedsvalget.
+- Tests (407), lint (0 fejl), tsc, build, native sync/paritet grønne; Kotlin-logikken kørt på JVM med samme testcases. Ikke prøvet på telefon her (ingen enhed): brugerens test af mikrofonen på Kropsmål på iPhone og Android (at stemmen høres højt nok efter lytning, og at tal som "82 komma 5" forstås).
+
 # HELLO CAL — project status
 
 Last updated: 2026-10-14

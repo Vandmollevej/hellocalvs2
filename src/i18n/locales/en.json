@@ -1876,7 +1876,51 @@
     "noEntriesYet": "No measurements logged yet.",
     "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
-    "delete": "Delete"
+    "delete": "Delete",
+    "voice": {
+      "start": "Speak your measurements",
+      "startHint": "Tap and I will guide you through the measurements one at a time.",
+      "stop": "Stop the voice guide",
+      "speaking": "Speaking…",
+      "listening": "Listening…",
+      "youSaid": "You said: {text}",
+      "unsupported": "Speech recognition is not available here. Type the measurements in the fields.",
+      "micDenied": "The app has no access to the microphone. Allow it in your phone's settings.",
+      "unitCm": "centimetres",
+      "unitIn": "inches",
+      "intro": "I will guide you through your body measurements. Say the number after each one. Say skip to skip a measurement, back to go back one, or stop to finish.",
+      "ask": "Now I need the measurement of your {target}.",
+      "next": "Now give me the measurement of your {target}.",
+      "recorded": "I have recorded {value} {unit}.",
+      "skipped": "Skipping that one.",
+      "notHeard": "I didn't hear anything. Say the measurement of your {target}.",
+      "notUnderstood": "I didn't catch that. Say the measurement of your {target} as a number, for example 82 point 5.",
+      "outOfRange": "{value} doesn't sound right. Say the measurement of your {target} again.",
+      "done": "Thank you, all your measurements are recorded.",
+      "stopped": "Okay, I'll stop here. What you said has been saved.",
+      "giveUp": "I'm stopping because I couldn't hear you. Tap the microphone to continue.",
+      "noFields": "There are no measurements to fill in. Choose them under Settings, Display, Body measurements.",
+      "target": {
+        "chestCm": "chest",
+        "waistCm": "waist",
+        "hipCm": "hips",
+        "upperArmCm": "upper arm",
+        "thighCm": "thigh",
+        "buttockCm": "buttocks",
+        "calfCm": "calf",
+        "ankleCm": "ankle"
+      },
+      "how": {
+        "chestCm": "Measure around your chest at its widest, with the tape under your arms.",
+        "waistCm": "Measure around your waist at its narrowest, usually just above the navel. Breathe out gently first.",
+        "hipCm": "Measure around your hips at their widest.",
+        "upperArmCm": "Measure around your upper arm halfway between shoulder and elbow, with the arm hanging relaxed.",
+        "thighCm": "Measure around your thigh halfway between hip and knee.",
+        "buttockCm": "Measure around your buttocks at their widest, with your feet together.",
+        "calfCm": "Measure around the middle of your calf, where it is thickest.",
+        "ankleCm": "Measure around your ankle just above the ankle bone, where it is narrowest."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",

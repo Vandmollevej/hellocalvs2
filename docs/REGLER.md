@@ -187,6 +187,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Produktsiden viser varens felter løbende, som AI læser dem (`AddProductView` poller `pendingFields`).
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 
+## Kropsmål: stemmeguiden (user rule 2026-10-14)
+
+- Stemmeguiden på Kropsmål må KUN udfylde kropsmål-felterne. Den er regelstyret (ingen AI-model): tal + "spring over", "tilbage", "gentag", "stop". Nye kommandoer eller felter tilføjes i både `src/lib/body-measurement-voice.ts` og `native/.../profile/BodyMeasurementVoice.kt` (samme regler, samme tests).
+- Et nyt kropsmål kræver også teksterne `bodyMeasurements.voice.target.<felt>` og `bodyMeasurements.voice.how.<felt>` (hvor man måler) på alle sprog.
+- Tallet gemmes præcis som en indtastning; urimelige tal (uden for 5–250 cm / 2–100 tommer) gemmes aldrig.
+
 ## Sikkerhed
 
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login

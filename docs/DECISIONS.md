@@ -1,3 +1,13 @@
+## 2026-10-14: Kropsmål — stemmeguide, der kun udfylder kropsmålene og taler tilbage
+
+Brugerens krav: "Under kropsmål, indsæt en mikrofon øverst hvor man kan indtale målene … en stemmeagent som er sat op til udelukkende at udfylde tekstfelterne inden for kropsmål og som kan tale tilbage. Fx: Nu skal jeg bruge målene på læggen. Du skal måle midtfor. 'Jeg har nu registreret xxx cm. Nu skal du give mig målet om taljen…'"
+
+- **Ingen AI-model, en fast samtale:** guiden er en regelstyret dialog (`src/lib/body-measurement-voice.ts`, native `BodyMeasurementVoice.kt` — hold dem ens). Den kan kun gemme et tal i det aktuelle kropsmål-felt og forstår fem kommandoer: tal, "spring over"/"næste", "tilbage", "gentag", "stop" (på alle syv app-sprog). Alt andet besvares med "Det fangede jeg ikke …"; efter tre forsøg i træk uden brugbart svar stopper den. Ingen netværkskald ud over den almindelige gemning, ingen omkostning pr. brug, og den kan ikke bringes til at gøre andet.
+- **Forløb:** mikrofonen øverst på Kropsmål. Guiden starter ved første synlige mål uden dagens tal (alle udfyldt → det første), siger "Nu skal jeg bruge målet om {mål}" + hvor man måler (`bodyMeasurements.voice.how.*`), lytter, gemmer og siger "Jeg har registreret {tal} {enhed}. Nu skal du give mig målet om {næste} …". Aktuelt mål får grøn ramme og rulles frem. Kun de mål, brugeren viser (Indstillinger → Visning → Kropsmål), og i brugerens enhed (cm/tommer).
+- **Gemning = indtastning:** tallet skrives i feltet og gemmes med samme kode som et tastet tal (dagens række PATCH'es, ellers oprettes den). Tal uden for 5–250 cm (2–100 tommer) gemmes ikke; guiden beder om målet igen.
+- **Tal ind/ud:** web bruger Web Speech API (`SpeechRecognition` + `speechSynthesis`, `src/lib/web-speech.ts`); mikrofonen vises kun, hvor browseren kan genkende tale. Native bruger telefonens egen genkendelse (som Stemme-siden) og ny `DevicePlatform.speak/stopSpeaking`: Android `TextToSpeech`, iPhone `AVSpeechSynthesizer` (lydsessionen skiftes til afspilning, mens der tales). Talt sprog = appens sprog.
+- Native Kropsmål fik samtidig bagdel/læg/ankel og synlighedsvalget, som web allerede havde.
+
 ## 2026-10-14: Tilføj-kameraet — "gammeldags billede": udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 Brugerens krav (samme aften, efter sort kamera og et forkert forsidebillede): "Behold som nu på stregkode men indsæt shutterknappen nederst i kameravinduet på de sidste tre billeder. Det sidste skal have en spring over knap til højre for shutterknappen i bunden. Jeg har ikke tillid til den anden metode. Ingen scanning mere. Gammeldags billede nu." Og: "detaljerne … må gerne komme løbende som de bliver indlæst. På produktsiden."
