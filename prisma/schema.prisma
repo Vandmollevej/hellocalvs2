@@ -5322,3 +5322,75 @@ model ScreeningEntry {
   @@index([userId, date])
   @@map("screening_entries")
 }
+
+// --- Stavekontrol-robotten (docs/DECISIONS.md 2026-10-14) ---------------------
+// Nattens robot (job "spelling-check", src/lib/spelling-robot.ts) læser
+// varernes ingredienslister med stavemotoren (src/lib/spelling-engine.ts).
+// Sikre rettelser laves straks (AUTO_FIXED, med ordet før/efter, så de kan
+// fortrydes); usikre bliver forslag (PENDING) på admin → Stavekontrol, hvor
+// admin godkender, afviser eller skriver sin egen rettelse.
+enum SpellingIssueStatus {
+  AUTO_FIXED
+  PENDING
+  ACCEPTED
+  REJECTED
+  REVERTED
+}
+
+model SpellingIssue {
+  id            String              @id @default(cuid())
+  productId     String
+  // Feltet på varen (i dag kun "ingredientsText").
+  field         String              @default("ingredientsText")
+  // Ordet som det stod, og robottens forslag: null = intet forslag, "" = slet.
+  word          String
+  suggestion    String?
+  confidence    Float
+  // learned | look_alike | allergen | junk | e_number | nutrition
+  reason        String
+  // Sammenhængen omkring ordet, som teksten så ud, da det blev fundet.
+  contextBefore String
+  contextAfter  String
+  // Ordets placering i teksten, da det blev fundet.
+  position      Int
+  status        SpellingIssueStatus
+  // Det, der står i teksten nu (robottens eller admins rettelse).
+  appliedText   String?
+  createdAt     DateTime            @default(now())
+  reviewedAt    DateTime?
+  reviewedById  String?
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("spelling_issues")
+}
+
+// Admins afgørelser — robotten og kontrollen ved gem lærer af dem: et ord med
+// `replacement` rettes altid til det ("" = slettes); uden er ordet rigtigt.
+model SpellingRule {
+  word        String   @id
+  replacement String?
+  createdAt   DateTime @default(now())
+  createdById String?
+
+  @@map("spelling_rules")
+}
+
+// Katalogets ordforråd: ord og hvor mange varers lister de står i. Skrives
+// af robotten hver nat; ord i mindst CORPUS_MIN_PRODUCTS varer regnes for kendte.
+model SpellingWord {
+  word         String @id
+  productCount Int
+
+  @@map("spelling_words")
+}
+
+// Fingeraftryk af hver vares liste ved sidste gennemsyn — kun ændrede lister
+// læses igen.
+model SpellingScan {
+  productId   String   @id
+  fingerprint String
+  scannedAt   DateTime @default(now())
+
+  @@map("spelling_scans")
+}

@@ -65,6 +65,9 @@ export type IngredientsAiResult = {
 // recomputed later without new OCR (docs/DECISIONS.md 2026-09-23).
 // Percent is 0–100 of the WHOLE product; null = unknown, never guessed.
 export type IngredientsAnalysis = IngredientsAiResult & {
+  // Kvalitetskontrollen af listen (src/lib/ingredient-text-quality.ts):
+  // automatiske rettelser og tvivl, der sendes til admin.
+  textReview?: { fixes: string[]; doubts: string[] };
   wholeGrainPercent: number | null;
   isWholeGrain: boolean | null;
   wholeGrainConfidence: number;

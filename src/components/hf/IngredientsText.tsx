@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { segmentIngredients } from "@/lib/allergen-highlight";
 import { foodTermHref, splitFoodTerms } from "@/lib/food-latin";
+import { displayIngredientsText } from "@/lib/ingredient-text-quality";
 
 // Ingredient list with allergens shown in UPPERCASE and bold. Ikke-danske ord
 // fra "Mad på latin" er links uden særlig styling (brugerens ønske 2026-09-28).
+// Ældre lister vises med sikre tegnrettelser ("£202" → "E202", dansk "soja").
 export function IngredientsText({ text }: { text: string }) {
   return (
     <>
-      {segmentIngredients(text).map((segment, index) => {
+      {segmentIngredients(displayIngredientsText(text)).map((segment, index) => {
         const content = splitFoodTerms(segment.text).map((part, partIndex) =>
           part.term ? (
             <Link key={partIndex} href={foodTermHref(part.term)} className="text-inherit no-underline">

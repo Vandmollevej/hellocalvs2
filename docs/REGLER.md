@@ -188,6 +188,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Når varen oprettes, slukkes kameraet og al billedanalyse; forsidefotoet står bag "Opretter varen …" — aldrig et sort, låst kamera. Oprettelsen har en tidsgrænse (60 s); fejler eller udløber den, slås stregkoden op, og findes varen alligevel, går flowet til den (`product_create_recovered`).
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 
+## Ingredienslister (user rule 2026-10-14)
+
+- Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge). Ord med STORE bogstaver er allergener og rettes til det nærmeste allergen. Ingredienslisten slutter, hvor næringstabellen begynder (også "Energi"/kJ/kcal uden overskrift).
+- Stavelogik findes ét sted: `src/lib/spelling-engine.ts` (robot, kontrol ved gem og visning). Ny ordbog/regel = grundlisten `src/lib/ingredient-words.ts`, katalogets ordforråd eller admins afgørelser på Stavekontrol — aldrig en særregel for ét ord i koden. Nattens robot (`spelling-check`) retter kun sikre fund og lægger resten på admin → Stavekontrol; hvad admin har afvist/fortrudt, rettes aldrig igen.
+- Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
+
 ## Kropsmål: stemmeguiden (user rule 2026-10-14)
 
 - Stemmeguiden på Kropsmål må KUN udfylde kropsmål-felterne. Den er regelstyret (ingen AI-model): tal + "spring over", "tilbage", "gentag", "stop". Nye kommandoer eller felter tilføjes i både `src/lib/body-measurement-voice.ts` og `native/.../profile/BodyMeasurementVoice.kt` (samme regler, samme tests).

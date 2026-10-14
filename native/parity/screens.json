@@ -649,6 +649,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/spelling",
+      "web": "src/app/admin/spelling/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/statistics",
       "web": "src/app/admin/statistics/page.tsx",
       "status": "web-only",
