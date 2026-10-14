@@ -63,10 +63,8 @@ import { TrendIcon } from "@/components/BottomNav";
 // fil ikke dækker — føj det til menuen her (eller til undtagelserne i testen
 // med en begrundelse).
 export type WebNavCondition =
-  // Kun for kvindelig profil (Menstruationscyklus).
+  // Kun for kvindelig profil (Menstruationscyklus, Graviditet og amning).
   | "female"
-  // Kvindelig eller ukendt profil (Graviditet og amning).
-  | "notMale"
   // Har familieabonnement eller er med i en familie (Familie).
   | "family"
   // Har oprettet/styrer andre profiler (Sletning af registreringer).
@@ -171,7 +169,7 @@ export const WEB_SETTINGS: WebNavItem[] = [
       { key: "soevn", href: "/settings/display/sleep-quality", labelKey: "settings.sleepQuality", icon: IconMoon },
       { key: "tips", href: "/settings/display/tips", labelKey: "settings.tipsTitle", icon: IconBulb },
       { key: "cyklus", href: "/settings/display/menstrual-cycle", labelKey: "settings.menstrualCycle", icon: IconCalendarHeart, requires: "female" },
-      { key: "graviditet", href: "/settings/display/pregnancy", labelKey: "settings.pregnancy", icon: IconBabyCarriage, requires: "notMale" },
+      { key: "graviditet", href: "/settings/display/pregnancy", labelKey: "settings.pregnancy", icon: IconBabyCarriage, requires: "female" },
     ],
   },
   // Appens nederste kort: hjælpecenter, fejlrapport og de juridiske sider.

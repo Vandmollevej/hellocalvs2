@@ -50,7 +50,7 @@ Last updated: 2026-10-14
 
 ## 2026-10-14: Graviditet og amning — officielle tillæg til kaloriebehovet
 
-- Nyt trin i oprettelsesguiden ("Er du gravid, eller ammer du?", ikke for mænd) og ny side Indstillinger → Visning → Graviditet og amning (`/settings/display/pregnancy`, web + native + webmenu). Gravid: uge → trimester → +70/260/500 kcal (EFSA 2013); ammer: uger → +500 kcal (første 26 uger) / +300. Ugen regnes selv frem. Intet kalorieunderskud (`PREGNANCY_NO_DEFICIT`); kalibrering og kaloriemål-forslag på pause. Egen linje i regnestykket.
+- Nyt trin i oprettelsesguiden ("Er du gravid, eller ammer du?", kun for kvinder) og ny side Indstillinger → Visning → Graviditet og amning (`/settings/display/pregnancy`, web + native + webmenu). Kun for `sex = FEMALE` (brugerens rettelse). Gravid: uge → trimester → +70/260/500 kcal (EFSA 2013); ammer: uger → +500 kcal (første 26 uger) / +300. Ugen regnes selv frem. Intet kalorieunderskud (`PREGNANCY_NO_DEFICIT`); kalibrering og kaloriemål-forslag på pause. Egen linje i regnestykket.
 - Migration `20261014200000_pregnancy_status` (enum `PregnancyStatus` + fire kolonner på `users`) skal med deployet. Tests (`pregnancy.test.mjs`, energy-budget), lint (0 fejl/12 eksisterende advarsler), tsc, native sync/paritet grønne. Ikke prøvet i browser/på enhed (ingen lokal DB): tjek trinnet i guiden, siden under Visning og linjen "Graviditet"/"Amning" under Profil → Kaloriemål. Se DECISIONS/REGLER 2026-10-14.
 
 
