@@ -1,3 +1,12 @@
+## 2026-10-14: Scan-appen tager billeder manuelt — også med Bluetooth-udløser
+
+Brugerens krav: i scanningsappen skal medarbejderen selv tage billedet (ingen automatisk scanning), og det skal blive ved med at virke med en ekstern fotoudløser (Bluetooth), så billedet kan tages med den anden hånd.
+
+- **Sådan virker det i dag:** hyldebilledet (`src/app/scan/page.tsx`) og de fire bokse i "Opret vare" (`CreateProductMediaGrid`, også brugt af `/product/create`) åbner telefonens eget kamera via `<input type="file" accept="image/*" capture="environment">`. Udløsningen sker i kamera-appen, så en Bluetooth-udløser (HID-lydstyrke/Enter) trykker på dens udløserknap på både iPhone og Android. Stregkoden afkodes af det tagne foto (`decodeFromImageUrl`), ikke af et levende kamera.
+- **Beslutning:** det bevares som regel (REGLER.md "Scan-appen: manuel udløser"). Hello Cals automatiske Tilføj-kamera (`ProductCaptureFlow`/`useAutoCapture`, uden "Tag billede"-knap, 2026-10-02) må ikke flyttes ind i scan-appen: et levende kamera i siden får ikke Bluetooth-udløserens tastetryk med sikkerhed (Safari giver ikke websider lydstyrketasterne), og kravet er manuel udløsning.
+- **Vagt:** `src/lib/scan-app-manual-capture.test.mjs` læser scan-appens kilder og fejler ved manglende `capture="environment"`, ved `<video>`/`getUserMedia`/ZXing-video eller ved import fra `src/components/camera/**`.
+- Native: scan-appen har ingen native port (`native/parity/screens.json`), så intet at ændre dér.
+
 ## 2026-10-14: Kameraflowet — nummererede trin, "trinnet er klaret"-visning, mindre søgefelt, auto-valg af varen, intet spring over energi, kamera-vagthund
 
 Brugerens test (mælk, iPhone/Safari): flowet gik direkte videre fra stregkoden uden at vise, at trinnet var klaret; energi blev meldt klaret, selv om der ikke var taget noget energibillede; på indholdstrinnet var kameraet helt sort; forsiden frøs med "en kæmpe cirkel og en lille bagved"; søgefeltet var næsten hele billedet uden mørkt overlay; "Scan stregkode" stod for småt.

@@ -1,3 +1,8 @@
+## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret
+
+- Gennemgået: scan-appen (`/scan`, `/scan/opret`) bruger telefonens eget kamera via filfelt med `capture="environment"` i hyldebilledet og alle fire bokse; intet automatisk kamera, stregkoden læses af fotoet. Bluetooth-udløser virker derfor via kamera-appens egen udløser. Ingen kodeændring nødvendig.
+- Ny vagt-test `src/lib/scan-app-manual-capture.test.mjs` + regel i REGLER.md ("Scan-appen: manuel udløser") og DECISIONS 2026-10-14. Ikke prøvet med fysisk Bluetooth-udløser her (ingen enhed) — brugerens test på telefon.
+
 ## 2026-10-14: Tilføj-kameraet efter brugerens mælketest — trin-visning, mindre felt, auto-valg, vagthund
 
 - Nummererede trin med stor overskrift (`ScanHeading`), "trinnet er klaret"-visning med hvidt blink, overstregning og stort flueben (`StepDoneOverlay`) på alle trin, også stregkoden ved ukendt vare. Stregkode-/energi-/indholdsfeltet er lille med resten af billedet mørkt; forsiden beholder hele rammen.
