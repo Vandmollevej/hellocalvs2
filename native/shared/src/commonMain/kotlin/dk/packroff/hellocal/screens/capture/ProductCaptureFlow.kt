@@ -218,11 +218,22 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
+    // A step with a check mark can be redone by tapping it (user 2026-10-14).
+    // The barcode starts over: a new barcode is another product.
     fun selectStep(next: CaptureStep) {
         if (working || stepDone != null || next == step) return
         // Without a barcode no other step can be read (language/region follow it).
         if (next != CaptureStep.Barcode && CaptureStep.Barcode !in done) return
-        if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) return
+        if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) {
+            barcode = null
+            photos = emptyMap()
+            lastPhoto = null
+            done = emptySet()
+            lastDone = null
+            createFailed = false
+            lookupError = false
+            lookupBlockedMessage = null
+        }
         step = next
     }
 
@@ -257,7 +268,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 when (step) {
                     CaptureStep.Barcode -> BarcodeGuide()
                     CaptureStep.Front -> SquareGuide(0.04f)
-                    CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.16f, dim = 0.55f, topInset = 0.20f)
+                    CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.20f, dim = 0.65f, topInset = 0.24f)
                 }
             }
             if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
@@ -272,7 +283,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             CaptureStep.entries.forEach { item ->
-                val disabled = working || stepDone != null || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done) || (item == CaptureStep.Barcode && CaptureStep.Barcode in done)
+                val disabled = working || stepDone != null || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done)
                 val shape = RoundedCornerShape(HcDimens.RadiusCard)
                 val enabled = !(disabled && item != step)
                 Box(
@@ -300,6 +311,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             HcText(stepHints.getValue(step), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (step != CaptureStep.Barcode) {
                 HcText(t.t("camera.autoCaptureHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
+            if (done.isNotEmpty()) {
+                HcText(t.t("cameraCreate.retakeHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
         }
     }

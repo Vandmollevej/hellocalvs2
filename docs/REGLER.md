@@ -170,6 +170,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
 - Kun brugerens egne fotos klarer et trin. Stregkodefotoet klarer aldrig energi/indhold. "Indhold på energibilledet" giver stadig begge flueben.
 - Flere varer i forsidebilledet: den i rammens midte vælges automatisk (`pickObjectInFocus`). Ingen cirkler, intet tryk, kameraet fryser aldrig.
+- Et automatisk forsidebillede uden tekst og uden vare (bukseben, bord, gulv) afvises med besked, og scanningen fortsætter; et tryk på billedet bruger det alligevel. Energi/indhold siger "Kan ikke læse teksten" efter to billeder uden tekst — aldrig scanne i stilhed.
+- Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 

@@ -29,19 +29,20 @@ export function normalizeObjectBoxes(objects: ObjectBox[]): ObjectBox[] {
     .slice(0, MAX_OBJECTS);
 }
 
-// Tom liste ved fejl — så fortsætter kameraet bare med hele billedet.
-export async function detectObjects(photo: string): Promise<ObjectBox[]> {
+// null ved fejl (kaldet kunne ikke gennemføres) — så fortsætter kameraet med
+// hele billedet; en tom liste betyder, at AI'en så billedet og ingen vare fandt.
+export async function detectObjects(photo: string): Promise<ObjectBox[] | null> {
   try {
     const res = await fetch("/api/ai/detect-objects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ photo }),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return null;
     const data = (await res.json()) as { objects?: ObjectBox[] };
     return Array.isArray(data.objects) ? normalizeObjectBoxes(data.objects) : [];
   } catch {
-    return [];
+    return null;
   }
 }
 
