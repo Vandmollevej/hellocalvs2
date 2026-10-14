@@ -10,6 +10,8 @@ import {
   updateKindsFor,
 } from "@/lib/product-update";
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
+import { needsProductTranslation } from "@/lib/product-language";
+import { ensureProductLanguage } from "@/lib/product-translate";
 
 export async function GET(
   _req: Request,
@@ -18,7 +20,7 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const product = await prisma.product.findUnique({
+    const loadProduct = () => prisma.product.findUnique({
       where: { id },
       include: {
         brand: true,
@@ -64,6 +66,25 @@ export async function GET(
         },
       },
     });
+    let product = await loadProduct();
+    // Kinesisk og andre ikke-latinske tegn vises aldrig (brugerens regel
+    // 2026-10-14): varen oversættes til brugerens app-sprog, før den sendes.
+    if (
+      product &&
+      needsProductTranslation([
+        product.name,
+        product.namePlural,
+        product.productType,
+        product.variant,
+        product.packageSizeText,
+        product.ingredientsText,
+        product.subbrand,
+        product.brand?.name,
+      ])
+    ) {
+      const viewer = await getSessionUser().catch(() => null);
+      if (await ensureProductLanguage(id, viewer?.appLocale)) product = await loadProduct();
+    }
     // En privat ingrediens vises kun for ejeren.
     if (product && product.privateOwnerId) {
       const user = await getSessionUser();

@@ -1,3 +1,12 @@
+## 2026-10-14: Varetekst kun på HelloFresh-sprog — aldrig kinesisk
+
+Brugerens krav (efter et kinesisk chiliglas, der stod som "香辣酱 / 净含量：248克 · 招牌"): "Hvis sproget ikke er blandt HelloFresh-lande, så oversæt det til det sprog som er indstillet. Der skal aldrig vises kinesisk."
+
+- **Regel:** tekst med ikke-latinske tegn (kinesisk, japansk, koreansk, kyrillisk, arabisk, thai, græsk …) eller en forside, AI'en har læst som et sprog uden for HelloFresh-landene, oversættes til brugerens app-sprog (`appLocale` / sprogsignalet fra scanningen; ukendt = dansk). Brand og subbrand er navne og translittereres kun (饭扫光 → Fansaoguang); findes brandnavnet allerede, kobles varen dertil, ellers omdøbes brandet.
+- **Hvor:** forsidelæsningen oversætter før navnet frigives (`pendingFields`), ingredienserne efter label-aflæsningen og ved nyt ingrediensforsøg, `GET /api/products/[id]` oversætter, før varen sendes (dækker web og native og gamle varer), og vedligeholdelsesjobbet tager 20 varer med fremmede tegn pr. kørsel. Registreringernes `titleSnapshot` følger navnet (kun titlen; næringssnapshots røres ikke).
+- **Sporbarhed:** originalen i `nameOriginal`/`ingredientsOriginal`, `translationSourceLang` = AI'ens sprog, `translationStatus` = PENDING til admins side-om-side-godkendelse. Fejler oversættelsen, beholdes teksten, og jobbet prøver igen; et svar, der stadig har fremmede tegn, afvises.
+- Open Food Facts-opslaget er uændret (oversætter i forvejen alt ikke-dansk til dansk).
+
 ## 2026-10-14: Tilføj-kameraet — "gammeldags billede": udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 Brugerens krav (samme aften, efter sort kamera og et forkert forsidebillede): "Behold som nu på stregkode men indsæt shutterknappen nederst i kameravinduet på de sidste tre billeder. Det sidste skal have en spring over knap til højre for shutterknappen i bunden. Jeg har ikke tillid til den anden metode. Ingen scanning mere. Gammeldags billede nu." Og: "detaljerne … må gerne komme løbende som de bliver indlæst. På produktsiden."

@@ -24,6 +24,8 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
+import { cleanLanguageSignals } from "@/lib/barcode-context";
+import { ensureProductLanguage } from "@/lib/product-translate";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -67,6 +69,22 @@ export type QuickEnrichmentInput = {
   // og med dette tidspunkt regnes om — ældre beholder deres snapshot.
   snapshotsSince?: Date;
 };
+
+// Appens sprog ved scanningen — målsproget, hvis varens tekst skal oversættes.
+function appLanguageOf(input: Pick<QuickEnrichmentInput, "signals">) {
+  return cleanLanguageSignals(input.signals).appLanguage;
+}
+
+// Forsidens læste sprog (AI'ens sprogfelt), til oversættelsen af ingredienserne.
+async function frontLanguageOf(productId: string): Promise<string | null> {
+  const front = await prisma.aiProductAnalysis.findFirst({
+    where: { productId, kind: "FRONT" },
+    orderBy: { createdAt: "desc" },
+    select: { prediction: true },
+  });
+  const language = (front?.prediction as { language?: unknown } | null)?.language;
+  return typeof language === "string" ? language : null;
+}
 
 // Atomisk i SQL: aflæsningerne rydder hver sine felter samtidig.
 export async function clearPending(productId: string, fields: PendingField[]) {
@@ -165,6 +183,12 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       },
       select: { id: true, name: true, createdAt: true },
     });
+    // Står forsiden på et sprog uden for HelloFresh-landene (fx kinesisk),
+    // oversættes den, før navnet vises (brugerens regel 2026-10-14).
+    if (await ensureProductLanguage(productId, appLanguageOf(input), { detectedLanguage: result.language })) {
+      const translated = await prisma.product.findUnique({ where: { id: productId }, select: { name: true } });
+      if (translated) product.name = translated.name;
+    }
     await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
     // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
     const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
@@ -516,6 +540,10 @@ export async function enrichQuickProduct(
     parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
     parts.label ? enrichLabel(input) : Promise.resolve(),
   ]);
+  // Ingredienserne kan også stå på et fremmed sprog (brugerens regel 2026-10-14).
+  await ensureProductLanguage(input.productId, appLanguageOf(input), {
+    detectedLanguage: await frontLanguageOf(input.productId).catch(() => null),
+  });
   await syncProductNutritionFeaturesSafely(input.productId);
 
   const product = await prisma.product
@@ -607,6 +635,9 @@ export async function retryIngredients(input: {
       await prisma.product.updateMany({
         where: { id: productId, OR: [{ ingredientsText: null }, { ingredientsText: "" }] },
         data: { ingredientsText: text },
+      });
+      await ensureProductLanguage(productId, appLanguageOf(input), {
+        detectedLanguage: await frontLanguageOf(productId).catch(() => null),
       });
       await syncProductNutritionFeaturesSafely(productId);
     }

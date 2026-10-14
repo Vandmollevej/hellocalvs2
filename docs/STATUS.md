@@ -1,3 +1,8 @@
+## 2026-10-14: Aldrig kinesisk — varetekst oversættes til app-sproget
+
+- Ny regel (REGLER/DECISIONS 2026-10-14): navn, variant, mængde, ingredienser og (translittereret) brand/subbrand på et sprog uden for HelloFresh-landene oversættes til brugerens app-sprog; ikke-latinske tegn vises aldrig. `src/lib/product-language.ts` (regel + test) og `src/lib/product-translate.ts` (OpenAI gpt-4o-mini), koblet på forsidelæsningen, ingredienserne, `GET /api/products/[id]` og vedligeholdelsesjobbet. Ingen migration, ingen UI-ændring (native henter samme API).
+- Det kinesiske chiliglas oversættes, næste gang varen åbnes, eller ved næste vedligeholdelseskørsel. Lint 0 fejl, 404 tests, tsc og native-paritet grønne.
+
 ## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 - Stregkoden som før; forside/energi/indhold tages nu med udløserknappen nederst i kamerabilledet (ingen automatisk scanning, intet tryk på billedet). "Spring over" til højre for udløseren på trin 4. Fluebenet på trin-boksene: lysegrønt, uden baggrund, 48 px. Web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`/`CameraParts.kt`.

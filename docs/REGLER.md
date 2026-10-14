@@ -59,6 +59,7 @@ ikke her, er den ikke registreret og skal tilføjes.
   - Engelske, franske og andre udenlandske ord trækkes ikke sammen (creme fraiche, pommes frites, quinoa). Kun danske ord sættes sammen.
   - `Decaf` skrives *Koffeinfri*. `Læskedrik` bruges ikke (Sodavand / Saftevand). `Konventionel` skrives *ikke-økologisk*. `Uspecificeret`, takeaway og fastfood bruges ikke. Alkohol-% står i `_is_alcohol` (ikke i titel), fedt-% i `_is_fat`.
   - Dybfrost = `_is_frozen`. Landeord (atlantisk, dansk …) står i `_is_country_of_origen`. Light kan sorteres på særskilt flag, uafhængigt af sukker.
+- **Varetekst kun på HelloFresh-sprog (user rule 2026-10-14):** står en vares navn, variant, mængde, ingredienser, subbrand eller brand på et sprog uden for HelloFresh-landene (dansk, svensk, norsk, tysk, hollandsk, fransk, italiensk, spansk, engelsk), oversættes teksten til brugerens app-sprog (`appLocale`, ellers dansk). Kinesisk og andre ikke-latinske tegn vises **aldrig**; brand/subbrand skrives med latinske bogstaver (pinyin), ikke oversat. Originalen gemmes i `nameOriginal`/`ingredientsOriginal` (`translationStatus` PENDING). Regel og tegnmønster: `src/lib/product-language.ts`; oversætter: `src/lib/product-translate.ts` — kaldes ved forsidelæsningen, efter ingredienserne, når varen hentes (`GET /api/products/[id]`) og i vedligeholdelsesjobbet (20 varer pr. kørsel).
 - **Generisk vare** = ingen Brand og ingen Subbrand i arket (EAN ses bort fra).
   I databasen ligger de i `GenericIngredient`, ikke `Product`.
 

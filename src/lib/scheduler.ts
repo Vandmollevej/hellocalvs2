@@ -25,6 +25,7 @@ import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
 import { sendDueWeighReminders } from "@/lib/weigh-reminders";
 import { runPulseNightJob } from "@/lib/pulse-candidates";
+import { translateForeignScriptProducts } from "@/lib/product-translate";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -106,6 +107,8 @@ export async function runSchedulerTick(now: Date = new Date()) {
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu
   // (docs/DECISIONS.md 2026-09-23) — 500 pr. tick, ingen OCR/AI-kald.
   await backfillMissingProductNutritionFeatures();
+  // Varer med kinesisk eller andre ikke-latinske tegn oversættes (brugerens regel 2026-10-14).
+  await translateForeignScriptProducts().catch((error) => console.error("[scheduler] Oversættelse af varer fejlede", error));
   // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
   await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
   // Stripe: registrér webhook og synk abonnementer nær fornyelse (docs/DECISIONS.md 2026-09-29).
