@@ -1878,7 +1878,51 @@
     "noEntriesYet": "Nog geen lichaamsmaten geregistreerd.",
     "chooseSexHint": "Kies je geslacht onder Profiel → Profiel bewerken om de tekeningen te zien van waar je meet.",
     "deleteAria": "Meting verwijderen",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "voice": {
+      "start": "Maten inspreken",
+      "startHint": "Tik en ik loop de maten één voor één met je door.",
+      "stop": "Spraakgids stoppen",
+      "speaking": "Spreekt…",
+      "listening": "Luistert…",
+      "youSaid": "Je zei: {text}",
+      "unsupported": "Spraakherkenning is hier niet beschikbaar. Typ de maten in de velden.",
+      "micDenied": "De app heeft geen toegang tot de microfoon. Geef toegang in de instellingen van je telefoon.",
+      "unitCm": "centimeter",
+      "unitIn": "inch",
+      "intro": "Ik loop je lichaamsmaten met je door. Zeg na elke maat het getal. Zeg overslaan om een maat over te slaan, terug om een maat terug te gaan, of stop om te eindigen.",
+      "ask": "Nu heb ik de omtrek van je {target} nodig.",
+      "next": "Geef me nu de omtrek van je {target}.",
+      "recorded": "Ik heb {value} {unit} genoteerd.",
+      "skipped": "Die slaan we over.",
+      "notHeard": "Ik hoorde niets. Zeg de omtrek van je {target}.",
+      "notUnderstood": "Dat verstond ik niet. Zeg de omtrek van je {target} als getal, bijvoorbeeld 82 komma 5.",
+      "outOfRange": "{value} klinkt niet goed. Zeg de omtrek van je {target} nog een keer.",
+      "done": "Bedankt, al je maten zijn genoteerd.",
+      "stopped": "Oké, ik stop hier. Wat je hebt gezegd, is opgeslagen.",
+      "giveUp": "Ik stop omdat ik je niet kon horen. Tik op de microfoon om verder te gaan.",
+      "noFields": "Er zijn geen maten om in te vullen. Kies ze onder Instellingen, Weergave, Lichaamsmaten.",
+      "target": {
+        "chestCm": "borst",
+        "waistCm": "taille",
+        "hipCm": "heupen",
+        "upperArmCm": "bovenarm",
+        "thighCm": "dij",
+        "buttockCm": "billen",
+        "calfCm": "kuit",
+        "ankleCm": "enkel"
+      },
+      "how": {
+        "chestCm": "Meet rond je borst op het breedste punt, met het meetlint onder je armen.",
+        "waistCm": "Meet rond je taille op het smalste punt, meestal net boven de navel. Adem eerst rustig uit.",
+        "hipCm": "Meet rond je heupen op het breedste punt.",
+        "upperArmCm": "Meet rond je bovenarm halverwege schouder en elleboog, met de arm ontspannen hangend.",
+        "thighCm": "Meet rond je dij halverwege heup en knie.",
+        "buttockCm": "Meet rond je billen op het breedste punt, met de voeten tegen elkaar.",
+        "calfCm": "Meet rond het midden van je kuit, waar die het dikst is.",
+        "ankleCm": "Meet rond je enkel net boven het enkelbot, waar die het smalst is."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",

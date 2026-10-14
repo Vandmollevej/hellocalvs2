@@ -1878,7 +1878,51 @@
     "noEntriesYet": "Ingen kroppsmål registrert ennå.",
     "chooseSexHint": "Velg kjønn under Profil → Rediger profil for å se tegningene av hvor du måler.",
     "deleteAria": "Slett måling",
-    "delete": "Slett"
+    "delete": "Slett",
+    "voice": {
+      "start": "Si målene dine",
+      "startHint": "Trykk, så guider jeg deg gjennom målene ett om gangen.",
+      "stop": "Stopp stemmeguiden",
+      "speaking": "Snakker…",
+      "listening": "Lytter…",
+      "youSaid": "Du sa: {text}",
+      "unsupported": "Talegjenkjenning er ikke tilgjengelig her. Skriv målene i feltene.",
+      "micDenied": "Appen har ikke tilgang til mikrofonen. Gi tilgang i telefonens innstillinger.",
+      "unitCm": "centimeter",
+      "unitIn": "tommer",
+      "intro": "Jeg guider deg gjennom kroppsmålene dine. Si tallet etter hvert mål. Si hopp over for å hoppe over et mål, tilbake for å gå ett mål tilbake, eller stopp for å avslutte.",
+      "ask": "Nå trenger jeg målet rundt {target}.",
+      "next": "Nå skal du gi meg målet rundt {target}.",
+      "recorded": "Jeg har registrert {value} {unit}.",
+      "skipped": "Det hopper vi over.",
+      "notHeard": "Jeg hørte ingenting. Si målet rundt {target}.",
+      "notUnderstood": "Det fikk jeg ikke med meg. Si målet rundt {target} som et tall, for eksempel 82 komma 5.",
+      "outOfRange": "{value} høres ikke riktig ut. Si målet rundt {target} igjen.",
+      "done": "Takk, nå er alle målene dine registrert.",
+      "stopped": "Greit, jeg stopper her. Det du har sagt, er lagret.",
+      "giveUp": "Jeg stopper fordi jeg ikke kunne høre deg. Trykk på mikrofonen for å fortsette.",
+      "noFields": "Det er ingen mål å fylle ut. Velg mål under Innstillinger, Visning, Kroppsmål.",
+      "target": {
+        "chestCm": "brystet",
+        "waistCm": "midjen",
+        "hipCm": "hoften",
+        "upperArmCm": "overarmen",
+        "thighCm": "låret",
+        "buttockCm": "setet",
+        "calfCm": "leggen",
+        "ankleCm": "ankelen"
+      },
+      "how": {
+        "chestCm": "Mål rundt brystet der det er bredest, med målebåndet under armene.",
+        "waistCm": "Mål rundt livet der du er smalest, vanligvis like over navlen. Pust rolig ut først.",
+        "hipCm": "Mål rundt hoftene der de er bredest.",
+        "upperArmCm": "Mål rundt overarmen midt mellom skulder og albue, med armen hengende avslappet.",
+        "thighCm": "Mål rundt låret midt mellom hofte og kne.",
+        "buttockCm": "Mål rundt setet der det er bredest, med føttene samlet.",
+        "calfCm": "Mål rundt leggen på midten, der den er tykkest.",
+        "ankleCm": "Mål rundt ankelen like over ankelknoken, der den er smalest."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",

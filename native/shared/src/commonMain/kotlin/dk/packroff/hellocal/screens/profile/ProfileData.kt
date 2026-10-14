@@ -47,6 +47,8 @@ data class ProfileUser(
     val wantsUpdateNewsEmails: Boolean = false,
     val wantsAdviceEmails: Boolean = false,
     val wantsPartnerOffersEmails: Boolean = false,
+    /** Indstillinger → Visning → Kropsmål: a measurement is hidden only when explicitly false. */
+    val bodyMeasurementVisibility: Map<String, Boolean>? = null,
 )
 
 object ProfileApi {

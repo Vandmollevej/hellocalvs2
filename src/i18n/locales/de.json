@@ -1878,7 +1878,51 @@
     "noEntriesYet": "Noch keine Körpermaße erfasst.",
     "chooseSexHint": "Wähle unter Profil → Profil bearbeiten dein Geschlecht, um die Zeichnungen zu sehen, wo du misst.",
     "deleteAria": "Messung löschen",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "voice": {
+      "start": "Maße einsprechen",
+      "startHint": "Tippe, und ich führe dich nacheinander durch die Maße.",
+      "stop": "Sprachführung beenden",
+      "speaking": "Spricht…",
+      "listening": "Hört zu…",
+      "youSaid": "Du hast gesagt: {text}",
+      "unsupported": "Spracherkennung ist hier nicht verfügbar. Gib die Maße in die Felder ein.",
+      "micDenied": "Die App hat keinen Zugriff auf das Mikrofon. Erlaube ihn in den Einstellungen des Telefons.",
+      "unitCm": "Zentimeter",
+      "unitIn": "Zoll",
+      "intro": "Ich führe dich durch deine Körpermaße. Sag nach jedem Maß die Zahl. Sag überspringen, um ein Maß auszulassen, zurück, um ein Maß zurückzugehen, oder stopp, um aufzuhören.",
+      "ask": "Jetzt brauche ich das Maß für {target}.",
+      "next": "Jetzt gib mir das Maß für {target}.",
+      "recorded": "Ich habe {value} {unit} eingetragen.",
+      "skipped": "Das überspringen wir.",
+      "notHeard": "Ich habe nichts gehört. Sag das Maß für {target}.",
+      "notUnderstood": "Das habe ich nicht verstanden. Sag das Maß für {target} als Zahl, zum Beispiel 82 Komma 5.",
+      "outOfRange": "{value} klingt nicht richtig. Sag das Maß für {target} noch einmal.",
+      "done": "Danke, alle deine Maße sind eingetragen.",
+      "stopped": "Okay, ich höre hier auf. Was du gesagt hast, ist gespeichert.",
+      "giveUp": "Ich höre auf, weil ich dich nicht hören konnte. Tippe auf das Mikrofon, um weiterzumachen.",
+      "noFields": "Es gibt keine Maße zum Ausfüllen. Wähle sie unter Einstellungen, Anzeige, Körpermaße.",
+      "target": {
+        "chestCm": "die Brust",
+        "waistCm": "die Taille",
+        "hipCm": "die Hüfte",
+        "upperArmCm": "den Oberarm",
+        "thighCm": "den Oberschenkel",
+        "buttockCm": "das Gesäß",
+        "calfCm": "die Wade",
+        "ankleCm": "den Knöchel"
+      },
+      "how": {
+        "chestCm": "Miss um die Brust an der breitesten Stelle, mit dem Maßband unter den Armen.",
+        "waistCm": "Miss um die Taille an der schmalsten Stelle, meist knapp über dem Bauchnabel. Atme vorher ruhig aus.",
+        "hipCm": "Miss um die Hüfte an der breitesten Stelle.",
+        "upperArmCm": "Miss um den Oberarm in der Mitte zwischen Schulter und Ellbogen, mit locker hängendem Arm.",
+        "thighCm": "Miss um den Oberschenkel in der Mitte zwischen Hüfte und Knie.",
+        "buttockCm": "Miss um das Gesäß an der breitesten Stelle, mit geschlossenen Füßen.",
+        "calfCm": "Miss um die Mitte der Wade, wo sie am dicksten ist.",
+        "ankleCm": "Miss um den Knöchel knapp über dem Knöchelknochen, wo er am schmalsten ist."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",

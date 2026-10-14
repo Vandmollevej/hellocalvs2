@@ -1878,7 +1878,51 @@
     "noEntriesYet": "Aucune mensuration enregistrée pour l'instant.",
     "chooseSexHint": "Choisis ton sexe sous Profil → Modifier le profil pour voir les schémas indiquant où mesurer.",
     "deleteAria": "Supprimer la mesure",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "voice": {
+      "start": "Dicter les mesures",
+      "startHint": "Touchez et je vous guide à travers les mesures une par une.",
+      "stop": "Arrêter le guide vocal",
+      "speaking": "Parle…",
+      "listening": "Écoute…",
+      "youSaid": "Vous avez dit : {text}",
+      "unsupported": "La reconnaissance vocale n'est pas disponible ici. Saisissez les mesures dans les champs.",
+      "micDenied": "L'app n'a pas accès au micro. Autorisez-le dans les réglages du téléphone.",
+      "unitCm": "centimètres",
+      "unitIn": "pouces",
+      "intro": "Je vous guide à travers vos mensurations. Dites le nombre après chaque mesure. Dites passer pour sauter une mesure, retour pour revenir d'une mesure, ou stop pour terminer.",
+      "ask": "J'ai maintenant besoin du tour de {target}.",
+      "next": "Donnez-moi maintenant le tour de {target}.",
+      "recorded": "J'ai enregistré {value} {unit}.",
+      "skipped": "On passe celle-ci.",
+      "notHeard": "Je n'ai rien entendu. Dites le tour de {target}.",
+      "notUnderstood": "Je n'ai pas compris. Dites le tour de {target} en chiffres, par exemple 82 virgule 5.",
+      "outOfRange": "{value} ne semble pas correct. Redites le tour de {target}.",
+      "done": "Merci, toutes vos mesures sont enregistrées.",
+      "stopped": "D'accord, je m'arrête ici. Ce que vous avez dit est enregistré.",
+      "giveUp": "Je m'arrête car je ne vous entendais pas. Touchez le micro pour continuer.",
+      "noFields": "Aucune mesure à remplir. Choisissez-les dans Réglages, Affichage, Mensurations.",
+      "target": {
+        "chestCm": "poitrine",
+        "waistCm": "taille",
+        "hipCm": "hanches",
+        "upperArmCm": "bras",
+        "thighCm": "cuisse",
+        "buttockCm": "fessier",
+        "calfCm": "mollet",
+        "ankleCm": "cheville"
+      },
+      "how": {
+        "chestCm": "Mesurez autour de la poitrine à l'endroit le plus large, le ruban sous les bras.",
+        "waistCm": "Mesurez autour de la taille à l'endroit le plus fin, en général juste au-dessus du nombril. Expirez doucement d'abord.",
+        "hipCm": "Mesurez autour des hanches à l'endroit le plus large.",
+        "upperArmCm": "Mesurez autour du bras à mi-chemin entre l'épaule et le coude, le bras détendu.",
+        "thighCm": "Mesurez autour de la cuisse à mi-chemin entre la hanche et le genou.",
+        "buttockCm": "Mesurez autour des fesses à l'endroit le plus large, pieds joints.",
+        "calfCm": "Mesurez autour du milieu du mollet, là où il est le plus épais.",
+        "ankleCm": "Mesurez autour de la cheville juste au-dessus de l'os, là où elle est la plus fine."
+      }
+    }
   },
   "profileStatus": {
     "title": "Statut",
