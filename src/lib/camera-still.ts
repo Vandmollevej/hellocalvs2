@@ -1,4 +1,5 @@
 import { FOCUS_SAMPLE_SIZE, grayscale, laplacianVariance } from "@/lib/focus-detection";
+import { isWebKit } from "./camera-webkit";
 
 // Rigtige stillbilleder i kameraflowet (docs/DECISIONS.md 2026-10-02). Et
 // 1080p-videobillede var for uskarpt til små ingredienslister. Fotoet tages
@@ -34,15 +35,24 @@ const VIDEO_FRAMES = 3;
 const VIDEO_FRAME_GAP_MS = 70;
 const JPEG_QUALITY = 0.9;
 
+// Sættes, når takePhoto() har fejlet eller hængt én gang: så prøves den ikke
+// igen i denne side (et hængt kald fryser videoen).
+let takePhotoBroken = false;
+
+export function stillPhotoSupported(): boolean {
+  return imageCaptureConstructor() !== null;
+}
+
 function imageCaptureConstructor(): ImageCaptureConstructor | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined" || takePhotoBroken || isWebKit()) return null;
   return (window as unknown as { ImageCapture?: ImageCaptureConstructor }).ImageCapture ?? null;
 }
 
-// Uden stillbillede-funktion er videostrømmen selve fotoet, så den bedes om
-// højest mulig opløsning. "ideal" falder selv tilbage på ældre telefoner.
+// Uden stillbillede-funktion (og altid på WebKit/iPhone) er videostrømmen
+// selve fotoet, så den bedes om højest mulig opløsning. "ideal" falder selv
+// tilbage på ældre telefoner.
 export function cameraVideoConstraints(): MediaTrackConstraints {
-  const still = imageCaptureConstructor() !== null;
+  const still = stillPhotoSupported();
   return {
     facingMode: { ideal: "environment" },
     width: { ideal: still ? 1920 : 3840 },
@@ -139,6 +149,7 @@ async function takePhoto(video: HTMLVideoElement, crop: StillCrop): Promise<Stil
       bitmap.close();
     }
   } catch {
+    takePhotoBroken = true;
     return null;
   }
 }

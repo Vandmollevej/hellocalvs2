@@ -176,12 +176,15 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Scan energi", "4. Scan indholdsfortegnelse" (`ScanHeading`). Det senest klarede trin står lille, overstreget og med flueben over den aktuelle overskrift.
 - Hvert klaret trin vises, før flowet går videre (`StepDoneOverlay`): hvidt blink over hele billedet, trinnet stort i midten, overstreges, stort flueben, og linjen flyver op og bliver lille. Også stregkoden, når varen er ukendt — flowet må aldrig bare springe videre.
+- Stregkoden læses levende af videoen (uændret). **Forside, energi og indhold tages med udløseren nederst i kamerabilledet** (`.hf-shutter`, native `ShutterRow`) — "gammeldags billede", ingen automatisk scanning, intet tryk på selve billedet (user rule 2026-10-14: "Jeg har ikke tillid til den anden metode. Ingen scanning mere."). Energi/indhold læses én gang lokalt efter trykket; AI læser resten.
+- "Spring over" til højre for udløseren på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native.
 - Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
 - Kun brugerens egne fotos klarer et trin. Stregkodefotoet klarer aldrig energi/indhold. "Indhold på energibilledet" giver stadig begge flueben.
-- Flere varer i forsidebilledet: den i rammens midte vælges automatisk (`pickObjectInFocus`). Ingen cirkler, intet tryk, kameraet fryser aldrig.
-- Et automatisk forsidebillede uden tekst og uden vare (bukseben, bord, gulv) afvises med besked, og scanningen fortsætter; et tryk på billedet bruger det alligevel. Energi/indhold siger "Kan ikke læse teksten" efter to billeder uden tekst — aldrig scanne i stilhed.
+- Fluebenet på trin-boksene (`CaptureCheckOverlay`/`CheckBadge`): lysegrøn signaturfarve (`--hf-color-accent`), ingen baggrund, 48 px.
 - Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
+- `ImageCapture.takePhoto` bruges ALDRIG på WebKit/iPhone (`isWebKit`, `src/lib/camera-webkit.ts`): den hænger og gør videoen sort. Fotoet er dér det skarpeste af tre 4K-videobilleder. Se DECISIONS.md 2026-10-14.
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
+- Produktsiden viser varens felter løbende, som AI læser dem (`AddProductView` poller `pendingFields`).
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 
 ## Sikkerhed

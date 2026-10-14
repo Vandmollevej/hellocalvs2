@@ -1055,7 +1055,10 @@
     "useWholePhoto": "Använd hela bilden",
     "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
     "labelNoText": "Can't read the text — hold the field sharp and close.",
-    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over."
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over.",
+    "skipIngredients": "Skip",
+    "shutter": "Take photo",
+    "shutterHint": "Press the shutter when the product is sharp in the picture."
   },
   "foods": {
     "title": "Livsmedel",

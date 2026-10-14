@@ -1,3 +1,10 @@
+## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
+
+- Stregkoden som før; forside/energi/indhold tages nu med udløserknappen nederst i kamerabilledet (ingen automatisk scanning, intet tryk på billedet). "Spring over" til højre for udløseren på trin 4. Fluebenet på trin-boksene: lysegrønt, uden baggrund, 48 px. Web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`/`CameraParts.kt`.
+- Sort kamera på iPhone: `ImageCapture.takePhoto` slås fra på WebKit (hænger og fryser videoen); fotoet er det skarpeste af tre 4K-videobilleder. Ny `src/lib/camera-webkit.ts` + test.
+- Produktsiden viste allerede felterne løbende (poll på `pendingFields`, parallel AI-læsning) — ingen ændring.
+- Lint 0 fejl, 398 tests, tsc, build (404 ruter) og native-paritet grønne. Ikke prøvet på telefon her (ingen enhed): brugerens test på iPhone af (1) at kameraet ikke bliver sort efter energi-trinnet, (2) udløseren på trin 2–4, (3) "Spring over" på trin 4.
+
 ## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret
 
 - Gennemgået: scan-appen (`/scan`, `/scan/opret`) bruger telefonens eget kamera via filfelt med `capture="environment"` i hyldebilledet og alle fire bokse; intet automatisk kamera, stregkoden læses af fotoet. Bluetooth-udløser virker derfor via kamera-appens egen udløser. Ingen kodeændring nødvendig.

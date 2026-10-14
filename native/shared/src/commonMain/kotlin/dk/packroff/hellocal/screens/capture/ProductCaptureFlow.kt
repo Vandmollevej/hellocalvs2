@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
@@ -218,6 +224,16 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
+    // "Skip" at the bottom of the viewfinder on the ingredients step (user
+    // 2026-10-14, web: skipIngredients): products without an ingredients list
+    // (water, sugar, fruit …) could otherwise never get past step 4. The step
+    // is marked done without a photo; the server gets no ingredients photo.
+    fun skipIngredients() {
+        if (working || stepDone != null || step != CaptureStep.Ingredients) return
+        photos = photos - CaptureStep.Ingredients
+        goToNextStep(done + CaptureStep.Ingredients)
+    }
+
     // A step with a check mark can be redone by tapping it (user 2026-10-14).
     // The barcode starts over: a new barcode is another product.
     fun selectStep(next: CaptureStep) {
@@ -261,8 +277,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     val celebrating = stepDone
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        // No "take photo" button on the web: tapping the camera area takes it.
-        CameraViewport(onClick = { capture() }) {
+        // Barcode: tapping the viewport scans. Photo steps: the shutter at the
+        // bottom of the viewport takes the photo (user 2026-10-14, "gammeldags billede").
+        CameraViewport(onClick = if (step == CaptureStep.Barcode) ({ capture() }) else null) {
             if (step != CaptureStep.Barcode) CapturedPhoto(lastPhoto, t.t("camera.photoAlt"))
             if (celebrating == null && !working) {
                 when (step) {
@@ -272,6 +289,14 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 }
             }
             if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
+            if (step != CaptureStep.Barcode && message == null && celebrating == null && !working && !createFailed) {
+                ShutterRow(
+                    shutterLabel = t.t("cameraCreate.shutter"),
+                    onShutter = { capture() },
+                    skipLabel = t.t("cameraCreate.skipIngredients").takeIf { step == CaptureStep.Ingredients },
+                    onSkip = { skipIngredients() },
+                )
+            }
             if (message != null) {
                 CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
             } else if (celebrating != null) {
@@ -297,7 +322,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                         HcIcon(item.icon, size = 20.dp, stroke = 1.8f, color = HcColors.Black)
                         HcText(stepLabels.getValue(item), HcTypeRoles.Micro, color = HcColors.Black, maxLines = 1)
                     }
-                    if (item in done) CheckBadge(24.dp)
+                    if (item in done) CheckBadge(48.dp)
                 }
             }
         }
@@ -310,10 +335,38 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         } else {
             HcText(stepHints.getValue(step), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (step != CaptureStep.Barcode) {
-                HcText(t.t("camera.autoCaptureHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+                HcText(t.t("cameraCreate.shutterHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
             if (done.isNotEmpty()) {
                 HcText(t.t("cameraCreate.retakeHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
+        }
+    }
+}
+
+/**
+ * Web: .hf-shutter (72 dp white ring with a white disc) centred at the bottom
+ * of the viewfinder, and on the ingredients step the "Spring over" pill
+ * (bg-hf-black/60, white, 44 dp) to its right.
+ */
+@Composable
+private fun BoxScope.ShutterRow(shutterLabel: String, onShutter: () -> Unit, skipLabel: String?, onSkip: () -> Unit) {
+    Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp)) {
+        Box(
+            Modifier.align(Alignment.Center).size(72.dp).clip(CircleShape).background(HcColors.Black.copy(alpha = 0.25f))
+                .border(4.dp, HcColors.White, CircleShape).clickable(onClick = onShutter).semantics { contentDescription = shutterLabel },
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(Modifier.size(56.dp).clip(CircleShape).background(HcColors.White))
+        }
+        if (skipLabel != null) {
+            val shape = RoundedCornerShape(HcDimens.RadiusCard)
+            Box(
+                Modifier.align(Alignment.CenterEnd).height(44.dp).wrapContentWidth().clip(shape)
+                    .background(HcColors.Black.copy(alpha = 0.6f), shape).clickable(onClick = onSkip).padding(horizontal = 20.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                HcText(skipLabel, HcTypeRoles.Small, color = HcColors.White, bold = true, maxLines = 1)
             }
         }
     }
