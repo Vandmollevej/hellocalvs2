@@ -1,3 +1,10 @@
+## 2026-10-14: Tilføj-kameraet efter brugerens mælketest — trin-visning, mindre felt, auto-valg, vagthund
+
+- Nummererede trin med stor overskrift (`ScanHeading`), "trinnet er klaret"-visning med hvidt blink, overstregning og stort flueben (`StepDoneOverlay`) på alle trin, også stregkoden ved ukendt vare. Stregkode-/energi-/indholdsfeltet er lille med resten af billedet mørkt; forsiden beholder hele rammen.
+- Ved flere varer i forsidebilledet vælges den i rammens midte automatisk (`pickObjectInFocus` + test); det frosne billede med grønne cirkler er væk fra Tilføj-kameraet. Stregkodefotoets baggrunds-OCR klarer ikke længere energi/indhold.
+- Sort kamera på iPhone: `useCameraWatchdog` logger sporets pause/stop, baggrund/forgrund og et helt sort billede i admin → Log og genstarter kameraet (højst tre gange); lærreder genbruges i `camera-still.ts`/`product-outline.ts`. Brugerens konkrete sorte kamera kunne ikke læses ud af loggen herfra (ingen adgang til produktions-DB, og tilstanden blev ikke logget før nu).
+- Native porteret (`ProductCaptureFlow.kt`, `CameraParts.kt`), ikke kompileret her. Se DECISIONS/REGLER 2026-10-14. **Brugerens test på telefon:** stregkode → blink + "1. Scan stregkode" overstreget → "2. Tag billede af forsiden"; energi/indhold-feltet; at kameraet ikke længere bliver sort (ellers: admin → Log → Scanninger → `camera_black`/`camera_muted`).
+
 ## 2026-10-14: Logo-robot — numpy-fejl ved gem rettet
 
 - Robotten (`hellocal-v2-logo-agent-1`) fejlede for hvert brand med kandidater: `schema "np" does not exist`, fordi `visual_similarity()`/`confidence` var `np.float64` (numpy 2 + psycopg2). Nu rene `float` ved kilden og eksplicit cast af alle SQL-parametre i `process_brand`. `import_logos.py` er uændret. Regressionstest `scripts/logo-agent/test_agent.py` (fejler på gammel kode, grøn på ny). Se `docs/LOGO-AGENT.md`.
@@ -33,7 +40,7 @@
 
 # HELLO CAL — project status
 
-Last updated: 2026-10-12
+Last updated: 2026-10-14
 
 ## 2026-10-11: Samling af upushet arbejde
 

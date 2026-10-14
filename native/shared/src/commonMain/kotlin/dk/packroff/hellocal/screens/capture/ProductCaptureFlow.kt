@@ -35,6 +35,7 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -60,6 +61,12 @@ private val REGION_CODE = Regex("^[A-Z]{2}$")
  * screen goes to /add/[id]. The web's live in-browser OCR/object detection has
  * no native counterpart yet, so the photos are sent without local OCR and the
  * server reads them with OpenAI (its documented fallback).
+ *
+ * 2026-10-14 (user): steps are numbered ("1. Scan stregkode"), each completed
+ * step is shown with the StepDoneOverlay (white flash, strike-through, big
+ * check, line flies up) before the next step, the barcode and energy/contents
+ * fields are small with the rest of the picture dark, and the front keeps the
+ * big frame.
  */
 @Composable
 internal fun ProductCaptureFlow(returnSuffix: String) {
@@ -68,6 +75,10 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(CaptureStep.Barcode) }
     var done by remember { mutableStateOf(setOf<CaptureStep>()) }
+    // The step(s) just completed (StepDoneOverlay) and the most recently
+    // completed one (the small struck-through line above the heading).
+    var stepDone by remember { mutableStateOf<List<CaptureStep>?>(null) }
+    var lastDone by remember { mutableStateOf<CaptureStep?>(null) }
     var working by remember { mutableStateOf(false) }
     var createFailed by remember { mutableStateOf(false) }
     var lookupError by remember { mutableStateOf(false) }
@@ -118,6 +129,15 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         scope.launch { createProduct() }
     }
 
+    // "Step done" stays on screen for STEP_DONE_MS, and only then the flow goes on.
+    suspend fun showDoneThenContinue(justDone: List<CaptureStep>, completed: Set<CaptureStep>) {
+        stepDone = justDone
+        delay(STEP_DONE_MS)
+        stepDone = null
+        lastDone = justDone.last()
+        goToNextStep(completed)
+    }
+
     suspend fun lookupBarcode(code: String) {
         lookupError = false
         lookupBlockedMessage = null
@@ -137,10 +157,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     lookupBlockedMessage = body?.get("message")?.jsonPrimitive?.contentOrNull ?: "Dyrefoder kan ikke oprettes i Hello Cal."
                 }
                 e.status == 404 -> {
-                    // Unknown product: keep the barcode and go on to the front.
+                    // Unknown product: keep the barcode, show step 1 as done and go on to the front.
                     barcode = code
-                    done = done + CaptureStep.Barcode
-                    step = CaptureStep.Front
+                    val completed = done + CaptureStep.Barcode
+                    done = completed
+                    working = false
+                    showDoneThenContinue(listOf(CaptureStep.Barcode), completed)
                 }
                 else -> lookupError = true
             }
@@ -152,7 +174,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     }
 
     fun capture() {
-        if (working) return
+        if (working || stepDone != null) return
         if (step == CaptureStep.Barcode) {
             if (CaptureStep.Barcode in done) return
             val scan = CaptureHooks.scanBarcode
@@ -187,7 +209,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 photos = photos + (current to jpegDataUrl(bytes))
                 val completed = done + current
                 done = completed
-                goToNextStep(completed)
+                showDoneThenContinue(listOf(current), completed)
             } catch (e: CapturePermissionDenied) {
                 status = CameraStatus.Denied
             } catch (e: Exception) {
@@ -197,7 +219,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     }
 
     fun selectStep(next: CaptureStep) {
-        if (working || next == step) return
+        if (working || stepDone != null || next == step) return
         // Without a barcode no other step can be read (language/region follow it).
         if (next != CaptureStep.Barcode && CaptureStep.Barcode !in done) return
         if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) return
@@ -223,36 +245,34 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         CaptureStep.Ingredients to t.t("cameraCreate.hintIngredients"),
     )
     val message = cameraMessage(status, t)
+    // Numbered like the web ("1. Scan stregkode").
+    fun numbered(item: CaptureStep) = "${item.ordinal + 1}. ${stepHeadings.getValue(item)}"
+    val celebrating = stepDone
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         // No "take photo" button on the web: tapping the camera area takes it.
         CameraViewport(onClick = { capture() }) {
             if (step != CaptureStep.Barcode) CapturedPhoto(lastPhoto, t.t("camera.photoAlt"))
-            if (step == CaptureStep.Barcode) {
-                Box(Modifier.align(Alignment.Center), contentAlignment = Alignment.Center) {
-                    HcIcon("Barcode", size = 96.dp, color = HcColors.White.copy(alpha = 0.8f), stroke = 1.2f)
+            if (celebrating == null && !working) {
+                when (step) {
+                    CaptureStep.Barcode -> BarcodeGuide()
+                    CaptureStep.Front -> SquareGuide(0.04f)
+                    CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.16f, dim = 0.55f, topInset = 0.20f)
                 }
-            } else if (!working) {
-                SquareGuide(0.04f)
             }
             if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
             if (message != null) {
                 CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
+            } else if (celebrating != null) {
+                StepDoneOverlay(celebrating.map { numbered(it) })
             } else {
-                HcText(
-                    stepHeadings.getValue(step),
-                    HcTypeRoles.Body,
-                    Modifier.align(Alignment.BottomCenter).padding(16.dp),
-                    bold = true,
-                    color = HcColors.White,
-                    align = TextAlign.Center,
-                )
+                ScanHeading(numbered(step), lastDone?.takeIf { it != step }?.let { numbered(it) })
             }
         }
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             CaptureStep.entries.forEach { item ->
-                val disabled = working || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done) || (item == CaptureStep.Barcode && CaptureStep.Barcode in done)
+                val disabled = working || stepDone != null || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done) || (item == CaptureStep.Barcode && CaptureStep.Barcode in done)
                 val shape = RoundedCornerShape(HcDimens.RadiusCard)
                 val enabled = !(disabled && item != step)
                 Box(

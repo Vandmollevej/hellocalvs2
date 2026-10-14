@@ -1,24 +1,18 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useRef,
-  useState,
-  type ComponentType,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { useRouter } from "next/navigation";
 import { IconBolt, IconBoltOff, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
-import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
-import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
+import { cropToObject, detectObjects, pickObjectInFocus } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import { LabelFillOverlay } from "@/components/camera/LabelFillOverlay";
+import { ScanHeading } from "@/components/camera/ScanHeading";
+import { StepDoneOverlay } from "@/components/camera/StepDoneOverlay";
+import { useCameraWatchdog } from "@/components/camera/useCameraWatchdog";
 import {
   MAX_LABEL_ATTEMPTS,
   countsAsAttempt,
@@ -47,12 +41,10 @@ import {
   CAPTURE_STEPS,
   submitProductRescan,
   createQuickProduct,
-  readBarcodePhoto,
   readFrontPhoto,
   readLabelPhoto,
   saveBarcodePhoto,
   type CaptureData,
-  type LabelRead,
   type CaptureStep,
 } from "@/lib/product-capture";
 import { useFrameQuality } from "./useFrameQuality";
@@ -80,9 +72,14 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // bruger det skarpeste af en lille serie; energi og indhold læses billede for
 // billede med lokal OCR, og aflæsningerne lægges sammen (src/lib/live-scan.ts),
 // indtil feltet er læst sikkert eller ti billeder er brugt. Når et trin er
-// klaret, fyldes varens kontur (forside) eller det læste tekstfelt (energi/
-// indhold) hvidt oven på videoen, og knappen får flueben. Står indholdet på
-// energibilledet, får begge flueben. Så snart alle er klaret, oprettes varen
+// klaret, blinker billedet hvidt, trinnet streges over med et stort flueben
+// (StepDoneOverlay, brugerens krav 2026-10-14), varens kontur (forside) eller
+// det læste tekstfelt (energi/indhold) fyldes hvidt oven på videoen, og
+// knappen får flueben. Står indholdet på energibilledet, får begge flueben.
+// Trinnene er nummererede, og kun brugerens egne fotos klarer dem — stregkode-
+// fotoets baggrunds-OCR springer ikke længere energi/indhold over (2026-10-14).
+// Ved flere varer i forsidebilledet vælges den i rammens midte automatisk
+// (pickObjectInFocus) — intet frosset billede med cirkler. Så snart alle er klaret, oprettes varen
 // (POST /api/products/quick), og skærmen går til /add/[id]; serveren udfylder
 // navn/brand/næring/indhold bagefter — energi og indhold fra telefonens egen
 // aflæsning, når den er sikker, ellers OpenAI. "Tag billede" er en manuel
@@ -103,6 +100,18 @@ const NO_CAMERA_CONTROLS: CameraControls = { torch: false, continuousFocus: fals
 // Den hvide udfyldning står så længe, før flowet går videre (= .hf-scan-fill).
 const FLASH_MS = 1400;
 const FLASH_REDUCED_MS = 600;
+// "Trinnet er klaret"-visningen (StepDoneOverlay = .hf-step-done i globals.css):
+// blink, overstregning, flueben, og linjen flyver op. Flowet går først videre bagefter.
+const STEP_DONE_MS = 1600;
+const STEP_DONE_REDUCED_MS = 600;
+// Søgefeltet pr. trin (brugerens krav 2026-10-14): forsiden får hele rammen
+// (92 %), energi og indhold et mindre felt med resten af billedet mørkt —
+// fotoet tages stadig af hele søgerens kvadrat; feltet viser kun, hvad der
+// skal holdes i midten. Stregkodens felt ligger i BarcodeScanOverlay.
+// Energi/indhold-feltet (68 %) står lidt under midten, så den store
+// overskrift øverst ikke dækker dets kant.
+const GUIDE_INSET: Record<Exclude<CaptureStep, "barcode">, string> = { front: "4%", nutrition: "20% 16% 12%", ingredients: "20% 16% 12%" };
+const GUIDE_DIM: Record<Exclude<CaptureStep, "barcode">, number> = { front: 0.2, nutrition: 0.55, ingredients: 0.55 };
 // Forsiden: det skarpeste af så mange billeder taget lige efter hinanden.
 const FRONT_BURST_FRAMES = 3;
 const FRONT_BURST_MS = 800;
@@ -202,14 +211,16 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const workingRef = useRef(false);
   // Forsidens analyse (objekter, dubletopslag) og oprettelsen: knapperne låses.
   const [working, setWorking] = useState(false);
-  // Flere mulige objekter på forsidebilledet: billedet fryses, og brugeren
-  // trykker på det rigtige.
-  const [pickPhoto, setPickPhoto] = useState<string | null>(null);
-  const [pickObjects, setPickObjects] = useState<ObjectBox[] | null>(null);
-  const pickResolveRef = useRef<((object: ObjectBox | null) => void) | null>(null);
   const [flash, setFlash] = useState<Flash | null>(null);
+  // De trin, der netop er klaret (StepDoneOverlay), og det senest klarede
+  // (den lille overstregede linje over overskriften).
+  const [stepDone, setStepDone] = useState<CaptureStep[] | null>(null);
+  const [lastDone, setLastDone] = useState<CaptureStep | null>(null);
   const flashRef = useRef(false);
-  const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
+  // Stregkoden er læst, men varen er ukendt: trinnet klares med visningen,
+  // før flowet går til forsiden (kaldes fra opslaget via en ref, så
+  // useCallback ikke afhænger af flowets funktioner).
+  const afterUnknownBarcodeRef = useRef<() => void>(() => {});
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
   const online = useOnlineStatus();
@@ -245,8 +256,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   }, [working]);
 
   useEffect(() => {
-    flashRef.current = flash !== null;
-  }, [flash]);
+    flashRef.current = flash !== null || stepDone !== null;
+  }, [flash, stepDone]);
+
+  useEffect(() => {
+    afterUnknownBarcodeRef.current = () => void flashThenContinue(null, markDone("barcode"), ["barcode"]);
+  });
 
   // Flowets start og — hvis brugeren går uden at nå en vare — hvor langt
   // hen scanningen kom. Under 0,5 s er React's dobbelte montering i udvikling.
@@ -464,80 +479,27 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     return completed;
   }
 
-  // Den hvide udfyldning står et øjeblik, og først derefter går flowet videre
-  // — også først når `pending` (stillbilledet til serveren) er i hus.
+  // "Trinnet er klaret"-visningen (og evt. den hvide udfyldning) står et
+  // øjeblik, og først derefter går flowet videre — også først når `pending`
+  // (stillbilledet til serveren) er i hus.
   async function flashThenContinue(
-    next: Flash,
+    next: Flash | null,
     completed: Partial<Record<CaptureStep, boolean>>,
+    justDone: CaptureStep[],
     pending: Promise<unknown> = Promise.resolve(),
   ) {
     setFlash(next);
+    setStepDone(justDone);
     flashRef.current = true;
-    await Promise.all([wait(reducedMotion() ? FLASH_REDUCED_MS : FLASH_MS), pending.catch(() => {})]);
+    const reduced = reducedMotion();
+    const holdMs = Math.max(reduced ? FLASH_REDUCED_MS : FLASH_MS, reduced ? STEP_DONE_REDUCED_MS : STEP_DONE_MS);
+    await Promise.all([wait(holdMs), pending.catch(() => {})]);
     if (leavingRef.current) return;
     setFlash(null);
+    setStepDone(null);
+    setLastDone(justDone[justDone.length - 1] ?? null);
     flashRef.current = false;
     goToNextStep(completed);
-  }
-
-  // Stregkodefotoets baggrunds-OCR (docs/DECISIONS.md 2026-09-28): står
-  // næringstabellen og/eller ingredienslisten ved stregkoden, får Energi/
-  // Indhold flueben; står brugeren på et af de trin, vises tekstfeltet hvidt,
-  // og flowet går videre. Trin, som brugeren allerede selv har klaret, røres ikke.
-  function applyBarcodeLabel(frame: Frame, result: LabelRead, startedAt: number) {
-    if (leavingRef.current) return;
-    const data = dataRef.current;
-    const already = doneRef.current;
-    const nutritionFound = labelFound(result, "nutrition");
-    const ingredientsFound = labelFound(result, "ingredients");
-    const fillNutrition = nutritionFound && !already.nutrition;
-    const fillIngredients = ingredientsFound && !already.ingredients;
-    scanLog(flowId, "barcode_label", {
-      message:
-        nutritionFound || ingredientsFound
-          ? `Stregkodefotoet: ${[nutritionFound && "næringstabel", ingredientsFound && "ingrediensliste"].filter(Boolean).join(" + ")} fundet${fillNutrition || fillIngredients ? "" : " (trinnene var allerede klaret)"}`
-          : `Stregkodefotoet: hverken næringstabel eller ingrediensliste fundet (${result.text.length} tegn)`,
-      barcode: data.barcode,
-      durationMs: Date.now() - startedAt,
-      data: {
-        textLength: result.text.length,
-        confidence: result.confidence,
-        nutritionRegion: Boolean(result.regions.nutrition),
-        ingredientsRegion: Boolean(result.regions.ingredients),
-        localNutrition: Boolean(result.nutrition),
-        localIngredients: Boolean(result.ingredientsText),
-        filled: [fillNutrition && "nutrition", fillIngredients && "ingredients"].filter(Boolean),
-      },
-    });
-    if (!fillNutrition && !fillIngredients) return;
-
-    if (fillNutrition) {
-      data.nutritionPhoto = frame.url;
-      data.nutritionOcrText = result.text;
-      data.nutritionOcrConfidence = result.confidence;
-      data.localNutrition = result.nutrition;
-      data.ingredientsOnNutritionPhoto = fillIngredients;
-    }
-    if (fillIngredients) {
-      // Også som eget indholdsfoto, hvis energifotoet senere tages om.
-      data.ingredientsPhoto = frame.url;
-      data.ingredientsOcrText = result.text;
-      data.ingredientsOcrConfidence = result.confidence;
-      if (result.ingredientsText) data.localIngredientsText = result.ingredientsText;
-    }
-    const steps: CaptureStep[] = [];
-    if (fillNutrition) steps.push("nutrition");
-    if (fillIngredients) steps.push("ingredients");
-    const completed = markDone(...steps);
-    // Forsidens analyse eller en udfyldning kører: trinskiftet sker, når den
-    // er færdig (goToNextStep springer klarede trin over).
-    if (workingRef.current || flashRef.current) return;
-    // Står brugeren på et trin, der nu er klaret, går flowet videre — med
-    // konturen fyldt hvid (stregkodefotoets bokse passer ikke til det, der
-    // ses nu). Er en aflæsning i gang dér, afsluttes den selv (processLabelFrame).
-    if (completed[stepRef.current] && !busyRef.current) {
-      void flashThenContinue({ kind: "object" }, completed);
-    }
   }
 
   async function createProduct() {
@@ -627,7 +589,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         }
         if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
-        // Ukendt vare: gem stregkoden og gå videre til forsiden.
+        // Ukendt vare: gem stregkoden, vis trinnet som klaret og gå videre
+        // til forsiden. Stregkodefotoet gemmes kun til serverens kvalitets-
+        // kontrol/logo — det klarer ikke energi/indhold for brugeren (2026-10-14).
         const frame = captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
         dataRef.current.barcode = code;
         dataRef.current.languageSignals = readLanguageSignals(locale);
@@ -637,13 +601,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             if (id) dataRef.current.barcodeAnalysisId = id;
             else scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Stregkode-fotoet blev ikke gemt", barcode: code });
           });
-          // Næring/ingredienser ved stregkoden læses i baggrunden fra samme
-          // foto, mens brugeren går videre til forsiden.
-          barcodeLabelJobRef.current = {
-            frame,
-            startedAt: Date.now(),
-            result: readBarcodePhoto(frame.url, context.tesseractLanguages),
-          };
         } else {
           scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Intet kamerabillede til stregkode-fotoet", barcode: code });
         }
@@ -651,9 +608,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         setBarcodeDetection(null);
         activeCodeRef.current = null;
         lookupInProgressRef.current = false;
-        doneRef.current = { ...doneRef.current, barcode: true };
-        setDone(doneRef.current);
-        setStep("front");
+        scanLog(flowId, "barcode_unknown", {
+          message: "Ukendt stregkode — trin 1 klaret, videre til forsiden",
+          barcode: code,
+          durationMs: Date.now() - startedAt,
+        });
+        afterUnknownBarcodeRef.current();
       } catch (error) {
         scanLog(flowId, "barcode_lookup_error", {
           level: "error",
@@ -719,19 +679,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     handleBarcodeReadRef.current = handleBarcodeRead;
   }, [handleBarcodeRead]);
 
-  const onBarcodeLabel = useEffectEvent((frame: Frame, result: LabelRead, startedAt: number) =>
-    applyBarcodeLabel(frame, result, startedAt),
-  );
-
-  // Stregkodefotoets aflæsning startes i opslaget og afleveres her, når den
-  // er færdig — også hvis brugeren er nået længere i flowet.
-  useEffect(() => {
-    const job = barcodeLabelJobRef.current;
-    if (!done.barcode || !job) return;
-    barcodeLabelJobRef.current = null;
-    void job.result.then((result) => onBarcodeLabel(job.frame, result, job.startedAt));
-  }, [done.barcode]);
-
   // Stregkode-scanneren kører kun på Stregkode-trinnet.
   useEffect(() => {
     if (!scanning || cameraStatus !== "active" || !videoRef.current) return;
@@ -761,7 +708,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // uskarpt (docs/DECISIONS.md 2026-10-02).
   const frameIssue = useFrameQuality(
     videoRef,
-    cameraStatus === "active" && !working && !flash && !createFailed && !barcodeDetection,
+    cameraStatus === "active" && !working && !flash && !stepDone && !createFailed && !barcodeDetection,
   );
   const frameIssueRef = useRef(frameIssue);
   useEffect(() => {
@@ -815,23 +762,26 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     });
   }
 
-  // Ved flere objekter på billedet fryses det med grønne cirkler, og billedet
-  // beskæres til det objekt, brugeren trykker på. Ét eller ingen objekt: hele
-  // billedet, og kameraet fryser aldrig.
+  // Ved flere varer i billedet vælges den i rammens midte automatisk
+  // (src/lib/object-picker.ts, brugerens krav 2026-10-14), og billedet
+  // beskæres til den. Ét eller ingen objekt — eller intet i midten: hele
+  // billedet. Kameraet fryser aldrig, og brugeren skal ikke trykke på noget.
   async function chooseObject(frame: string): Promise<string> {
+    const startedAt = Date.now();
     const objects = await detectObjects(frame);
-    if (objects.length < 2 || leavingRef.current) return frame;
-    setWorking(false);
-    const picked = await new Promise<ObjectBox | null>((resolve) => {
-      pickResolveRef.current = resolve;
-      setPickPhoto(frame);
-      setPickObjects(objects);
+    const picked = pickObjectInFocus(objects);
+    scanLog(flowId, "front_objects", {
+      message:
+        objects.length < 2
+          ? `Forsiden: ${objects.length} objekt(er) fundet — hele billedet bruges`
+          : picked
+            ? `Forsiden: ${objects.length} objekter fundet — "${picked.label}" i rammens midte bruges`
+            : `Forsiden: ${objects.length} objekter fundet, ingen i rammens midte — hele billedet bruges`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - startedAt,
+      data: { objects: objects.map((object) => object.label), picked: picked?.label ?? null },
     });
-    pickResolveRef.current = null;
-    setPickObjects(null);
-    setPickPhoto(null);
-    setWorking(true);
-    if (!picked) return frame;
+    if (!picked || leavingRef.current) return frame;
     return cropToObject(frame, picked);
   }
 
@@ -890,7 +840,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       return;
     }
     setWorking(false);
-    await flashThenContinue({ kind: "object" }, markDone("front"));
+    await flashThenContinue({ kind: "object" }, markDone("front"), ["front"]);
   }
 
   function closeFrontBurst() {
@@ -938,11 +888,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         ingredientsRegion: Boolean(read.regions.ingredients),
       },
     });
-    // Stregkodefotoets baggrunds-OCR klarede trinnet imens.
-    if (doneRef.current[need]) {
-      void flashThenContinue(labelFlash(frame, read.regions, need), doneRef.current);
-      return;
-    }
     const finished = labelForceRef.current || labelDone(best.read, need) || attempts >= MAX_LABEL_ATTEMPTS;
     if (!finished) return;
     labelForceRef.current = false;
@@ -995,9 +940,14 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       if (ingredientsFound) {
         // Indholdet står ved siden af næringstabellen: begge får flueben.
         data.localIngredientsText = read.ingredientsText ?? undefined;
-        void flashThenContinue(labelFlash(frame, read.regions), markDone("nutrition", "ingredients"), stillReady);
+        void flashThenContinue(
+          labelFlash(frame, read.regions),
+          markDone("nutrition", "ingredients"),
+          ["nutrition", "ingredients"],
+          stillReady,
+        );
       } else {
-        void flashThenContinue(labelFlash(frame, read.regions, "nutrition"), markDone("nutrition"), stillReady);
+        void flashThenContinue(labelFlash(frame, read.regions, "nutrition"), markDone("nutrition"), ["nutrition"], stillReady);
       }
       return;
     }
@@ -1023,7 +973,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     data.ingredientsOcrConfidence = read.confidence;
     data.ingredientsOnNutritionPhoto = false;
     if (ingredientsText) data.localIngredientsText = ingredientsText;
-    void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"), stillReady);
+    void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"), ["ingredients"], stillReady);
   }
 
   // Et billede fra den levende scanning: forsiden samler en lille serie og
@@ -1046,7 +996,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // afsluttes med den bedste aflæsning (dette billede medregnet, medmindre
   // et andet allerede er under aflæsning).
   function capturePhoto() {
-    if (working || step === "barcode" || flash || pickObjects) return;
+    if (working || step === "barcode" || flash || stepDone) return;
     const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(step));
     if (!live) {
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
@@ -1062,7 +1012,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   }
 
   function selectStep(next: CaptureStep) {
-    if (working || pickObjects || flash || next === step) return;
+    if (working || flash || stepDone || next === step) return;
     if (!visibleSteps.includes(next)) return;
     // Uden stregkode kan intet andet trin aflæses (sprog/region følger den).
     if (next !== "barcode" && !done.barcode) return;
@@ -1075,6 +1025,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     setCameraStatus("starting");
     setRestartKey((key) => key + 1);
   }
+
+  // Sort/stoppet kamera (iPhone): logges og startes igen af sig selv.
+  useCameraWatchdog({ videoRef, streamRef, enabled: cameraStatus === "active", flowId, step, onRestart: restartCamera });
 
   const stepLabels: Record<CaptureStep, string> = {
     barcode: t("cameraCreate.stepBarcode"),
@@ -1089,7 +1042,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     ingredients: t("cameraCreate.scanIngredients"),
   };
   const liveActive =
-    step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !flash && !createFailed;
+    step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone && !createFailed;
   const liveProgress = useLiveFrames(
     videoRef,
     liveActive,
@@ -1117,8 +1070,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             ? t("camera.error")
             : null;
   // Scanningsstriben fejer over den levende video på alle fototrin og under
-  // oprettelsen — ikke mens brugeren vælger objekt eller udfyldningen vises.
-  const sweeping = !scanning && !pickObjects && !flash && cameraStatus === "active" && (step !== "barcode" || working);
+  // oprettelsen — ikke mens "trinnet er klaret" eller udfyldningen vises.
+  const sweeping = !scanning && !flash && !stepDone && cameraStatus === "active" && (step !== "barcode" || working);
+  // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
+  const stepNumber = (item: CaptureStep) => visibleSteps.indexOf(item) + 1;
+  const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
 
   return (
     <div className="flex flex-col gap-4">
@@ -1127,7 +1083,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       <div
         className="hf-camera-preview"
         onClick={() => {
-          if (step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !flash) {
+          if (step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone) {
             void capturePhoto();
           }
         }}
@@ -1140,11 +1096,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           playsInline
           aria-label={t("camera.liveViewAriaLabel")}
         />
-        {pickPhoto && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={pickPhoto} alt={t("camera.photoAlt")} className="absolute inset-0 h-full w-full object-cover" />
-        )}
-
         {scanning && (
           <BarcodeScanOverlay
             guideBox={barcodeGuideBox}
@@ -1156,10 +1107,14 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           />
         )}
 
-        {!scanning && !pickPhoto && !flash && (
+        {!scanning && !flash && !stepDone && (
           <div
-            className="pointer-events-none absolute inset-[4%] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors rounded-card"
-            style={{ borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
+            className="pointer-events-none absolute border-2 transition-colors rounded-card"
+            style={{
+              inset: GUIDE_INSET[guideStep],
+              boxShadow: `0 0 0 999px rgba(0,0,0,${GUIDE_DIM[guideStep]})`,
+              borderColor: liveProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)",
+            }}
           >
             <div
               className="absolute bottom-0 left-0 h-1 rounded-full bg-hf-green transition-[width]"
@@ -1172,7 +1127,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         <ProductOutlineOverlay
           videoRef={videoRef}
-          active={!scanning && !pickPhoto && !flash && cameraStatus === "active"}
+          active={!scanning && !flash && !stepDone && cameraStatus === "active"}
           fill={flash?.kind === "object"}
           flowId={flowId}
         />
@@ -1191,7 +1146,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           </div>
         )}
 
-        {cameraControls.torch && cameraStatus === "active" && !working && !flash && (
+        {cameraControls.torch && cameraStatus === "active" && !working && !flash && !stepDone && (
           <button
             type="button"
             onClick={() => void toggleTorch()}
@@ -1227,19 +1182,20 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           </div>
         )}
 
-        {pickPhoto && pickObjects && (
-          <ObjectPickerOverlay
-            photo={pickPhoto}
-            objects={pickObjects}
-            onPick={(object) => pickResolveRef.current?.(object)}
-            onUseWhole={() => pickResolveRef.current?.(null)}
+        {stepDone && (
+          <StepDoneOverlay
+            steps={stepDone.map((item) => ({ number: stepNumber(item), title: stepHeadings[item] }))}
+            label={stepDone.map((item) => t("cameraCreate.stepDone", { step: stepLabels[item] })).join(". ")}
           />
         )}
 
-        {!cameraMessage && !pickObjects && (
-          <p className="hf-scan-heading hf-type-body hf-type-strong" aria-live="polite">
-            {stepHeadings[step]}
-          </p>
+        {!cameraMessage && !stepDone && (
+          <ScanHeading
+            number={stepNumber(step)}
+            title={stepHeadings[step]}
+            done={lastDone && lastDone !== step ? { number: stepNumber(lastDone), title: stepHeadings[lastDone] } : null}
+            doneLabel={lastDone ? t("cameraCreate.stepDone", { step: stepLabels[lastDone] }) : null}
+          />
         )}
       </div>
 

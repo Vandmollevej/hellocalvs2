@@ -2176,17 +2176,176 @@ textarea.hf-input {
   animation: hf-scan-fill 1.4s ease-in-out forwards;
 }
 
-/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay. */
+/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay
+   (nummereret og stor, brugerens krav 2026-10-14; ScanHeading). */
 .hf-scan-heading {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  padding: 14px 16px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 16px 32px;
   text-align: center;
   color: var(--hf-color-white, #ffffff);
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.7);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0));
   pointer-events: none;
+}
+
+.hf-scan-heading__title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  text-wrap: balance;
+  animation: hf-scan-heading-in 350ms ease-out both;
+}
+
+@keyframes hf-scan-heading-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Det senest klarede trin: lille, overstreget, med flueben. */
+.hf-scan-heading__done {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+  opacity: 0.9;
+  animation: hf-scan-heading-in 350ms ease-out both;
+}
+
+.hf-scan-heading__done-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.hf-scan-heading__done-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--hf-color-positive);
+  color: var(--hf-color-white, #ffffff);
+  text-shadow: none;
+}
+
+/* Et trin er klaret (StepDoneOverlay, brugerens krav 2026-10-14): hvidt
+   blink over hele billedet, trinnet stort i midten, overstreges, stort
+   flueben, og linjen flyver op og bliver lille. Varighed i alt =
+   STEP_DONE_MS (1,6 s) i ProductCaptureFlow. */
+@keyframes hf-step-flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hf-step-check {
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hf-step-fly {
+  to {
+    top: 14px;
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.hf-step-done__flash {
+  position: absolute;
+  inset: 0;
+  background: var(--hf-color-white, #ffffff);
+  animation: hf-step-flash 380ms ease-out forwards;
+}
+
+.hf-step-done__card {
+  position: absolute;
+  inset-inline: 12px;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(-50%);
+  transform-origin: top center;
+  animation: hf-step-fly 400ms ease-in 1150ms forwards;
+}
+
+.hf-step-done__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hf-step-done__title {
+  font-family: var(--font-hf-heading);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+  color: var(--hf-color-white, #ffffff);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.75);
+  text-wrap: balance;
+  text-decoration-line: none;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--hf-color-white, #ffffff);
+}
+
+/* Overstregningen følger hver linje (StepDoneOverlay sætter klassen efter blinket). */
+.hf-step-done__title--struck {
+  text-decoration-line: line-through;
+}
+
+.hf-step-done__check {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background: var(--hf-color-positive);
+  color: var(--hf-color-white, #ffffff);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
+  transform: scale(0);
+  animation: hf-step-check 260ms cubic-bezier(0.2, 1.4, 0.5, 1) 460ms forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-step-done__flash {
+    display: none;
+  }
+
+  .hf-step-done__card,
+  .hf-scan-heading__title,
+  .hf-scan-heading__done {
+    animation: none;
+  }
+
+  .hf-step-done__check {
+    animation: none;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3336,7 +3495,8 @@ textarea.hf-input {
 }
 
 @layer components {
-  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.28); }
+  /* Resten af billedet mørkt, så søgefeltet er det eneste, der ses (bruger 2026-10-14). */
+  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.55); }
   .hf-chart-label { fill: #6b7280; }
   .hf-chart-grid { stroke: #d1d5db; }
   .hf-chart-frame { stroke: #000; }

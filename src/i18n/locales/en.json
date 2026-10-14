@@ -1005,7 +1005,7 @@
     "labelTextFound": "Nutrition facts or ingredients read",
     "frontCaptured": "Front scanned",
     "scanBarcode": "Scan barcode",
-    "scanFront": "Scan photo",
+    "scanFront": "Take a photo of the front",
     "scanNutrition": "Scan energy",
     "scanIngredients": "Scan ingredients list",
     "readingImage": "Reading the photo...",

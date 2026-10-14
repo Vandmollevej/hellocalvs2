@@ -117,12 +117,23 @@ export function segmentCenter(
 
 // Tegner masken som en ring (udvidet maske minus selve masken) i hvidt med
 // en let skygge, så stregen også ses mod lyse baggrunde.
+// Hjælpelærrederne genbruges mellem billederne (docs/DECISIONS.md
+// 2026-10-14): omridset tegnes mange gange i sekundet, og nye lærreder hver
+// gang fyldte iPhones grafikhukommelse.
+let shapeCanvas: HTMLCanvasElement | null = null;
+let ringCanvas: HTMLCanvasElement | null = null;
+
+function scratch(current: HTMLCanvasElement | null, width: number, height: number): HTMLCanvasElement {
+  const canvas = current ?? document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+}
+
 export function drawOutline(mask: OutlineMask, target: HTMLCanvasElement, strokePx: number) {
   const ctx = target.getContext("2d");
   if (!ctx) return;
-  const shape = document.createElement("canvas");
-  shape.width = mask.width;
-  shape.height = mask.height;
+  const shape = (shapeCanvas = scratch(shapeCanvas, mask.width, mask.height));
   const shapeCtx = shape.getContext("2d");
   if (!shapeCtx) return;
   const image = shapeCtx.createImageData(mask.width, mask.height);
@@ -137,11 +148,11 @@ export function drawOutline(mask: OutlineMask, target: HTMLCanvasElement, stroke
   }
   shapeCtx.putImageData(image, 0, 0);
 
-  const ring = document.createElement("canvas");
-  ring.width = target.width;
-  ring.height = target.height;
+  const ring = (ringCanvas = scratch(ringCanvas, target.width, target.height));
   const ringCtx = ring.getContext("2d");
   if (!ringCtx) return;
+  ringCtx.globalCompositeOperation = "source-over";
+  ringCtx.clearRect(0, 0, ring.width, ring.height);
   ringCtx.imageSmoothingEnabled = true;
   ringCtx.imageSmoothingQuality = "high";
   const steps = 16;
@@ -165,9 +176,7 @@ export function drawOutline(mask: OutlineMask, target: HTMLCanvasElement, stroke
 export function drawFill(mask: OutlineMask, target: HTMLCanvasElement) {
   const ctx = target.getContext("2d");
   if (!ctx) return;
-  const shape = document.createElement("canvas");
-  shape.width = mask.width;
-  shape.height = mask.height;
+  const shape = (shapeCanvas = scratch(shapeCanvas, mask.width, mask.height));
   const shapeCtx = shape.getContext("2d");
   if (!shapeCtx) return;
   const image = shapeCtx.createImageData(mask.width, mask.height);
