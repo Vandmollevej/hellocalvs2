@@ -54,8 +54,6 @@ export function useInWebShell() {
 // Hvilke betingede punkter og tal sidebjælken viser for den indloggede profil.
 type NavState = {
   isFemale: boolean;
-  // Kvindelig eller ukendt profil (Graviditet og amning).
-  maybeFemale: boolean;
   showFamily: boolean;
   controlsOthers: boolean;
   controlled: boolean;
@@ -63,7 +61,6 @@ type NavState = {
 };
 const NavStateContext = createContext<NavState>({
   isFemale: false,
-  maybeFemale: true,
   showFamily: false,
   controlsOthers: false,
   controlled: false,
@@ -74,8 +71,6 @@ function isVisible(item: WebNavItem, state: NavState) {
   switch (item.requires) {
     case "female":
       return state.isFemale;
-    case "notMale":
-      return state.maybeFemale;
     case "family":
       return state.showFamily;
     case "controlsOthers":
@@ -299,7 +294,6 @@ export function WebShell({ children, overlays }: { children: React.ReactNode; ov
     setProfileOpen(false);
   }, [pathname]);
   const [isFemale, setIsFemale] = useState(false);
-  const [maybeFemale, setMaybeFemale] = useState(true);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
@@ -312,9 +306,7 @@ export function WebShell({ children, overlays }: { children: React.ReactNode; ov
     fetch("/api/profile")
       .then(async (response) => (response.ok ? ((await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } }) : null))
       .then((data) => {
-        if (cancelled || !data) return;
-        setIsFemale(data.user.sex === "FEMALE");
-        setMaybeFemale(data.user.sex !== "MALE");
+        if (!cancelled && data) setIsFemale(data.user.sex === "FEMALE");
       })
       .catch(() => {});
     return () => {
@@ -343,7 +335,6 @@ export function WebShell({ children, overlays }: { children: React.ReactNode; ov
   // Samme betingelser som appens Indstillinger (src/app/settings/page.tsx).
   const navState: NavState = {
     isFemale,
-    maybeFemale,
     showFamily: Boolean(status?.hasFamilyPlan || status?.family),
     controlsOthers: Boolean(
       status?.family?.members.some(

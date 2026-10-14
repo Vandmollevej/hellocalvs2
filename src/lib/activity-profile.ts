@@ -131,7 +131,7 @@ export function energySummaryFor(user: ProfileFields, calibration: Calibration |
   const daily = bmr !== null && pal !== null ? estimateDailyEnergy({ bmr, pal, palUncertainty, trainingAllowanceKcal }) : null;
   const calibrated = calibration && calibration.reason === "OK" && calibration.weight > 0 ? Math.round(calibration.usedKcal / 10) * 10 : null;
   // Gravid/ammende (EFSA-tillæg): lægges oven på behovet, og budgettet får aldrig et underskud.
-  const pregnancy = user.sex === "MALE" ? null : pregnancyInfo(user);
+  const pregnancy = user.sex === "FEMALE" ? pregnancyInfo(user) : null;
   const baseNeed = calibrated ?? daily?.kcal ?? null;
   const needKcal = baseNeed === null ? null : baseNeed + (pregnancy?.extraKcal ?? 0);
   const budget = daily && needKcal !== null
@@ -182,7 +182,7 @@ export async function calibrateUser(user: ProfileFields & { id: string; activity
   if (bmr === null || childPhysicalActivityLevel(age) !== null) return { calibration: null, user };
   // Gravid/ammende: vægten ændrer sig af andre grunde end energibalancen, så
   // kalibreringen mod vægttrenden holdes i ro (docs/DECISIONS.md 2026-10-14).
-  if (user.sex !== "MALE" && pregnancyInfo(user) !== null) return { calibration: null, user };
+  if (user.sex === "FEMALE" && pregnancyInfo(user) !== null) return { calibration: null, user };
   const palBase = user.palBase ?? (user.activityLevel ? representativePal(user.activityLevel) : null);
   if (palBase === null) return { calibration: null, user };
 

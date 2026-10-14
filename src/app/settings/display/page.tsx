@@ -17,12 +17,11 @@ import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Settings → Visning: overview of the display sub-pages (same rows as the
-// "Visning" card on /settings). Menstruationscyklus only for sex = FEMALE;
-// Graviditet og amning for FEMALE or unknown sex (docs/DECISIONS.md 2026-10-14).
+// "Visning" card on /settings). Menstruationscyklus and Graviditet og amning
+// only for sex = FEMALE (user rule 2026-10-14: "Kun for kvinder").
 export default function DisplaySettingsIndexPage() {
   const { t } = useTranslation();
   const [isFemale, setIsFemale] = useState(false);
-  const [maybeFemale, setMaybeFemale] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,9 +31,7 @@ export default function DisplaySettingsIndexPage() {
         return (await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } };
       })
       .then((data) => {
-        if (cancelled) return;
-        setIsFemale(data.user.sex === "FEMALE");
-        setMaybeFemale(data.user.sex !== "MALE");
+        if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
       })
       .catch(() => {});
     return () => {
@@ -96,17 +93,17 @@ export default function DisplaySettingsIndexPage() {
             icon={<IconBulb size={20} />}
             label={t("settings.tipsTitle")}
             href="/settings/display/tips"
-            divider={isFemale || maybeFemale}
+            divider={isFemale}
           />
           {isFemale && (
             <ChevronRow
               icon={<IconCalendarHeart size={20} />}
               label={t("settings.menstrualCycle")}
               href="/settings/display/menstrual-cycle"
-              divider={maybeFemale}
+              divider
             />
           )}
-          {maybeFemale && (
+          {isFemale && (
             <ChevronRow
               icon={<IconBabyCarriage size={20} />}
               label={t("settings.pregnancy")}

@@ -86,16 +86,12 @@ private fun rememberProfileFlag(field: String): Pair<SettingsProfileFlag, (Boole
 fun DisplaySettingsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     var isFemale by remember { mutableStateOf(false) }
-    var maybeFemale by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
-        runCatching { settingsLoadProfile() }.getOrNull()?.let {
-            isFemale = it.settingsStr("sex") == "FEMALE"
-            maybeFemale = it.settingsStr("sex") != "MALE"
-        }
+        runCatching { settingsLoadProfile() }.getOrNull()?.let { isFemale = it.settingsStr("sex") == "FEMALE" }
     }
     HcScreen(title = t.t("settings.display"), contentPadding = SettingsPagePadding) {
         SettingsPage {
-            SettingsDisplayRows(isFemale, includeResults = false, maybeFemale = maybeFemale)
+            SettingsDisplayRows(isFemale, includeResults = false)
         }
     }
 }

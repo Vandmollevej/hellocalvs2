@@ -44,7 +44,7 @@ type OnboardingUser = PregnancyValue & {
 // "daily logging" are automatically skipped if the user answers that they
 // have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
 // these steps are specified today (+ "calendar-view", user request 2026-09-29; + "pregnancy",
-// user request 2026-10-14, skipped for sex = MALE); more can be added to the wizard later.
+// user request 2026-10-14, only for sex = FEMALE); more can be added to the wizard later.
 type StepId =
   | "units"
   | "sleep-pattern"
@@ -76,8 +76,8 @@ function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null
   return ALL_STEPS.filter((step) => {
     if (step === "shift-work") return hasRegularSleep === false;
     if (step === "daily-log-preference") return hasRegularSleep === false && shiftWork === true;
-    // Graviditet/amning spørges før energibehovet, så tillægget er med i regnestykket.
-    if (step === "pregnancy") return sex !== "MALE";
+    // Graviditet/amning spørges før energibehovet, så tillægget er med i regnestykket. Kun for kvinder.
+    if (step === "pregnancy") return sex === "FEMALE";
     return true;
   });
 }

@@ -34,7 +34,7 @@ export async function GET(req: Request) {
     if (!user) return unauthorized();
     if (user.kcalGoalPromptDisabled) return NextResponse.json({ suggestion: null });
     // Gravid/ammende: vægttrenden siger intet om energibalancen, så ingen forslag.
-    if (user.sex !== "MALE" && pregnancyInfo(user) !== null) return NextResponse.json({ suggestion: null });
+    if (user.sex === "FEMALE" && pregnancyInfo(user) !== null) return NextResponse.json({ suggestion: null });
     if (user.kcalGoalPromptSnoozedUntil && user.kcalGoalPromptSnoozedUntil.getTime() > Date.now()) {
       return NextResponse.json({ suggestion: null });
     }

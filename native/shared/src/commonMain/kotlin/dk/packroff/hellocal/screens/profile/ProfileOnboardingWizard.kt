@@ -175,8 +175,8 @@ private fun visibleSteps(hasRegularSleep: Boolean?, shiftWork: Boolean?, sex: St
     when (step) {
         "shift-work" -> hasRegularSleep == false
         "daily-log-preference" -> hasRegularSleep == false && shiftWork == true
-        // Pregnancy/breastfeeding is asked before the energy need, so the allowance is in the calculation.
-        "pregnancy" -> sex != "MALE"
+        // Pregnancy/breastfeeding is asked before the energy need, so the allowance is in the calculation. Women only.
+        "pregnancy" -> sex == "FEMALE"
         else -> true
     }
 }

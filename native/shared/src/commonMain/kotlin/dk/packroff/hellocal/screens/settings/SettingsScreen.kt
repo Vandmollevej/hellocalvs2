@@ -77,8 +77,6 @@ fun SettingsScreen(args: RouteArgs) {
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
     var isFemale by remember { mutableStateOf(false) }
-    // "Graviditet og amning" for FEMALE or unknown sex (docs/DECISIONS.md 2026-10-14).
-    var maybeFemale by remember { mutableStateOf(true) }
     var query by remember { mutableStateOf("") }
     val family = rememberFamilyStatus()
 
@@ -110,10 +108,7 @@ fun SettingsScreen(args: RouteArgs) {
     }
 
     LaunchedEffect(Unit) {
-        runCatching { settingsLoadProfile() }.getOrNull()?.let {
-            isFemale = it.settingsStr("sex") == "FEMALE"
-            maybeFemale = it.settingsStr("sex") != "MALE"
-        }
+        runCatching { settingsLoadProfile() }.getOrNull()?.let { isFemale = it.settingsStr("sex") == "FEMALE" }
     }
 
     fun openHelp() = NativeHooks.openExternalUrl(HelloCalConfig.BASE_URL + settingsHelpPagePath(t.locale))
@@ -136,7 +131,7 @@ fun SettingsScreen(args: RouteArgs) {
         add(SettingsSearchItem("Moon", t.t("settings.sleepQuality"), { nav.push("/settings/display/sleep-quality") }))
         add(SettingsSearchItem("Bulb", t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }))
         if (isFemale) add(SettingsSearchItem("CalendarHeart", t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }))
-        if (maybeFemale) add(SettingsSearchItem("BabyCarriage", t.t("settings.pregnancy"), { nav.push("/settings/display/pregnancy") }))
+        if (isFemale) add(SettingsSearchItem("BabyCarriage", t.t("settings.pregnancy"), { nav.push("/settings/display/pregnancy") }))
         add(SettingsSearchItem("Help", t.t("settings.helpCenter"), { openHelp() }))
         add(SettingsSearchItem("Bug", t.t("profile.row.reportBug"), { nav.push("/profile/report-bug") }))
         add(SettingsSearchItem("Lifebuoy", t.t("settings.contactSupport"), { nav.push("/settings/support") }))
@@ -202,7 +197,7 @@ fun SettingsScreen(args: RouteArgs) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     SettingsGroupLabel(t.t("settings.display"))
-                    SettingsDisplayRows(isFemale, maybeFemale = maybeFemale)
+                    SettingsDisplayRows(isFemale)
                 }
 
                 SettingsAccordionCard {
@@ -232,7 +227,7 @@ fun SettingsScreen(args: RouteArgs) {
 
 /** The "Visning" card — shared by /settings and /settings/display. */
 @Composable
-internal fun SettingsDisplayRows(isFemale: Boolean, includeResults: Boolean = true, maybeFemale: Boolean = true) {
+internal fun SettingsDisplayRows(isFemale: Boolean, includeResults: Boolean = true) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     SettingsAccordionCard {
@@ -243,11 +238,10 @@ internal fun SettingsDisplayRows(isFemale: Boolean, includeResults: Boolean = tr
         SettingsChevronRow(t.t("displaySettings.uncertainty"), { nav.push("/settings/display/uncertainty") }, iconContent = { SettingsTildeRowIcon() })
         SettingsChevronRow(t.t("settings.calendarView"), { nav.push("/settings/display/calendar-view") }, icon = "CalendarWeek")
         SettingsChevronRow(t.t("settings.sleepQuality"), { nav.push("/settings/display/sleep-quality") }, icon = "Moon")
-        SettingsChevronRow(t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }, icon = "Bulb", divider = isFemale || maybeFemale)
+        SettingsChevronRow(t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }, icon = "Bulb", divider = isFemale)
         if (isFemale) {
-            SettingsChevronRow(t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }, icon = "CalendarHeart", divider = maybeFemale)
-        }
-        if (maybeFemale) {
+            SettingsChevronRow(t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }, icon = "CalendarHeart")
+            // Graviditet og amning: kun for kvinder (user rule 2026-10-14).
             SettingsChevronRow(t.t("settings.pregnancy"), { nav.push("/settings/display/pregnancy") }, icon = "BabyCarriage", divider = false)
         }
     }
