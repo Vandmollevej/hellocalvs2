@@ -437,6 +437,7 @@
     "frontPage": "Startseite",
     "recommendedLimits": "Empfohlene Grenzwerte",
     "menstrualCycle": "Menstruationszyklus",
+    "pregnancy": "Schwangerschaft und Stillen",
     "sleepQuality": "Schlafempfinden",
     "calendarView": "Kalenderansicht",
     "displayHelpTip": "Hier bestimmst du, wie Startseite, Kalender und Warnungen auf diesem Gerät aussehen.",
@@ -533,6 +534,26 @@
     "intro": "Erfasse deinen Menstruationszyklus und erhalte ihn als Option im Hinzufügen-Menü.",
     "toggleLabel": "Menstruationszyklus anzeigen",
     "toggleDescription": "Fügt \"Menstruation\" zum Hinzufügen-Menü hinzu, damit du den Beginn des Zyklus erfassen kannst."
+  },
+  "pregnancySettings": {
+    "intro": "Wenn du schwanger bist oder stillst, rechnen wir den offiziellen Zuschlag (EFSA) zu deinem Energiebedarf hinzu und setzen nie ein Kaloriendefizit. Die Woche zählt von selbst weiter, ändere es hier also nur, wenn sich etwas ändert.",
+    "question": "Bist du schwanger oder stillst du?"
+  },
+  "pregnancy": {
+    "none": "Nein",
+    "status": {
+      "PREGNANT": "Schwanger",
+      "BREASTFEEDING": "Stillend"
+    },
+    "weekLabel": "In welcher Woche bist du?",
+    "weekPlaceholder": "z. B. 20",
+    "weekHint": "Trimester 1 ist Woche 1–13, Trimester 2 Woche 14–27 und Trimester 3 ab Woche 28. Die Woche zählt von selbst weiter.",
+    "trimester": "{trimester}. Trimester",
+    "extraKcal": "+{kcal} kcal pro Tag",
+    "breastfeedingWeeksLabel": "Seit wie vielen Wochen stillst du?",
+    "breastfeedingWeeksPlaceholder": "z. B. 8",
+    "breastfeedingHint": "In den ersten 26 Wochen rechnen wir mit vollem Stillen (+500 kcal pro Tag), danach mit teilweisem Stillen (+300 kcal). Die Wochen zählen von selbst weiter.",
+    "noDeficit": "Während Schwangerschaft oder Stillzeit setzen wir nie ein Kaloriendefizit. Folge immer dem Rat von Hebamme oder Arzt."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Schritt {current} von {total} abgeschlossen",
     "sleepPatternQuestion": "Hast du einen festen Schlafrhythmus?",
     "shiftWorkQuestion": "Liegt das an wechselnden Arbeitszeiten oder Nachtarbeit?",
+    "pregnancyQuestion": "Bist du schwanger oder stillst du?",
+    "pregnancyHint": "Dann rechnen wir den offiziellen Zuschlag zu deinem Energiebedarf hinzu. Kann jederzeit unter Einstellungen → Anzeige geändert werden.",
     "dailyLogQuestion": "Möchtest du Arbeitszeiten oder Schlafzeiten täglich erfassen?",
     "workHours": "Arbeitszeiten",
     "sleepTimes": "Schlafzeiten",
@@ -2930,6 +2953,8 @@
     "rest": "Ruhe (dein Grundumsatz)",
     "everyday": "Dein Alltag",
     "training": "Dein Sport",
+    "pregnancy": "Schwangerschaft",
+    "breastfeeding": "Stillen",
     "need": "Dein Energiebedarf",
     "goal": "Dein Gewichtsziel",
     "budget": "Dein Tagesbudget",
@@ -2945,6 +2970,8 @@
     "whyRest": "Das, was der Körper verbraucht, wenn du den ganzen Tag still liegen würdest. Berechnet aus Gewicht, Größe, Alter und Geschlecht (Mifflin-St Jeor).",
     "whyEveryday": "Arbeit, Gehen, Stehzeit und Transport — ohne Sport. Deine Antworten entsprechen dem Niveau \"{level}\" (PAL {pal}).",
     "whyTraining": "Dein typischer Sport, über die Woche verteilt und netto gerechnet, damit der Grundumsatz nicht doppelt gezählt wird. Wenn du ein Training erfasst, ersetzt es den Zuschlag an diesem Tag.",
+    "whyPregnancy": "Offizieller Zuschlag (EFSA): 70 kcal pro Tag im 1. Trimester, 260 im 2. und 500 im 3. Du bist im {trimester}. Trimester (Woche {week}).",
+    "whyBreastfeeding": "Offizieller Zuschlag (EFSA): 500 kcal pro Tag bei vollem Stillen in den ersten 6 Monaten, danach etwa 300 bei teilweisem Stillen. Du stillst seit {weeks} Wochen.",
     "whyGoal": "Der Unterschied zwischen dem, was du verbrauchst, und dem, was du essen solltest, um dein Ziel in gesundem Tempo zu erreichen.",
     "disclaimer": "Alle Zahlen sind Schätzungen, keine Messungen. Sie ersetzen nicht die Beratung durch Arzt oder Ernährungsberater.",
     "missingData": "Um deinen Energiebedarf zu berechnen, fehlen uns:",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Unter 18 Jahren setzen wir kein Kaloriendefizit — der Körper wächst noch.",
+      "PREGNANCY_NO_DEFICIT": "Du bist schwanger oder stillst, deshalb setzen wir kein Kaloriendefizit — sprich mit Hebamme oder Arzt über dein Gewicht.",
       "UNDERWEIGHT_NO_LOSS": "Dein Gewicht liegt unter dem, was wir als gesund ansehen, deshalb schlagen wir keine Gewichtsabnahme vor.",
       "TARGET_RAISED_TO_MIN_BMI": "Dein Gewichtsziel wurde auf das niedrigste Gewicht angehoben, das wir für deine Größe als gesund ansehen.",
       "PACE_CAPPED": "Das Tempo wurde auf das gesunde Maß an Gewichtsverlust pro Woche gesenkt.",

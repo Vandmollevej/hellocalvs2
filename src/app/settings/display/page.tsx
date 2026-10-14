@@ -10,16 +10,19 @@ import {
   IconBulb,
   IconArrowsSort,
   IconRuler,
+  IconBabyCarriage,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Settings → Visning: overview of the display sub-pages (same rows as the
-// "Visning" card on /settings). Menstruationscyklus only for sex = FEMALE.
+// "Visning" card on /settings). Menstruationscyklus only for sex = FEMALE;
+// Graviditet og amning for FEMALE or unknown sex (docs/DECISIONS.md 2026-10-14).
 export default function DisplaySettingsIndexPage() {
   const { t } = useTranslation();
   const [isFemale, setIsFemale] = useState(false);
+  const [maybeFemale, setMaybeFemale] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,7 +32,9 @@ export default function DisplaySettingsIndexPage() {
         return (await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } };
       })
       .then((data) => {
-        if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
+        if (cancelled) return;
+        setIsFemale(data.user.sex === "FEMALE");
+        setMaybeFemale(data.user.sex !== "MALE");
       })
       .catch(() => {});
     return () => {
@@ -91,13 +96,21 @@ export default function DisplaySettingsIndexPage() {
             icon={<IconBulb size={20} />}
             label={t("settings.tipsTitle")}
             href="/settings/display/tips"
-            divider={isFemale}
+            divider={isFemale || maybeFemale}
           />
           {isFemale && (
             <ChevronRow
               icon={<IconCalendarHeart size={20} />}
               label={t("settings.menstrualCycle")}
               href="/settings/display/menstrual-cycle"
+              divider={maybeFemale}
+            />
+          )}
+          {maybeFemale && (
+            <ChevronRow
+              icon={<IconBabyCarriage size={20} />}
+              label={t("settings.pregnancy")}
+              href="/settings/display/pregnancy"
               divider={false}
             />
           )}

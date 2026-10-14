@@ -437,6 +437,7 @@
     "frontPage": "Startsida",
     "recommendedLimits": "Rekommenderade gränser",
     "menstrualCycle": "Menstruationscykel",
+    "pregnancy": "Graviditet och amning",
     "sleepQuality": "Upplevelse av sömn",
     "calendarView": "Kalendervy",
     "displayHelpTip": "Här bestämmer du hur startsidan, kalendern och varningar ser ut på den här enheten.",
@@ -533,6 +534,26 @@
     "intro": "Logga din menstruationscykel och få den som ett alternativ i lägg till-menyn.",
     "toggleLabel": "Visa menstruationscykel",
     "toggleDescription": "Lägger till \"Mens\" i lägg till-menyn så att du kan logga cykelns start."
+  },
+  "pregnancySettings": {
+    "intro": "Är du gravid eller ammar lägger vi det officiella tillägget (EFSA) ovanpå ditt energibehov, och vi sätter aldrig ett kaloriunderskott. Veckan räknas upp av sig själv, så du behöver bara ändra här om något förändras.",
+    "question": "Är du gravid eller ammar du?"
+  },
+  "pregnancy": {
+    "none": "Nej",
+    "status": {
+      "PREGNANT": "Gravid",
+      "BREASTFEEDING": "Ammar"
+    },
+    "weekLabel": "Vilken vecka är du i?",
+    "weekPlaceholder": "t.ex. 20",
+    "weekHint": "Trimester 1 är vecka 1–13, trimester 2 vecka 14–27 och trimester 3 från vecka 28. Veckan räknas upp av sig själv.",
+    "trimester": "Trimester {trimester}",
+    "extraKcal": "+{kcal} kcal per dag",
+    "breastfeedingWeeksLabel": "Hur många veckor har du ammat?",
+    "breastfeedingWeeksPlaceholder": "t.ex. 8",
+    "breastfeedingHint": "De första 26 veckorna räknar vi med full amning (+500 kcal per dag), därefter delvis amning (+300 kcal). Veckorna räknas upp av sig själva.",
+    "noDeficit": "Vi sätter aldrig ett kaloriunderskott medan du är gravid eller ammar. Följ alltid råden från barnmorska eller läkare."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Steg {current} av {total} klart",
     "sleepPatternQuestion": "Har du ett fast sömnmönster?",
     "shiftWorkQuestion": "Beror det på varierande arbetstider eller nattarbete?",
+    "pregnancyQuestion": "Är du gravid eller ammar du?",
+    "pregnancyHint": "Då lägger vi det officiella tillägget till ditt energibehov. Kan alltid ändras under Inställningar → Visning.",
     "dailyLogQuestion": "Vill du registrera arbetstider eller sömntider dagligen?",
     "workHours": "Arbetstider",
     "sleepTimes": "Sömntider",
@@ -2930,6 +2953,8 @@
     "rest": "Vila (din ämnesomsättning)",
     "everyday": "Din vardag",
     "training": "Din motion",
+    "pregnancy": "Graviditet",
+    "breastfeeding": "Amning",
     "need": "Ditt energibehov",
     "goal": "Ditt viktmål",
     "budget": "Din dagliga budget",
@@ -2945,6 +2970,8 @@
     "whyRest": "Det kroppen förbrukar om du låg stilla hela dagen. Beräknat utifrån vikt, längd, ålder och kön (Mifflin-St Jeor).",
     "whyEveryday": "Arbete, gång, stående tid och transport — utan motion. Dina svar motsvarar nivån \"{level}\" (PAL {pal}).",
     "whyTraining": "Din typiska motion fördelad över veckan, räknad netto så att vilometabolismen inte räknas två gånger. Loggar du ett träningspass ersätter det tillägget den dagen.",
+    "whyPregnancy": "Officiellt tillägg (EFSA): 70 kcal per dag i trimester 1, 260 i trimester 2 och 500 i trimester 3. Du är i trimester {trimester} (vecka {week}).",
+    "whyBreastfeeding": "Officiellt tillägg (EFSA): 500 kcal per dag vid full amning de första 6 månaderna, därefter cirka 300 vid delvis amning. Du har ammat i {weeks} veckor.",
     "whyGoal": "Skillnaden mellan det du förbrukar och det du bör äta för att nå ditt mål i ett hälsosamt tempo.",
     "disclaimer": "Alla tal är uppskattningar, inte mätningar. De ersätter inte råd från läkare eller dietist.",
     "missingData": "För att räkna ut ditt energibehov saknar vi:",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Under 18 år sätter vi inget kaloriunderskott — kroppen växer fortfarande.",
+      "PREGNANCY_NO_DEFICIT": "Du är gravid eller ammar, så vi sätter inget kaloriunderskott — prata med barnmorska eller läkare om vikten.",
       "UNDERWEIGHT_NO_LOSS": "Din vikt är under det vi räknar som hälsosamt, så vi föreslår ingen viktnedgång.",
       "TARGET_RAISED_TO_MIN_BMI": "Ditt viktmål har höjts till den lägsta vikt vi räknar som hälsosam för din längd.",
       "PACE_CAPPED": "Tempot har sänkts till det som är hälsosamt att gå ned per vecka.",

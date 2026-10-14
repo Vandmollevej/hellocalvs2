@@ -13,6 +13,7 @@ object SettingsRoutes {
         ScreenRoute("/settings/display/front-page") { FrontPageSettingsScreen(it) },
         ScreenRoute("/settings/display/limits") { RecommendedLimitsSettingsScreen(it) },
         ScreenRoute("/settings/display/menstrual-cycle") { MenstrualCycleSettingsScreen(it) },
+        ScreenRoute("/settings/display/pregnancy") { PregnancySettingsScreen(it) },
         ScreenRoute("/settings/display/sleep-quality") { SleepQualitySettingsScreen(it) },
         ScreenRoute("/settings/display/tips") { TipsSettingsScreen(it) },
         ScreenRoute("/settings/display/uncertainty") { UncertaintySettingsScreen(it) },

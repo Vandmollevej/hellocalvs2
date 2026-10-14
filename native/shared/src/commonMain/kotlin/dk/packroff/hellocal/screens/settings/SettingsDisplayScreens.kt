@@ -86,12 +86,59 @@ private fun rememberProfileFlag(field: String): Pair<SettingsProfileFlag, (Boole
 fun DisplaySettingsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     var isFemale by remember { mutableStateOf(false) }
+    var maybeFemale by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
-        runCatching { settingsLoadProfile() }.getOrNull()?.let { isFemale = it.settingsStr("sex") == "FEMALE" }
+        runCatching { settingsLoadProfile() }.getOrNull()?.let {
+            isFemale = it.settingsStr("sex") == "FEMALE"
+            maybeFemale = it.settingsStr("sex") != "MALE"
+        }
     }
     HcScreen(title = t.t("settings.display"), contentPadding = SettingsPagePadding) {
         SettingsPage {
-            SettingsDisplayRows(isFemale, includeResults = false)
+            SettingsDisplayRows(isFemale, includeResults = false, maybeFemale = maybeFemale)
+        }
+    }
+}
+
+/**
+ * Native port of src/app/settings/display/pregnancy/page.tsx (User.pregnancyStatus,
+ * pregnancyWeek, breastfeedingWeeks): the stored week is counted forward to today,
+ * and every change applies from today again (pregnancyStatusUpdatedAt on the server).
+ */
+@Composable
+fun PregnancySettingsScreen(args: RouteArgs) {
+    val t = LocalTranslator.current
+    val scope = rememberCoroutineScope()
+    var value by remember { mutableStateOf<PregnancyValue?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        value = runCatching { settingsLoadProfile() }.getOrNull()?.let { user ->
+            val status = user.settingsStr("pregnancyStatus")
+            val updatedAt = user.settingsStr("pregnancyStatusUpdatedAt")
+            PregnancyValue(
+                status = status,
+                week = if (status == "PREGNANT") PregnancyRules.currentPregnancyWeek(user.settingsInt("pregnancyWeek"), updatedAt) else null,
+                breastfeedingWeeks = if (status == "BREASTFEEDING") PregnancyRules.currentBreastfeedingWeeks(user.settingsInt("breastfeedingWeeks"), updatedAt) else null,
+            )
+        }
+        loading = false
+    }
+    HcScreen(title = t.t("settings.pregnancy"), contentPadding = SettingsPagePadding) {
+        SettingsPage {
+            SettingsBrandCard(t.t("pregnancySettings.intro"))
+            val current = value
+            if (loading || current == null) {
+                HcLoader()
+            } else {
+                PregnancyFields(current, t.t("pregnancySettings.question")) { patch ->
+                    value = current.copy(
+                        status = if ("pregnancyStatus" in patch) patch["pregnancyStatus"] as String? else current.status,
+                        week = if ("pregnancyWeek" in patch) patch["pregnancyWeek"] as Int? else current.week,
+                        breastfeedingWeeks = if ("breastfeedingWeeks" in patch) patch["breastfeedingWeeks"] as Int? else current.breastfeedingWeeks,
+                    )
+                    scope.launch { runCatching { settingsPatchProfile(patch) } }
+                }
+            }
         }
     }
 }

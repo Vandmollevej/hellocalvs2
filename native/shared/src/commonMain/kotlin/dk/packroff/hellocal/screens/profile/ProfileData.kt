@@ -105,6 +105,16 @@ data class DailyBudget(
     val adjustments: List<String> = emptyList(),
 )
 
+/** src/lib/pregnancy.ts PregnancyInfo (EFSA allowance on top of needKcal). */
+@Serializable
+data class PregnancyInfo(
+    val status: String = "",
+    val week: Int? = null,
+    val trimester: Int? = null,
+    val breastfeedingWeeks: Int? = null,
+    val extraKcal: Double = 0.0,
+)
+
 @Serializable
 data class EnergySummary(
     val bmr: Double? = null,
@@ -113,6 +123,7 @@ data class EnergySummary(
     val trainingAllowanceKcal: Double = 0.0,
     val daily: DailyEnergyEstimate? = null,
     val calibration: EnergyCalibration? = null,
+    val pregnancy: PregnancyInfo? = null,
     val needKcal: Double? = null,
     val budget: DailyBudget? = null,
     val missing: List<String> = emptyList(),

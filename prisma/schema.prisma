@@ -238,6 +238,15 @@ model User {
   // og logges i MenstrualCycleEntry. De to gennemsnit bruges kun til en
   // simpel fremtidig prognose, ikke til noget klinisk.
   cycleTrackingEnabled    Boolean @default(false)
+  // Graviditet og amning (docs/DECISIONS.md 2026-10-14): spørges i oprettelses-
+  // guiden og rettes under Indstillinger → Visning → Graviditet og amning (kun
+  // sex = FEMALE/ukendt). Ugen/ugerne gælder pr. pregnancyStatusUpdatedAt og
+  // regnes frem i tid i src/lib/pregnancy.ts; tillægget (EFSA 2013) lægges
+  // på energibehovet, og der sættes aldrig et kalorieunderskud.
+  pregnancyStatus          PregnancyStatus?
+  pregnancyWeek            Int?
+  breastfeedingWeeks       Int?
+  pregnancyStatusUpdatedAt DateTime?
   // Screeninger (docs/DECISIONS.md 2026-10-09): forudlavede screeninger (migræne,
   // mavesmerter, humør) oprettes første gang brugeren åbner Profil → Screeninger.
   screeningsSeeded        Boolean @default(false)
@@ -406,6 +415,11 @@ enum Locale {
 enum Sex {
   FEMALE
   MALE
+}
+
+enum PregnancyStatus {
+  PREGNANT
+  BREASTFEEDING
 }
 
 enum ActivityLevel {

@@ -437,6 +437,7 @@
     "frontPage": "Front page",
     "recommendedLimits": "Recommended limits",
     "menstrualCycle": "Menstrual cycle",
+    "pregnancy": "Pregnancy and breastfeeding",
     "sleepQuality": "Sleep experience",
     "calendarView": "Calendar view",
     "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
@@ -533,6 +534,26 @@
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
     "toggleLabel": "Show menstrual cycle",
     "toggleDescription": "Adds \"Period\" to the add menu so you can log when your cycle starts."
+  },
+  "pregnancySettings": {
+    "intro": "If you are pregnant or breastfeeding, we add the official allowance (EFSA) to your energy need and never set a calorie deficit. The week counts up by itself, so only change this when something changes.",
+    "question": "Are you pregnant or breastfeeding?"
+  },
+  "pregnancy": {
+    "none": "No",
+    "status": {
+      "PREGNANT": "Pregnant",
+      "BREASTFEEDING": "Breastfeeding"
+    },
+    "weekLabel": "Which week are you in?",
+    "weekPlaceholder": "e.g. 20",
+    "weekHint": "Trimester 1 is weeks 1–13, trimester 2 weeks 14–27 and trimester 3 from week 28. The week counts up by itself.",
+    "trimester": "Trimester {trimester}",
+    "extraKcal": "+{kcal} kcal per day",
+    "breastfeedingWeeksLabel": "How many weeks have you been breastfeeding?",
+    "breastfeedingWeeksPlaceholder": "e.g. 8",
+    "breastfeedingHint": "For the first 26 weeks we assume full breastfeeding (+500 kcal per day), then partial breastfeeding (+300 kcal). The weeks count up by themselves.",
+    "noDeficit": "We never set a calorie deficit while you are pregnant or breastfeeding. Always follow the advice of your midwife or doctor."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -2851,6 +2872,8 @@
     "stepProgress": "Step {current} of {total} completed",
     "sleepPatternQuestion": "Do you have a regular sleep pattern?",
     "shiftWorkQuestion": "Is that due to varying work hours or night work?",
+    "pregnancyQuestion": "Are you pregnant or breastfeeding?",
+    "pregnancyHint": "Then we add the official allowance to your energy need. Can always be changed under Settings → Display.",
     "dailyLogQuestion": "Do you want to log work hours or sleep times daily?",
     "workHours": "Work hours",
     "sleepTimes": "Sleep times",
@@ -2930,6 +2953,8 @@
     "rest": "Rest (your metabolism)",
     "everyday": "Your everyday",
     "training": "Your exercise",
+    "pregnancy": "Pregnancy",
+    "breastfeeding": "Breastfeeding",
     "need": "Your energy needs",
     "goal": "Your weight goal",
     "budget": "Your daily budget",
@@ -2945,6 +2970,8 @@
     "whyRest": "What your body uses if you lay still all day. Based on weight, height, age and sex (Mifflin-St Jeor).",
     "whyEveryday": "Work, walking, standing and transport — without exercise. Your answers match the level \"{level}\" (PAL {pal}).",
     "whyTraining": "Your typical exercise spread over the week, counted net so resting metabolism isn't counted twice. When you log a workout it replaces this allowance for that day.",
+    "whyPregnancy": "Official allowance (EFSA): 70 kcal per day in trimester 1, 260 in trimester 2 and 500 in trimester 3. You are in trimester {trimester} (week {week}).",
+    "whyBreastfeeding": "Official allowance (EFSA): 500 kcal per day with full breastfeeding for the first 6 months, then about 300 with partial breastfeeding. You have been breastfeeding for {weeks} weeks.",
     "whyGoal": "The difference between what you use and what you should eat to reach your goal at a healthy pace.",
     "disclaimer": "All numbers are estimates, not measurements. They don't replace advice from a doctor or dietitian.",
     "missingData": "To work out your energy needs we still need:",
@@ -2956,6 +2983,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Under 18 we don't set a calorie deficit — the body is still growing.",
+      "PREGNANCY_NO_DEFICIT": "You are pregnant or breastfeeding, so we set no calorie deficit — talk to your midwife or doctor about your weight.",
       "UNDERWEIGHT_NO_LOSS": "Your weight is below what we consider healthy, so we don't suggest weight loss.",
       "TARGET_RAISED_TO_MIN_BMI": "Your target weight was raised to the lowest weight we consider healthy for your height.",
       "PACE_CAPPED": "The pace was lowered to what is healthy to lose per week.",

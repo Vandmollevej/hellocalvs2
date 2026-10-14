@@ -15,6 +15,7 @@ import {
   IconRuler,
   IconHome2,
   IconCalendarHeart,
+  IconBabyCarriage,
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
@@ -57,6 +58,8 @@ export default function SettingsPage() {
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
+  // "Graviditet og amning" for FEMALE or unknown sex (docs/DECISIONS.md 2026-10-14).
+  const [maybeFemale, setMaybeFemale] = useState(true);
   const { status: familyStatus } = useFamilyStatus();
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
@@ -87,7 +90,9 @@ export default function SettingsPage() {
         return (await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } };
       })
       .then((data) => {
-        if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
+        if (cancelled) return;
+        setIsFemale(data.user.sex === "FEMALE");
+        setMaybeFemale(data.user.sex !== "MALE");
       })
       .catch(() => {});
     return () => {
@@ -124,6 +129,9 @@ export default function SettingsPage() {
     { icon: <IconBulb size={20} />, label: t("settings.tipsTitle"), href: "/settings/display/tips" },
     ...(isFemale
       ? [{ icon: <IconCalendarHeart size={20} />, label: t("settings.menstrualCycle"), href: "/settings/display/menstrual-cycle" }]
+      : []),
+    ...(maybeFemale
+      ? [{ icon: <IconBabyCarriage size={20} />, label: t("settings.pregnancy"), href: "/settings/display/pregnancy" }]
       : []),
     { icon: <IconHelp size={20} />, label: t("settings.helpCenter"), onClick: () => window.location.assign(helpPagePath(locale)) },
     { icon: <IconBug size={20} />, label: t("profile.row.reportBug"), href: "/profile/report-bug" },
@@ -299,13 +307,21 @@ export default function SettingsPage() {
               icon={<IconBulb size={20} />}
               label={t("settings.tipsTitle")}
               href="/settings/display/tips"
-              divider={isFemale}
+              divider={isFemale || maybeFemale}
             />
             {isFemale && (
               <ChevronRow
                 icon={<IconCalendarHeart size={20} />}
                 label={t("settings.menstrualCycle")}
                 href="/settings/display/menstrual-cycle"
+                divider={maybeFemale}
+              />
+            )}
+            {maybeFemale && (
+              <ChevronRow
+                icon={<IconBabyCarriage size={20} />}
+                label={t("settings.pregnancy")}
+                href="/settings/display/pregnancy"
                 divider={false}
               />
             )}
