@@ -183,6 +183,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
 - Energi/indhold scanner højst 5 s (`MAX_LABEL_MS` i `src/lib/live-scan.ts`), når mindst ét billede med tekst er læst: det bedste bruges, og AI læser resten. Trinnet må aldrig køre "i evigheder" (user rule 2026-10-14).
 - "Spring over" nederst i kamerabilledet på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, og varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native. Se DECISIONS.md 2026-10-14 ("Spring over").
+- `ImageCapture.takePhoto` bruges ALDRIG på WebKit/iPhone (`isWebKit`, `src/lib/camera-webkit.ts`): den hænger og gør videoen sort. Fotoet er dér det skarpeste af tre 4K-videobilleder. Se DECISIONS.md 2026-10-14 ("Sort kamera på iPhone").
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 

@@ -2,7 +2,8 @@
 
 - Knap "Spring over" nederst i kamerabilledet på "4. Scan indholdsfortegnelse" (web `ProductCaptureFlow.tsx` + native `ProductCaptureFlow.kt`): varer uden indholdsfortegnelse kan nu oprettes; trinnet klares uden foto og logges som `ingredients_skipped`. Vises ikke, når listen stod på energibilledet (trin 4 springes da over som før). Tekst `cameraCreate.skipIngredients` i alle sprog. DECISIONS/REGLER 2026-10-14.
 - Energi/indhold stopper nu senest efter 5 s med det bedste billede med tekst (`MAX_LABEL_MS`, log `label_timeout`); før kørte lokal OCR op til ti billeder à 1–3 s.
-- Ikke prøvet på telefon her (ingen enhed): brugerens test af knappen på iPhone.
+- Sort kamera på iPhone: `ImageCapture.takePhoto` slås fra på WebKit (hænger og fryser videoen); fotoet er det skarpeste af tre 4K-videobilleder. Ny `src/lib/camera-webkit.ts` + test.
+- Ikke prøvet på telefon her (ingen enhed): brugerens test på iPhone af (1) at kameraet ikke længere bliver sort efter energi-trinnet, (2) "Spring over", (3) at energi/indhold stopper inden for ca. 5 s.
 
 ## 2026-10-14: Scan-appen — manuel udløser med Bluetooth-trigger sikret
 

@@ -60,7 +60,7 @@ import {
   type CameraControls,
 } from "@/lib/camera-controls";
 import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
-import { cameraVideoConstraints, captureStill, captureVideoFrame, type Still, type StillCrop } from "@/lib/camera-still";
+import { cameraVideoConstraints, captureStill, captureVideoFrame, stillPhotoSupported, type Still, type StillCrop } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog, scanLogPhoto } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -811,7 +811,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       message: `Foto til trinnet "${step}": ${still === fallback ? "scanningens videobillede" : still.source === "photo" ? "stillbillede" : "videobillede"} ${still.width}×${still.height}, skarphed ${still.sharpness}`,
       barcode: dataRef.current.barcode,
       durationMs: Date.now() - startedAt,
-      data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness },
+      data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness, stillPhoto: stillPhotoSupported() },
     });
     return still;
   }
