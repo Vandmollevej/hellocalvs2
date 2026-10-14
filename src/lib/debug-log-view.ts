@@ -53,6 +53,7 @@ const EVENT_LABELS: Record<string, string> = {
   photo_capture_failed: "Foto fejlede",
   product_create: "Vare oprettet (server)",
   product_create_failed: "Oprettelse fejlede (telefon)",
+  product_create_recovered: "Oprettelsen svarede ikke — varen fundet alligevel",
   flow_done: "Flow færdigt",
   flow_abandoned: "Flow forladt",
   flow_photo: "Foto gemt til loggen",
@@ -115,6 +116,7 @@ const CREATION_EVENTS = new Set([
   "flow_photo",
   "product_create",
   "product_create_failed",
+  "product_create_recovered",
   "rescan_failed",
 ]);
 

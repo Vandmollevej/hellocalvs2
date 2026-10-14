@@ -32,6 +32,7 @@ import {
   CAPTURE_STEPS,
   submitProductRescan,
   createQuickProduct,
+  findCreatedProduct,
   readFrontPhoto,
   readLabelPhoto,
   saveBarcodePhoto,
@@ -203,6 +204,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // useCallback ikke afhænger af flowets funktioner).
   const afterUnknownBarcodeRef = useRef<() => void>(() => {});
   const [createFailed, setCreateFailed] = useState(false);
+  // Varen oprettes/genscanningen sendes (bruger 2026-10-14: "stuck", sort
+  // kamera, siden reagerede ikke): kameraet og al billedanalyse slukkes, så
+  // telefonen kun uploader, og forsiden står bag "Opretter varen …".
+  const [submitting, setSubmitting] = useState(false);
   const [lookupError, setLookupError] = useState(false);
   const online = useOnlineStatus();
   // Dyrefoder-spærring: serverens besked, når stregkoden er på spærrelisten.
@@ -418,6 +423,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   async function submitRescan() {
     if (!rescan) return;
     setWorking(true);
+    setSubmitting(true);
     setCreateFailed(false);
     const startedAt = Date.now();
     try {
@@ -444,9 +450,17 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         productId: rescan.productId,
         durationMs: Date.now() - startedAt,
       });
-      setWorking(false);
-      setCreateFailed(true);
+      submitFailed();
     }
+  }
+
+  // Oprettelsen/genscanningen fejlede: "Prøv igen" vises, og kameraet startes
+  // igen, så et trin også kan tages om.
+  function submitFailed() {
+    setSubmitting(false);
+    setWorking(false);
+    setCreateFailed(true);
+    restartCamera();
   }
 
   function markDone(...steps: CaptureStep[]) {
@@ -481,6 +495,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
   async function createProduct() {
     setWorking(true);
+    setSubmitting(true);
     setCreateFailed(false);
     const startedAt = Date.now();
     const barcode = dataRef.current.barcode;
@@ -495,14 +510,23 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       });
       leaveTo(`/add/${id}${returnSuffix}`);
     } catch (error) {
-      scanLog(flowId, "product_create_failed", {
-        level: "error",
-        message: `Oprettelsen fejlede: ${String(error).slice(0, 200)}`,
+      const timedOut = error instanceof DOMException && error.name === "TimeoutError";
+      // Serveren kan have oprettet varen, selvom svaret aldrig nåede frem.
+      const createdId = barcode ? await findCreatedProduct(barcode, flowId) : null;
+      if (leavingRef.current) return;
+      scanLog(flowId, createdId ? "product_create_recovered" : "product_create_failed", {
+        level: createdId ? "warn" : "error",
+        message: `Oprettelsen ${timedOut ? "svarede ikke i tide" : "fejlede"}: ${String(error).slice(0, 200)}${createdId ? " — varen findes alligevel, går til den" : ""}`,
         barcode,
+        productId: createdId,
         durationMs: Date.now() - startedAt,
+        data: { timedOut },
       });
-      setWorking(false);
-      setCreateFailed(true);
+      if (createdId) {
+        leaveTo(`/add/${createdId}${returnSuffix}`);
+        return;
+      }
+      submitFailed();
     }
   }
 
@@ -1049,7 +1073,20 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   }
 
   // Sort/stoppet kamera (iPhone): logges og startes igen af sig selv.
-  useCameraWatchdog({ videoRef, streamRef, enabled: cameraStatus === "active", flowId, step, onRestart: restartCamera });
+  useCameraWatchdog({
+    videoRef,
+    streamRef,
+    enabled: cameraStatus === "active" && !submitting,
+    flowId,
+    step,
+    onRestart: restartCamera,
+  });
+
+  // Under oprettelsen bruges kameraet ikke: det slukkes (efter vagthunden,
+  // så et stoppet spor ikke tolkes som et dødt kamera).
+  useEffect(() => {
+    if (submitting) stopCamera();
+  }, [submitting, stopCamera]);
 
   const stepLabels: Record<CaptureStep, string> = {
     barcode: t("cameraCreate.stepBarcode"),
@@ -1081,7 +1118,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             : null;
   // Analyse-overlayet ligger over videoen, mens et foto analyseres og under
   // oprettelsen — ikke mens "trinnet er klaret" eller udfyldningen vises.
-  const sweeping = !scanning && !flash && !stepDone && cameraStatus === "active" && working;
+  const sweeping = !scanning && !flash && !stepDone && !submitting && cameraStatus === "active" && working;
+  // Forsiden står bag oprettelsen i stedet for et sort, slukket kamera.
+  const submitPhoto = submitting ? (dataRef.current.frontPhoto ?? null) : null;
+  const submitText = t(rescan ? "cameraCreate.sendingPhotos" : "cameraCreate.creating");
   // Beskeden nederst i kamerabilledet: afvist forside, ingen tekst, ellers lys/fokus.
   const viewfinderNotice =
     frontRejected && step === "front"
@@ -1141,14 +1181,27 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
         {sweeping && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
 
+        {submitting && (
+          <div className="absolute inset-0 bg-hf-black">
+            {submitPhoto && (
+              // eslint-disable-next-line @next/next/no-img-element -- lokalt data-URL-foto
+              <img src={submitPhoto} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            )}
+            <PhotoWorkingOverlay label={submitText} />
+            <div className="hf-camera-overlay" aria-hidden>
+              <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{submitText}</p>
+            </div>
+          </div>
+        )}
+
         <ProductOutlineOverlay
           videoRef={videoRef}
-          active={!scanning && !flash && !stepDone && cameraStatus === "active"}
+          active={!scanning && !working && !flash && !stepDone && cameraStatus === "active"}
           fill={flash?.kind === "object"}
           flowId={flowId}
         />
 
-        {viewfinderNotice && !cameraMessage && !stepDone && (
+        {viewfinderNotice && !cameraMessage && !stepDone && !submitting && (
           <div
             className={`pointer-events-none absolute inset-x-3 flex justify-center ${showShutter ? "bottom-24" : "bottom-3"}`}
             aria-live="polite"
@@ -1208,7 +1261,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           </span>
         )}
 
-        {cameraMessage && (
+        {cameraMessage && !submitting && (
           <div
             className="hf-camera-overlay"
             onClick={cameraStatus === "denied" || cameraStatus === "error" ? restartCamera : undefined}
@@ -1224,7 +1277,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           />
         )}
 
-        {!cameraMessage && !stepDone && (
+        {!cameraMessage && !stepDone && !submitting && (
           <ScanHeading
             number={stepNumber(step)}
             title={stepHeadings[step]}

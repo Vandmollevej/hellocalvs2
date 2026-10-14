@@ -1058,7 +1058,9 @@
     "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over.",
     "skipIngredients": "Skip",
     "shutter": "Take photo",
-    "shutterHint": "Press the shutter when the product is sharp in the picture."
+    "shutterHint": "Press the shutter when the product is sharp in the picture.",
+    "creating": "Product wordt aangemaakt …",
+    "sendingPhotos": "Foto's worden verzonden …"
   },
   "foods": {
     "title": "Voedingsmiddelen",
