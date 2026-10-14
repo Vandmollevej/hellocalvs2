@@ -331,6 +331,23 @@ type Read<T> = { analysisId: string; result: T } | null;
 // at afgøre, om varen kan overtages som vores egen (src/lib/product-rescan.ts).
 export type LabelReadOutcome = { nutritionComplete: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
 
+// Kvalitetskontrollens rettelser og tvivl i admin → Log (tvivl sætter også
+// aflæsningen på Usikkerheder → Indhold, src/lib/product-photo-analysis.ts).
+async function logIngredientsReview(productId: string, result: IngredientsAnalysis, source: string) {
+  const review = result.textReview;
+  if (!review || (!review.fixes.length && !review.doubts.length)) return;
+  await debugLog({
+    category: "scan",
+    event: "ingredients_text_review",
+    level: review.doubts.length ? "warn" : "info",
+    message: review.doubts.length
+      ? `Ingredienslisten (${source}) ser fejllæst ud: ${review.doubts.join("; ")} — sendt til Usikkerheder`
+      : `Ingredienslisten (${source}) rettet automatisk: ${review.fixes.join("; ")}`,
+    productId,
+    data: { source, fixes: review.fixes, doubts: review.doubts, ingredientsText: result.ingredientsText.slice(0, 500) },
+  });
+}
+
 export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelReadOutcome> {
   const { productId } = input;
   const base = { barcode: input.barcode, marketRegion: input.marketRegion, signals: input.signals };
@@ -462,6 +479,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       if (ingredients.result.ingredientsText) {
         await prisma.product.update({ where: { id: productId }, data: { ingredientsText: ingredients.result.ingredientsText } });
       }
+      await logIngredientsReview(productId, ingredients.result, ingredientsFromAi ? "AI" : "telefonens aflæsning");
     }
   } catch (error) {
     console.error("Quick product label could not be saved", productId, error);
@@ -600,6 +618,7 @@ export async function retryIngredients(input: {
       storedImageUrl: input.photoUrl,
     });
     await prisma.aiProductAnalysis.update({ where: { id: read.analysisId }, data: { productId } });
+    await logIngredientsReview(productId, read.result, "AI, nyt forsøg");
     const text = read.result.ingredientsText?.trim() ?? "";
     if (text) {
       // Kun hvis feltet stadig er tomt — en admin eller brugeren kan have

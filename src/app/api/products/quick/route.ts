@@ -9,6 +9,7 @@ import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrich
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -37,7 +38,10 @@ export async function POST(req: Request) {
   const ingredientsPhoto = isPhoto(body?.ingredientsPhoto) ? body.ingredientsPhoto : undefined;
   const nutritionOcrText = typeof body?.nutritionOcrText === "string" ? body.nutritionOcrText.slice(0, 8000) : "";
   const ingredientsOcrText = typeof body?.ingredientsOcrText === "string" ? body.ingredientsOcrText.slice(0, 8000) : "";
-  const localIngredients = typeof body?.localIngredientsText === "string" ? body.localIngredientsText.trim() : "";
+  // Telefonens egen liste gemmes kun, hvis den består kvalitetskontrollen
+  // (src/lib/ingredient-text-quality.ts) — ellers venter feltet på AI'en.
+  const localReview = reviewIngredientsText(typeof body?.localIngredientsText === "string" ? body.localIngredientsText : "");
+  const localIngredients = localReview.doubts.length ? "" : localReview.text;
   const barcodeAnalysisId = typeof body?.barcodeAnalysisId === "string" ? body.barcodeAnalysisId : null;
   // Sprogsignaler og OCR-sikkerhed (brugerens valg 2026-09-27). Signalerne
   // valideres i buildBarcodeContext; sikkerheden afgør, om telefonens egen

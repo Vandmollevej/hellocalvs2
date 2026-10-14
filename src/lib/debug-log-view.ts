@@ -53,6 +53,7 @@ const EVENT_LABELS: Record<string, string> = {
   photo_capture_failed: "Foto fejlede",
   product_create: "Vare oprettet (server)",
   product_create_failed: "Oprettelse fejlede (telefon)",
+  ingredients_text_review: "Ingrediensliste rettet/tvivlsom",
   flow_done: "Flow færdigt",
   flow_abandoned: "Flow forladt",
   flow_photo: "Foto gemt til loggen",

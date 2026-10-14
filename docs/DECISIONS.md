@@ -1,3 +1,12 @@
+## 2026-10-14: Ingredienslistens kvalitetskontrol — soja, E-numre, næringstabel, tvivl til admin
+
+Brugerens test (kinesisk chilisauce): allergenerne stod med store bogstaver, men "SOYA" i stedet for dansk "SOJA"; citronsyre "E202" var læst som "£202" og næringstabellens "Energi" som "Fnergi" — og intet blev meldt til admin. Årsag: telefonens egen OCR-liste blev gemt uden AI, når Tesseract var ≥ 85 % sikker (`localIngredients`), og ingen kontrollerede selve teksten; AI-prompten nævnte hverken stavning eller E-numre.
+
+- **`src/lib/ingredient-text-quality.ts` (`reviewIngredientsText`)** kører på alle ingredienslister, før de gemmes (telefonens liste i `/api/products/quick` og `localIngredients`, AI'ens i `analyzeIngredientsPhoto`/`analyzeLabelPhoto`). Sikre rettelser: E-nummer læst som £/€ → E; dansk stavning "soya" → "soja" (store/små bogstaver bevares; sproget fra AI'en, ellers danske ord i listen); næringstabellen ("Energi"/"Fnergi"/kJ/kcal …) skæres fra listen. Tvivl: usædvanlige tegn (£ € $ @ # | …), parenteser der ikke går op, for få bogstaver.
+- **Ved tvivl:** telefonens liste bruges ikke — AI læser billedet. AI'ens aflæsning får højst 60 % sikkerhed (`DOUBTFUL_INGREDIENTS_CONFIDENCE`), så den står rødt øverst på admin → Usikkerheder → Indhold. Alle rettelser og al tvivl logges i admin → Log (`ingredients_text_review`).
+- **AI-prompten** (`ingredients-v2`/`label-v2`): korrekt stavning på listens sprog, OCR-fejl som "Fnergi"/"£202" rettes, E-numre som E + tal, dansk "soja", aldrig næringstabellen i listen.
+- **Gamle lister** vises med de sikre tegnrettelser (`displayIngredientsText`, web `IngredientsText` + native `IngredientsTextView`); databasen ændres ikke (en masseopdatering af eksisterende data blev ikke kørt). "soya" fremhæves nu også som allergen.
+
 ## 2026-10-14: Tilføj-kameraet — "gammeldags billede": udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 
 Brugerens krav (samme aften, efter sort kamera og et forkert forsidebillede): "Behold som nu på stregkode men indsæt shutterknappen nederst i kameravinduet på de sidste tre billeder. Det sidste skal have en spring over knap til højre for shutterknappen i bunden. Jeg har ikke tillid til den anden metode. Ingen scanning mere. Gammeldags billede nu." Og: "detaljerne … må gerne komme løbende som de bliver indlæst. På produktsiden."

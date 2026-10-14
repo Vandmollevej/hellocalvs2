@@ -187,6 +187,11 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Produktsiden viser varens felter løbende, som AI læser dem (`AddProductView` poller `pendingFields`).
 - Web og native (`native/.../capture/ProductCaptureFlow.kt`) ændres sammen. Se DECISIONS.md 2026-10-14.
 
+## Ingredienslister (user rule 2026-10-14)
+
+- Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen.
+- Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
+
 ## Sikkerhed
 
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login

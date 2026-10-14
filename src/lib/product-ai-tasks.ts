@@ -292,7 +292,7 @@ export function nutritionText(input: ContextLines & { ocrText?: string }) {
 
 // --- Ingrediensliste ---------------------------------------------------------
 
-export const INGREDIENTS_PROMPT_VERSION = "ingredients-v1-2026-09-24-regions";
+export const INGREDIENTS_PROMPT_VERSION = "ingredients-v2-2026-10-14-spelling";
 
 export const INGREDIENTS_SCHEMA = {
   type: "object",
@@ -312,6 +312,8 @@ const INGREDIENTS_RULES = [
   "Returnér kun ingredienser, allergener og tekst som faktisk kan ses.",
   "rawText skal bevare teksten så tæt på emballagen som muligt.",
   "ingredientsText må rydde åbenlyse OCR-linjeproblemer, men må ikke opfinde, fjerne eller ændre ingredienser/procenter.",
+  "ingredientsText skal være korrekt stavet på listens sprog: ret OCR-fejl som \"Fnergi\" (Energi) eller \"£202\"/\"€330\" (E202/E330). E-numre skrives som E + tal. På dansk staves det \"soja\" (aldrig \"soya\").",
+  "ingredientsText indeholder kun ingredienslisten — aldrig næringstabellen (Energi, kJ/kcal, fedt …), opbevaring eller producentadresse.",
   "Prioritér de oplyste sprog, men de er ikke en whitelist.",
   "Hvis billedet ikke er en ingrediensdeklaration eller er ulæseligt, brug tomme strenge/lister og lav confidence lav.",
 ];
@@ -339,7 +341,7 @@ export function ingredientsText(input: ContextLines & { ocrText?: string }) {
 // gange, ~3.400 ekstra tokens pr. vare). Bruges kun, når telefonens egen OCR
 // ikke kunne læse næringstabellen (src/lib/local-label.ts).
 
-export const LABEL_PROMPT_VERSION = "label-v1-2026-09-27";
+export const LABEL_PROMPT_VERSION = "label-v2-2026-10-14-spelling";
 
 type ObjectSchema = { properties: Record<string, unknown>; required: string[] } & Record<string, unknown>;
 

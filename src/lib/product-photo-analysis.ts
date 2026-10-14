@@ -31,6 +31,7 @@ import { matchBrand, matchBrandInTexts, type BrandMatch } from "@/lib/brand-matc
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
+import { DOUBTFUL_INGREDIENTS_CONFIDENCE, reviewIngredientsText } from "@/lib/ingredient-text-quality";
 import type {
   BarcodeLogoAnalysis,
   IngredientsAiResult,
@@ -233,18 +234,34 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
   return { analysisId: analysis.id, result: value };
 }
 
+// AI'ens liste gennem kvalitetskontrollen (src/lib/ingredient-text-quality.ts):
+// sikre rettelser laves, og ved tvivl sættes sikkerheden ned, så aflæsningen
+// står rødt på admin → Usikkerheder → Indhold (brugerens spørgsmål 2026-10-14:
+// "Bliver den meldt med fejl og stavefejl til admin?").
+function reviewedIngredients(value: IngredientsAiResult): IngredientsAiResult & Pick<IngredientsAnalysis, "textReview"> {
+  const review = reviewIngredientsText(value.ingredientsText || "", value.language);
+  if (!review.fixes.length && !review.doubts.length) return value;
+  return {
+    ...value,
+    ingredientsText: review.text,
+    confidence: review.doubts.length ? Math.min(value.confidence, DOUBTFUL_INGREDIENTS_CONFIDENCE) : value.confidence,
+    textReview: { fixes: review.fixes, doubts: review.doubts },
+  };
+}
+
 export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "", signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: IngredientsAnalysis;
 }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const { value: aiValue, model } = await callStructuredVision<IngredientsAiResult>({
+  const { value: aiRaw, model } = await callStructuredVision<IngredientsAiResult>({
     photo,
     schemaName: "hello_cal_ingredients",
     schema: INGREDIENTS_SCHEMA,
     system: INGREDIENTS_SYSTEM,
     text: ingredientsText({ barcode, context, ocrText }),
   });
+  const aiValue = reviewedIngredients(aiRaw);
   // Fuldkorn udledes deterministisk af selve varedeklarationen, ikke af
   // modellen (src/lib/whole-grain.ts, docs/DECISIONS.md 2026-09-23).
   const wholeGrain = parseWholeGrain({ ingredientsText: aiValue.ingredientsText || aiValue.rawText });
@@ -304,11 +321,12 @@ export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText 
     ...aiValue.nutrition,
     fiberPercent: deriveFiberPercent(aiValue.nutrition.basis, aiValue.nutrition.fiberPer100g),
   };
+  const reviewed = reviewedIngredients(aiValue.ingredients);
   const wholeGrain = parseWholeGrain({
-    ingredientsText: aiValue.ingredients.ingredientsText || aiValue.ingredients.rawText,
+    ingredientsText: reviewed.ingredientsText || reviewed.rawText,
   });
   const ingredients: IngredientsAnalysis = {
-    ...aiValue.ingredients,
+    ...reviewed,
     wholeGrainPercent: wholeGrain.wholeGrainPercent,
     isWholeGrain: wholeGrain.isWholeGrain,
     wholeGrainConfidence: wholeGrain.confidence,

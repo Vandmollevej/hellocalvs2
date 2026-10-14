@@ -204,7 +204,7 @@ fun IngredientsTextView(text: String, onAdditive: (String) -> Unit) {
     val nav = LocalNavigator.current
     val annotated = remember(text) {
         buildAnnotatedString {
-            for (part in splitENumbers(text)) {
+            for (part in splitENumbers(displayIngredientsText(text))) {
                 val code = part.code
                 if (code != null) {
                     withLink(

@@ -587,7 +587,7 @@ private val ALLERGEN_STEMS = listOf(
     "mælk", "milk", "fløde", "smør", "ost", "valle", "laktose", "kasein", "yoghurt", "skyr", "cream", "butter", "cheese", "whey", "lactose", "casein",
     "jordnød", "peanut", "nød", "nødde", "nut", "mandel", "mandler", "almond", "hasselnød", "hazelnut", "valnød", "walnut",
     "cashew", "pekan", "pecan", "pistacie", "pistachio", "paranød", "macadamia",
-    "soja", "soy", "selleri", "celery", "sennep", "mustard", "sesam", "sesame", "lupin",
+    "soja", "soya", "soy", "selleri", "celery", "sennep", "mustard", "sesam", "sesame", "lupin",
     "sulfit", "sulphit", "sulfite", "svovldioxid", "sulphur dioxide", "sulfur dioxide",
 ).sortedByDescending { it.length }
 
@@ -597,6 +597,26 @@ private const val ALLERGEN_LETTERS = "abcdefghijklmnopqrstuvwxyzæøåäöüé"
 private fun isAllergenLetter(c: Char) = c.lowercaseChar() in ALLERGEN_LETTERS
 
 data class IngredientSegment(val text: String, val allergen: Boolean)
+
+// src/lib/ingredient-text-quality.ts displayIngredientsText: older lists are
+// shown with the safe character fixes ("£202" → "E202", Danish "soja").
+private val CURRENCY_E_NUMBER = Regex("""[£€]\s?(\d{3,4}[a-dA-D]?)(?!\d)""")
+private val SOYA = Regex("""(?<![a-zA-ZæøåÆØÅäöüÄÖÜéÉèÈ])([sS][oO])([yY])([aA])""")
+private val DANISH_INGREDIENT_WORDS = Regex(
+    """(?<![a-zæøå])(?:ingredienser|sukker|vand|olie|hvede\w*|mælk\w*|krydderi\w*|eddike|hvidløg|stivelse|surhedsregulerende|konserveringsmiddel|farvestof|fortykningsmiddel|smagsforstærker|rapsolie|solsikkeolie|chili|citronsyre|salt|og|med)(?![a-zæøå])""",
+    RegexOption.IGNORE_CASE,
+)
+
+private fun looksDanishIngredients(text: String): Boolean =
+    text.any { it.lowercaseChar() in "æøå" } || DANISH_INGREDIENT_WORDS.findAll(text).count() >= 3
+
+fun displayIngredientsText(text: String): String {
+    val withE = CURRENCY_E_NUMBER.replace(text) { "E" + it.groupValues[1].uppercase() }
+    if (!looksDanishIngredients(withE)) return withE
+    return SOYA.replace(withE) { m ->
+        m.groupValues[1] + (if (m.groupValues[2] == "Y") "J" else "j") + m.groupValues[3]
+    }
+}
 
 /** Splits an ingredient list into plain and allergen parts (EU 1169/2011 art. 21). */
 fun segmentIngredients(text: String): List<IngredientSegment> {
