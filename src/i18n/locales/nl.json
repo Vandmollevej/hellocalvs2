@@ -446,7 +446,8 @@
     "showTooltips": "Tooltips tonen",
     "showTooltipsDescription": "Toont een korte hulptekst onder de verschillende instellingen en vensters.",
     "showStartupTips": "Starttips tonen",
-    "showStartupTipsDescription": "Toont een korte tip op het hele scherm wanneer je de app opent, over functies die je nog niet hebt gebruikt."
+    "showStartupTipsDescription": "Toont een korte tip op het hele scherm wanneer je de app opent, over functies die je nog niet hebt gebruikt.",
+    "translation": "Vertaling"
   },
   "guide": {
     "back": "Terug",
@@ -515,7 +516,9 @@
     "warnOnRecommendedLimitsDescription": "Toont een donkerrode rand van 1 px rond statistiekvakken wanneer een gedocumenteerde aanbevolen grens voor jouw regio en profiel is overschreden. Ontbrekende gegevens worden niet gemarkeerd.",
     "uncertainty": "Onzekerheid",
     "autoExpandUncertainty": "Onzekerheid automatisch uitklappen",
-    "autoExpandUncertaintyDescription": "Een groene ~ staat altijd voor waarden die we hebben geschat, omdat de fabrikant ze zelf niet opgeeft. Als je dit aanzet, verschijnt de grijze regel met de onzekerheid onder de waarde zonder dat je hoeft te tikken."
+    "autoExpandUncertaintyDescription": "Een groene ~ staat altijd voor waarden die we hebben geschat, omdat de fabrikant ze zelf niet opgeeft. Als je dit aanzet, verschijnt de grijze regel met de onzekerheid onder de waarde zonder dat je hoeft te tikken.",
+    "translateForeignText": "Vreemde talen vertalen naar het Nederlands",
+    "translateForeignTextDescription": "Producten met tekst in een taal buiten de HelloFresh-landen (bijv. Chinees) worden in het Nederlands getoond. Boven de productnaam staat uit welke taal de tekst is vertaald, met een link naar het origineel. Uitgeschakeld zie je de originele tekst."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Vraag naar de slaap van afgelopen nacht",
@@ -2299,7 +2302,13 @@
       "vitaminB9": "Vitamine B9 (foliumzuur)",
       "vitaminB12": "Vitamine B12"
     },
-    "swapLiquidUnit": "Wisselen tussen volume en gram"
+    "swapLiquidUnit": "Wisselen tussen volume en gram",
+    "translatedFrom": "Vertaald naar het {target} uit het {source}.",
+    "translatedTo": "Vertaald naar het {target}.",
+    "originalLanguage": "Origineel in het {source}.",
+    "originalText": "Originele tekst.",
+    "showOriginal": "Toon origineel",
+    "showTranslation": "Toon vertaling"
   },
   "photoAward": {
     "bannerSingle": "Je kunt {points} punten verdienen door een nieuwe foto te maken van {photoType}.",

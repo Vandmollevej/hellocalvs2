@@ -1,4 +1,5 @@
-import type { Locale } from "@/i18n";
+import { Prisma } from "@prisma/client";
+import { intlLocale, type Locale } from "@/i18n";
 import { prisma } from "@/lib/prisma";
 import { debugLog, errorText } from "@/lib/debug-log";
 import {
@@ -6,22 +7,29 @@ import {
   TARGET_LANGUAGE_NAMES,
   hasForeignScript,
   isHelloFreshLanguage,
+  languageCode,
   translationTarget,
 } from "@/lib/product-language";
+import type { ProductTexts } from "@/lib/product-text-swap";
 
 // Varetekst på et sprog uden for HelloFresh-landene oversættes til brugerens
 // app-sprog (brugerens regel 2026-10-14, src/lib/product-language.ts).
-// Originalen gemmes i nameOriginal/ingredientsOriginal, og
-// translationStatus = PENDING, så admin kan se den side om side.
-
-type TextFields = Record<string, string | null>;
+// Kolonnerne får oversættelsen; originalen for hvert felt gemmes i
+// textOriginals (navn/ingredienser også i nameOriginal/ingredientsOriginal),
+// og translationStatus = PENDING, så admin kan se den side om side. Brugere
+// med et andet app-sprog får en oversættelse fra originalen, gemt i
+// textTranslations.
 
 // Felter, der oversættes; brand og subbrand er navne og skrives kun om til
 // latinske bogstaver (fx 饭扫光 → Fansaoguang).
 const TRANSLATED_KEYS = ["name", "namePlural", "productType", "variant", "packageSizeText", "ingredientsText"] as const;
 const ROMANIZED_KEYS = ["subbrand", "brand"] as const;
+const LOCALE_CODES: readonly string[] = ["da", "en", "de", "fr", "nl", "sv", "no"];
 
-async function translateTexts(fields: TextFields, target: Locale): Promise<TextFields | null> {
+async function translateTexts(
+  fields: ProductTexts,
+  target: Locale,
+): Promise<{ texts: ProductTexts; sourceLanguage: string | null } | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
   const language = TARGET_LANGUAGE_NAMES[target];
@@ -40,69 +48,92 @@ async function translateTexts(fields: TextFields, target: Locale): Promise<TextF
             "packageSizeText er kun mængden med enhed, fx '248 g' (ikke 'Nettoindhold: 248 g'). " +
             "brand og subbrand er navne: oversæt dem ikke, men skriv dem med latinske bogstaver (pinyin/translitteration), uden accenter. " +
             "Svaret må ALDRIG indeholde kinesiske, japanske, koreanske, kyrilliske, arabiske eller andre ikke-latinske tegn. " +
-            "Svar som JSON med præcis de samme nøgler som input; null forbliver null.",
+            'Svar som JSON: {"texts": {præcis de samme nøgler som input; null forbliver null}, "sourceLanguage": ISO 639-1-koden for originalens sprog, fx "zh"}.',
         },
-        { role: "user", content: JSON.stringify(fields) },
+        { role: "user", content: JSON.stringify({ texts: fields }) },
       ],
     }),
   });
   if (!res.ok) throw new Error(`OpenAI svarede ${res.status}`);
   const data = await res.json();
-  const parsed = JSON.parse(data.choices?.[0]?.message?.content ?? "null") as Record<string, unknown> | null;
-  if (!parsed || typeof parsed !== "object") return null;
-  const out: TextFields = {};
+  const parsed = JSON.parse(data.choices?.[0]?.message?.content ?? "null") as
+    | { texts?: Record<string, unknown>; sourceLanguage?: unknown }
+    | null;
+  if (!parsed?.texts || typeof parsed.texts !== "object") return null;
+  const texts: ProductTexts = {};
   for (const key of Object.keys(fields)) {
-    const value = parsed[key];
+    const value = parsed.texts[key];
     const text = typeof value === "string" ? value.trim() : "";
     // Et felt, der stadig har fremmede tegn, er ikke oversat.
     if (fields[key] && (!text || hasForeignScript(text))) return null;
-    out[key] = text || null;
+    texts[key] = text || null;
   }
-  return out;
+  return { texts, sourceLanguage: typeof parsed.sourceLanguage === "string" ? languageCode(parsed.sourceLanguage) : null };
 }
 
-const inFlight = new Map<string, Promise<boolean>>();
-// En mislykket oversættelse prøves tidligst igen efter 10 min, så varesidens
-// polling ikke kalder OpenAI hvert sekund.
+// Samtidige kald med samme nøgle deler ét kald, og et mislykket kald prøves
+// tidligst igen efter 10 min, så varesidens polling ikke kalder OpenAI hvert
+// sekund.
 const RETRY_AFTER_MS = 10 * 60_000;
+const inFlight = new Map<string, Promise<unknown>>();
 const failedAt = new Map<string, number>();
 
-// Oversætter varens tekster, hvis de har ikke-latinske tegn, eller hvis
-// emballagen er læst som et sprog uden for HelloFresh-landene. Returnerer
-// true, når varen blev ændret. Samtidige kald for samme vare deler ét kald.
-export function ensureProductLanguage(
-  productId: string,
-  appLanguage: string | null | undefined,
-  options: { detectedLanguage?: string | null } = {},
-): Promise<boolean> {
-  const running = inFlight.get(productId);
+function once<T>(key: string, fallback: T, run: () => Promise<{ value: T; failed: boolean }>): Promise<T> {
+  const running = inFlight.get(key) as Promise<T> | undefined;
   if (running) return running;
-  if (Date.now() - (failedAt.get(productId) ?? 0) < RETRY_AFTER_MS) return Promise.resolve(false);
-  const job = translateProduct(productId, translationTarget(appLanguage), options.detectedLanguage ?? null)
-    .then((outcome) => {
-      if (outcome === "failed") failedAt.set(productId, Date.now());
-      else failedAt.delete(productId);
-      return outcome === "changed";
+  if (Date.now() - (failedAt.get(key) ?? 0) < RETRY_AFTER_MS) return Promise.resolve(fallback);
+  const job = run()
+    .then(({ value, failed }) => {
+      if (failed) failedAt.set(key, Date.now());
+      else failedAt.delete(key);
+      return value;
     })
     .catch(async (error) => {
-      failedAt.set(productId, Date.now());
+      failedAt.set(key, Date.now());
       await debugLog({
         category: "ai",
         event: "product_translate",
         level: "error",
         message: `Oversættelse af varens tekst fejlede: ${errorText(error)}`,
-        productId,
+        productId: key.split(":")[0],
       });
-      return false;
+      return fallback;
     })
-    .finally(() => inFlight.delete(productId));
-  inFlight.set(productId, job);
+    .finally(() => inFlight.delete(key));
+  inFlight.set(key, job);
   return job;
+}
+
+function asTexts(value: unknown): ProductTexts | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const out: ProductTexts = {};
+  for (const [key, text] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof text === "string" || text === null) out[key] = text;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+function asLocale(value: string | null | undefined): Locale | null {
+  return value && LOCALE_CODES.includes(value) ? (value as Locale) : null;
+}
+
+// Oversætter varens tekster, hvis de har ikke-latinske tegn, eller hvis
+// emballagen er læst som et sprog uden for HelloFresh-landene. Returnerer
+// true, når varen blev ændret.
+export function ensureProductLanguage(
+  productId: string,
+  appLanguage: string | null | undefined,
+  options: { detectedLanguage?: string | null } = {},
+): Promise<boolean> {
+  return once(productId, false, async () => {
+    const outcome = await translateProduct(productId, translationTarget(appLanguage), options.detectedLanguage ?? null);
+    return { value: outcome === "changed", failed: outcome === "failed" };
+  });
 }
 
 async function translateProduct(
   productId: string,
-  target: Locale,
+  appTarget: Locale,
   detectedLanguage: string | null,
 ): Promise<"changed" | "unchanged" | "failed"> {
   const product = await prisma.product.findUnique({
@@ -118,12 +149,15 @@ async function translateProduct(
       nameOriginal: true,
       ingredientsOriginal: true,
       translationStatus: true,
+      translationSourceLang: true,
+      translationTargetLang: true,
+      textOriginals: true,
       brand: { select: { id: true, name: true } },
     },
   });
   if (!product) return "unchanged";
 
-  const current: TextFields = {
+  const current: ProductTexts = {
     name: product.name,
     namePlural: product.namePlural,
     productType: product.productType,
@@ -136,7 +170,7 @@ async function translateProduct(
   // Et fremmed sprog med latinske bogstaver (fx polsk) kendes kun på AI'ens
   // sprogfelt — og kun, så længe varen ikke allerede er oversat.
   const foreignLanguage = isHelloFreshLanguage(detectedLanguage) === false && !product.translationStatus;
-  const wanted: TextFields = {};
+  const wanted: ProductTexts = {};
   for (const key of [...TRANSLATED_KEYS, ...ROMANIZED_KEYS]) {
     const value = current[key];
     if (!value?.trim()) continue;
@@ -145,8 +179,11 @@ async function translateProduct(
   }
   if (!Object.keys(wanted).length) return "unchanged";
 
-  const translated = await translateTexts(wanted, target);
-  if (!translated) return "failed";
+  // Er varen allerede delvist oversat, bruges samme sprog til resten.
+  const target = asLocale(product.translationTargetLang) ?? appTarget;
+  const result = await translateTexts(wanted, target);
+  if (!result) return "failed";
+  const translated = result.texts;
 
   const data: Record<string, unknown> = {};
   for (const key of TRANSLATED_KEYS) {
@@ -155,8 +192,13 @@ async function translateProduct(
   if ("subbrand" in translated) data.subbrand = translated.subbrand;
   if ("name" in translated && !product.nameOriginal) data.nameOriginal = product.name;
   if ("ingredientsText" in translated && !product.ingredientsOriginal) data.ingredientsOriginal = product.ingredientsText;
-  data.translationSourceLang = detectedLanguage?.trim() || "ukendt";
+  data.textOriginals = { ...(asTexts(product.textOriginals) ?? {}), ...wanted } as Prisma.InputJsonValue;
+  data.translationTargetLang = target;
+  data.translationSourceLang =
+    result.sourceLanguage ?? languageCode(detectedLanguage) ?? product.translationSourceLang ?? "ukendt";
   data.translationStatus = "PENDING";
+  // Oversættelser til andre sprog bygger på originalerne og laves forfra.
+  data.textTranslations = Prisma.DbNull;
 
   // Brandet er fælles: findes navnet med latinske bogstaver allerede, kobles
   // varen dertil; ellers omdøbes brandet selv.
@@ -180,9 +222,84 @@ async function translateProduct(
     event: "product_translate",
     message: `Varens tekst oversat til ${TARGET_LANGUAGE_NAMES[target]}: ${product.name} → ${translated.name ?? product.name}`,
     productId,
-    data: { from: wanted, to: translated, detectedLanguage },
+    data: { from: wanted, to: translated, detectedLanguage, sourceLanguage: result.sourceLanguage },
   });
   return "changed";
+}
+
+type TranslatedProductRow = {
+  id: string;
+  nameOriginal: string | null;
+  ingredientsOriginal: string | null;
+  translationSourceLang: string | null;
+  translationTargetLang: string | null;
+  textOriginals: unknown;
+  textTranslations: unknown;
+};
+
+function languageName(code: string | null, viewer: Locale): string | null {
+  if (!code) return null;
+  try {
+    const name = new Intl.DisplayNames([intlLocale(viewer)], { type: "language" }).of(code);
+    return name && name.toLowerCase() !== code.toLowerCase() ? name : null;
+  } catch {
+    return null;
+  }
+}
+
+// Den oversatte vare set med brugerens app-sprog: overlay = tekster på
+// brugerens sprog, når kolonnerne står på et andet (null = kolonnerne
+// gælder), original = originalteksterne til "Vis original". null, når
+// varen ikke er oversat.
+export async function productTranslationFor(
+  product: TranslatedProductRow,
+  viewer: Locale,
+): Promise<{
+  overlay: ProductTexts | null;
+  original: ProductTexts;
+  // Originalen er på brugerens eget sprog: vis den, uden oversat-linjen.
+  sameLanguage: boolean;
+  sourceLanguageName: string | null;
+  targetLanguageName: string;
+} | null> {
+  const original =
+    asTexts(product.textOriginals) ??
+    asTexts({
+      ...(product.nameOriginal ? { name: product.nameOriginal } : {}),
+      ...(product.ingredientsOriginal ? { ingredientsText: product.ingredientsOriginal } : {}),
+    });
+  if (!original) return null;
+  const sourceCode = languageCode(product.translationSourceLang);
+  const sourceLanguageName = languageName(sourceCode, viewer);
+  if (sourceCode === viewer) {
+    return { overlay: original, original, sameLanguage: true, sourceLanguageName, targetLanguageName: sourceLanguageName ?? viewer };
+  }
+  // Open Food Facts-oversættelser fra før textOriginals er på dansk.
+  const storedTarget = asLocale(product.translationTargetLang) ?? "da";
+  let overlay: ProductTexts | null = null;
+  let shownTarget: Locale = storedTarget;
+  if (viewer !== storedTarget) {
+    const cache = (product.textTranslations ?? {}) as Record<string, unknown>;
+    overlay =
+      asTexts(cache[viewer]) ??
+      (await once(`${product.id}:${viewer}`, null as ProductTexts | null, async () => {
+        const result = await translateTexts(original, viewer);
+        if (!result) return { value: null, failed: true };
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { textTranslations: { ...cache, [viewer]: result.texts } as Prisma.InputJsonValue },
+        });
+        return { value: result.texts, failed: false };
+      }));
+    if (overlay) shownTarget = viewer;
+  }
+  return {
+    overlay,
+    original,
+    sameLanguage: false,
+    sourceLanguageName,
+    targetLanguageName: languageName(shownTarget, viewer) ?? TARGET_LANGUAGE_NAMES[shownTarget],
+  };
 }
 
 // Oprydning (vedligeholdelses-jobbet): varer, der stadig har ikke-latinske

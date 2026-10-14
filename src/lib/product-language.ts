@@ -76,3 +76,28 @@ export const TARGET_LANGUAGE_NAMES: Record<Locale, string> = {
   sv: "svensk",
   no: "norsk (bokmål)",
 };
+
+// Sprognavne, AI'en kan svare med i stedet for en kode.
+const LANGUAGE_NAME_CODES: Record<string, string> = {
+  chinese: "zh", kinesisk: "zh", mandarin: "zh", cantonese: "zh",
+  japanese: "ja", japansk: "ja", korean: "ko", koreansk: "ko",
+  russian: "ru", russisk: "ru", ukrainian: "uk", ukrainsk: "uk",
+  arabic: "ar", arabisk: "ar", thai: "th", vietnamese: "vi", vietnamesisk: "vi",
+  polish: "pl", polsk: "pl", turkish: "tr", tyrkisk: "tr", greek: "el", græsk: "el",
+  portuguese: "pt", portugisisk: "pt", hebrew: "he", hebraisk: "he", hindi: "hi",
+  danish: "da", dansk: "da", swedish: "sv", svensk: "sv", norwegian: "no", norsk: "no",
+  german: "de", tysk: "de", dutch: "nl", hollandsk: "nl", french: "fr", fransk: "fr",
+  italian: "it", italiensk: "it", spanish: "es", spansk: "es", english: "en", engelsk: "en",
+};
+
+// "zh-CN", "ZH", "Chinese", "kinesisk" → "zh"; ukendt → null.
+export function languageCode(value: string | null | undefined): string | null {
+  const text = (value ?? "").trim().toLowerCase();
+  if (!text) return null;
+  const tag = text.match(/^([a-z]{2,3})(?:[-_][a-z0-9]{2,8})*$/);
+  if (tag && !LANGUAGE_NAME_CODES[text]) return tag[1] === "nb" || tag[1] === "nn" ? "no" : tag[1];
+  for (const token of text.split(/[^a-zæøåäöü]+/u)) {
+    if (LANGUAGE_NAME_CODES[token]) return LANGUAGE_NAME_CODES[token];
+  }
+  return null;
+}

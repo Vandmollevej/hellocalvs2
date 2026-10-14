@@ -1,7 +1,8 @@
 ## 2026-10-14: Aldrig kinesisk — varetekst oversættes til app-sproget
 
 - Ny regel (REGLER/DECISIONS 2026-10-14): navn, variant, mængde, ingredienser og (translittereret) brand/subbrand på et sprog uden for HelloFresh-landene oversættes til brugerens app-sprog; ikke-latinske tegn vises aldrig. `src/lib/product-language.ts` (regel + test) og `src/lib/product-translate.ts` (OpenAI gpt-4o-mini), koblet på forsidelæsningen, ingredienserne, `GET /api/products/[id]` og vedligeholdelsesjobbet. Ingen migration, ingen UI-ændring (native henter samme API).
-- Det kinesiske chiliglas oversættes, næste gang varen åbnes, eller ved næste vedligeholdelseskørsel. Lint 0 fejl, 404 tests, tsc og native-paritet grønne.
+- Ny side Indstillinger → Visning → Oversættelse (web + native + webmenu) med kontakten "Oversæt fremmedsprog til dansk", og på varesiden en lille grå linje over overskriften: "Oversat til dansk fra kinesisk. Vis original" (web + native). Migration `20261014220000_foreign_text_translation` skal med deployet.
+- Det kinesiske chiliglas oversættes, næste gang varen åbnes, eller ved næste vedligeholdelseskørsel. Lint 0 fejl, 407 tests, tsc, build og native-paritet grønne. Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset og tryk "Vis original".
 
 ## 2026-10-14: Tilføj-kameraet — udløser på fototrinnene, "Spring over", større flueben, intet ImageCapture på iPhone
 

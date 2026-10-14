@@ -144,6 +144,9 @@ model User {
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): ~ vises altid; denne
   // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
   autoExpandUncertainty   Boolean @default(false)
+  // Visning → Oversættelse (docs/DECISIONS.md 2026-10-14): varetekst på et
+  // sprog uden for HelloFresh-landene vises oversat (standard) eller original.
+  translateForeignText    Boolean @default(true)
 
   // Daglig kaloriegrænse pr. bruger (src/lib/goals.ts). Null = standardværdien
   // DAILY_KCAL_GOAL. Opdateres af brugeren via "Opdater"-popuppen
@@ -1440,6 +1443,13 @@ model Product {
   ingredientsOriginal    String?
   translationSourceLang  String?
   translationStatus      String?
+  // Fremmedsprog (docs/DECISIONS.md 2026-10-14): originalteksten for hvert
+  // oversat felt ({ name, variant, packageSizeText, ingredientsText, subbrand,
+  // brand … }), sproget kolonnerne er oversat til, og oversættelser til andre
+  // app-sprog ({ "en": { name, … } }), så "Vis original" og brugerens sprog virker.
+  textOriginals          Json?
+  translationTargetLang  String?
+  textTranslations       Json?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float

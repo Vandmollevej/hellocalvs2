@@ -446,7 +446,8 @@
     "showTooltips": "Tooltips anzeigen",
     "showTooltipsDescription": "Zeigt unter den verschiedenen Einstellungen und Fenstern einen kleinen Hilfetext an.",
     "showStartupTips": "Start-Tipps anzeigen",
-    "showStartupTipsDescription": "Zeigt beim Öffnen der App einen kurzen Vollbild-Tipp zu Funktionen, die du noch nicht genutzt hast."
+    "showStartupTipsDescription": "Zeigt beim Öffnen der App einen kurzen Vollbild-Tipp zu Funktionen, die du noch nicht genutzt hast.",
+    "translation": "Übersetzung"
   },
   "guide": {
     "back": "Zurück",
@@ -515,7 +516,9 @@
     "warnOnRecommendedLimitsDescription": "Zeigt einen 1 px dunkelroten Rand um Statistikfelder, wenn eine dokumentierte empfohlene Grenze für deine Region und dein Profil überschritten ist. Fehlende Daten werden nicht markiert.",
     "uncertainty": "Unsicherheit",
     "autoExpandUncertainty": "Unsicherheit automatisch aufklappen",
-    "autoExpandUncertaintyDescription": "Eine grüne ~ steht immer vor Werten, die wir geschätzt haben, weil der Hersteller sie nicht selbst angibt. Wenn du das aktivierst, wird die graue Zeile mit der Unsicherheit unter dem Wert angezeigt, ohne dass du tippen musst."
+    "autoExpandUncertaintyDescription": "Eine grüne ~ steht immer vor Werten, die wir geschätzt haben, weil der Hersteller sie nicht selbst angibt. Wenn du das aktivierst, wird die graue Zeile mit der Unsicherheit unter dem Wert angezeigt, ohne dass du tippen musst.",
+    "translateForeignText": "Fremdsprachen ins Deutsche übersetzen",
+    "translateForeignTextDescription": "Produkte mit Text in einer Sprache außerhalb der HelloFresh-Länder (z. B. Chinesisch) werden auf Deutsch angezeigt. Über dem Produktnamen steht, aus welcher Sprache der Text übersetzt wurde, mit einem Link zum Original. Ausgeschaltet wird der Originaltext angezeigt."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Nach dem Schlaf der Nacht fragen",
@@ -2299,7 +2302,13 @@
       "vitaminB9": "Vitamin B9 (Folat)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln"
+    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln",
+    "translatedFrom": "Auf {target} übersetzt, Original auf {source}.",
+    "translatedTo": "Auf {target} übersetzt.",
+    "originalLanguage": "Original auf {source}.",
+    "originalText": "Originaltext.",
+    "showOriginal": "Original anzeigen",
+    "showTranslation": "Übersetzung anzeigen"
   },
   "photoAward": {
     "bannerSingle": "Du kannst {points} Punkte verdienen, indem du ein neues Foto von {photoType} machst.",

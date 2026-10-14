@@ -10,8 +10,9 @@ import {
   updateKindsFor,
 } from "@/lib/product-update";
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
-import { needsProductTranslation } from "@/lib/product-language";
-import { ensureProductLanguage } from "@/lib/product-translate";
+import { needsProductTranslation, translationTarget } from "@/lib/product-language";
+import { ensureProductLanguage, productTranslationFor } from "@/lib/product-translate";
+import { applyProductTexts, productTextsFor, type ProductTranslationInfo } from "@/lib/product-text-swap";
 
 export async function GET(
   _req: Request,
@@ -85,6 +86,39 @@ export async function GET(
       const viewer = await getSessionUser().catch(() => null);
       if (await ensureProductLanguage(id, viewer?.appLocale)) product = await loadProduct();
     }
+    // Oversat vare (docs/DECISIONS.md 2026-10-14): teksten på brugerens
+    // app-sprog, eller originalen, hvis brugeren har slået oversættelse fra
+    // under Visning. Den anden version følger med til "Vis original".
+    let translation: ProductTranslationInfo | null = null;
+    if (product && (product.textOriginals || product.nameOriginal || product.ingredientsOriginal)) {
+      const viewer = await getSessionUser().catch(() => null);
+      const info = await productTranslationFor(product, translationTarget(viewer?.appLocale)).catch((error) => {
+        console.error("Product translation lookup failed", error);
+        return null;
+      });
+      if (info) {
+        const translated = info.overlay ? applyProductTexts(product, info.overlay) : product;
+        if (info.sameLanguage) {
+          product = translated;
+        } else if (viewer?.translateForeignText === false) {
+          product = applyProductTexts(product, info.original);
+          translation = {
+            showing: "original",
+            sourceLanguageName: info.sourceLanguageName,
+            targetLanguageName: info.targetLanguageName,
+            alternate: productTextsFor(translated, Object.keys(info.original)),
+          };
+        } else {
+          product = translated;
+          translation = {
+            showing: "translated",
+            sourceLanguageName: info.sourceLanguageName,
+            targetLanguageName: info.targetLanguageName,
+            alternate: info.original,
+          };
+        }
+      }
+    }
     // En privat ingrediens vises kun for ejeren.
     if (product && product.privateOwnerId) {
       const user = await getSessionUser();
@@ -130,9 +164,13 @@ export async function GET(
         console.error("Subbrand logo lookup failed", error);
         return null;
       });
+      // Oversættelsernes rådata sendes ikke; translation bærer det, siden skal bruge.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { textOriginals, textTranslations, ...productFields } = product;
       return NextResponse.json({
         product: {
-          ...product,
+          ...productFields,
+          translation,
           subbrandLogoUrl,
           nutrients,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,

@@ -446,7 +446,8 @@
     "showTooltips": "Afficher les infobulles",
     "showTooltipsDescription": "Affiche un petit texte d'aide sous les différents paramètres et fenêtres.",
     "showStartupTips": "Afficher les astuces au démarrage",
-    "showStartupTipsDescription": "Affiche une astuce en plein écran à l'ouverture de l'appli, sur des fonctions que tu n'as pas encore utilisées."
+    "showStartupTipsDescription": "Affiche une astuce en plein écran à l'ouverture de l'appli, sur des fonctions que tu n'as pas encore utilisées.",
+    "translation": "Traduction"
   },
   "guide": {
     "back": "Retour",
@@ -515,7 +516,9 @@
     "warnOnRecommendedLimitsDescription": "Affiche une bordure rouge foncé de 1 px autour des cartes de statistiques lorsqu'une limite recommandée documentée pour ta région et ton profil est dépassée. Les données manquantes ne sont pas signalées.",
     "uncertainty": "Incertitude",
     "autoExpandUncertainty": "Déplier l'incertitude automatiquement",
-    "autoExpandUncertaintyDescription": "Un ~ vert précède toujours les valeurs que nous avons estimées parce que le fabricant ne les indique pas. Si tu actives cette option, la ligne grise avec l'incertitude s'affiche sous la valeur sans que tu aies à appuyer."
+    "autoExpandUncertaintyDescription": "Un ~ vert précède toujours les valeurs que nous avons estimées parce que le fabricant ne les indique pas. Si tu actives cette option, la ligne grise avec l'incertitude s'affiche sous la valeur sans que tu aies à appuyer.",
+    "translateForeignText": "Traduire les langues étrangères en français",
+    "translateForeignTextDescription": "Les produits dont le texte est dans une langue hors des pays HelloFresh (p. ex. le chinois) s'affichent en français. Au-dessus du nom du produit, vous voyez la langue d'origine, avec un lien vers l'original. Désactivé, le texte original s'affiche."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Demander pour le sommeil de la nuit",
@@ -2299,7 +2302,13 @@
       "vitaminB9": "Vitamine B9 (folate)",
       "vitaminB12": "Vitamine B12"
     },
-    "swapLiquidUnit": "Basculer entre volume et grammes"
+    "swapLiquidUnit": "Basculer entre volume et grammes",
+    "translatedFrom": "Traduit en {target} (langue d'origine : {source}).",
+    "translatedTo": "Traduit en {target}.",
+    "originalLanguage": "Original en {source}.",
+    "originalText": "Texte original.",
+    "showOriginal": "Voir l'original",
+    "showTranslation": "Voir la traduction"
   },
   "photoAward": {
     "bannerSingle": "Tu peux gagner {points} points en prenant une nouvelle photo de {photoType}.",

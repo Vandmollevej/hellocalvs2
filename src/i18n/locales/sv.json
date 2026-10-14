@@ -446,7 +446,8 @@
     "showTooltips": "Visa tooltips",
     "showTooltipsDescription": "Visar en kort hjälptext under de olika inställningarna och fönstren.",
     "showStartupTips": "Visa starttips",
-    "showStartupTipsDescription": "Visar ett kort tips i helskärm när du öppnar appen, om funktioner du ännu inte har använt."
+    "showStartupTipsDescription": "Visar ett kort tips i helskärm när du öppnar appen, om funktioner du ännu inte har använt.",
+    "translation": "Översättning"
   },
   "guide": {
     "back": "Tillbaka",
@@ -515,7 +516,9 @@
     "warnOnRecommendedLimitsDescription": "Visar en mörkröd kant på 1 px runt statistikrutor när en dokumenterad rekommenderad gräns för din region och profil har överskridits. Saknade data markeras inte.",
     "uncertainty": "Osäkerhet",
     "autoExpandUncertainty": "Fäll ut osäkerhet automatiskt",
-    "autoExpandUncertaintyDescription": "Ett grönt ~ står alltid framför värden som vi har uppskattat eftersom tillverkaren inte själv anger dem. Om du aktiverar detta visas den grå raden med osäkerheten under värdet utan att du behöver trycka."
+    "autoExpandUncertaintyDescription": "Ett grönt ~ står alltid framför värden som vi har uppskattat eftersom tillverkaren inte själv anger dem. Om du aktiverar detta visas den grå raden med osäkerheten under värdet utan att du behöver trycka.",
+    "translateForeignText": "Översätt främmande språk till svenska",
+    "translateForeignTextDescription": "Varor med text på ett språk utanför HelloFresh-länderna (t.ex. kinesiska) visas på svenska. Ovanför varans namn står vilket språk texten är översatt från, med en länk till originalet. Stänger du av det visas originaltexten."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Fråga om nattens sömn",
@@ -2299,7 +2302,13 @@
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Växla mellan volym och gram"
+    "swapLiquidUnit": "Växla mellan volym och gram",
+    "translatedFrom": "Översatt till {target} från {source}.",
+    "translatedTo": "Översatt till {target}.",
+    "originalLanguage": "Original på {source}.",
+    "originalText": "Originaltext.",
+    "showOriginal": "Visa original",
+    "showTranslation": "Visa översättning"
   },
   "photoAward": {
     "bannerSingle": "Du kan tjäna {points} poäng genom att ta en ny bild av {photoType}.",

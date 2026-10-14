@@ -64,3 +64,15 @@ test("målsproget er brugerens app-sprog, ellers dansk", () => {
   assert.equal(translationTarget("zh-CN"), "da");
   assert.equal(translationTarget(null), "da");
 });
+
+test("sprogkoden findes ud fra kode eller navn", async () => {
+  const { languageCode } = await import("./product-language.ts");
+  assert.equal(languageCode("zh"), "zh");
+  assert.equal(languageCode("zh-CN"), "zh");
+  assert.equal(languageCode("Chinese"), "zh");
+  assert.equal(languageCode("kinesisk"), "zh");
+  assert.equal(languageCode("nb-NO"), "no");
+  assert.equal(languageCode("Thai"), "th");
+  assert.equal(languageCode(""), null);
+  assert.equal(languageCode("ukendt"), null);
+});

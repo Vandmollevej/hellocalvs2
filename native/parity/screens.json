@@ -1566,6 +1566,14 @@
       ]
     },
     {
+      "route": "/settings/display/translation",
+      "web": "src/app/settings/display/translation/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
       "route": "/settings/display/uncertainty",
       "web": "src/app/settings/display/uncertainty/page.tsx",
       "status": "ported",

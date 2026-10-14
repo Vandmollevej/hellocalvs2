@@ -17,6 +17,7 @@ object SettingsRoutes {
         ScreenRoute("/settings/display/sleep-quality") { SleepQualitySettingsScreen(it) },
         ScreenRoute("/settings/display/tips") { TipsSettingsScreen(it) },
         ScreenRoute("/settings/display/uncertainty") { UncertaintySettingsScreen(it) },
+        ScreenRoute("/settings/display/translation") { TranslationSettingsScreen(it) },
         ScreenRoute("/settings/control-log") { SettingsControlLogScreen(it) },
         ScreenRoute("/settings/delete-permissions") { SettingsDeletePermissionsScreen(it) },
         ScreenRoute("/settings/import") { SettingsImportScreen(it) },

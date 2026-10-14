@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -185,6 +186,8 @@ fun AddProductView(
     val openedAt = remember { FoodTime.now() }
     val scrollState = rememberScrollState()
     var detailsY by remember { mutableStateOf(0f) }
+    // "Vis original"/"Vis oversættelse": the user's choice on the page, so polling doesn't switch back.
+    var textChoice by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(id, registration) {
         profile = FoodProfile.refresh()
@@ -243,7 +246,7 @@ fun AddProductView(
         delay(PENDING_POLL_MS)
         runCatching {
             val product = ApiJson.decodeFromJsonElement(ProductResponse.serializer(), Api.get("/api/products/$id")).product
-            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(product, registration))
+            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(withTextChoice(product, textChoice), registration))
         }
     }
 
@@ -460,6 +463,18 @@ fun AddProductView(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                             Column(Modifier.fillMaxWidth()) {
+                                // The translated-from line sits above the title without moving it or the image (DECISIONS 2026-10-14).
+                                val translation = view.translation
+                                if (translation != null && !isPending("name")) {
+                                    TranslationNote(translation) {
+                                        val current = (state as? LoadState.Loaded)?.product
+                                        if (current?.translation != null) {
+                                            val swapped = swapProductTexts(current)
+                                            textChoice = swapped.translation?.showing
+                                            state = LoadState.Loaded(swapped)
+                                        }
+                                    }
+                                }
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
                                 else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
                                 HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
@@ -1067,5 +1082,30 @@ private fun ExtendedNutritionSection(
                 }
             }
         }
+    }
+}
+
+/** Small grey line above the product title: "Oversat til dansk fra kinesisk. Vis original" — takes no layout space. */
+@Composable
+private fun TranslationNote(translation: ProductTranslationInfo, onToggle: () -> Unit) {
+    val t = LocalTranslator.current
+    val source = translation.sourceLanguageName
+    val note = if (translation.showing == "original") {
+        if (source != null) t.t("addProduct.originalLanguage", "source" to source) else t.t("addProduct.originalText")
+    } else {
+        if (source != null) t.t("addProduct.translatedFrom", "target" to translation.targetLanguageName, "source" to source)
+        else t.t("addProduct.translatedTo", "target" to translation.targetLanguageName)
+    }
+    val link = t.t(if (translation.showing == "translated") "addProduct.showOriginal" else "addProduct.showTranslation")
+    Row(
+        Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            // Zero height: drawn in the gap above the title (web: absolute bottom-full mb-1).
+            layout(placeable.width, 0) { placeable.place(0, -placeable.height - 4.dp.roundToPx()) }
+        },
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        HcText(note, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+        HcText(link, HcTypeRoles.Caption, Modifier.clickable(onClick = onToggle), color = HcColors.TextSecondary, underline = true)
     }
 }
