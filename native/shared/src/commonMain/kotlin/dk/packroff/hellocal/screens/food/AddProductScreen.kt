@@ -477,10 +477,16 @@ fun AddProductView(
                                     }
                                 }
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
-                                else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
+                                // Without a green line the name takes at least two hero lines:
+                                // a short name keeps the empty line, a two-line name gets no extra space.
+                                else Text(
+                                    localizedDecimals(productTitle),
+                                    style = HcTypeRoles.Hero.style(HcColors.Black),
+                                    minLines = if (subtitle.isEmpty()) 2 else 1,
+                                )
                                 // Size and variant are read together with the name.
                                 if (isPending("name")) FoodSkeleton(Modifier.padding(vertical = 4.dp).width(150.dp).height(28.dp))
-                                else HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
+                                else if (subtitle.isNotEmpty()) HcText(localizedDecimals(subtitle), HcTypeRoles.Hero, color = HcColors.Green)
                             }
                         }
 
