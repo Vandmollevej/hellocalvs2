@@ -12,3 +12,9 @@ const flow = readFileSync(new URL("../components/camera/ProductCaptureFlow.tsx",
 test("Tilføj-kameraet beskærer ikke forsidefotoet til en AI-boks", () => {
   assert.doesNotMatch(flow, /cropToObject/);
 });
+
+// Forsidefotoet er søgerens kvadrat — ikke hele 9:16-rammen, som fik varen
+// til at se langt væk ud i forhold til søgeren (bruger 2026-10-15).
+test("Tilføj-kameraets fotos er det kvadrat, brugeren så i søgeren", () => {
+  assert.match(flow, /const PHOTO_CROP: StillCrop = "square";/);
+});
