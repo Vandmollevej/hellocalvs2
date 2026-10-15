@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -129,33 +127,23 @@ internal fun BoxScope.BarcodeGuide() {
     }
 }
 
-/** .hf-scan-heading__title (24/30 bold) and the small struck-through done line (13/18). */
+/** .hf-scan-heading__title (24/30 bold). */
 private val ScanTitleRole = HcTypeRole(24f, FontWeight(700), 30f, true, HcColors.White)
-private val ScanDoneRole = HcTypeRole(13f, FontWeight(700), 18f, false, HcColors.White)
 private val StepDoneTitleRole = HcTypeRole(28f, FontWeight(700), 34f, true, HcColors.White)
 
 /**
  * ScanHeading (src/components/camera/ScanHeading.tsx): the numbered step
- * heading at the top of the viewport in the dark gradient, with the most
- * recently completed step small and struck through with a check above it.
+ * heading at the top of the viewport in the dark gradient, alone — the
+ * completed step only shows briefly in StepDoneOverlay (user 2026-10-15).
  */
 @Composable
-internal fun BoxScope.ScanHeading(title: String, done: String?) {
+internal fun BoxScope.ScanHeading(title: String) {
     Column(
         Modifier.align(Alignment.TopCenter).fillMaxWidth()
             .background(Brush.verticalGradient(listOf(HcColors.Black.copy(alpha = 0.6f), HcColors.Black.copy(alpha = 0f))))
             .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        if (done != null) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.alpha(0.9f)) {
-                Text(done, style = ScanDoneRole.style(HcColors.White).copy(textDecoration = TextDecoration.LineThrough))
-                Box(Modifier.size(18.dp).clip(CircleShape).background(HcColors.Positive), contentAlignment = Alignment.Center) {
-                    HcIcon("Check", size = 12.dp, color = HcColors.White, stroke = 3.5f)
-                }
-            }
-        }
         HcText(title, ScanTitleRole, color = HcColors.White, align = TextAlign.Center)
     }
 }
@@ -200,7 +188,7 @@ internal fun BoxScope.StepDoneOverlay(titles: List<String>) {
                     HcText(title, StepDoneTitleRole, color = HcColors.White, align = TextAlign.Center)
                     Box(Modifier.fillMaxWidth(strike).height(3.dp).clip(RoundedCornerShape(2.dp)).background(HcColors.White))
                 }
-                Box(Modifier.size(56.dp).scale(check).clip(CircleShape).background(HcColors.Positive), contentAlignment = Alignment.Center) {
+                Box(Modifier.size(56.dp).scale(check).clip(CircleShape).background(HcColors.Brand), contentAlignment = Alignment.Center) {
                     HcIcon("Check", size = 34.dp, color = HcColors.White, stroke = 3f)
                 }
             }
@@ -231,10 +219,10 @@ internal fun BoxScope.PhotoWorkingOverlay(label: String) {
     }
 }
 
-/** CaptureCheckOverlay: a big check mark in the light signature green, no background (user 2026-10-14). */
+/** CaptureCheckOverlay: a big check mark in the dark signature green, no background (user 2026-10-14/15). */
 @Composable
 internal fun BoxScope.CheckBadge(size: Dp = 48.dp) {
     Box(Modifier.matchParentSize(), contentAlignment = Alignment.Center) {
-        HcIcon("Check", size = size, color = HcColors.Positive, stroke = 3.5f)
+        HcIcon("Check", size = size, color = HcColors.Brand, stroke = 3.5f)
     }
 }
