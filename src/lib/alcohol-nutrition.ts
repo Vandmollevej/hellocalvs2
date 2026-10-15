@@ -2,7 +2,8 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { callStructuredText } from "@/lib/product-ai";
 import { MACRO_SOURCE_KEYS } from "@/lib/nutrients";
-import { ALCOHOL_LABEL_EXEMPT_PERCENT, alcoholDrinkKcal } from "@/lib/alcohol-label";
+import { ALCOHOL_LABEL_EXEMPT_PERCENT, alcoholDrinkKcal, parseAlcoholPercent } from "@/lib/alcohol-label";
+import type { ProductFrontAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
 
 // Alkoholprocenten fra fotoene (docs/DECISIONS.md 2026-10-15): gemmes som
@@ -122,5 +123,119 @@ export async function estimateAlcoholNutrition(productId: string): Promise<boole
   } catch (error) {
     console.error("[alcohol-nutrition] skøn fejlede", productId, errorText(error));
     return false;
+  }
+}
+
+const PERCENT_SCHEMA = {
+  type: "object",
+  properties: {
+    alcoholic: { type: "boolean" },
+    alcoholPercent: { type: ["number", "null"] },
+    confidence: { type: "number" },
+  },
+  required: ["alcoholic", "alcoholPercent", "confidence"],
+  additionalProperties: false,
+};
+
+const PERCENT_SYSTEM = [
+  "Du afgør for Hello Cal, om en dagligvare er en alkoholisk drik, og i så fald dens alkoholprocent (% vol).",
+  "Brug din viden om brandet og varen (fx Verpoorten Original Eierlikör = 20 % vol).",
+  "Er varen ikke en alkoholisk drik, eller kender du ikke procenten, returnér alcoholPercent null.",
+  "confidence = 0-1, hvor sikker du er.",
+].join(" ");
+
+const PERCENT_MIN_CONFIDENCE = 0.7;
+const BACKFILL_BATCH = 20;
+
+// Brugerens fejlmelding 2026-10-15: Verpoorten stod stadig med 0 kcal, fordi
+// den blev scannet, før alkoholprocenten blev gemt. Scannede varer med 0 kcal
+// tjekkes én gang (products.alcoholCheckedAt): procenten fra den gemte
+// forsideaflæsning, ellers spørges OpenAI ud fra varetype og brand; er varen
+// en alkoholisk drik, skønnes næringen som ved en ny scanning. Registreringer
+// med 0 kcal får tallene med (0 var aldrig en rigtig værdi).
+export async function backfillAlcoholNutrition(now: Date = new Date()): Promise<number> {
+  const products = await prisma.product.findMany({
+    where: {
+      externalSource: null,
+      kcalPer100g: 0,
+      alcoholCheckedAt: null,
+      NOT: { pendingFields: { hasSome: ["name", "nutrition"] } },
+      aiAnalyses: { some: { kind: "FRONT" } },
+    },
+    select: {
+      id: true,
+      name: true,
+      subbrand: true,
+      variant: true,
+      productType: true,
+      brand: { select: { name: true } },
+      filters: { select: { alcoholPercent: true } },
+      aiAnalyses: { where: { kind: "FRONT" }, orderBy: { createdAt: "desc" }, take: 1, select: { prediction: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: BACKFILL_BATCH,
+  });
+  let estimated = 0;
+  for (const product of products) {
+    try {
+      let percent = product.filters?.alcoholPercent ?? null;
+      if (percent == null) {
+        const front = product.aiAnalyses[0]?.prediction as ProductFrontAnalysis | null | undefined;
+        percent =
+          front?.alcoholPercent ?? parseAlcoholPercent([...(front?.visibleText ?? []), ...(front?.claims ?? [])].join(" "));
+      }
+      if (percent == null && (product.name.trim() || product.brand?.name)) {
+        const { value } = await callStructuredText<{ alcoholic: boolean; alcoholPercent: number | null; confidence: number }>({
+          system: PERCENT_SYSTEM,
+          text: [
+            `Vare: ${product.productType || product.name}`,
+            product.brand?.name ? `Brand: ${product.brand.name}` : "",
+            product.subbrand ? `Subbrand: ${product.subbrand}` : "",
+            product.variant ? `Variant: ${product.variant}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+          schemaName: "hello_cal_alcohol_percent",
+          schema: PERCENT_SCHEMA,
+        });
+        const sure = value.alcoholic && value.confidence >= PERCENT_MIN_CONFIDENCE;
+        if (sure && value.alcoholPercent && value.alcoholPercent > 0 && value.alcoholPercent < 100) percent = value.alcoholPercent;
+      }
+      if (percent != null && percent > 0) {
+        await recordAlcoholPercent(product.id, percent);
+        if (await estimateAlcoholNutrition(product.id)) {
+          estimated += 1;
+          await refreshZeroKcalSnapshots(product.id);
+        }
+      }
+    } catch (error) {
+      console.error("[alcohol-nutrition] efterudfyldning fejlede", product.id, errorText(error));
+    }
+    await prisma.product.update({ where: { id: product.id }, data: { alcoholCheckedAt: now } });
+  }
+  return estimated;
+}
+
+async function refreshZeroKcalSnapshots(productId: string) {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
+  });
+  if (!product) return;
+  const registrations = await prisma.registration.findMany({
+    where: { productId, kcalSnapshot: 0 },
+    select: { id: true, amountGrams: true },
+  });
+  for (const registration of registrations) {
+    const factor = registration.amountGrams / 100;
+    await prisma.registration.update({
+      where: { id: registration.id },
+      data: {
+        kcalSnapshot: product.kcalPer100g * factor,
+        proteinSnapshot: product.proteinPer100g * factor,
+        carbsSnapshot: product.carbsPer100g * factor,
+        fatSnapshot: product.fatPer100g * factor,
+      },
+    });
   }
 }

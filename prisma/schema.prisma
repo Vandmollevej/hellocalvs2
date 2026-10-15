@@ -1456,6 +1456,10 @@ model Product {
   // produkttype er <brand subbrand variant>?" (src/lib/product-type-name.ts).
   // null = ikke spurgt endnu; vedligeholdet spørger én gang.
   productTypeAskedAt     DateTime?
+  // Scannede varer med 0 kcal: hvornår det er tjekket, om varen er en
+  // alkoholisk drik, hvis næring kan skønnes (src/lib/alcohol-nutrition.ts).
+  // null = ikke tjekket endnu; vedligeholdet tjekker én gang.
+  alcoholCheckedAt       DateTime?
   // Landet, varen/retten sælges i (ISO, fx "DK", "DE"); sat af importen for
   // HelloFresh fra alle lande (scripts/hellofresh-import/markets.py). null = ukendt.
   market                 String?

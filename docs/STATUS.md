@@ -2,6 +2,7 @@
 
 - Ingen varetype på forsiden → OpenAI spørges "Hvilken produkttype er <brand subbrand variant>?", før varen hedder brand + subbrand. Vedligeholdet spørger én gang for scannede varer, der allerede hedder brand + subbrand (fx Verpoorten → Eierlikör, vist som Æggelikør via oversættelsen). Migration `20261015190000_product_type_asked`. Ikke prøvet mod OpenAI/rigtig database her.
 - Opdater-banneret glider op og ned (300 ms) i stedet for at smække (web + native). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
+- Scannede alkoholiske drikke med 0 kcal (fx Verpoorten) får alkoholprocent og næring skønnet efter type af vedligeholdet — uden ny scanning; registreringer med 0 kcal følger med.
 
 ## 2026-10-15: Udrulningerne — kun den nyeste
 
