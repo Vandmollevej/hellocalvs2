@@ -12,7 +12,8 @@ import {
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
 import { appLocaleOf, needsTranslation } from "@/lib/product-language";
 import { languageName, refreshProductLanguage, translationFor } from "@/lib/product-translations";
-import { displayProductName } from "@/lib/product-placeholder-name";
+import { brandProductName, displayProductName } from "@/lib/product-placeholder-name";
+import { nameBrandOnlyProduct, RETRY_ASKED_BEFORE } from "@/lib/product-placeholder-repair";
 import { applyProductTexts, productTextsFor, translationPlacement, type ProductTranslationInfo } from "@/lib/product-text-swap";
 
 export async function GET(
@@ -138,6 +139,20 @@ export async function GET(
         user && !product.privateOwnerId && !(await hasEarnedUpdatePoints(user.id, product.id).catch(() => true))
           ? updateKindsFor(productGaps(product))
           : [];
+      // Hedder varen kun brand + subbrand (fx "Verpoorten"), spørges OpenAI om
+      // varetypen i baggrunden (fx Eierlikör) — næste visning har navnet
+      // (brugerens regel 2026-10-15).
+      const brandOnlyName = brandProductName(product.brand?.name, product.subbrand).toLowerCase();
+      const plainName = product.name.trim().toLowerCase();
+      if (
+        !product.externalSource &&
+        (!product.productTypeAskedAt || product.productTypeAskedAt < RETRY_ASKED_BEFORE) &&
+        !product.pendingFields.includes("name") &&
+        product.brand &&
+        (!plainName || plainName === brandOnlyName || plainName === product.brand.name.trim().toLowerCase())
+      ) {
+        void nameBrandOnlyProduct(product.id).catch((error) => console.error("Product type naming failed", product.id, error));
+      }
       // Subbrandet står over brandet ved produktcirklen — som logo, hvis det
       // findes (docs/DECISIONS.md 2026-10-10).
       const subbrandLogoUrl = await findSubbrandLogoUrl(product.brand?.name, product.subbrand).catch((error) => {

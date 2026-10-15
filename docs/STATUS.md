@@ -28,6 +28,7 @@
 
 - "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; står varetypen ikke på forsiden, navngives den (Eierlikör), ellers brand + subbrand; varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes efter deploy og hver nat. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
 - Opfølgning: Verpoorten (40157818) hed stadig "Vare 40157818" efter deploy — engangsoprydningen sprang varer over, hvis navn hang som ventende, og AI-kaldet havde ingen tidsgrænse. Nu: oprydning hvert kvarter (også ventende navne efter 30 min, som så ryddes), 60 s tidsgrænse på tekstkaldet, og varesidens API viser aldrig reservenavnet (brand + subbrand i stedet).
+- Opfølgning 2: Verpoorten fik stadig ikke varetypen. Varer, der kun hedder brand (+ subbrand), springes ikke længere over, når forsideaflæsningen gav et navn eller mangler; et fejlet AI-kald markerer ikke varen som spurgt; alle varer spurgt før 2026-10-15 17:30 UTC spørges én gang til, og varesiden starter spørgsmålet i baggrunden, når varen vises.
 - Opdater-banneret ("Optjen X points …") foldes sammen, når varesiden scrolles nedad, og ud igen ved toppen (web + native). Se REGLER.md.
 
 ## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
