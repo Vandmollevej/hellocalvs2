@@ -717,13 +717,13 @@ fun AddProductView(
                         )
                     }
 
-                    if (view.barcodes.isNotEmpty() && view.createdByUserId != profile?.id) {
-                        HcButton(
-                            t.t("addProduct.reportBug"),
-                            onClick = { nav.push("/profile/report-bug?productId=$id") },
-                            leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
-                        )
-                    }
+                    // På alle varer — generiske, uden stregkode og egne
+                    // (brugerens regel 2026-10-15).
+                    HcButton(
+                        t.t("addProduct.reportBug"),
+                        onClick = { nav.push("/profile/report-bug?productId=$id") },
+                        leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
+                    )
                 }
             }
         }
