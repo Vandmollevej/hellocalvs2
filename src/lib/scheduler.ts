@@ -12,6 +12,7 @@ import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
 import { checkFrontImages } from "@/lib/front-image-check";
+import { runProductRechecks } from "@/lib/product-recheck";
 import { runSpellingCheck } from "@/lib/spelling-robot";
 import { runBackPhotoScan } from "@/lib/product-back-photos";
 import { assessOffProducts } from "@/lib/off-quality-job";
@@ -145,6 +146,7 @@ export function startScheduler() {
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
       "front-image-check": checkFrontImages,
+      "product-recheck": runProductRechecks,
       "off-quality": assessOffProducts,
       "spelling-check": runSpellingCheck,
       "back-photo-scan": runBackPhotoScan,

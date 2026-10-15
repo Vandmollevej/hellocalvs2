@@ -266,3 +266,31 @@ export async function submitProductRescan(productId: string, data: CaptureData, 
   });
   if (!response.ok) throw new Error(`Rescan failed (${response.status})`);
 }
+
+// 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): varen er kendt, men over
+// to år gammel. Fotoene gemmes til nattens vurdering
+// (POST /api/products/[id]/quality-check); kunden går videre til varen med
+// dens tidligere info, uanset svaret.
+export async function submitProductQualityCheck(productId: string, data: CaptureData, marketRegion: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/products/${encodeURIComponent(productId)}/quality-check`, {
+      method: "POST",
+      signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
+      body: JSON.stringify({
+        marketRegion,
+        signals: data.languageSignals,
+        frontPhoto: data.frontPhoto,
+        nutritionPhoto: data.nutritionPhoto,
+        nutritionOcrText: data.nutritionOcrText,
+        nutritionOcrConfidence: data.nutritionOcrConfidence,
+        ingredientsPhoto: data.ingredientsOnNutritionPhoto ? undefined : data.ingredientsPhoto,
+        ingredientsOcrText: data.ingredientsOcrText,
+        ingredientsOcrConfidence: data.ingredientsOcrConfidence,
+      }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}

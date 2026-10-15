@@ -153,6 +153,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:50",
   },
   {
+    // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): kun om natten.
+    key: "product-recheck",
+    name: "Varer over to år: kvalitetstjek",
+    description:
+      "Vurderer de nye fotos, kunder har taget af varer, der har ligget i databasen i over to år: AI'en sammenligner det nye forsidefoto med originalen (ny grafik, eller er det nye foto bedre?) og læser energi og indhold. Uændrede varer lukkes; ændringer går til admin → Nye varer → 2-års tjek. Billeder, admin har valgt, fritlægges og sættes på varen samme nat.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:40",
+  },
+  {
     // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
     // listen under admin → Scan-invites → Open Food Facts-kontrol.
     key: "off-quality",
@@ -295,6 +306,17 @@ export const JOBS: JobDefinition[] = [
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,
     defaultRunAtTime: null,
+  },
+  {
+    // 2-års kvalitetstjek, intern AI først (docs/DECISIONS.md 2026-10-15).
+    key: "recheck-local",
+    name: "Varer over to år: lokal billedsammenligning",
+    description:
+      "Sammenligner kundens nye forsidefoto af varer over to år med varens nuværende billede — lokalt på serveren (DINOv2, farve, struktur) uden OpenAI. Kvalitetstjekket kl. 02:40 spørger kun OpenAI, når sammenligningen er i tvivl.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:15",
   },
   {
     key: "rema1000-import",
