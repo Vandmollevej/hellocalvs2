@@ -1,3 +1,7 @@
+## 2026-10-15: Import fra anden app — indgang, side pr. app og startguide
+
+- Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
 
 - Ny robot `back-photo-local` læser bagsidebillederne lokalt (tesseract + mærkesøgning); nattens `back-photo-scan` spørger kun OpenAI, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; tvivlsomme ord vurderes af AI og bliver forslag. Se DECISIONS 2026-10-15.

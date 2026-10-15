@@ -18,6 +18,7 @@ import {
   IconClipboardHeart,
   IconCreditCard,
   IconEye,
+  IconFileImport,
   IconFileText,
   IconHelp,
   IconHeartbeat,
@@ -153,6 +154,7 @@ export const WEB_SETTINGS: WebNavItem[] = [
   // Starter "Lær appen at kende" forfra (samme handling som i appens indstillinger).
   { key: "kontoopsaetning", href: "/settings?guide=1", labelKey: "settings.learnTheApp", icon: IconRefresh, action: true },
   { key: "integrationer", href: "/settings/integrations", labelKey: "web.integrations", icon: IconPlugConnected },
+  { key: "import", href: "/settings/import", labelKey: "settings.import", icon: IconFileImport },
   { key: "kommunikation", href: "/profile/notifications", labelKey: "settings.notifications", icon: IconBell },
   {
     key: "visning",

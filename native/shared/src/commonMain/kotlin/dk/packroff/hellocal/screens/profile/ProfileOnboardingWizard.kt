@@ -65,7 +65,7 @@ import kotlinx.serialization.json.jsonPrimitive
 // — the start guide in a bottom sheet. On Profil it is opened by "Lær appen at
 // kende" (forceVisible). Closing by dragging/scrim counts as "Påmind mig senere".
 
-private val ALL_STEPS = listOf("units", "sleep-pattern", "shift-work", "daily-log-preference", "calendar-view", "pregnancy", "activity", "health-import")
+private val ALL_STEPS = listOf("units", "sleep-pattern", "shift-work", "daily-log-preference", "calendar-view", "pregnancy", "activity", "health-import", "migration-import")
 private val ACTIVITY_PAGES = listOf("intro", "work", "walkStand", "transport", "steps", "training", "intensity", "result", "goal")
 private val WORK_TYPES = listOf("SITTING", "MOSTLY_SITTING", "MIXED", "MOSTLY_STANDING", "PHYSICAL")
 private val WALK_STAND_HOURS = listOf("UNDER_1", "H1_2", "H2_4", "H4_6", "OVER_6")
@@ -133,6 +133,13 @@ private val ONBOARDING_TERMS = mapOf(
             "Henter du data fra Apple Sundhed, Health Connect eller et ur, henter Hello Cal kun de datatyper, du selv slår til.",
             "Du kan slå hver datatype fra og afbryde forbindelsen når som helst under Indstillinger → Integrationer. Når du afbryder, henter vi ikke flere data.",
             "Data fra andre apps kan være forkerte, forsinkede eller mangle, og Hello Cal kan ikke stå inde for dem. Den anden app har sine egne vilkår.",
+        ),
+    ),
+    "migration-import" to ProfileTermsHint(
+        "integrationer",
+        listOf(
+            "Importerer du fra en anden app, aflæses din skærmoptagelse eller dine skærmbilleder én gang. Billederne gemmes ikke — kun de rækker, du vælger at importere.",
+            "Tallene kommer fra den anden app og kan være forkerte eller mangle. Du ser rækkerne igennem, før de lægges ind, og kan altid rette eller slette dem bagefter.",
         ),
     ),
 )
@@ -415,6 +422,18 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
                             save(mapOf("healthImportRequested" to true))
                             if (isLastStep) close("complete") else goNext()
                         }, kind = HcButtonKind.Secondary)
+                    }
+                    "migration-import" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Heading(t.t("onboarding.migrationImportQuestion"))
+                        HcText(t.t("onboarding.migrationImportHint"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                        // Importér nu: the guide completes and Import opens.
+                        HcButton(t.t("onboarding.importNow"), onClick = {
+                            close("complete")
+                            nav.push("/settings/import")
+                        }, kind = HcButtonKind.Secondary)
+                        HcButton(t.t("onboarding.importLater"), onClick = {
+                            if (isLastStep) close("complete") else goNext()
+                        }, kind = HcButtonKind.Text)
                     }
                 }
             }

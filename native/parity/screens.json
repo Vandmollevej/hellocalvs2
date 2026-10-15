@@ -1636,6 +1636,14 @@
       ]
     },
     {
+      "route": "/settings/import/[provider]",
+      "web": "src/app/settings/import/[provider]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsImportProviderScreen.kt"
+      ]
+    },
+    {
       "route": "/settings/integrations",
       "web": "src/app/settings/integrations/page.tsx",
       "status": "ported",

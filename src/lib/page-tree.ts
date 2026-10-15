@@ -282,7 +282,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Integrationer",
             children: [
               { path: "/settings/integrations/[app]", label: "Integration" },
-              { path: "/settings/import", label: "Flyt fra MyFitnessPal / Lifesum" },
+              {
+                path: "/settings/import",
+                label: "Import",
+                children: [{ path: "/settings/import/[provider]", label: "Import fra MyFitnessPal / Lifesum" }],
+              },
             ],
           },
           {

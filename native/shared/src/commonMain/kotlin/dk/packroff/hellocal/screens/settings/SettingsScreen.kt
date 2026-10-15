@@ -122,6 +122,7 @@ fun SettingsScreen(args: RouteArgs) {
         add(SettingsSearchItem("Adjustments", t.t("settings.setupTitle"), { nav.push("/profile/settings") }))
         add(SettingsSearchItem("Refresh", t.t("settings.learnTheApp"), { startOnboarding() }))
         add(SettingsSearchItem("PlugConnected", t.t("settings.integrations"), { nav.push("/settings/integrations") }))
+        add(SettingsSearchItem("FileImport", t.t("settings.import"), { nav.push("/settings/import") }))
         add(SettingsSearchItem("Bell", t.t("settings.notifications"), { nav.push("/profile/notifications") }))
         add(SettingsSearchItem("Home2", t.t("settings.frontPage"), { nav.push("/settings/display/front-page") }))
         add(SettingsSearchItem("Eye", t.t("settings.resultsDisplay"), { nav.push("/profile/settings/results") }))
@@ -188,7 +189,9 @@ fun SettingsScreen(args: RouteArgs) {
                 }
 
                 SettingsAccordionCard {
-                    SettingsChevronRow(t.t("settings.integrations"), { nav.push("/settings/integrations") }, icon = "PlugConnected", divider = false)
+                    SettingsChevronRow(t.t("settings.integrations"), { nav.push("/settings/integrations") }, icon = "PlugConnected")
+                    // Import: move data from MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-15).
+                    SettingsChevronRow(t.t("settings.import"), { nav.push("/settings/import") }, icon = "FileImport", divider = false)
                 }
 
                 // Beskeder ligger på Profil (ejerens valg 2026-10-03).

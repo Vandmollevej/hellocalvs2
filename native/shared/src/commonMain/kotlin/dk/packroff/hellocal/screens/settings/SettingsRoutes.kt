@@ -21,6 +21,7 @@ object SettingsRoutes {
         ScreenRoute("/settings/control-log") { SettingsControlLogScreen(it) },
         ScreenRoute("/settings/delete-permissions") { SettingsDeletePermissionsScreen(it) },
         ScreenRoute("/settings/import") { SettingsImportScreen(it) },
+        ScreenRoute("/settings/import/[provider]") { SettingsImportProviderScreen(it) },
         ScreenRoute("/settings/integrations") { SettingsIntegrationsScreen(it) },
         ScreenRoute("/settings/integrations/[app]", fullScreen = true) { SettingsIntegrationsAppScreen(it) },
         ScreenRoute("/settings/payment") { SettingsPaymentScreen(it) },

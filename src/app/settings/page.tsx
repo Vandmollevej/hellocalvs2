@@ -8,6 +8,7 @@ import {
   IconWorld,
   IconRefresh,
   IconPlugConnected,
+  IconFileImport,
   IconCreditCard,
   IconBell,
   IconEye,
@@ -114,6 +115,7 @@ export default function SettingsPage() {
       },
     },
     { icon: <IconPlugConnected size={20} />, label: t("settings.integrations"), href: "/settings/integrations" },
+    { icon: <IconFileImport size={20} />, label: t("settings.import"), href: "/settings/import" },
     { icon: <IconBell size={20} />, label: t("settings.notifications"), href: "/profile/notifications" },
     { icon: <IconArrowsSort size={20} />, label: t("circleBadges.priorityTitle"), href: "/settings/display/priority" },
     { icon: <IconHome2 size={20} />, label: t("settings.frontPage"), href: "/settings/display/front-page" },
@@ -235,6 +237,12 @@ export default function SettingsPage() {
             icon={<IconPlugConnected size={20} />}
             label={t("settings.integrations")}
             href="/settings/integrations"
+          />
+          {/* Import: flyt data fra MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-15). */}
+          <ChevronRow
+            icon={<IconFileImport size={20} />}
+            label={t("settings.import")}
+            href="/settings/import"
             divider={false}
           />
         </AccordionCard>

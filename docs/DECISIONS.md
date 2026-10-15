@@ -8,6 +8,14 @@ Brugerens krav: administration af generiske produkter i adminpanelet med manuel 
 - **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
 - **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
 - **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+## 2026-10-15: Import — egen indgang, side pr. app og trin i startguiden
+
+Brugerens ord: "i flow ved oprettelse: Har du allerede en konto hos anden udbyder kan du måske importere den. Importer nu/ senere. Sæt også op under indstillinger med Import … Benytter du allerede myFitnessPal eller [den anden] kan du importere dine data automatisk. Benytter du en anden udbyder … så kontakt os (kontaktformular). Nedenunder knap til hhv myfitnesspal og den anden. Det leder til siden med optagelse. Når man har valgt hvilken man importerer fra kender systemet jo også algoritmen allerede."
+
+- **Indstillinger → Import** (`/settings/import`, web + native + webmenu): teksten om MyFitnessPal/Lifesum, linjen om andre udbydere med "Kontakt os" (kontaktformularen åbner med kategori Data og emnet "Import fra en anden udbyder" udfyldt; `?category=&subject=` virker generelt) og én knap pr. app i bunden. Lifesum er "den anden" (valgt 2026-10-06; den mest brugte efter MyFitnessPal i Skandinavien).
+- **Side pr. app** (`/settings/import/[provider]`, `myfitnesspal`/`lifesum`): den tidligere importside uden app-valget — appen ligger i adressen, så aflæsningen kender appens opsætning fra start. Listen over apps står ét sted: `src/lib/migration-sources.ts` (native: `SETTINGS_MIGRATION_SOURCES`). En ny app = en ny række der + dens opsætning i aflæsningen.
+- **Startguiden** (`OnboardingWizard` + native) har et sidste trin "Har du allerede en konto hos en anden udbyder?" med "Importér nu" (guiden fuldføres, Import åbner) og "Senere" (videre/fuldfør).
+- Integrationer → "Flyt fra en anden app" peger fortsat på `/settings/import`.
 
 ## 2026-10-15: 2-års kvalitetstjek — varer over to år fremstår som nye ved scanning
 

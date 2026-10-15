@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClose } from "@/components/hf/BottomSheet";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -44,7 +45,9 @@ type OnboardingUser = PregnancyValue & {
 // "daily logging" are automatically skipped if the user answers that they
 // have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
 // these steps are specified today (+ "calendar-view", user request 2026-09-29; + "pregnancy",
-// user request 2026-10-14, only for sex = FEMALE); more can be added to the wizard later.
+// user request 2026-10-14, only for sex = FEMALE; + "migration-import", user request
+// 2026-10-15: "Har du allerede en konto hos en anden udbyder?" Importér nu / senere);
+// more can be added to the wizard later.
 type StepId =
   | "units"
   | "sleep-pattern"
@@ -53,7 +56,8 @@ type StepId =
   | "calendar-view"
   | "pregnancy"
   | "activity"
-  | "health-import";
+  | "health-import"
+  | "migration-import";
 
 const ALL_STEPS: StepId[] = [
   "units",
@@ -64,6 +68,7 @@ const ALL_STEPS: StepId[] = [
   "pregnancy",
   "activity",
   "health-import",
+  "migration-import",
 ];
 
 // Aktivitetstrinnet har egne sider (docs/ACTIVITY-PAL.md). Intensitet
@@ -87,6 +92,9 @@ export function OnboardingWizard({
   onClose,
 }: { forceVisible?: boolean; onClose?: () => void } = {}) {
   const { t } = useTranslation();
+  const router = useRouter();
+  // Side, der åbnes, når arket er gledet ud (fx "Importér nu" → /settings/import).
+  const openAfterCloseRef = useRef<string | null>(null);
   const [user, setUser] = useState<OnboardingUser | null>(null);
   const [visible, setVisible] = useState(false);
   const [hasRegularSleep, setHasRegularSleep] = useState<boolean | null>(null);
@@ -161,6 +169,9 @@ export function OnboardingWizard({
     else save({ onboardingRemindLaterAt: new Date().toISOString() });
     setVisible(false);
     onClose?.();
+    const href = openAfterCloseRef.current;
+    openAfterCloseRef.current = null;
+    if (href) router.push(href);
   }
 
   const activityPages = visibleActivityPages(activityAnswers);
@@ -390,6 +401,34 @@ export function OnboardingWizard({
                 else goNext();
               }}
             />
+          </div>
+        )}
+
+        {currentStep === "migration-import" && (
+          <div className="flex flex-col gap-4">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
+              {t("onboarding.migrationImportQuestion")}
+            </h2>
+            <p className="hf-type-body text-text-secondary">{t("onboarding.migrationImportHint")}</p>
+            {/* Importér nu: guiden fuldføres, og Import åbner, når arket er gledet ud. */}
+            <BottomSheetCloseButton
+              onClick={() => {
+                exitRef.current = "complete";
+                openAfterCloseRef.current = "/settings/import";
+              }}
+              className="hf-control hf-btn-secondary w-full"
+            >
+              {t("onboarding.importNow")}
+            </BottomSheetCloseButton>
+            {isLastStep ? (
+              <BottomSheetCloseButton onClick={() => (exitRef.current = "complete")} className="hf-control hf-btn-text w-full">
+                {t("onboarding.importLater")}
+              </BottomSheetCloseButton>
+            ) : (
+              <button type="button" onClick={goNext} className="hf-control hf-btn-text w-full">
+                {t("onboarding.importLater")}
+              </button>
+            )}
           </div>
         )}
       </div>
