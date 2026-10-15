@@ -175,6 +175,29 @@ export async function saveBarcodePhoto(
   }
 }
 
+// Energi-/indholdstrinnets hele, ubeskårne kamerabillede (docs/DECISIONS.md
+// 2026-10-15) uploades under flowet og kobles til varen ved oprettelsen;
+// nattens robot analyserer det én gang (mærkninger, finlæsning, stavekontrol).
+export const BACK_PHOTO_TIMEOUT_MS = 60_000;
+
+export async function uploadBackPhoto(
+  photo: { url: string; width: number; height: number },
+  step: "nutrition" | "ingredients",
+  flowId: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/products/back-photos", {
+      method: "POST",
+      signal: AbortSignal.timeout(BACK_PHOTO_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
+      body: JSON.stringify({ photo: photo.url, step, width: photo.width, height: photo.height }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 // Uden tidsgrænse stod en hængende upload som et sort, låst kamera, mens
 // serveren allerede havde oprettet varen (bruger 2026-10-14).
 export const CREATE_TIMEOUT_MS = 60_000;

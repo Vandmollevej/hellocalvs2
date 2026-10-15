@@ -130,6 +130,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:15",
   },
   {
+    // Ubeskårne bagsidebilleder (docs/DECISIONS.md 2026-10-15): hvert billede
+    // analyseres præcis én gang og indgår aldrig i senere kørsler.
+    key: "back-photo-scan",
+    name: "Bagsidebilleder: mærkninger og finlæsning",
+    description:
+      "Analyserer hvert nyt ubeskåret bagsidebillede fra Tilføj-kameraet én gang: mærkninger og certificeringer, der ikke står på forsiden (gemmes som varens mærkater og udfylder tomme filtre), finlæsning af ingrediensliste, næringsdeklaration og øvrig tekst, og udvidet stavekontrol, hvor forskelle mellem varens ingrediensliste og den finlæste tekst bliver forslag under Stavekontrol. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:20",
+  },
+  {
     // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
     // listen under admin → Scan-invites → Open Food Facts-kontrol.
     key: "off-quality",

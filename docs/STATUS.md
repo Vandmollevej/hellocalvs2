@@ -1,3 +1,9 @@
+## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
+
+- Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
+- Ny robot `back-photo-scan` (04:20): ét AI-kald pr. billede, præcis én gang. Mærkninger fra bagsiden → `product_labels` + tomme filtre. Finlæst ingrediensliste/næring/øvrig tekst gemmes. Forskelle mod varens ingrediensliste → forslag under Stavekontrol ("Finlæsning af bagsidebillede").
+- **Migration `20261015060000_product_back_photos` skal med deployet.** Prøvet lokalt mod Postgres med falsk OpenAI-svar: kobling før/efter oprettelse, mærke gemt uden at forsidens label-scan markeres, to staveforslag (SOIASAUCE→SOJASAUCE, krydderler→krydderier), anden kørsel analyserer intet igen. Native ikke kompileret lokalt (CI "native").
+
 ## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
 
 - Udløseren tager nu fotoet i trykøjeblikket, og trinnet er klaret med det samme. Før blev energi-/indholdsfotoet først taget efter 1–3 s lokal OCR.

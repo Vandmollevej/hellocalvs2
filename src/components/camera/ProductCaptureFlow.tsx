@@ -36,6 +36,7 @@ import {
   readFrontPhoto,
   readLabelPhoto,
   saveBarcodePhoto,
+  uploadBackPhoto,
   type CaptureData,
   type CaptureStep,
   type FrontRead,
@@ -53,7 +54,15 @@ import {
   type CameraControls,
 } from "@/lib/camera-controls";
 import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
-import { cameraVideoConstraints, captureStill, captureVideoFrame, stillPhotoSupported, type Still, type StillCrop } from "@/lib/camera-still";
+import {
+  cameraVideoConstraints,
+  captureStill,
+  captureStillWithFull,
+  captureVideoFrame,
+  stillPhotoSupported,
+  type Still,
+  type StillCrop,
+} from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog, scanLogPhoto } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -167,7 +176,6 @@ function labelFlash(frame: Frame, regions: LabelRegions, need?: LabelNeed): Flas
 type FrontPreRead = { at: number; read: FrontRead; reads: number };
 type LabelPreRead = { at: number; attempt: LabelAttempt<LiveFrame> | null; reads: number };
 type PreReadView = {
-  reading: boolean;
   reads: number;
   textFound: boolean;
   brand: string | null;
@@ -175,7 +183,7 @@ type PreReadView = {
   nutrition: boolean;
   ingredients: boolean;
 };
-const EMPTY_PRE_READ: PreReadView = { reading: false, reads: 0, textFound: false, brand: null, duplicate: null, nutrition: false, ingredients: false };
+const EMPTY_PRE_READ: PreReadView = { reads: 0, textFound: false, brand: null, duplicate: null, nutrition: false, ingredients: false };
 const EMPTY_LABEL_READ: LabelRead = { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null };
 
 function wait(ms: number) {
@@ -269,6 +277,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // arbejdet, oprettelsen venter på.
   const [processing, setProcessing] = useState<Partial<Record<CaptureStep, boolean>>>({});
   const pendingPhotosRef = useRef<Promise<unknown>[]>([]);
+  const inFlightRef = useRef<Partial<Record<CaptureStep, { shot: number; count: number }>>>({});
 
   const scanning = step === "barcode" && !done.barcode;
   const [cameraControls, setCameraControls] = useState<CameraControls>(NO_CAMERA_CONTROLS);
@@ -844,9 +853,19 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre
   // videobilleder); fejler det, bruges udløserens eget videobillede. Kaldes i
   // samme øjeblik, som udløseren trykkes (brugerens krav 2026-10-15).
-  async function takeStill(step: CaptureStep, fallback: LiveFrame): Promise<Still> {
+  // Energi/indhold tager også hele, ubeskårne kamerabillede af samme billede
+  // og uploader det til nattens engangsanalyse (docs/DECISIONS.md 2026-10-15).
+  async function takeStill(step: CaptureStep, fallback: LiveFrame, shot = 0): Promise<Still> {
     const startedAt = Date.now();
-    const still = (await captureStill(videoRef.current, liveCrop(step))) ?? fallback;
+    let captured: Still | null;
+    if (step === "nutrition" || step === "ingredients") {
+      const pair = await captureStillWithFull(videoRef.current, liveCrop(step));
+      captured = pair?.still ?? null;
+      if (pair) trackProcessing(step, shot, uploadFullPhoto(step, pair.full));
+    } else {
+      captured = await captureStill(videoRef.current, liveCrop(step));
+    }
+    const still = captured ?? fallback;
     scanLog(flowId, "photo_captured", {
       message: `Foto til trinnet "${step}": ${still === fallback ? "udløserens videobillede" : still.source === "photo" ? "stillbillede" : "videobillede"} ${still.width}×${still.height}, skarphed ${still.sharpness}`,
       barcode: dataRef.current.barcode,
@@ -854,6 +873,20 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness, stillPhoto: stillPhotoSupported() },
     });
     return still;
+  }
+
+  async function uploadFullPhoto(step: "nutrition" | "ingredients", full: Still) {
+    const startedAt = Date.now();
+    const ok = await uploadBackPhoto(full, step, flowId);
+    scanLog(flowId, ok ? "back_photo_uploaded" : "back_photo_failed", {
+      level: ok ? "info" : "warn",
+      message: ok
+        ? `Ubeskåret bagsidebillede uploadet (${step}, ${full.width}×${full.height})`
+        : `Det ubeskårne bagsidebillede kunne ikke uploades (${step})`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - startedAt,
+      data: { step, width: full.width, height: full.height, bytes: Math.round(full.url.length * 0.75) },
+    });
   }
 
   // Forlæsningen (brugerens krav 2026-10-15): mens brugeren sigter, læses et
@@ -865,7 +898,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     if (current === "barcode" || preReadBusyRef.current) return;
     preReadBusyRef.current = true;
     const runId = runIdRef.current;
-    setPreRead((view) => (view.reading ? view : { ...view, reading: true }));
     try {
       if (current === "front") {
         const read = await readFrontPhoto(frame.url, ocrLanguages(), flowId, { preRead: true });
@@ -959,10 +991,17 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
   // Et billede, der stadig behandles efter udløseren: trinnets knap viser
   // "Behandles …", og oprettelsen venter på det (højst PENDING_PHOTOS_WAIT_MS).
+  // Et trin kan have flere ting i gang (aflæsning + upload af hele billedet):
+  // knappen viser "Behandles", til alle er færdige.
   function trackProcessing(step: CaptureStep, shot: number, work: Promise<unknown>) {
+    const entry = inFlightRef.current[step];
+    inFlightRef.current[step] = entry?.shot === shot ? { shot, count: entry.count + 1 } : { shot, count: 1 };
     setProcessing((current) => ({ ...current, [step]: true }));
     const settled = work.catch(() => {}).finally(() => {
-      if (shotRef.current[step] === shot) setProcessing((current) => ({ ...current, [step]: false }));
+      const current = inFlightRef.current[step];
+      if (!current || current.shot !== shot) return;
+      current.count -= 1;
+      if (current.count <= 0 && shotRef.current[step] === shot) setProcessing((state) => ({ ...state, [step]: false }));
     });
     pendingPhotosRef.current.push(settled);
   }
@@ -1190,7 +1229,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     flashRef.current = true;
     const shot = (shotRef.current[current] ?? 0) + 1;
     shotRef.current[current] = shot;
-    const still = takeStill(current, live);
+    const still = takeStill(current, live, shot);
     scanLog(flowId, "shutter", {
       message: `Udløseren trykket på trinnet "${current}"`,
       barcode: dataRef.current.barcode,
@@ -1344,7 +1383,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     ? null
     : preReadFound.length
       ? preReadFound.join(" · ")
-      : preRead.reads >= 2 && !preRead.reading
+      : preRead.reads >= 2
         ? t(step === "front" ? "cameraCreate.preReadNothing" : "cameraCreate.labelNoText")
         : t("cameraCreate.preReading");
   // Trin, hvis billede stadig behandles efter udløseren.
@@ -1420,7 +1459,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           >
             <p className="hf-type-small hf-type-strong flex items-center gap-1.5 bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
               {!viewfinderNotice && preReadFound.length > 0 && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-accent" aria-hidden />}
-              {!viewfinderNotice && !preReadFound.length && preRead.reading && <HfLoader size={14} className="text-hf-white" />}
+              {!viewfinderNotice && !preReadFound.length && <HfLoader size={14} className="text-hf-white" />}
               {viewfinderNotice ?? preReadNotice}
             </p>
           </div>

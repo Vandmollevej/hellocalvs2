@@ -1,3 +1,18 @@
+## 2026-10-15: Ubeskårne bagsidebilleder — natlig engangsanalyse (mærkninger, finlæsning, udvidet stavekontrol)
+
+Brugerens krav: "Jeg vil sikre mig at der tages fuldt billede af bagside mv og at billedet ikke beskæres på serveren … for at spotte certifikater som ikke findes på forsiden fx skal disse scannes om natten. De ekstra billeder skal IKKE indgå i nogen fremtidige kørsler, kun analyseres ÉN gang. Det skal også bruges til at finlæse teksten og køre udvidet stavekontrol mm."
+
+Før: energi- og indholdsfotoet blev beskåret til søgerens kvadrat på telefonen (højst 2048 px), og hele billedet nåede aldrig serveren. Mærkninger blev kun læst på forsiden (label-scan).
+
+- **Hele billedet tages af samme billede som fotoet** (`captureStillWithFull`, `src/lib/camera-still.ts`): ubeskåret, op til 4096 px (sensorens stillbillede, ellers det skarpeste af tre 4K-videobilleder, holdt som ImageBitmap), JPEG 0,9. Kvadratet sendes som før til oprettelsens AI.
+- **Upload under flowet:** `POST /api/products/back-photos` (login, flow-id i headeren, højst 15 MB). Filen gemmes byte for byte i qc-uploads (`saveDataUrlImage`, kun metadata fjernes, aldrig beskåret eller skaleret) som `ProductBackPhoto` (ny tabel `product_back_photos`, migration `20261015060000_product_back_photos`). Rækken kobles til varen ved oprettelse/genscanning (`linkBackPhotos`) eller, hvis uploaden blev færdig bagefter, via `QuickEnrichmentJob.input.flowId`. Oprettelsen venter højst 10 s; trinnets knap viser load-cirklen, til uploaden er færdig.
+- **Nattens robot `back-photo-scan` (04:20, `src/lib/product-back-photos.ts`)** analyserer hvert billede præcis én gang med ét AI-kald (`src/lib/back-photo-ai.ts`):
+  - mærkninger og certificeringer på bagsiden: gemmes som varens mærkater (`product_labels`) og udfylder tomme filtre (`storeDetectedLabels` med `markScanned: false`, `cutouts: false`, så forsidens label-scan ikke springes over, og intet fritskrabes fra bagsiden);
+  - finlæsning: ingrediensliste ordret, næringsdeklaration og øvrig tekst (allergenspor, opbevaring, producent) gemmes i `result`;
+  - udvidet stavekontrol: varens ingrediensliste holdes op mod den finlæste tekst. Ord, der står forskelligt samme sted og ligner hinanden, bliver PENDING-forslag under admin → Stavekontrol (grund `fine_read`, aldrig automatisk rettet). Ord, admin har afgjort, foreslås ikke igen.
+- **Kun én gang:** `analyzedAt` sættes efter analysen (også ved tredje fejlede forsøg), og robotten tager kun rækker uden. Billederne er ikke `AiProductAnalysis`-rækker, så uncertainty-rerun, kvalitetskontrol-agenten, genoptagelsen og label-scan ser dem aldrig. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.
+- Native: energi/indhold tager kameraets billede i 4096 px, uploader det ubeskåret under flowets id (`x-scan-flow`, også på oprettelsen) og sender en nedskaleret kopi til oprettelsen.
+
 ## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning mens man sigter, synlig behandling
 
 Brugerens krav (efter PR #409, skærmbillede af "3. Scan energi"): "Jeg bad dig anvende en shutter knap i stedet. Men nu har jeg bare en shutterknap inden scanningsmetoden." Og: "Billedet skal selvfølgelig tages med det samme når man trykker. Men jeg havde oprindeligt udtrykt ønske om at kameraet kunne begynde at opsnappe tekst, logoer, tekst på forsiden (ocr) osv allerede inden der blev trykket på knappen. Desuden står der ikke nogen steder at billedet behandles?"
