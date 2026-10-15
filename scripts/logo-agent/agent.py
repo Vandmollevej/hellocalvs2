@@ -93,6 +93,12 @@ def normalize(text):
     return re.sub(r"[^a-z0-9]+", "", text)
 
 
+def normalize_words(text):
+    """Som normalize, men bevarer ordgrænser (mellemrum)."""
+    text = unicodedata.normalize("NFKD", text or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", text).strip()
+
+
 def public_to_path(public_url):
     return os.path.join(IMAGES_DIR, public_url[len(PUBLIC_PATH_PREFIX) + 1:])
 
@@ -532,6 +538,18 @@ def main():
     # Planen styres fra admin "Robotter"/"Cron-jobs" (job_control.py);
     # LOGO_AGENT_RUN_HOUR er kun standard-tidspunktet, når rækken oprettes.
     log.info("logo-robot startet; standard hver nat kl. %02d:00 (%s)", RUN_HOUR, TIMEZONE)
+    # Originale produktbilleder online før fritlægningen (product_images.py,
+    # docs/DECISIONS.md 2026-10-15) — løbende, så fritlægningen ikke venter.
+    import threading
+
+    import product_images
+
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "product-image-search", product_images.run_once),
+        kwargs={"interval_minutes": 0},
+        daemon=True,
+    ).start()
     run_forever(DATABASE_URL, "logo-agent", run_once, run_at_time=f"{RUN_HOUR:02d}:00", run_on_start=RUN_ON_START)
 
 

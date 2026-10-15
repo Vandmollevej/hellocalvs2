@@ -1,3 +1,9 @@
+## 2026-10-15: Originalbilleder online før AI-billedarbejde; AI-rentegning af logoer
+
+- Produktbilleder: robotten `product-image-search` (logo-agent) søger hver nyscannet vare online med Google Vision, før kamerafotoet fritlægges; fundene står under Billedforslag ved siden af kamerafoto og udklip.
+- Logoer: findes intet fritlagt logo online, rentegner gpt-image-1 originaludklippet med brugerens prompt; vises under Logoer ved siden af originalen. Scanningens udklip sættes ikke længere selv som logo.
+- Udestående: følg admin → Robotter og Billedforslag/Logoer efter deploy.
+
 ## 2026-10-15: Mærkat-jobbet — intern AI først
 
 - Ny robot `label-local` (quality-control-agent) søger forsidefotos lokalt igennem for kendte logoer og mærketekster; `label-scan` spørger kun OpenAI, når intet blev fundet lokalt. Se DECISIONS 2026-10-15. Kvalitetskontrollens forkerte kolonnenavne er rettet.

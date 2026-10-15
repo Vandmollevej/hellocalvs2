@@ -267,6 +267,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:00",
   },
   {
+    // Brugerens regel 2026-10-15: originalen søges online før AI-billedarbejde.
+    key: "product-image-search",
+    name: "Produktbilleder: Google-søgning",
+    description:
+      "Søger originalbilledet af hver nyscannet vare online med Google Vision, før kamerafotoet fritlægges. Fundene vises under Billedforslag ved siden af kamerafotoet og udklippet.",
+    runtime: "agent",
+    container: "logo-agent",
+    defaultIntervalMinutes: 0,
+    defaultRunAtTime: null,
+  },
+  {
     key: "image-agent",
     name: "Billedrobot: billedsøgning",
     description: "Søger billeder til generiske råvarer uden billede og fjerner baggrunden; forslag venter på godkendelse.",

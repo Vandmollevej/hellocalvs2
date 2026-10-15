@@ -1653,6 +1653,8 @@ model Product {
   labelsScannedAt    DateTime?
   // Den lokale mærkesøgning (quality-control-agent, 2026-10-15).
   labelPhotoScans    LabelPhotoScan[]
+  // Originale produktbilleder fundet online (2026-10-15).
+  imageSearches      ProductImageSearch[]
   // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
   petFoodCheckedAt   DateTime?
   // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
@@ -1859,6 +1861,10 @@ model ImageCutoutJob {
   // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl / ProductLabel.imageUrl).
   appliedAt      DateTime?
   label          ProductLabel?
+
+  // PRODUCT_FRONT: Google-søgningen efter originalbilledet online er kørt
+  // (logo-agent, docs/DECISIONS.md 2026-10-15). Fritlægningen venter på den.
+  webSearchedAt  DateTime?
 
   @@index([status, createdAt])
   @@index([brandId])
@@ -4205,6 +4211,49 @@ model BrandLogoSearch {
   @@index([status, createdAt])
   @@index([brandId])
   @@map("brand_logo_searches")
+}
+
+// Originale produktbilleder fundet online (Google Vision WEB_DETECTION) for en
+// scannet vare — søgningen kører, før kamerafotoet fritlægges (brugerens regel
+// 2026-10-15: originalen online før AI-billedarbejde). Admin → Billedforslag
+// viser kamerafotoet, udklippet og fundene side om side.
+model ProductImageSearch {
+  id                String                  @id @default(cuid())
+  product           Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId         String
+  cutoutJobId       String?
+  // Kamerafotoets udsnit, der blev søgt med.
+  originalUrl       String
+  // PENDING_REVIEW | NO_CANDIDATES | CHOSEN | REJECTED
+  status            String
+  bestConfidence    Float?
+  chosenCandidateId String?
+  createdAt         DateTime                @default(now())
+  resolvedAt        DateTime?
+  candidates        ProductImageCandidate[]
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("product_image_searches")
+}
+
+model ProductImageCandidate {
+  id          String             @id @default(cuid())
+  search      ProductImageSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId    String
+  imageUrl    String
+  sourceUrl   String
+  pageUrl     String?
+  pageTitle   String?
+  // 0..1 — robottens vurdering af, at det er samme vare.
+  confidence  Float
+  transparent Boolean            @default(false)
+  width       Int
+  height      Int
+  createdAt   DateTime           @default(now())
+
+  @@index([searchId, confidence])
+  @@map("product_image_candidates")
 }
 
 model BrandLogoCandidate {
