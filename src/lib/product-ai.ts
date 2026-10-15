@@ -178,6 +178,8 @@ export async function callStructuredText<T>({
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    // Et hængende tekstkald må ikke stoppe de job, der venter på det.
+    signal: AbortSignal.timeout(60_000),
     body: JSON.stringify({
       model,
       store: false,

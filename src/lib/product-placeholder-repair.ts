@@ -10,14 +10,26 @@ import { debugLog } from "@/lib/debug-log";
 // frem for reservenavnet. Registreringer, hvis
 // titleSnapshot er præcis reservenavnet, får det nye navn: reservenavnet var
 // aldrig et rigtigt navn, så det er ikke et snapshot, der skal bevares.
-export async function repairPlaceholderNames(): Promise<number> {
+// Kører hvert kvarter (vedligehold) og om natten. Varer, hvis forside stadig
+// læses, navngives af enrichFront; hænger navnet som ventende i over en halv
+// time, omdøbes varen også her (brugerens fejlmelding 2026-10-15: Verpoorten
+// hed stadig "Vare 40157818" efter deploy).
+const PENDING_NAME_GRACE_MS = 30 * 60 * 1000;
+
+export async function repairPlaceholderNames(now: Date = new Date()): Promise<number> {
   const products = await prisma.product.findMany({
-    // Varer, hvis forside stadig læses, navngives af enrichFront.
-    where: { name: { startsWith: "Vare " }, NOT: { pendingFields: { has: "name" } } },
+    where: {
+      name: { startsWith: "Vare " },
+      OR: [
+        { NOT: { pendingFields: { has: "name" } } },
+        { createdAt: { lt: new Date(now.getTime() - PENDING_NAME_GRACE_MS) } },
+      ],
+    },
     select: {
       id: true,
       name: true,
       subbrand: true,
+      pendingFields: true,
       brand: { select: { name: true } },
       aiAnalyses: { where: { kind: "FRONT" }, orderBy: { createdAt: "desc" }, take: 1, select: { prediction: true } },
     },
@@ -30,7 +42,10 @@ export async function repairPlaceholderNames(): Promise<number> {
     const typeName = front ? await nameProductType(front).catch(() => null) : null;
     const name = typeName ?? brandProductName(product.brand?.name, product.subbrand);
     await prisma.$transaction([
-      prisma.product.update({ where: { id: product.id }, data: { name } }),
+      prisma.product.update({
+        where: { id: product.id },
+        data: { name, pendingFields: product.pendingFields.filter((field) => field !== "name") },
+      }),
       prisma.registration.updateMany({ where: { productId: product.id, titleSnapshot: product.name }, data: { titleSnapshot: name } }),
     ]);
     repaired += 1;

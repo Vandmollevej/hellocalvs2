@@ -12,6 +12,7 @@ import {
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
 import { appLocaleOf, needsTranslation } from "@/lib/product-language";
 import { languageName, refreshProductLanguage, translationFor } from "@/lib/product-translations";
+import { displayProductName } from "@/lib/product-placeholder-name";
 import { applyProductTexts, productTextsFor, translationPlacement, type ProductTranslationInfo } from "@/lib/product-text-swap";
 
 export async function GET(
@@ -146,6 +147,7 @@ export async function GET(
       return NextResponse.json({
         product: {
           ...shown,
+          name: displayProductName(shown.name, product.brand?.name, product.subbrand),
           language,
           translation,
           subbrandLogoUrl,

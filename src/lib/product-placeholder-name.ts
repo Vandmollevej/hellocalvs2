@@ -17,3 +17,13 @@ export function brandProductName(brand: string | null | undefined, subbrand: str
   if (b.toLowerCase().includes(s.toLowerCase())) return b;
   return `${b} ${s}`;
 }
+
+// Værn i visningen: står reservenavnet stadig i databasen (fx før natten har
+// omdøbt varen), vises brand + subbrand i stedet — aldrig "Vare <stregkode>".
+export function displayProductName(
+  name: string | null | undefined,
+  brand: string | null | undefined,
+  subbrand: string | null | undefined,
+) {
+  return isPlaceholderProductName(name) ? brandProductName(brand, subbrand) : (name ?? "");
+}
