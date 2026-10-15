@@ -3,7 +3,15 @@
 Brugerens krav (gentaget): "dropdown for oven skal ikke indeholde fotoknappen … Først når man kører skærmen ned. Øverst skal der stå: optjen X ved at opdatere med et flot nyt billede. Og nedenunder fotoboksen og de felter (…) som der nu måtte være behov for."
 
 - `UpdatePointsBanner` har ikke længere en `action`: knappen "Tag billede af indholdet igen" stod i den lukkede stribe. Den er nu indholds-fotoboksen i den nedtrukne del (boksen fører til kameraets `retake=ingredients`, når AI'en ikke kunne læse indholdet; ellers til `/add/[id]/update`).
-- Teksten er altid "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.banner`, før "… ved at opdatere varen"). Fotoboksene vises kun for de manglende områder (uændret). Web + native.
+- Teksten "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.bannerPhoto`) står KUN på Open Food Facts-varer (`externalSource = OPEN_FOOD_FACTS`, brugerens rettelse); alle andre varer beholder "… ved at opdatere varen". Fotoboksene vises kun for de manglende områder (uændret). Web + native.
+
+## 2026-10-15: Ukendte brands fra AI'en kræver et sikkert, helt synligt logo
+
+Nettos ØGO-pose blev oprettet med brandet "DAGO": logoet var skåret af ved billedkanten, AI'en gættede resten, og koden oprettede ethvert ukendt navn som nyt brand.
+
+- `newBrandAllowed` (`src/lib/brand-match.ts`): et navn, Brand-tabellen ikke kender, oprettes kun ved logoConfidence ≥ 0,85, og når logoboksen ikke rører billedkanten (2 %). Kendte brands (match i tabellen eller ordret i forsideteksten) bruges som før.
+- Gælder forsidescanningen (`enrichFront`), stregkode-fotoets logo (`enrichBarcodeLogo`) og analysen af eksterne billeder (`external-image-ai.ts`). Springes et navn over, logges `brand_unknown_skipped` (admin → Log), og varen står uden brand, til en agent eller admin sætter det.
+- Sammen med #417 (kædemærker altid i brandlisten, prompt mod at gætte halve logoer) og #418 (forsidefotoet beskæres aldrig efter AI-boksen + natlig robot `front-image-check`).
 
 ## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
 
@@ -5469,3 +5477,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 
 - Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
 - Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
+
+## 2026-10-15: Aldrig reservenavnet "Vare <stregkode>" som varens titel
+
+- Brugeren så Verpoorten Original med titlen "Vare 40157818" (grøn linje "Original"). Årsag: hurtig-oprettelsen giver varen reservenavnet `Vare <stregkode>`, og forsidens AI returnerede `productName = null` (varetypen "Eierlikör" står ikke stort på flasken, og prompten sagde "gæt ikke"), så reservenavnet blev beholdt.
+- Forsideprompten front-v6: `productName` er varetypen og udfyldes altid, når det kan ses, hvad varen er — også udledt af emballage, brand og synlig tekst. Aldrig kun brand eller variant.
+- Giver forsiden stadig intet navn, navngiver et lille tekstkald (`nameProductType`, ingen ny billedaflæsning) varetypen ud fra brand, subbrand, variant og synlig tekst, på emballagens sprog. Under 60 % sikkerhed beholdes reservenavnet. Der findes ingen lokal metode til at navngive en varetype ud fra et brand, derfor OpenAI direkte (undtagelse fra "intern AI først").
+- Eksisterende varer med reservenavnet (`isPlaceholderProductName`, `src/lib/product-placeholder-name.ts`) navngives fra deres gemte forsideaflæsning: én gang 90 sek. efter opstart (deploy) og hver nat med `uncertainty-rerun`, højst 20 pr. kørsel. Kun varen selv ændres; registreringernes `titleSnapshot` røres ikke.

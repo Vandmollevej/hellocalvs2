@@ -33,7 +33,9 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // på emballagen), gemt i ProductFilters, så varesiden viser logoerne.
 // front-v5 (2026-10-15): et logo, der kun ses delvist, må ikke gættes færdigt
 // ud fra brandlisten (Nettos ØGO-pose blev læst som "DAGO").
-export const FRONT_PROMPT_VERSION = "front-v5-2026-10-15-partial-logo";
+// front-v6 (2026-10-15): productName udfyldes med varetypen, også når den ikke
+// står stort på forsiden (Verpoorten Original fik titlen "Vare 40157818").
+export const FRONT_PROMPT_VERSION = "front-v6-2026-10-15-product-type";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -112,6 +114,7 @@ export const FRONT_SYSTEM = [
   "brand = hovedmærket/kommercielt logo, fx Arla.",
   "subbrand = vareserie/familie, fx LactoFREE.",
   "productName = hvad varen faktisk er, fx Letmælk. Emballeret drikkevand hedder Flaskevand (ikke bare Vand), medmindre emballagen siger fx Kildevand.",
+  "productName udfyldes altid, når du kan se, hvad slags vare det er — også når varetypen ikke står med store bogstaver på forsiden: udled den af emballagen, brandet og den synlige tekst (fx Verpoorten Original = Eierlikör). productName er aldrig kun brand eller variant. null kun, hvis du slet ikke kan se, hvad varen er.",
   "variant = smag/type/styrke/fedtprocent/laktosefri/uden brus eller anden variant, når den tydeligt er en variant, fx 1,5 % fedt, laktosefri.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
   "productName må ALDRIG indeholde variant eller packageSizeText — de står i hver sit felt og vises på hver sin linje. Fx forside med 'Fettarme H-Milch 1,5 % Fett laktosefrei 1 L': productName = Fettarme H-Milch, variant = 1,5 % Fett, laktosefrei, packageSizeText = 1 L.",

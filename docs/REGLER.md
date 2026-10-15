@@ -32,6 +32,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
+- **Aldrig "Vare <stregkode>" som titel** (2026-10-15): reservenavnet fra hurtig-oprettelsen skal altid erstattes af varetypen — fra forsiden, ellers navngivet ud fra brand/variant/synlig tekst (`src/lib/product-type-name.ts`). Varetypen er aldrig kun brand eller variant.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,
@@ -107,6 +108,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
+  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
+  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
+  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -130,6 +135,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
   Mangler et kædemærke, så tilføj det dér.
+- **AI'en må ikke opfinde brands (bruger 2026-10-15)**: et brandnavn, som
+  Brand-tabellen ikke kender, oprettes kun ud fra et sikkert (logoConfidence
+  ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
+  (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
+  og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
@@ -152,7 +162,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **Identiske elementstyles bruger samme klasse (Peter, 2026-10-12):** genbrug eksisterende klasser før nye oprettes. Mobil og desktop-online er bevidst forskelligt bygget op; deres menuer, geometri og sideopbygning bevares. Marketing bruger egne mk-type-* roller. Ingen faste font/radius/skygge i inline-style uden dokumenteret preview-undtagelse. Se design.md §13 og DECISIONS 2026-10-12.
 
-- **Opdater-banneret øverst på varesiden (user rule 2026-10-15, gentaget flere gange)**: den lukkede stribe (`UpdatePointsBanner`) indeholder KUN teksten — aldrig en fotoknap. Teksten er altid "Optjen X points ved at opdatere med et flot nyt billede" (`productUpdate.banner`). Først når striben er trukket ned, kommer fotoboksene — kun for det, der mangler (forside/billede, energi, indhold). "Tag billede af indholdet igen" er indholds-boksen i den nedtrukne del, ikke en knap. Web + native.
+- **Opdater-banneret øverst på varesiden (user rule 2026-10-15, gentaget flere gange)**: den lukkede stribe (`UpdatePointsBanner`) indeholder KUN teksten — aldrig en fotoknap. På Open Food Facts-varer står der "Optjen X points ved at opdatere med et flot nyt billede" (`productUpdate.bannerPhoto`); på alle andre varer "Optjen X points ved at opdatere varen". Først når striben er trukket ned, kommer fotoboksene — kun for det, der mangler (forside/billede, energi, indhold). "Tag billede af indholdet igen" er indholds-boksen i den nedtrukne del, ikke en knap. Web + native.
 - **Admin-lister over varer og retter (user rule 2026-10-11)**: (1) en række uden billede/næring har tynd rød kant + rød tekst, og listen har en rød linje øverst med tal og filter — en mangelfuld ret må aldrig stå som en almindelig "Godkendt" række; (2) status til højre er teksten (Godkendt …) + en on/off-knap, aldrig en farvet kasse; (3) rækker kan markeres med klik/Ctrl/Shift og behandles under "Handlinger" (Disable, Godkend, Send til gennemsyn, Slet; altid synlig); (4) Slet er blød, de slettede findes under "Slettede" øverst på listen. Gælder også en NY produktliste i admin: brug `BulkSelection`/`BulkRow`/`BulkActionsBar` (og `StatusToggle` + `admin-list-problems.ts` hvor rækken er selve varen/retten); er rækken en sag, send `targets` (række-id → vare-id). Nye kø-lister skal udelade `deletedAt`-rækker. Se DECISIONS.md 2026-10-11.
 - **Admin bruger kun fælles klasser (user rule 2026-10-11)**: knapper = `.hf-btn-primary/-brand/-secondary/-danger/-text/-icon` eller `.hf-choice` (+ `.hf-btn--compact .hf-btn--inline`); felter = `.hf-input` (+ `--compact`); hvide kort = `.hf-surface`/`.hf-panel`; mærker = `.hf-badge`; søgefelt = `.hf-search` (ingen understreget "Søg"-knap, Enter søger); Forrige/Næste = `AdminPagination`; side-rod = `.hf-admin-page`. Hjemmelavede kant-/baggrund-/radius-/skrift-klasser på `<button>/<input>/<select>/<textarea>` i admin fejler `npm run lint` (`design-tokens/admin-controls`). Siden må aldrig skifte bredde mellem sider (`scrollbar-gutter: stable` på `.hf-shell`).
 - **Kalenderens dagsvisning følger klokken (user rule 2026-10-10)**: når man åbner en dag, scrolles tidslinjen efter tidspunktet på dagen — om morgenen ses natten + morgenen (øverst), midt på dagen morgen + aften (midten), om aftenen aften + nat (bunden af kalenderen). Nattens søvn skal stadig ses om morgenen. Web (`src/app/calendar/page.tsx`) og native (`CalendarDayDetails.kt`).
