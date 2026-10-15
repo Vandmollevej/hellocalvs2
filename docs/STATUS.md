@@ -1,3 +1,7 @@
+## 2026-10-15: Oversat-linjen over ingredienslisten
+
+- Ændrer oversættelsen kun ingredienslisten (titel, variant, mængde m.m. er ens), står "Oversat til dansk fra svensk. Vis original" over ingredienslisten i stedet for over titlen; ændrer den intet, vises ingen linje. Web + native. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
 - Verpoorten Original fik titlen "Vare 40157818": forsidens AI gav brand og variant, men intet varenavn, og reservenavnet blev stående. Nu udfylder forsideprompten (front-v6) altid varetypen, og giver den alligevel intet navn, navngives varetypen ud fra brand, variant og synlig tekst (`src/lib/product-type-name.ts`). Eksisterende varer med reservenavnet rettes 90 sek. efter deploy og ved nattens `uncertainty-rerun`; registreringernes snapshots røres ikke. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
