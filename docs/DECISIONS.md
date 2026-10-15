@@ -5443,3 +5443,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Ny robot `product-image-search` (løbende, i `logo-agent`, `scripts/logo-agent/product_images.py`): for hvert nyt PRODUCT_FRONT-fritlægningsjob søges kamerafotoets udsnit online; op til 8 fund hentes og vurderes (40 % visuel lighed, 30 % match-type, 30 % varens/brandets navn i linket eller sidens titel) og gemmes i `product_image_searches`/`product_image_candidates` (migration `20261015110000_product_image_search`). Intet vælges automatisk; hentede fund slettes 7 dage efter valget.
 - `image-agent` fritlægger først kamerafotoet, når søgningen er kørt (`image_cutout_jobs.webSearchedAt`), højst 30 min ventetid.
 - Admin → Billedforslag viser kamerafotoet ved siden af udklippet og fundene online. Vælges et fritlagt fund, bliver det varens billede; et fund med baggrund kopieres og fritlægges af image-agent og kommer tilbage som forslag. Godkend/afvis lukker åbne søgninger.
+
+## 2026-10-15: Billedforslag — palet-PNG'er får ikke længere sort baggrund
+
+- Brugeren så et produktbillede med sort baggrund. Kilden: `product-image-search` (logo-agent) gemte online-fund som RGB, når PNG'en var en palet-PNG (`P` med tRNS — typisk komprimerede webshop-billeder), fordi kun billeder med en "A"-kanal blev holdt gennemsigtige. Den gennemsigtige baggrund blev til paletfarven, oftest sort, og fundet blev markeret som ikke-fritlagt.
+- Nu bliver alle billeder med gennemsigtighed (`"transparency" in image.info`) konverteret til RGBA (`to_rgb_or_rgba` i `scripts/logo-agent/product_images.py`). Allerede gemte fund med sort baggrund rettes ikke; de afvises i Billedforslag.
+
+## 2026-10-15: Varesiden — ingen tom grøn linje under et navn på to linjer
+
+- Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
+- Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.

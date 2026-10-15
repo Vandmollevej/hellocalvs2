@@ -85,6 +85,15 @@ def text_score(product_name, brand_name, candidate):
     return float(min(1.0, score))
 
 
+def to_rgb_or_rgba(image):
+    """RGBA, når billedet har gennemsigtighed — også palet-PNG'er ("P" med
+    tRNS), som ingen "A"-kanal har. Ellers blev den gennemsigtige baggrund til
+    paletfarven (oftest sort) i det gemte fund."""
+    if "A" in image.getbands() or "transparency" in image.info:
+        return image.convert("RGBA")
+    return image.convert("RGB")
+
+
 def score_candidates(product_name, brand_name, crop, candidates):
     scored = []
     for candidate in candidates:
@@ -94,7 +103,7 @@ def score_candidates(product_name, brand_name, crop, candidates):
             image = agent.download(candidate["url"])
             if min(image.size) < MIN_SIDE:
                 continue
-            image = image.convert("RGBA") if "A" in image.getbands() else image.convert("RGB")
+            image = to_rgb_or_rgba(image)
         except Exception as exc:  # noqa: BLE001 - én dårlig kandidat må ikke stoppe resten
             log.info("kandidat afvist %s (%s)", candidate["url"], exc)
             continue
