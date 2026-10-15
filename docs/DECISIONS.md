@@ -5297,3 +5297,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 ## 2026-10-15: AI'ens brand-støtteliste er de mest brugte brands
 
 - Forside- og stregkode-aflæsningen får højst 750 brandnavne som støtte: først de faste danske kædemærker (`PINNED_BRANDS` i `src/lib/known-brands.ts`, altid med og oprettet i Brand-tabellen), derefter efter antal varer, ikke alfabetisk (den alfabetiske liste stoppede ved "D", og Nettos ØGO blev læst som "DAGO"). Matchningen efter aflæsningen bruger stadig alle brands.
+
+## 2026-10-15: Skjulte helbilleder af hele varen til mærkat-jobbet
+
+- Brugerens krav: når forside, energi og indhold fotograferes, tager telefonen i skjul også et billede af hele varen uden beskæring, så mærker og certifikater uden for energi-/indholdsfeltet og på bagsiden findes.
+- Web (`ProductCaptureFlow`): energi/indhold beskæres til søgerens kvadrat, og forsiden beskæres til varen; derfor gemmes hele kamerabilledet (1920 px) i baggrunden via `POST /api/ai/save-package-photo` som en `AiProductAnalysis` med den nye kind `PACKAGE` (`prediction.step` = trinnet). Stregkodefotoet var allerede et helbillede. Uploaden blokerer aldrig flowet; id'erne sendes med til `/api/products/quick` og genscanningen, og fotos der svarer for sent kobles på stregkoden (`src/lib/package-photos.ts`, også i det natlige job).
+- Native: telefonens eget kamera beskærer ikke, så energi-/indholdsfotoet er allerede hele varen — ingen ændring.
+- Det natlige mærkat-job (`product-label-scan.ts`) læser nu op til 5 fotos pr. vare (`product-label-sources.ts`): forsiden, helbillederne, stregkodefotoet og energi-/indholdsfotoet, når trinnet intet helbillede har. Ét OpenAI-kald pr. foto; samme mærke på flere fotos → det sikreste fund. Prompten er gjort side-neutral (`labels-v2-2026-10-15`). Nye helbilleder til en vare nulstiller `labelsScannedAt`, så den scannes igen.

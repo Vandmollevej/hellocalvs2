@@ -1,6 +1,7 @@
 import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { cleanPackageAnalysisIds, linkPackagePhotos } from "@/lib/package-photos";
 import { rescanStepsFor } from "@/lib/product-rescan-offer";
 import { enrichRescan } from "@/lib/product-rescan";
 import type { PendingField } from "@/lib/quick-product-enrichment";
@@ -70,6 +71,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     const barcode = product.barcodes[0].code;
     const debugContext = { flowId, userId: user.id, barcode, productId: id };
+    // Skjulte helbilleder af hele varen til det natlige mærkat-job.
+    await linkPackagePhotos(id, cleanPackageAnalysisIds(body?.packageAnalysisIds), barcode).catch(() => 0);
     void debugLog({
       category: "scan",
       event: "rescan_submitted",

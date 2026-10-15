@@ -33,6 +33,8 @@ export type CaptureData = {
   localIngredientsText?: string;
   // Ingredienslisten stod på energifotoet — intet separat indholdsfoto.
   ingredientsOnNutritionPhoto?: boolean;
+  // Skjulte helbilleder af hele varen (PACKAGE-analyser, savePackagePhoto).
+  packageAnalysisIds?: string[];
 };
 
 // Kun læsbar tekst bruges (usableOcrText) — ulæselig OCR må aldrig ende i et
@@ -153,6 +155,30 @@ export async function saveBarcodePhoto(
   }
 }
 
+// Skjult helbillede af hele varen uden beskæring (docs/DECISIONS.md
+// 2026-10-15): gemmes i baggrunden, så det natlige mærkat-job kan finde mærker
+// og certifikater på alle sider. Må aldrig blokere flowet.
+export async function savePackagePhoto(
+  photo: string,
+  step: Exclude<CaptureStep, "barcode">,
+  barcode: string | undefined,
+  marketRegion: string,
+  signals?: LanguageSignals,
+  flowId?: string,
+): Promise<string | null> {
+  try {
+    const response = await fetch("/api/ai/save-package-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
+      body: JSON.stringify({ photo, step, barcode, marketRegion, signals }),
+    });
+    const data = response.ok ? ((await response.json()) as { analysisId?: string }) : null;
+    return data?.analysisId ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // Uden tidsgrænse stod en hængende upload som et sort, låst kamera, mens
 // serveren allerede havde oprettet varen (bruger 2026-10-14).
 export const CREATE_TIMEOUT_MS = 60_000;
@@ -167,6 +193,7 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
       marketRegion,
       signals: data.languageSignals,
       barcodeAnalysisId: data.barcodeAnalysisId,
+      packageAnalysisIds: data.packageAnalysisIds ?? [],
       frontPhoto: data.frontPhoto,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,
@@ -210,6 +237,7 @@ export async function submitProductRescan(productId: string, data: CaptureData, 
     body: JSON.stringify({
       marketRegion,
       signals: data.languageSignals,
+      packageAnalysisIds: data.packageAnalysisIds ?? [],
       frontPhoto: data.frontPhoto,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,

@@ -35,6 +35,8 @@ const TAB_BY_KIND: Record<AiAnalysisKind, UncertaintyTabKey> = {
   NUTRITION: "energy",
   INGREDIENTS: "content",
   BARCODE: "ean",
+  // Skjulte helbilleder har ingen aflæsning og står aldrig i køen.
+  PACKAGE: "images",
 };
 
 const KIND_BY_TAB: Partial<Record<UncertaintyTabKey, AiAnalysisKind>> = {
@@ -140,6 +142,7 @@ const PHOTO_TYPE_LABEL: Record<AiAnalysisKind, string> = {
   NUTRITION: "Næringsdeklaration",
   INGREDIENTS: "Ingrediensliste",
   BARCODE: "Stregkode",
+  PACKAGE: "Helbillede",
 };
 
 // ---------- Cache ----------

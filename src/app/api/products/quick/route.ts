@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { cleanPackageAnalysisIds, linkPackagePhotos } from "@/lib/package-photos";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
@@ -207,6 +208,8 @@ export async function POST(req: Request) {
         .updateMany({ where: { id: barcodeAnalysisId, kind: "BARCODE" }, data: { productId: product.id } })
         .catch(() => {});
     }
+    // Skjulte helbilleder af hele varen til det natlige mærkat-job.
+    const packagePhotos = await linkPackagePhotos(product.id, cleanPackageAnalysisIds(body?.packageAnalysisIds), barcode).catch(() => 0);
 
     void debugLog({
       category: "scan",
@@ -225,6 +228,7 @@ export async function POST(req: Request) {
         nutritionOcrConfidence,
         ingredientsOcrConfidence,
         barcodeAnalysisLinked: Boolean(barcodeAnalysisId),
+        packagePhotos,
         marketRegion,
       },
     });

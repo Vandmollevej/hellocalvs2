@@ -1,3 +1,8 @@
+## 2026-10-15: Skjulte helbilleder af hele varen → mærkat-jobbet læser alle sider
+
+- Web-kameraet gemmer i skjul hele kamerabilledet ved energi og indhold (og ved forsiden, når den beskæres til varen) som `PACKAGE`-analyser (migration 20261015060000). Det natlige mærkat-job læser nu forside, helbilleder, stregkodefoto og uberørte energi-/indholdsfotos (native) — op til 5 fotos pr. vare. Se DECISIONS 2026-10-15.
+- Udestående: brugerens test på telefon (admin → Log → Scanninger viser `package_photo_saved`); mærkerne kommer først efter næste natlige kørsel.
+
 ## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
 
 - Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.

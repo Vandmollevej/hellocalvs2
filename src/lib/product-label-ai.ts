@@ -6,7 +6,7 @@ import type { ImageBox } from "@/lib/product-analysis-types";
 // i det natlige job "label-scan" (src/lib/product-label-scan.ts); det er
 // lavere prioritet end selve scanningen og må ikke forsinke den.
 
-export const LABELS_PROMPT_VERSION = "labels-v1-2026-10-02";
+export const LABELS_PROMPT_VERSION = "labels-v2-2026-10-15";
 
 export const LABEL_CATEGORIES = [
   "DIET",
@@ -109,7 +109,8 @@ export const KNOWN_LABEL_KEYS: { key: string; name: string; category: LabelCateg
 ];
 
 export const LABELS_SYSTEM = [
-  "Du analyserer FORSIDEN af en dagligvareemballage for Hello Cal og finder ALLE mærkater, badges, certificeringsmærker og claims-ikoner — IKKE hovedlogoet/brandet og IKKE varens navn.",
+  "Du analyserer et foto af en dagligvareemballage for Hello Cal — forsiden, bagsiden eller en side — og finder ALLE mærkater, badges, certificeringsmærker og claims-ikoner — IKKE hovedlogoet/brandet og IKKE varens navn.",
+  "Fotoet kan vise mere end varen (bord, hånd, andre varer): medtag kun mærker, der står på denne vares emballage. Næringstabel, ingrediensliste og stregkode er ikke mærkater.",
   "Eksempler: laktosefri '-L'-cirkel, Haltungsform-skala, QMilch, Ø-mærke, EU-økologiblad, Nøglehul, Fuldkorn, Nutri-Score, MSC/ASC, Fairtrade, 'Ohne Gentechnik', pantmærke, oprindelsesflag, Bedre Dyrevelfærd-hjerter, 'uden tilsat sukker'.",
   "Reklame-/kampagneelementer (fx fodboldspillere, 'nyhed', konkurrencer) er ikke mærkater — udelad dem.",
   "key = stabil nøgle i små bogstaver med bindestreger. Brug nøglen fra listen over kendte mærker, når mærket findes dér (fx haltungsform-3 for Haltungsform med 3 fremhævet). Ellers dan en kort engelsk nøgle, fx 'no-added-salt'.",
@@ -121,12 +122,20 @@ export const LABELS_SYSTEM = [
   "Returnér en tom liste, hvis der ingen mærkater er. Gæt ikke; sæt lav confidence på tvivlsomme fund.",
 ].join(" ");
 
-export function labelsText({ productName, brand }: { productName: string; brand: string | null }) {
+export function labelsText({
+  productName,
+  brand,
+  side = "front",
+}: {
+  productName: string;
+  brand: string | null;
+  side?: "front" | "other";
+}) {
   const known = KNOWN_LABEL_KEYS.map((k) => `${k.key} = ${k.name}${k.hint ? ` (${k.hint})` : ""}`).join("; ");
   return [
     `Vare: ${productName}${brand ? ` (brand: ${brand})` : ""}.`,
     `Kendte mærker (brug disse nøgler når de passer): ${known}.`,
-    "Find alle mærkater på forsiden.",
+    side === "front" ? "Find alle mærkater på forsiden." : "Find alle mærkater på den side af emballagen, fotoet viser (ofte bagsiden).",
   ].join("\n");
 }
 

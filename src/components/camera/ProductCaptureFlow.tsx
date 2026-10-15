@@ -36,6 +36,7 @@ import {
   readFrontPhoto,
   readLabelPhoto,
   saveBarcodePhoto,
+  savePackagePhoto,
   type CaptureData,
   type CaptureStep,
 } from "@/lib/product-capture";
@@ -105,6 +106,8 @@ const LABEL_LOG_EVERY = 5;
 const LIVE_FRAME_MAX_SIDE = 1600;
 // Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
 const BARCODE_PHOTO_MAX_SIDE = 1920;
+// Skjulte helbilleder af hele varen (savePackage) — som stregkode-fotoet.
+const PACKAGE_PHOTO_MAX_SIDE = 1920;
 
 const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
   barcode: IconBarcodeCard,
@@ -786,6 +789,17 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     return { chosen: await cropToObject(frame, picked), objects };
   }
 
+  // Skjult helbillede af hele varen uden beskæring (docs/DECISIONS.md
+  // 2026-10-15): gemmes i baggrunden til det natlige mærkat-job, så mærker og
+  // certifikater uden for energi-/indholdsfeltet og på bagsiden findes.
+  function savePackage(step: Exclude<CaptureStep, "barcode">, photo: string) {
+    const data = dataRef.current;
+    void savePackagePhoto(photo, step, data.barcode, region, data.languageSignals, flowId).then((id) => {
+      if (id) (data.packageAnalysisIds ??= []).push(id);
+      else scanLog(flowId, "package_photo_failed", { level: "warn", message: `Helbilledet (${step}) blev ikke gemt`, barcode: data.barcode });
+    });
+  }
+
   // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre
   // videobilleder); fejler det, bruges den levende scannings eget billede.
   async function takeStill(step: CaptureStep, fallback: LiveFrame): Promise<Still> {
@@ -835,6 +849,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       return;
     }
     data.frontPhoto = chosen;
+    // Er forsiden beskåret til varen, gemmes hele billedet også.
+    if (chosen !== still.url) savePackage("front", still.url);
     scanLogPhoto(flowId, "front", chosen, data.barcode);
     scanLog(flowId, "front_photo", {
       level: front.lookupFailed || front.ocrFailed ? "warn" : "info",
@@ -915,6 +931,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const data = dataRef.current;
     const languages = ocrLanguages();
     const durationMs = Date.now() - labelStartedAtRef.current;
+    // Energi/indhold beskæres til kvadratet; hele kamerabilledet gemmes i skjul.
+    const full = captureVideoFrame(videoRef.current, PACKAGE_PHOTO_MAX_SIDE, "none");
+    if (full) savePackage(need, full.url);
     const stillReady = takeStill(need, frame).then((still) => {
       scanLogPhoto(flowId, need, still.url, data.barcode);
       if (need === "nutrition") {

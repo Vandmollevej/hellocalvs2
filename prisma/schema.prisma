@@ -1811,6 +1811,10 @@ enum AiAnalysisKind {
   INGREDIENTS
   NUTRITION
   BARCODE
+  // Skjult helbillede af hele varen fra kamera-flowet (uden beskæring), taget
+  // ved forside/energi/indhold. prediction.step = trinnet. Læses af det
+  // natlige mærkat-job for mærker/certifikater på alle sider (2026-10-15).
+  PACKAGE
 }
 
 // Fritskrabning (docs/DECISIONS.md 2026-09-26): forsidefotoet fra det guidede
