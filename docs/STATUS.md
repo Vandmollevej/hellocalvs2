@@ -1,6 +1,6 @@
 ## 2026-10-15: Kameraet direkte i opdater-banneret
 
-- Trækkes "Optjen X points …" ned, står kamerasøgeren nu i selve dropdownen (web: `UpdateCameraPanel`, automatisk udløsning + udløser), og fotoet læses på stedet; varen hentes igen bagefter. Ingen ny side og ingen gammel "Tag billede"-side længere. Native åbner telefonens kamera direkte fra boksen. Favoritikonet ligger ikke længere oven på dropdownen. Ikke prøvet på telefon her; native-koden kompileres kun i CI. Se REGLER.md.
+- Trækkes "Optjen X points …" ned, står kamerasøgeren nu i selve dropdownen (web: `UpdateCameraPanel`, automatisk udløsning + udløser), og fotoet læses på stedet; varen hentes igen bagefter. Ingen ny side og ingen gammel "Tag billede"-side længere. Native åbner telefonens kamera direkte fra boksen. Favoritikonet ligger ikke længere oven på dropdownen. På hjemmesiden (desktop) vises banneret ikke, da den ikke tager billeder. Ikke prøvet på telefon her; native-koden kompileres kun i CI. Se REGLER.md.
 
 ## 2026-10-15: Varetypen spørges direkte + banneret glider
 

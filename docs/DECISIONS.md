@@ -5644,3 +5644,4 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Teksten i striben åbner nu dropdownen i stedet for `/add/[id]/update`. Siderne `/add/[id]/update` og `/camera?retake=ingredients` findes stadig, men banneret linker ikke længere til dem.
 - Native har ingen indlejret live-søger i fælleskoden: boksen åbner telefonens eget kamera og sender fotoet direkte, uden at skifte side.
 - Banneret har z-40 (favoritikonet z-30).
+- Hjemmesiden (desktop-skallen, `useDesktopViewport`) tager ikke billeder (brugerens regel 2026-10-15): opdater-banneret vises kun i webappen på telefonen og i native.

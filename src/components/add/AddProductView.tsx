@@ -78,6 +78,7 @@ import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 import { UpdateCameraPanel } from "@/components/hf/UpdateCameraPanel";
+import { useDesktopViewport } from "@/lib/use-desktop-viewport";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -393,6 +394,9 @@ export function AddProductView({
   // til udgangspunktet (profilens autoExpandUncertainty).
   const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
+  // Hjemmesiden (desktop-skallen) tager ikke billeder — kun webappen på
+  // telefonen; opdater-banneret er et kamerabanner (brugerens regel 2026-10-15).
+  const desktop = useDesktopViewport();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
   // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): åbne Awards
@@ -902,7 +906,7 @@ export function AddProductView({
   const Frame = inSheet ? SheetFrame : ScreenFrame;
   // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
-    !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
+    !desktop && !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               // "… med et flot nyt billede" kun på Open Food Facts-varer (brugerens regel 2026-10-15).
               text={t(
