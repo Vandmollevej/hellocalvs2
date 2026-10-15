@@ -51,6 +51,7 @@ const DICTIONARY = {
   nav_group_approval: { DA: "Varegodkendelse", EN: "Product approval" },
   nav_product_database: { DA: "Varedatabase", EN: "Product database" },
   nav_product_database_products: { DA: "Varer", EN: "Products" },
+  nav_product_database_generics: { DA: "Generiske produkter", EN: "Generic products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
   nav_product_database_labels: { DA: "Labels", EN: "Labels" },
   nav_product_database_off: { DA: "Open Food Facts", EN: "Open Food Facts" },

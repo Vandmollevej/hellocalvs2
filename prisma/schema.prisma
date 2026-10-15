@@ -2427,6 +2427,22 @@ model GenericIngredient {
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
+  // Felterne fra arket "Generiske produkter.xlsx" (admin → Varer → Generiske
+  // produkter, docs/DECISIONS.md 2026-10-15). name = Titel (ental).
+  sheetCategory String? // Kategori, fx "Kernefrugt"
+  productType   String? // Produkttype, fx "Æble"
+  variation     String? // Variation, fx "med skræl"
+  keywords      String[] @default([])
+  properties    String[] @default([]) // Egenskaber, fx ["rå", "frost", "10%"]
+  // Kilde (påkrævet ved oprettelse i admin): FRIDA (fridaProductId) eller
+  // OTHER med fritekst og URL. Næring kopieres kun fra Frida/appens egne data.
+  sourceKind String?
+  sourceName String?
+  sourceUrl  String?
+  // Slettet i admin, men brugt i registreringer: skjules fra søgning, så
+  // registreringerne (snapshots) stadig kan åbnes.
+  archivedAt DateTime?
+
   // No packaging means no energideklaration to read — nutrition is resolved
   // once at creation time from the best-matching Frida (DTU) reference
   // product (externalSource="FRIDA", see the 2026-08-27 Frida entry in

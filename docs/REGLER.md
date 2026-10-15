@@ -27,6 +27,7 @@ ikke her, er den ikke registreret og skal tilføjes.
   altid `INGREDIENT`, enhed g) og scannes ikke. Kilde: session
   "HelloCal OpenAI produktgenkendelse", 2026-09-18; se også DECISIONS.md
   (Frida-match, mikrodata kopieres fra Frida).
+- **Generiske produkter i admin** (2026-10-15): oprettes/importeres under Admin → Varer → Generiske produkter med arkets kolonner. Kilde er påkrævet (Frida FoodID eller anden kilde med URL); næring kun fra Frida, ellers tomt. Titel (ental) skal være unik. Bruges et produkt i registreringer, skjules det i stedet for at blive slettet.
 - **Billedfilnavne** (udledt af `Productdatabase/Bilka/bilka.py`, `build_key`/
   `download_image`, og `Produkter klar til import/_rename_log.csv`; mønster
   afledt 2026-10-08, afventer brugerens bekræftelse):

@@ -61,6 +61,7 @@ export const NAV: NavEntry[] = [
     icon: "database",
     links: [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
+      { href: "/admin/product-database/generics", key: "nav_product_database_generics", child: true },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
       { href: "/admin/product-database/labels", key: "nav_product_database_labels" },
       { href: "/admin/product-database/open-food-facts", key: "nav_product_database_off" },

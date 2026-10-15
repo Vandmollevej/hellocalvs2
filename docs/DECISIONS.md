@@ -1,3 +1,14 @@
+## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
+
+Brugerens krav: administration af generiske produkter i adminpanelet med manuel oprettelse (hjælpetekst ved hvert felt), drag-and-drop-import af CSV/Excel i arkets format med fejl pr. række før bekræftelse, og redigér/slet med sikker håndtering af registreringer.
+
+- **Side**: `/admin/product-database/generics` (menuen Varedatabase → Varer → Generiske produkter, genvej Alt+Shift+2, knap på Varer-siden). Logik i `src/lib/generic-product-admin.ts`, ruter under `/api/admin/generic-ingredients` (GET liste, POST opret, PATCH ret/gendan, DELETE, `/import`, `/frida`).
+- **Felter = arket "Generiske produkter.xlsx"**: Kategori, Produkttype, Variation, Nøgleord, Egenskaber, Titel (ental), Titel (flertal) og Kilde. Nye kolonner på `generic_ingredients` (migration `20261015140000_generic_ingredient_admin`): `sheetCategory`, `productType`, `variation`, `keywords[]`, `properties[]`, `sourceKind`/`sourceName`/`sourceUrl`, `archivedAt`. `name` = Titel (ental). Rå/tilberedt udledes af Egenskaber (kogt/stegt/bagt …), app-kategorien (frugt/grønt/kød/andet) af Kategori.
+- **Kilde er påkrævet**: Frida FoodID (= `Product.externalId` med `externalSource = FRIDA`; Frida-navnet vises) eller anden kilde med navn og URL. Næring kopieres kun fra Frida-varen (snapshot); anden kilde giver tomme tal ("–"), aldrig et skøn. Ved redigering beholdes de kopierede tal, så længe Frida-varen er den samme.
+- **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
+- **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
+- **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+
 ## 2026-10-15: 2-års kvalitetstjek — varer over to år fremstår som nye ved scanning
 
 Brugerens krav: "Når en kunde scanner et produkt, når produktet har eksisteret i databasen i mere end to år, skal produktet fremstå som 'nyt' og nye billeder og scanninger tages … (admin skal adviseres som ved nye varer) … Admin skal tage stilling INDEN billedet fritlægges, så vi ikke spilder unødige tokens … admin blot se det nye billede som taget ved siden af originalen … kun køre som natligt job og den tidligere info leveres direkte hos kunden … Ændringer … kun opdateres hos den bruger som netop har tilføjet produktet (og dem imellemtiden indtil de nye ændringer er blevet godkendt). Det skal ikke tilpasse bagudrettet med hvad brugeren ser i historikken."

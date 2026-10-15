@@ -7,6 +7,9 @@
 - `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015130000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
 - Varesiden (web + native): oversat til brugerens app-sprog med "Oversat til dansk fra kinesisk. Vis original" over titlen; Indstillinger → Visning → Oversættelse (slået til som standard, web + native + webmenu).
 - Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset (bør vise dansk + linjen), en dansk Bilka-ost (ingen linje) og tryk "Vis original". Trin 2–3 og OFF-spørgsmålet: se DECISIONS 2026-10-15.
+## 2026-10-15: Admin → Varer → Generiske produkter
+
+- Ny adminside til generiske produkter: opret manuelt med hjælpetekst, importér CSV/Excel (arkets kolonner) med fejl pr. række før bekræftelse, søg/filtrér, ret og slet. Brugte produkter skjules i stedet for at slettes, så registreringer bevares. Migration `20261015140000_generic_ingredient_admin` skal med deployet. Prøvet mod lokal Postgres med det rigtige ark: 1.285 af 1.327 rækker oprettes; 41 rækker har samme Titel (ental) som en anden række i arket og springes over som dubletter. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Originalbilleder online før AI-billedarbejde; AI-rentegning af logoer
 
