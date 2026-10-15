@@ -32,6 +32,14 @@ Natlig kørsel (standard kl. 03:00 dansk tid) i sin egen container:
 6. **Oprydning.** Hentede kandidater (fil + databaserække) slettes 7 dage
    efter afgørelsen. Det valgte logo er kopieret ud og bevares.
 
+## Produktbilleder online (`product_images.py`, 2026-10-15)
+
+Samme container kører også robotten `product-image-search` (løbende): hvert
+nyt kamerafoto (PRODUCT_FRONT-fritlægningsjob) søges online med Vision
+`WEB_DETECTION`, før image-agent fritlægger det. Fundene vises under admin
+**Billedforslag** ved siden af kamerafotoet og udklippet. Se DECISIONS.md
+2026-10-15.
+
 ## Admin "Logoer" (`/admin/logos`)
 
 - Hver række: brandnavn → thumbnail af originalen → thumbnail af bedste fund →
