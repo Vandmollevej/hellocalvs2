@@ -448,6 +448,15 @@ explicitly approved.
 3. Deploy med migrationen `20260929150000_stripe_payments`. Serveren registrerer selv webhooken `https://<APP_BASE_URL>/api/payments/stripe/webhook` inden for 15 min. (eller sæt `STRIPE_WEBHOOK_SECRET` fra dashboardet).
 4. `APP_BASE_URL` skal være den offentlige https-adresse (bruges til retur- og webhook-adresser).
 
+## Ingen tilbagerulning: "Skip stale release" (2026-10-15)
+
+- Ud over concurrency-gruppen `production-deploy` (se øverst) springer trinnet
+  "Skip stale release" resten af deploy-jobbet over, når serverens
+  `HELLOCAL_TAG` allerede er en nyere commit på master end jobbets egen. Det
+  dækker det tilfælde, hvor en ældre commits build bliver færdig efter en
+  nyeres og ellers ville erstatte den ventende nyere udrulning. Kan det ikke
+  afgøres (ingen tag, git-fejl), udrulles som hidtil.
+
 ## Udrulning uden nedetid (2026-10-04)
 
 Før: hver udrulning genskabte `app`-containeren, og sitet gav "Bad Gateway" i ca. 40 sekunder (målt 2026-10-04: 9 udrulninger på ca. 50 minutter fra flere sessioner).

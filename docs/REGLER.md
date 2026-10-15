@@ -294,6 +294,8 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 
 ## Proces
 
+- **Udrulning: kun den nyeste (user rule 2026-10-15)**: deploy-jobbet i `.github/workflows/build.yml` har `concurrency: production-deploy` og trinnet "Skip stale release". Fjern dem aldrig; en ældre commit må aldrig udrulles oven på en nyere. Se DEPLOYMENT.md.
+
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
   aldrig som almindelig tekst i et svar og aldrig midt i en opgave: tekst giver
   ingen gul prik, så brugeren ser den ikke (brugerens regel 2026-10-09, global).
