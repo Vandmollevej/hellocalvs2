@@ -210,6 +210,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:15",
   },
   {
+    // Brugerens fejlmelding 2026-10-15: scannede drikke må ikke stå med 0 kcal, til nogen scanner igen.
+    key: "alcohol-nutrition",
+    name: "Varer: alkoholnæring",
+    description:
+      "Tjekker scannede varer med 0 kcal én gang: alkoholprocenten tages fra den gemte forsideaflæsning, ellers spørges AI ud fra varetype og brand. Er varen en alkoholisk drik, skønnes kalorier, kulhydrat, protein og fedt efter typen (vises med ~), og registreringer med 0 kcal får tallene. Højst 200 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "search-miss-review",
     name: "Søgninger uden resultat: vurdering",
     description:

@@ -7,6 +7,7 @@ import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { repairPlaceholderNames } from "@/lib/product-placeholder-repair";
+import { backfillAlcoholNutrition } from "@/lib/alcohol-nutrition";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
@@ -160,6 +161,7 @@ export function startScheduler() {
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,
       "product-translations": translateProductsAhead,
+      "alcohol-nutrition": backfillAlcoholNutrition,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
