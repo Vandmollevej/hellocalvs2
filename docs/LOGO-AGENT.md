@@ -24,7 +24,12 @@ Natlig kørsel (standard kl. 03:00 dansk tid) i sin egen container:
    - ≥ 90 % **og** brandnavnet på siden/linket → gemmes automatisk som
      brandets logo (`/product-images/brand-logos/<brandId>.png`).
    - Ellers vises alle kandidater ≥ 50 % i admin **Logoer**.
-5. **Oprydning.** Hentede kandidater (fil + databaserække) slettes 7 dage
+5. **AI-rentegning (2026-10-15).** Blev intet fritlagt (transparent) logo fundet
+   online, rentegner OpenAI `gpt-image-1` originaludklippet med brugerens prompt
+   (100 % tro mod originalen, højere opløsning, fritlagt, ingen fortolkning).
+   Det vises i admin **Logoer** som "AI-rentegnet" ved siden af originalen og
+   vælges altid manuelt. Kræver `OPENAI_API_KEY` (model: `LOGO_AGENT_REDRAW_MODEL`).
+6. **Oprydning.** Hentede kandidater (fil + databaserække) slettes 7 dage
    efter afgørelsen. Det valgte logo er kopieret ud og bevares.
 
 ## Admin "Logoer" (`/admin/logos`)

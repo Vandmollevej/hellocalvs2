@@ -14,6 +14,10 @@ Kører hver nat. For brands uden logo:
    om brandnavnet står på siden/linket.
 4. >= 90 % OG brandnavnet på siden/linket -> gemmes automatisk som brandets
    logo. Ellers vises kandidater >= 50 % i admin "Logoer" til manuelt valg.
+5. Intet fritlagt logo fundet online -> OpenAI (gpt-image-1) rentegner
+   originaludklippet med brugerens prompt (REDRAW_PROMPT): 100 % tro mod
+   originalen, højere opløsning, fritlagt. Vises i admin ved siden af
+   originalen og vælges altid manuelt (docs/DECISIONS.md 2026-10-15).
 
 Ikke-valgte kandidater (fil + række) slettes 7 dage efter afgørelsen.
 Bruger Google Vision API — ikke Custom Search, som er lukket for nye kunder og
@@ -60,6 +64,15 @@ AUTO_ACCEPT = float(os.environ.get("LOGO_AGENT_AUTO_ACCEPT", "0.90"))
 MIN_CONFIDENCE = float(os.environ.get("LOGO_AGENT_MIN_CONFIDENCE", "0.50"))
 RETENTION_DAYS = int(os.environ.get("LOGO_AGENT_RETENTION_DAYS", "7"))
 RUN_ON_START = os.environ.get("LOGO_AGENT_RUN_ON_START", "false").lower() == "true"
+# AI-rentegning (docs/DECISIONS.md 2026-10-15): kun når intet fritlagt logo
+# findes online. Brugerens prompt, ordret — AI'en må ikke fortolke logoet.
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+REDRAW_MODEL = os.environ.get("LOGO_AGENT_REDRAW_MODEL", "gpt-image-1")
+REDRAW_PROMPT = (
+    "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. "
+    "Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. "
+    "Der må med andre ord ikke fortolkes og skabes noget med AI."
+)
 
 VISION_URL = "https://vision.googleapis.com/v1/images:annotate"
 LOGO_DIR = os.path.join(IMAGES_DIR, "brand-logos")
@@ -343,6 +356,39 @@ def score_candidates(brand_name, logo_name, crop, candidates):
     return downloaded
 
 
+# --- AI-rentegning -----------------------------------------------------------
+
+def ai_redraw(crop):
+    """Rentegner originaludklippet med OpenAI (gpt-image-1) i højere opløsning og
+    fritlagt. Kun når intet fritlagt logo blev fundet online. Returnerer et
+    PIL-billede eller None (ingen nøgle, fejl)."""
+    if not OPENAI_API_KEY:
+        log.info("ingen OPENAI_API_KEY — ingen AI-rentegning")
+        return None
+    response = requests.post(
+        "https://api.openai.com/v1/images/edits",
+        headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
+        files={"image": ("original.png", to_png_bytes(crop.convert("RGB")), "image/png")},
+        data={
+            "model": REDRAW_MODEL,
+            "prompt": REDRAW_PROMPT,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "input_fidelity": "high",
+            "size": "auto",
+        },
+        timeout=180,
+    )
+    response.raise_for_status()
+    data = response.json().get("data") or []
+    if not data or not data[0].get("b64_json"):
+        return None
+    image = Image.open(io.BytesIO(base64.b64decode(data[0]["b64_json"])))
+    image.load()
+    return trim_transparent(image.convert("RGBA"))
+
+
 # --- gem -----------------------------------------------------------------------
 
 def save_png(image, relative):
@@ -377,7 +423,15 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
     scored = [c for c in score_candidates(brand_name, logo_name, crop, web_candidates(crop)) if c["confidence"] >= MIN_CONFIDENCE]
     best = scored[0] if scored else None
     auto = bool(best and best["confidence"] >= AUTO_ACCEPT and best["brandInPage"])
-    status = "AUTO_ACCEPTED" if auto else ("PENDING_REVIEW" if scored else "NO_CANDIDATES")
+    # Intet fritlagt logo online → AI rentegner originaludklippet (vælges altid
+    # i admin, aldrig automatisk).
+    redrawn = None
+    if not auto and not any(c["transparent"] for c in scored):
+        try:
+            redrawn = ai_redraw(crop)
+        except Exception as exc:  # noqa: BLE001 - rentegningen må ikke stoppe robotten
+            log.warning("AI-rentegning fejlede for %s: %s", brand_name, exc)
+    status = "AUTO_ACCEPTED" if auto else ("PENDING_REVIEW" if scored or redrawn else "NO_CANDIDATES")
 
     with conn.cursor() as cur:
         cur.execute(
@@ -397,6 +451,14 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
                 (candidate_id, search_id, url, candidate["url"], candidate.get("pageUrl"), (candidate.get("pageTitle") or "")[:300] or None,
                  float(candidate["confidence"]), bool(candidate["brandInPage"]), bool(candidate["transparent"]),
                  int(candidate["image"].size[0]), int(candidate["image"].size[1]), now),
+            )
+        if redrawn is not None:
+            url = save_png(redrawn, f"{brand_id}/{search_id}/ai.png")
+            cur.execute(
+                """INSERT INTO brand_logo_candidates
+                   (id, "searchId", "imageUrl", "sourceUrl", confidence, transparent, "aiGenerated", width, height, "createdAt")
+                   VALUES (%s, %s, %s, %s, 0, true, true, %s, %s, %s)""",
+                (new_id(), search_id, url, f"openai:{REDRAW_MODEL}", int(redrawn.size[0]), int(redrawn.size[1]), now),
             )
         if auto:
             logo_url = save_png(best["image"], f"{brand_id}.png")

@@ -16,7 +16,8 @@ export default async function AdminLogosPage() {
     orderBy: { createdAt: "asc" },
     include: {
       brand: { select: { name: true } },
-      candidates: { orderBy: { confidence: "desc" }, take: 10 },
+      // Den AI-rentegnede kandidat (kun når intet fritlagt logo fandtes online) først.
+      candidates: { orderBy: [{ aiGenerated: "desc" }, { confidence: "desc" }], take: 10 },
     },
   });
 
@@ -29,7 +30,8 @@ export default async function AdminLogosPage() {
       <div>
         <p className="hf-type-body text-text-secondary">
           {searches.length} brands venter. Robotten gemmer selv logoer over 90 %, når brandnavnet også står på siden. Klik en række for at
-          sammenligne og vælge. Hentede billeder slettes 7 dage efter valget.
+          sammenligne og vælge. Findes intet fritlagt logo online, rentegner AI originaludklippet — det vælges altid her. Hentede billeder
+          slettes 7 dage efter valget.
         </p>
       </div>
       <LogoReviewList
@@ -43,6 +45,7 @@ export default async function AdminLogosPage() {
             confidence: candidate.confidence,
             pageUrl: candidate.pageUrl ?? candidate.sourceUrl,
             brandInPage: candidate.brandInPage,
+            aiGenerated: candidate.aiGenerated,
             width: candidate.width,
             height: candidate.height,
           })),
