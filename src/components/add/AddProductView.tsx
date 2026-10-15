@@ -1113,19 +1113,21 @@ export function AddProductView({
                     <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-hero text-hf-black"><DecimalText text={productTitle} /></h1>
+                  // Uden grøn linje fylder navnet mindst to hero-linjer (2 × 40 px):
+                  // et kort navn beholder den tomme linje, et navn over to
+                  // linjer får ingen ekstra luft (docs/DECISIONS.md 2026-10-15).
+                  <h1 className={`hf-type-hero text-hf-black${subtitle ? "" : " min-h-[80px]"}`}>
+                    <DecimalText text={productTitle} />
+                  </h1>
                 )}
-                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op.
-                    Størrelse og variant læses sammen med navnet. */}
+                {/* Størrelse og variant læses sammen med navnet. */}
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="hero" width={150} height={30} className="my-1" />
                   </ReadingSkeleton>
                 ) : subtitle ? (
                   <h2 className="hf-type-hero text-hf-green"><DecimalText text={subtitle} /></h2>
-                ) : (
-                  <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
-                )}
+                ) : null}
                 </div>
               </div>
 

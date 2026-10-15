@@ -164,6 +164,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = `BottomSheet` (`.hf-bottom-sheet`), se KRAV.md. På mobil (< 1024 px) er den et træk-bart bundark; **på web (≥ 1024 px) er den en lightbox** — centreret, rummelig, X øverst til højre, ingen trækstreg (bruger 2026-10-11, KRAV.md "Popups på web"). Gælder også popups der ellers kommer ind fra oven eller bunden. Kun web; native uændret.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Overskrifterne "Ingredienser" og "Næringsindhold" på varesiden er fede** (bruger 2026-10-15, efterlyst flere gange). `.hf-heading` står i `globals.css` EFTER typografi-rollerne, så `hf-type-body hf-heading` altid bliver fed — flyt den aldrig op foran rollerne igen (så nulstiller rollens `font-weight: 400` den). Native: `bold = true`.
 - **Kolonne-/sektionsoverskrifter i admin** (brugerens regel 2026-10-11): den
   globale overskrift er `.hf-type-section-title` ("──── Tekst ────", design.md
   §4.3) — brug den som `<h2>` over hver kolonne/sektion, aldrig en lille fed

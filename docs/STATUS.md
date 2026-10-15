@@ -2,6 +2,10 @@
 
 - Ændrer oversættelsen kun ingredienslisten (titel, variant, mængde m.m. er ens), står "Oversat til dansk fra svensk. Vis original" over ingredienslisten i stedet for over titlen; ændrer den intet, vises ingen linje. Web + native. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: Tilføj-kameraets forsidefoto = søgerens kvadrat
+
+- Forsidefotoet blev gemt som hele 9:16-kamerabilledet, mens søgeren kun viste midterkvadratet, så varen så langt væk ud bagefter og fik færre pixels til OCR. Nu er alle fotos præcis det, søgeren viste (kun web; native bruger telefonens kamera). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Import fra anden app — indgang, side pr. app og startguide
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
