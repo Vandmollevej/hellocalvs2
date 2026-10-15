@@ -1,6 +1,6 @@
 // Værn mod et beskåret/halveret forsidefoto (bruger 2026-10-15: "halveret …
-// Det må ikke ske"). Kameraets forsidefoto er altid hele rammen — et
-// telefon-/webkamerabillede er højst 9:16 (0,56). Er det smallere end
+// Det må ikke ske"). Kameraets forsidefoto er søgerens kvadrat (1:1); et
+// telefon-/webkamerabillede er under alle omstændigheder højst 9:16 (0,56). Er det smallere end
 // MIN_SIDE_RATIO eller for lille, er det beskåret undervejs, og serveren
 // melder det i admin → Log, uanset hvor fejlen sidder.
 export const MIN_SIDE_RATIO = 0.45;

@@ -1,3 +1,12 @@
+## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
+
+Brugerens skærmbilleder (Jalapeño-ketchup): i søgeren fyldte flasken billedet, men det gemte foto viste flasken lille med vindue og bordplade omkring. Årsag: søgeren viser kun det midterste kvadrat af kamerastrømmen (`object-cover`), mens forsiden blev gemt som hele 9:16-rammen (`liveCrop("front") = "none"`). Det var også i strid med beslutningen tidligere i dag ("hele rammen, brugeren sigtede med … allerede et kvadratisk udsnit af søgeren").
+
+- Alle tre fototrin (forside, energi, indhold) og den lokale OCR bruger nu søgerens kvadrat (`PHOTO_CROP = "square"` i `ProductCaptureFlow.tsx`). Det er en fast beskæring til det, brugeren så — aldrig en AI-boks. Forsidefotoet får samtidig næsten dobbelt så mange pixels på varen (fx 2048×2048 i stedet for 1152×2048 af samme udsnit), hvilket giver bedre tekstlæsning.
+- Energi/indhold uploader stadig også hele, ubeskårne kamerabillede til nattens analyse (uændret).
+- Native bruger telefonens eget kamera (det gemte foto er det, brugeren så) og er uændret.
+- Vagt: `front-photo-never-cropped.test.mjs` fejler, hvis fotoet igen ikke er søgerens kvadrat.
+
 ## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
 
 Brugerens krav: administration af generiske produkter i adminpanelet med manuel oprettelse (hjælpetekst ved hvert felt), drag-and-drop-import af CSV/Excel i arkets format med fejl pr. række før bekræftelse, og redigér/slet med sikker håndtering af registreringer.
