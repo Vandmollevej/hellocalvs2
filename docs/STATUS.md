@@ -2,7 +2,7 @@
 
 - Ingen varetype på forsiden → OpenAI spørges "Hvilken produkttype er <brand subbrand variant>?", før varen hedder brand + subbrand. Vedligeholdet spørger én gang for scannede varer, der allerede hedder brand + subbrand (fx Verpoorten → Eierlikör, vist som Æggelikør via oversættelsen). Migration `20261015190000_product_type_asked`. Ikke prøvet mod OpenAI/rigtig database her.
 - Opdater-banneret glider op og ned (300 ms) i stedet for at smække (web + native). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
-- Scannede alkoholiske drikke med 0 kcal (fx Verpoorten) får alkoholprocent og næring skønnet efter type af vedligeholdet — uden ny scanning; registreringer med 0 kcal følger med.
+- Ny robot "Varer: alkoholnæring" (`alcohol-nutrition`, admin → Robotter, hvert kvarter): scannede alkoholiske drikke med 0 kcal (fx Verpoorten) får alkoholprocent og næring skønnet efter type — ingen ny scanning; registreringer med 0 kcal følger med.
 
 ## 2026-10-15: Udrulningerne — kun den nyeste
 
@@ -10,7 +10,7 @@
 
 ## 2026-10-15: Alkoholprocent og kalorieskøn for spiritus
 
-- "20 % vol" læses nu (lokal OCR først, ellers AI på for- og bagside) og gemmes på varen. En ny alkoholisk drik uden næringstabel får sit kalorietal regnet ud: alkoholen præcist, resten skønnet ud fra varetypen (∼). Verpoorten-varen fra før rettelsen får det først ved en ny scanning. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
+- "20 % vol" læses nu (lokal OCR først, ellers AI på for- og bagside) og gemmes på varen. En ny alkoholisk drik uden næringstabel får sit kalorietal regnet ud: alkoholen præcist, resten skønnet ud fra varetypen (∼). Varer fra før rettelsen får det af robotten `alcohol-nutrition` (se ovenfor). Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Opdater-banneret uden fotoknap i striben
 

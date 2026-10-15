@@ -146,14 +146,29 @@ const PERCENT_SYSTEM = [
 
 const PERCENT_MIN_CONFIDENCE = 0.7;
 const BACKFILL_BATCH = 20;
+const BACKFILL_MAX_PER_RUN = 200;
 
 // Brugerens fejlmelding 2026-10-15: Verpoorten stod stadig med 0 kcal, fordi
-// den blev scannet, før alkoholprocenten blev gemt. Scannede varer med 0 kcal
-// tjekkes én gang (products.alcoholCheckedAt): procenten fra den gemte
+// den blev scannet, før alkoholprocenten blev gemt — kunderne skal ikke scanne
+// igen. Robotten "alcohol-nutrition" (admin → Robotter, hvert kvarter) tjekker
+// scannede varer med 0 kcal én gang (products.alcoholCheckedAt): procenten fra den gemte
 // forsideaflæsning, ellers spørges OpenAI ud fra varetype og brand; er varen
 // en alkoholisk drik, skønnes næringen som ved en ny scanning. Registreringer
 // med 0 kcal får tallene med (0 var aldrig en rigtig værdi).
-export async function backfillAlcoholNutrition(now: Date = new Date()): Promise<number> {
+export async function backfillAlcoholNutrition(): Promise<{ message: string; count: number }> {
+  const now = new Date();
+  let checked = 0;
+  let estimated = 0;
+  while (checked < BACKFILL_MAX_PER_RUN) {
+    const batch = await backfillAlcoholBatch(now);
+    if (!batch.checked) break;
+    checked += batch.checked;
+    estimated += batch.estimated;
+  }
+  return { message: `${checked} varer med 0 kcal tjekket, ${estimated} alkoholiske drikke fik næringen skønnet`, count: estimated };
+}
+
+async function backfillAlcoholBatch(now: Date): Promise<{ checked: number; estimated: number }> {
   const products = await prisma.product.findMany({
     where: {
       externalSource: null,
@@ -213,7 +228,7 @@ export async function backfillAlcoholNutrition(now: Date = new Date()): Promise<
     }
     await prisma.product.update({ where: { id: product.id }, data: { alcoholCheckedAt: now } });
   }
-  return estimated;
+  return { checked: products.length, estimated };
 }
 
 async function refreshZeroKcalSnapshots(productId: string) {

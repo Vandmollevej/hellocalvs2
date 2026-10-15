@@ -117,8 +117,6 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await backfillProductLanguages().catch((error) => console.error("[scheduler] Varesprog fejlede", error));
   // Varer, der stadig hedder "Vare <stregkode>", omdøbes (docs/REGLER.md → Aldrig "Vare <stregkode>").
   await repairPlaceholderNames(now).catch((error) => console.error("[scheduler] Reservenavne fejlede", error));
-  // Scannede alkoholiske drikke med 0 kcal får næringen skønnet (docs/DECISIONS.md 2026-10-15).
-  await backfillAlcoholNutrition(now).catch((error) => console.error("[scheduler] Alkoholnæring fejlede", error));
   // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
   await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
   // Stripe: registrér webhook og synk abonnementer nær fornyelse (docs/DECISIONS.md 2026-09-29).
@@ -163,6 +161,7 @@ export function startScheduler() {
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,
       "product-translations": translateProductsAhead,
+      "alcohol-nutrition": backfillAlcoholNutrition,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
