@@ -1,6 +1,6 @@
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
-- "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; uden egentligt varenavn hedder den brand + subbrand, varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes lokalt efter deploy og hver nat. AI-navngivningen af varetypen er fjernet. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
+- "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; står varetypen ikke på forsiden, navngives den (Eierlikör), ellers brand + subbrand; varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes efter deploy og hver nat. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
 

@@ -32,7 +32,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
-- **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Har varen intet egentligt varenavn, hedder den brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet, og varetypen opfindes ikke.
+- **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Står varetypen ikke på forsiden, navngives den ud fra brand og synlig tekst (Verpoorten Original → Eierlikör); kan den ikke afgøres, hedder varen brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,

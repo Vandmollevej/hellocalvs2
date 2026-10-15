@@ -28,6 +28,7 @@ import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
 import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
+import { nameProductType } from "@/lib/product-type-name";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -163,11 +164,13 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    const productName = rawName;
-    recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
-    // Intet varenavn på forsiden (fx Verpoorten Original): det hidtidige navn,
-    // ellers brand + subbrand. Aldrig "Vare <stregkode>", aldrig varianten og
-    // aldrig en opfundet varetype (brugerens regel 2026-10-15).
+    // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
+    // ud fra brand, variant og synlig tekst (fx Eierlikör); ellers det hidtidige
+    // navn, ellers brand + subbrand. Aldrig "Vare <stregkode>" og aldrig
+    // varianten (brugerens regel 2026-10-15).
+    const typeName = rawName ? null : await nameProductType(result).catch(() => null);
+    const productName = rawName || typeName || "";
+    recognized = Boolean(rawName || result.logoText?.trim() || result.productBox);
     const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
@@ -200,7 +203,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       category: "scan",
       event: "enrich_front",
       message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name || "(intet navn)"}${
-        productName ? "" : name ? " (intet varenavn — brand + subbrand)" : " (intet varenavn og intet brand)"
+        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : name ? " (intet varenavn — brand + subbrand)" : " (intet varenavn og intet brand)"
       }`,
       level: name ? "info" : "warn",
       productId,
