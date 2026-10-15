@@ -1,3 +1,7 @@
+## 2026-10-15: Udrulningerne — kun den nyeste
+
+- Ud over concurrency-gruppen (#444) springer deploy-jobbet over, når serveren allerede kører en nyere commit ("Skip stale release"), så en ældre commit aldrig rulles ud oven på en nyere. Se DEPLOYMENT.md.
+
 ## 2026-10-15: Alkoholprocent og kalorieskøn for spiritus
 
 - "20 % vol" læses nu (lokal OCR først, ellers AI på for- og bagside) og gemmes på varen. En ny alkoholisk drik uden næringstabel får sit kalorietal regnet ud: alkoholen præcist, resten skønnet ud fra varetypen (∼). Verpoorten-varen fra før rettelsen får det først ved en ny scanning. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
