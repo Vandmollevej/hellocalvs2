@@ -1559,6 +1559,10 @@ model Product {
   frontImageSuspectUrl    String?
   frontImageSuspectAt     DateTime?
   frontImageFixedAt       DateTime?
+  // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): sidst varen blev
+  // tjekket med nye fotos fra en kunde. Er varen (eller tjekket) over to år
+  // gammel, fremstår den som ny ved næste scanning (src/lib/product-recheck.ts).
+  qualityCheckedAt        DateTime?
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
@@ -1681,6 +1685,7 @@ model Product {
   nutritionReports   ProductNutritionReport[]
   shelfPhotoItems    ShelfPhotoItem[]
   scanSubmissions    ScanSubmission[]
+  rechecks           ProductRecheck[]
 
   @@index([externalSource, externalId])
   @@index([externalSource, offImageReview, offImageReviewedAt])
@@ -5219,6 +5224,78 @@ model ProductEnergySplitFlag {
 
   @@index([reviewedAt])
   @@map("product_energy_split_flags")
+}
+
+// 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): en kunde scanner en vare,
+// der har ligget i databasen i over to år. Kameraet tager fotos som ved en ny
+// vare, kunden får varens tidligere info med det samme, og fotoene gemmes her.
+// Kun det natlige job "product-recheck" læser dem: AI'en sammenligner det nye
+// forsidefoto med originalen og læser energi/indhold. Ændringer går til admin
+// → Nye varer → 2-års tjek, som tager stilling, FØR billedet fritlægges
+// (ingen spildte tokens); det nye billede er valgt som standard.
+model ProductRecheck {
+  id                       String               @id @default(cuid())
+  product                  Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId                String
+  // Kunden, der scannede. Registreringer fra og med createdAt får de nye tal.
+  userId                   String?
+  createdAt                DateTime             @default(now())
+  status                   ProductRecheckStatus @default(SUBMITTED)
+  marketRegion             String               @default("DK")
+  signals                  Json?
+  frontPhotoUrl            String
+  nutritionPhotoUrl        String?
+  ingredientsPhotoUrl      String?
+  nutritionOcrText         String?
+  nutritionOcrConfidence   Float?
+  ingredientsOcrText       String?
+  ingredientsOcrConfidence Float?
+  // Varen, som den var ved scanningen: billede, navn, næring og ingredienser.
+  originalImageUrl         String?
+  original                 Json
+  // Intern AI først (REGLER: "AI: intern AI først"): quality-control-agent
+  // (`recheck-local`) sammenligner det nye foto med originalen lokalt
+  // (DINOv2, farve, struktur; 0-1). OpenAI spørges kun ved tvivl.
+  localVisualScore         Float?
+  localColorScore          Float?
+  localStructuralScore     Float?
+  localComparedAt          DateTime?
+  localError               String?
+  // Nattens vurdering: om billedet er ændret (eller det nye er bedre), hvad
+  // AI'en så, de aflæste værdier og de felter, der afviger fra originalen.
+  analyzedAt               DateTime?
+  imageChanged             Boolean?
+  imageNote                String?
+  readValues               Json?
+  changedFields            String[]             @default([])
+  error                    String?
+  // Admins valg (standard: det nyeste).
+  decidedAt                DateTime?
+  decidedById              String?
+  useNewImage              Boolean?
+  useNewData               Boolean?
+  // Fritlægningen af det nye forsidefoto (kun efter admins ja, kun om natten).
+  cutoutJobId              String?
+  closedAt                 DateTime?
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("product_rechecks")
+}
+
+enum ProductRecheckStatus {
+  // Fotos gemt — venter på nattens AI-vurdering.
+  SUBMITTED
+  // Ingen ændringer — lukket uden admin.
+  NO_CHANGE
+  // Ændringer fundet — admin tager stilling.
+  AWAITING_ADMIN
+  // Admin valgte det nye billede — fritlægges og sættes på varen i nat.
+  APPROVED
+  // Afsluttet.
+  DONE
+  // Vurderingen fejlede — varen tjekkes igen ved næste scanning.
+  FAILED
 }
 
 // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): robotten "off-quality"
