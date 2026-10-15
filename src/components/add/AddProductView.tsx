@@ -1639,15 +1639,15 @@ export function AddProductView({
                   )}
                 </div>
               )}
-              {!!view.barcodes?.length && view.createdByUserId !== profile?.id && (
-                <Link
-                  href={`/profile/report-bug?productId=${id}`}
-                  className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
-                >
-                  <IconMessage size={18} />
-                  {t("addProduct.reportBug")}
-                </Link>
-              )}
+              {/* På alle varer — generiske, uden stregkode og egne
+                  (brugerens regel 2026-10-15). */}
+              <Link
+                href={`/profile/report-bug?productId=${id}`}
+                className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
+              >
+                <IconMessage size={18} />
+                {t("addProduct.reportBug")}
+              </Link>
             </div>
           </>
         )}

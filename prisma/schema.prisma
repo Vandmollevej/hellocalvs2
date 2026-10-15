@@ -2472,6 +2472,7 @@ model GenericIngredient {
   personalSearchHistory UserProductSearchHistory[]
   images            GenericIngredientImage[]
   ingredientRequests IngredientRequest[]
+  bugReports        BugReport[]
 
   @@map("generic_ingredients")
 }
@@ -2892,6 +2893,10 @@ model BugReport {
   // rettelser på samme produkt — se docs/DECISIONS.md 2026-09-19.
   product   Product? @relation(fields: [productId], references: [id])
   productId String?
+  // Samme link fra en generisk vare (GenericIngredient har sin egen tabel).
+  // Knappen vises på alle varer (brugerens regel 2026-10-15).
+  genericIngredient   GenericIngredient? @relation(fields: [genericIngredientId], references: [id], onDelete: SetNull)
+  genericIngredientId String?
 
   // Login-frit admin-godkendelseslink, samme mønster som Product.approvalToken.
   approvalToken    String?   @unique
@@ -2901,6 +2906,7 @@ model BugReport {
   notes              BugReportNote[]
 
   @@index([userId, productId])
+  @@index([userId, genericIngredientId])
   @@map("bug_reports")
 }
 

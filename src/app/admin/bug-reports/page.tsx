@@ -21,6 +21,7 @@ export default async function AdminBugReportsPage() {
       source: true,
       user: { select: { displayName: true } },
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+      genericIngredient: { select: { id: true, name: true } },
       notes: { select: { id: true, text: true, createdAt: true }, orderBy: { createdAt: "asc" } },
     },
     orderBy: { createdAt: "desc" },

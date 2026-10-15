@@ -1,3 +1,10 @@
+## 2026-10-15: "Har du fundet en fejl?" på alle varer
+
+Brugeren opdagede, at knappen manglede nederst på varesiden. Den var siden 2026-09-12 (`fb2dbe04`) kun vist på varer med stregkode, som brugeren ikke selv havde oprettet — en udokumenteret begrænsning. Brugerens valg: vis den altid.
+
+- Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`) viser knappen på alle varer.
+- Generiske varer ligger i `generic_ingredients`, så `bug_reports.genericIngredientId` (migration `20261015150000_bug_report_generic_ingredient`) knytter rapporten til dem; API'et slår id'et op i begge tabeller. Én afventende rapport pr. vare gælder også for generiske. Admin → Fejlrapporter viser "Varerettelse (generisk vare)".
+
 ## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
 
 Brugerens krav: administration af generiske produkter i adminpanelet med manuel oprettelse (hjælpetekst ved hvert felt), drag-and-drop-import af CSV/Excel i arkets format med fejl pr. række før bekræftelse, og redigér/slet med sikker håndtering af registreringer.

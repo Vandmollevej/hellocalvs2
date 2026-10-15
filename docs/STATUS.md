@@ -1,3 +1,7 @@
+## 2026-10-15: "Har du fundet en fejl?" på alle varer
+
+- Knappen nederst på varesiden vises nu altid (web + native), også på generiske varer, varer uden stregkode og egne varer. Fejlrapporter på generiske varer knyttes via `bug_reports.genericIngredientId` (migration `20261015150000_bug_report_generic_ingredient` skal med deployet). Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Import fra anden app — indgang, side pr. app og startguide
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.

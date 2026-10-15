@@ -17,6 +17,7 @@ type BugReport = {
   user: { displayName: string } | null;
   source: "USER" | "AI";
   product: { id: string; name: string; brand: { name: string } | null } | null;
+  genericIngredient: { id: string; name: string } | null;
   notes: { id: string; text: string; createdAt: string }[];
 };
 
@@ -52,6 +53,11 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             <p className="hf-type-small hf-type-strong mt-1 text-hf-green-dark">
               Varerettelse: {report.product.brand?.name ? `${report.product.brand.name} ` : ""}
               {report.product.name}
+            </p>
+          )}
+          {report.genericIngredient && (
+            <p className="hf-type-small hf-type-strong mt-1 text-hf-green-dark">
+              Varerettelse (generisk vare): {report.genericIngredient.name}
             </p>
           )}
           {report.sections ? (
