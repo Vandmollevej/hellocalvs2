@@ -1,3 +1,8 @@
+## 2026-10-15: Mærkat-jobbet — intern AI først
+
+- Ny robot `label-local` (quality-control-agent) søger forsidefotos lokalt igennem for kendte logoer og mærketekster; `label-scan` spørger kun OpenAI, når intet blev fundet lokalt. Se DECISIONS 2026-10-15. Kvalitetskontrollens forkerte kolonnenavne er rettet.
+- Udestående: følg admin → Robotter efter deploy ("Mærkater: lokal søgning" og "Mærkater: AI-aflæsning" viser antal lokalt/OpenAI).
+
 ## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
 
 - Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
