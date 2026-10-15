@@ -4,6 +4,7 @@ Brugerens skærmbillede (DAGO melblanding): produktbilledet var en smal stribe, 
 
 - Forsidefotoet er nu altid hele rammen, brugeren sigtede med (det er allerede et kvadratisk udsnit af søgeren). Objektgenkendelsen bruges kun til at afvise billeder uden vare (`front_rejected`) og til loggen (`front_objects` nævner varen i midten). Tekstlæsning/dublet-tjek kører også på hele billedet.
 - Native beskar aldrig og er uændret. Måltids-/HelloFresh-kameraet (`src/app/camera/page.tsx`), hvor brugeren selv trykker på en cirkel, er uændret.
+- **Værn fremover:** (1) vagt-testen `front-photo-never-cropped.test.mjs` fejler, hvis kameraet igen beskærer efter en AI-boks; (2) `POST /api/products/quick` måler forsidefotoet (`src/lib/front-photo-guard.ts`) og logger `front_image_suspect` som fejl i admin → Log, hvis det er smallere end 0,45 eller under 240 px — et kamerabillede er højst 9:16 (0,56), så et smallere billede er beskåret, uanset hvor i koden det skete. DAGO-striben var ca. 0,25.
 - Varer, der allerede har fået et beskåret billede, skal have forsiden taget om; det gamle billede kan ikke genskabes (scan-loggen gemte også det beskårne).
 
 ## 2026-10-14: Stavekontrol-robot — natlig rapport, læring af admins afgørelser, én fælles stavemotor

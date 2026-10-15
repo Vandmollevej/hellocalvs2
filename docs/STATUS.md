@@ -1,6 +1,6 @@
 ## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
 
-- Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`. Native beskar aldrig. Varer med et allerede beskåret billede skal have forsiden taget om. Se DECISIONS/REGLER 2026-10-15.
+- Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Varer med et allerede beskåret billede skal have forsiden taget om. Se DECISIONS/REGLER 2026-10-15.
 
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 

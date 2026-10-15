@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { frontPhotoDataUrlProblem } from "@/lib/front-photo-guard";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
@@ -145,6 +146,17 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
+    const frontProblem = frontPhotoDataUrlProblem(frontPhoto);
+    if (frontProblem) {
+      void debugLog({
+        category: "scan",
+        event: "front_image_suspect",
+        level: "error",
+        message: `Forsidefotoet er ${frontProblem}`,
+        flowId,
+        barcode,
+      });
+    }
     // Alle fotos gemmes, så aflæsningen kan genoptages, hvis processen
     // genstartes undervejs (docs/DECISIONS.md 2026-10-02).
     const [imageUrl, nutritionPhotoUrl, ingredientsPhotoUrl] = await Promise.all([
