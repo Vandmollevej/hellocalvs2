@@ -5337,3 +5337,9 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 ## 2026-10-15: AI'ens brand-støtteliste er de mest brugte brands
 
 - Forside- og stregkode-aflæsningen får højst 750 brandnavne som støtte: først de faste danske kædemærker (`PINNED_BRANDS` i `src/lib/known-brands.ts`, altid med og oprettet i Brand-tabellen), derefter efter antal varer, ikke alfabetisk (den alfabetiske liste stoppede ved "D", og Nettos ØGO blev læst som "DAGO"). Matchningen efter aflæsningen bruger stadig alle brands.
+
+## 2026-10-15: Ø-mærket og EU-bladet vises begge
+
+- Står både det danske Ø-mærke og EU's økologi-blad på varen, vises begge logoer (brugerens krav). Før vandt Ø-mærket, og EU-bladet blev smidt væk.
+- Alle økologimærker står i `ProductFilters.organic`, kommasepareret (fx "Økologisk, EU-økologi") i den rækkefølge, de er fundet, og kun mærker, der er fundet på varen — Ø-mærket giver aldrig automatisk EU-bladet eller omvendt. Mærkerne beholder deres oprindelige navn. Økologimærker lægges aldrig i `certifications` (brugerens krav). `certificationBadges` (web + native) giver hvert mærke sit logo (`organicLogoKind`, nu også KRAV/Naturland) og viser hvert logo én gang. Forside-AI'en, Open Food Facts, `addCertificationFilters` og det natlige mærkat-job lægger nye økologimærker til de gemte.
+- Økologisk i varenavnet læses på flere sprog (brugerens regel: dansk økologisk/øko, tysk bio, engelsk organic; tilsvarende på svensk, hollandsk, fransk, italiensk, spansk, polsk og finsk) i `product-certifications.ts`, `off-name-split.ts` og native `FoodLogic.kt`. Dansk "biologisk" er ikke økologi.

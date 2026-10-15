@@ -1,3 +1,5 @@
+import { organicLogoKind } from "./certification-badges.ts";
+import { joinOrganicMarks, organicMarks } from "./label-certifications.ts";
 import type { DetectedLabel } from "@/lib/product-label-ai";
 
 // Afbildning fra fundne mærkater til filtertabellen ProductFilters
@@ -76,7 +78,11 @@ export function labelsToFilterPatch(labels: DetectedLabel[], current: FilterSnap
       continue;
     }
     if (label.key.startsWith("organic-") || label.category === "ORGANIC") {
-      if (!has(current?.organic) && !patch.organic) patch.organic = word;
+      // Alle økologimærker lægges til organic (Ø-mærket og EU-bladet kan begge stå på varen).
+      // Mærkets eget navn gemmes; står samme logo der allerede, tilføjes intet.
+      const marks = organicMarks(patch.organic ?? current?.organic);
+      const kind = organicLogoKind(word);
+      if (!marks.some((m) => organicLogoKind(m) === kind)) patch.organic = joinOrganicMarks([...marks, word]) ?? word;
       continue;
     }
     const origin = ORIGIN_BY_KEY[label.key];

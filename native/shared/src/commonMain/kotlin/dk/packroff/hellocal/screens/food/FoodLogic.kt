@@ -412,8 +412,17 @@ enum class NameCertification(val file: String, val label: String) {
     Msc("msc.png", "MSC"),
 }
 
+// Organic in other languages too (Danish økologisk/øko, German bio/öko, English
+// organic …). Longest first, so "økologiske" is removed before "øko".
+private val ORGANIC_NAME_WORDS = listOf(
+    "økologiske", "økologisk", "ökologische", "ökologischer", "ökologisch", "ekologiska", "ekologiskt", "ekologisk",
+    "ekologiczne", "ekologiczna", "ekologiczny", "biologische", "biologisch", "biologiques", "biologique",
+    "biologico", "biológico", "biologica", "biológica", "biologici", "biologiche", "ecológico", "ecológica",
+    "ecologico", "ecologica", "orgánico", "orgánica", "organic", "luomu", "øko.", "øko", "öko", "oeko", "eko", "bio.", "bio",
+)
+
 private val NAME_CERT_WORDS: List<Pair<NameCertification, List<String>>> = listOf(
-    NameCertification.Organic to listOf("økologiske", "økologisk", "øko.", "øko", "oeko", "organic", "bio.", "bio"),
+    NameCertification.Organic to ORGANIC_NAME_WORDS,
     NameCertification.Keyhole to listOf("nøglehulsmærket", "nøglehul"),
     NameCertification.Fairtrade to listOf("fair trade", "fairtrade"),
     NameCertification.Msc to listOf("msc-mærket", "msc"),
@@ -482,6 +491,8 @@ private fun word(value: String, w: String) = Regex("\\b$w\\b").containsMatchIn(v
 
 private fun kindForOrganic(label: String): String {
     val value = label.lowercase()
+    if (word(value, "krav")) return "krav"
+    if (value.contains("naturland")) return "naturland"
     if (value.contains("bioland")) return "bioland"
     if (value.contains("landbau")) return "landbau"
     if (value.contains("biologisch") || word(value, "bio")) return "bioGermany"
@@ -545,23 +556,31 @@ private fun kindForLabel(label: ProductLabelView): String = when {
     else -> kindForCertification(label.name)
 }
 
+private val ORGANIC_KINDS = setOf("organic", "euOrganic", "bioGermany", "landbau", "bioland")
+
 fun certificationBadges(filters: CertificationFilters?, labels: List<ProductLabelView>): List<CertificationBadge> {
     if (filters == null && labels.isEmpty()) return emptyList()
     val f = filters ?: CertificationFilters()
     val badges = mutableListOf<CertificationBadge>()
-    f.organic?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge(kindForOrganic(it), it) }
+    // Several organic marks are stored comma-separated (src/lib/label-certifications.ts).
+    for (mark in f.organic.orEmpty().split(",")) {
+        val kind = kindForOrganic(mark.trim())
+        if (mark.isNotBlank() && badges.none { it.kind == kind }) badges += CertificationBadge(kind, mark.trim())
+    }
     f.keyhole?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge("keyhole", it) }
     f.wholeGrain?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge("wholeGrain", it) }
     for (label in f.animalWelfare.orEmpty()) if (label.isNotBlank()) badges += CertificationBadge(kindForAnimalWelfare(label), label.trim())
     for (label in f.certifications.orEmpty()) if (label.isNotBlank()) badges += CertificationBadge(kindForCertification(label), label.trim())
     for (label in labels) {
         if (label.confidence < 0.8) continue
-        val match = badges.firstOrNull { it.label.lowercase() == label.name.lowercase() }
+        // An organic mark matches on its logo, so the EU leaf is never shown twice.
+        val kind = kindForLabel(label)
+        val match = badges.firstOrNull { it.label.lowercase() == label.name.lowercase() || (kind in ORGANIC_KINDS && it.kind == kind) }
         if (match != null) {
             if (label.imageUrl != null && match.imageUrl == null) match.imageUrl = label.imageUrl
             continue
         }
-        badges += CertificationBadge(kindForLabel(label), label.name, label.imageUrl)
+        badges += CertificationBadge(kind, label.name, label.imageUrl)
     }
     val seen = mutableSetOf<String>()
     return badges.filter { seen.add(it.label.lowercase()) }
