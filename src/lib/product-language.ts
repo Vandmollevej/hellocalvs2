@@ -61,11 +61,15 @@ export function countryLanguage(country: string | null | undefined): string | nu
 // Danske kilder: ark, butikker og opskriftssider importeret til den danske
 // database. Deres tekst er dansk og oversættes aldrig til dansk.
 const DANISH_SOURCES = new Set(["FRIDA", "REMA1000", "BILKA", "VALDEMARSRO", "RETNEMT", "BETTERFEAST", "HELLOFRESH"]);
+// Kilder med retter fra flere lande: landet (Product.market) giver sproget.
+const MULTI_MARKET_SOURCES = new Set(["HELLOFRESH"]);
 
 export type ProductLanguageSignals = {
   // Varens tekst (navn, variant, ingredienser, brand …).
   texts: Array<string | null | undefined>;
   externalSource?: string | null;
+  // Landet, varen sælges i (Product.market), fx HelloFresh-retter.
+  market?: string | null;
   // Open Food Facts' sprogfelt (off_products.lang).
   offLang?: string | null;
   // Open Food Facts-varen er allerede oversat til dansk i kolonnerne
@@ -80,6 +84,10 @@ export type ProductLanguageSignals = {
 export function inferProductLanguage(signals: ProductLanguageSignals): string | null {
   const script = scriptLanguage(signals.texts);
   if (script) return script;
+  if (signals.externalSource && MULTI_MARKET_SOURCES.has(signals.externalSource) && signals.market) {
+    const fromMarket = countryLanguage(signals.market);
+    if (fromMarket) return fromMarket;
+  }
   if (signals.externalSource && DANISH_SOURCES.has(signals.externalSource)) return "da";
   if (signals.externalSource === "OPEN_FOOD_FACTS") {
     if (signals.translatedToDanish) return "da";

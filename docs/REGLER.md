@@ -24,6 +24,12 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Natlig oversættelse** (jobbet `product-translations`, kl. 03:15): oversætter op til 200 varer pr. nat til de app-sprog, brugerne har valgt, så ingen venter. Samme kilderegel som ovenfor.
 - **Sprogrobot** (`language-local` i quality-control-agent, kl. 02:50, lingua, lokalt): tjekker hver scannet vare og Open Food Facts/USDA-vare én gang (`languageCheckedAt`) og retter sproget, når den er sikker (tekst ≥ 25 tegn, sikkerhed ≥ 0,85). Ark/Frida/butikker, ikke-latinske tegn og dansk/norsk/svensk indbyrdes røres aldrig.
 
+## HelloFresh fra alle lande (user rule 2026-10-15)
+
+- Importen (`scripts/hellofresh-import`, `markets.py`) henter fra alle 17 HelloFresh-lande. Hver ret har sit land (`products.market`) og sprog (`products.language`). Danmark beholder de gamle id'er (`hf_<id>`); andre lande `hf_<land>_<id>`, externalId `<LAND>:<id>`, ingredienser én række pr. land.
+- Brugeren ser kun sit eget lands retter (opskriftslisten, billedgenkendelse); andre landes kun, når en søgning ellers intet finder. HelloFresh-retter oversættes ikke endnu (importerede kilder venter).
+- Næringen læses med hvert lands egne navne; kan en ret ikke læses sikkert, springes den over. Et land, hvis sitemap ikke kan hentes, springes over uden at ændre noget.
+
 ## Varer og navngivning
 
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;

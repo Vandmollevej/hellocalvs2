@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { sanitizeAiPhoto } from "@/lib/image-metadata";
 
@@ -84,8 +85,17 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Kun retter fra brugerens eget land (HelloFresh fra alle lande,
+    // docs/DECISIONS.md 2026-10-15) — ellers bliver listen til AI'en for lang.
+    const sessionUser = await getSessionUser().catch(() => null);
+    const ownMarket = sessionUser?.region ?? "DK";
     const candidates = await prisma.product.findMany({
-      where: { externalSource: "HELLOFRESH", discontinued: false, status: "APPROVED" },
+      where: {
+        externalSource: "HELLOFRESH",
+        discontinued: false,
+        status: "APPROVED",
+        OR: [{ market: ownMarket }, { market: null }],
+      },
       select: { id: true, name: true },
     });
 

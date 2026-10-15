@@ -313,6 +313,7 @@ const LANGUAGE_SELECT = {
   packageSizeText: true,
   ingredientsText: true,
   externalSource: true,
+  market: true,
   nameOriginal: true,
   scannedCountry: true,
   originCountryCode: true,
@@ -330,6 +331,7 @@ type LanguageRow = {
   packageSizeText: string | null;
   ingredientsText: string | null;
   externalSource: string | null;
+  market: string | null;
   nameOriginal: string | null;
   scannedCountry: string | null;
   originCountryCode: string | null;
@@ -359,6 +361,7 @@ async function languageUpdate(row: LanguageRow, country?: string | null): Promis
   return inferProductLanguage({
     texts,
     externalSource: row.externalSource,
+    market: row.market,
     offLang,
     translatedToDanish: !!row.nameOriginal,
     scannedCountry: row.scannedCountry ?? country ?? null,
