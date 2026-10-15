@@ -1,3 +1,7 @@
+## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
+
+- Varesiden (web + native): brand- og subbrandnavne i tekst brydes i flere linjer i stedet for at gå ud over sidens kant (fx "Barbeque Buddies" over Johnny's). Se REGLER.md.
+
 ## 2026-10-15: Import fra anden app — indgang, side pr. app og startguide
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
