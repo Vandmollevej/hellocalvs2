@@ -69,8 +69,7 @@ fails when the web menu is behind. Details: `docs/REGLER.md`.
   them otherwise (user rule 2026-09-26); repeated 2026-10-09: plain-text questions give no yellow dot, so
   the user never sees them. Never interrupt a task with one).
 - Stop ikke midtvejs: færdiggør opgaven helt, med mindre det kan konflikte med andet arbejde (user rule 2026-10-05). Hvis der er noget at vente på (CI, review), så tjek PR'en med få minutters mellemrum og flet den ind, så snart det er muligt.
-- Afslut hver færdig opgave med teksten "arkiver mig" og ingen anden tekst (user rule 2026-10-05).
-- Arkivér ALDRIG selv en session (user rule 2026-10-15, afløser auto-arkiveringsreglerne fra 2026-10-09): kald aldrig `archive_session` — heller ikke på andre sessioner. Brugeren arkiverer selv. Skriv kun "arkiver mig", når opgaven er helt løst (flettet og deployet), aldrig efter blot at have besvaret et spørgsmål eller mens noget er uløst.
+- Arkivér ALDRIG selv en session (user rule 2026-10-15, afløser auto-arkiveringsreglerne fra 2026-10-09): kald aldrig `archive_session` — heller ikke på andre sessioner. Brugeren arkiverer selv. Skriv aldrig "arkiver mig" (reglen er fjernet 2026-10-15).
 - Commit, push, flet PR'en og gør alt andet, der skal til for at få opgaven helt i mål, uden at spørge først (user rule 2026-10-09). Gælder ikke ting, reglerne ovenfor udtrykkeligt forbyder (fx hemmeligheder, større arkitekturændringer uden godkendelse).
 - Kan din ændring følge med en anden åben opgaves push/PR (samme filer eller gruppe, jf. `docs/handoffs/OPEN-TASKS.md`), så lad være med selv at pushe eller åbne en PR: læg den til den anden opgave (user rule 2026-10-09).
 - Aldrig hænge (user rule 2026-10-10, global): se `docs/REGLER.md` → Proces. Slut aldrig en tur, mens CI/deploy/PR venter, uden et tidsbestemt tjek (`send_later`, højst 5 min.), og handl ved hvert tjek (flet, ret, løs konflikt, find årsag). Færdig = flettet OG deployet.
