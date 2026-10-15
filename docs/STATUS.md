@@ -1,10 +1,18 @@
 ## 2026-10-15: "Har du fundet en fejl?" på alle varer
 
-- Knappen nederst på varesiden vises nu altid (web + native), også på generiske varer, varer uden stregkode og egne varer. Fejlrapporter på generiske varer knyttes via `bug_reports.genericIngredientId` (migration `20261015150000_bug_report_generic_ingredient` skal med deployet). Se DECISIONS 2026-10-15.
+- Knappen nederst på varesiden vises nu altid (web + native), også på generiske varer, varer uden stregkode og egne varer. Fejlrapporter på generiske varer knyttes via `bug_reports.genericIngredientId` (migration `20261015180000_bug_report_generic_ingredient` skal med deployet). Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Import fra anden app — indgang, side pr. app og startguide
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
+
+## 2026-10-15: HelloFresh fra alle 17 lande
+
+- Importen henter fra alle HelloFresh-lande og gemmer land (`products.market`) og sprog på hver ret; brugeren ser sit eget lands retter. Migration `20261015170000_product_market`. Ikke prøvet mod de udenlandske HelloFresh-sider (ikke tilgængelige herfra): se admin → Robotter efter første kørsler. Se DECISIONS 2026-10-15.
+
+## 2026-10-15: Varens sprog — trin 3
+
+- Søgeforslag viser kun varer på brugerens sprog/engelsk/landets stregkoder; andre sprog kun når der ellers intet er. Natligt job `product-translations` oversætter på forhånd; sprogrobotten `language-local` (lingua) retter sproget på scannede/OFF-varer. Migration `20261015160000_product_language_checked`. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Varens sprog — trin 2
 
@@ -66,7 +74,7 @@
 
 - Forside-AI'en fik de første 750 brands alfabetisk som støtteliste; med ~3.000 brands sluttede listen ved "Dr. Oetker", så ØGO aldrig var med. Logoet var desuden delvist skåret af, og AI'en gættede "DAGO" (findes ikke i OFF-ordforrådet). Kendes navnet ikke, oprettes det som nyt brand, så "DAGO" ligger nu i Brand-tabellen.
 - Rettet: `src/lib/known-brands.ts` giver de faste danske kædemærker (`PINNED_BRANDS`: ØGO, Salling, Coop 365, Änglamark, REMA 1000, First Price, Lidl-mærker …) først og derefter de mest brugte brands til forside-, stregkode- og natlig genkørsel. De faste mærker oprettes i Brand-tabellen, hvis de mangler, og ØGO (3 tegn) kan nu også findes i forsideteksten. Prompten front-v5 forbyder at gætte et delvist logo færdigt ud fra listen og nævner æ/ø/å.
-- Udestående (kræver produktions-DB): ret varen 5712872629689 til ØGO og slet/flet brandet "DAGO" i admin → Brands.
+- Varen 5712872629689 (og alle andre "DAGO"-varer) er flyttet til ØGO med migration `20261015150000_oego_brand_fix`, som også sender varen til scan-appens "Skal scannes" med det samme (beskåret forsidebillede, kan ikke genskabes — forsiden skal tages om). Det tomme brand "DAGO" slettes i admin → Brands. Prøvet mod lokal Postgres (alle migrationer, to kørsler).
 
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 

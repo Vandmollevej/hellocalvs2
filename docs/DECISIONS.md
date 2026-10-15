@@ -3,7 +3,7 @@
 Brugeren opdagede, at knappen manglede nederst på varesiden. Den var siden 2026-09-12 (`fb2dbe04`) kun vist på varer med stregkode, som brugeren ikke selv havde oprettet — en udokumenteret begrænsning. Brugerens valg: vis den altid.
 
 - Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`) viser knappen på alle varer.
-- Generiske varer ligger i `generic_ingredients`, så `bug_reports.genericIngredientId` (migration `20261015150000_bug_report_generic_ingredient`) knytter rapporten til dem; API'et slår id'et op i begge tabeller. Én afventende rapport pr. vare gælder også for generiske. Admin → Fejlrapporter viser "Varerettelse (generisk vare)".
+- Generiske varer ligger i `generic_ingredients`, så `bug_reports.genericIngredientId` (migration `20261015180000_bug_report_generic_ingredient`) knytter rapporten til dem; API'et slår id'et op i begge tabeller. Én afventende rapport pr. vare gælder også for generiske. Admin → Fejlrapporter viser "Varerettelse (generisk vare)".
 
 ## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
 
@@ -15,6 +15,23 @@ Brugerens krav: administration af generiske produkter i adminpanelet med manuel 
 - **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
 - **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
 - **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+## 2026-10-15: HelloFresh fra alle lande med land på retten
+
+Brugerens spørgsmål og svar: "har du Hello Fresh fra alle lande med inkl. registrering af landet på retten?" → "Ja, alle lande".
+
+- **Import:** `scripts/hellofresh-import/markets.py` med de 17 lande fra `src/lib/regions.ts` (BE = hollandsk, CH = tysk, CA = engelsk som standard). Danmark hver anden kørsel, de øvrige på skift. Ny kolonne `products.market` (migration `20261015170000_product_market`, eksisterende HelloFresh-retter = DK). `language` sættes af importen; `inferProductLanguage` giver HelloFresh landets sprog.
+- **Id'er:** Danmark uændret (`hf_<recipeId>`); andre lande `hf_<land>_<recipeId>` og externalId `<LAND>:<recipeId>`, ingredienser `hf_ing_<land>_<id>` — HelloFreshs id'er kan gå igen på tværs af lande, og ingrediensnavne er på landets sprog.
+- **Næring:** makroer og ekstra-tal findes med en ordliste pr. sprog (`read_nutrition`, 7 tests); ellers springes retten over. Kunne ikke prøves mod de udenlandske sider herfra (netværket i udviklingsmiljøet når kun hellofresh.dk-koden, ikke siderne) — første kørsel viser i admin → Robotter, hvilke lande der læses.
+- **Visning:** opskriftslisten (`/api/shared-recipes`) og HelloFresh-billedgenkendelsen viser kun brugerens eget lands retter; andre lande kun ved en søgning uden træffere. HelloFresh oversættes ikke endnu.
+
+## 2026-10-15: Varens sprog — trin 3 (søgning, natlig oversættelse, sprogrobot)
+
+Brugerens svar: "Andre sprog skal ikke vises til at starte med i forslagene når man skriver. Kun hvis der IKKE er andre matches, og det må være intenderet at brugeren søger efter noget på et andet sprog, skal det vises." + natlig oversættelse + sprogrobot.
+
+- **Søgning:** `GET /api/products` rangerer først kun kandidater på brugerens sprog, engelsk, ukendt sprog eller med stregkode fra brugerens land (`inViewerLanguage`). Giver det ingen træffere, rangeres alle kandidater — andre sprog er en reserve, aldrig blandet ind. Ingen oversættelse i søgningen.
+- **Natlig oversættelse:** app-jobbet `product-translations` (03:15) oversætter varer uden oversættelse til de app-sprog, brugere med oversættelse slået til har valgt; højst 200 pr. kørsel; kilde-reglen (`isTranslatableSource`) gælder.
+- **Sprogrobot:** `language-local` (quality-control-agent, 02:50, `lingua-language-detector` 2.1.1, lav-præcisionstilstand ~100 MB) retter `language` på scannede og OFF/USDA-varer, når teksten er lang nok og robotten sikker; dansk/norsk/svensk byttes aldrig indbyrdes, skriftsprog røres ikke. Ny kolonne `languageCheckedAt` (migration `20261015160000_product_language_checked`).
+
 ## 2026-10-15: Varens sprog — trin 2 (lister, OFF på originalsprog, importerede venter)
 
 Brugerens svar: "Vent med oversættelse af produktark, frida mv. Resten ja og sørg for at det opdateres når vi designer videre." (resten = trin 2 og valg A for Open Food Facts).
@@ -5433,3 +5450,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Ny robot `product-image-search` (løbende, i `logo-agent`, `scripts/logo-agent/product_images.py`): for hvert nyt PRODUCT_FRONT-fritlægningsjob søges kamerafotoets udsnit online; op til 8 fund hentes og vurderes (40 % visuel lighed, 30 % match-type, 30 % varens/brandets navn i linket eller sidens titel) og gemmes i `product_image_searches`/`product_image_candidates` (migration `20261015110000_product_image_search`). Intet vælges automatisk; hentede fund slettes 7 dage efter valget.
 - `image-agent` fritlægger først kamerafotoet, når søgningen er kørt (`image_cutout_jobs.webSearchedAt`), højst 30 min ventetid.
 - Admin → Billedforslag viser kamerafotoet ved siden af udklippet og fundene online. Vælges et fritlagt fund, bliver det varens billede; et fund med baggrund kopieres og fritlægges af image-agent og kommer tilbage som forslag. Godkend/afvis lukker åbne søgninger.
+
+## 2026-10-15: Billedforslag — palet-PNG'er får ikke længere sort baggrund
+
+- Brugeren så et produktbillede med sort baggrund. Kilden: `product-image-search` (logo-agent) gemte online-fund som RGB, når PNG'en var en palet-PNG (`P` med tRNS — typisk komprimerede webshop-billeder), fordi kun billeder med en "A"-kanal blev holdt gennemsigtige. Den gennemsigtige baggrund blev til paletfarven, oftest sort, og fundet blev markeret som ikke-fritlagt.
+- Nu bliver alle billeder med gennemsigtighed (`"transparency" in image.info`) konverteret til RGBA (`to_rgb_or_rgba` i `scripts/logo-agent/product_images.py`). Allerede gemte fund med sort baggrund rettes ikke; de afvises i Billedforslag.
+
+## 2026-10-15: Varesiden — ingen tom grøn linje under et navn på to linjer
+
+- Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
+- Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
