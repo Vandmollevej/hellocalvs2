@@ -27,6 +27,7 @@ import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
+import { nameProductType } from "@/lib/product-type-name";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -162,7 +163,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    const productName = rawName;
+    // Intet varenavn på forsiden: varetypen navngives ud fra brand, variant og
+    // synlig tekst, så reservenavnet "Vare <stregkode>" ikke bliver titlen.
+    const typeName = rawName ? null : await nameProductType(result).catch(() => null);
+    const productName = rawName || typeName || "";
     recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
@@ -194,8 +198,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     await debugLog({
       category: "scan",
       event: "enrich_front",
-      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${result.productName?.trim() ? "" : " (intet navn fundet, reservenavn beholdt)"}`,
-      level: result.productName?.trim() ? "info" : "warn",
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${
+        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : " (intet navn fundet, reservenavn beholdt)"
+      }`,
+      level: productName ? "info" : "warn",
       productId,
       durationMs: Date.now() - startedAt,
       data: {

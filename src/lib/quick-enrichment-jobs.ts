@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { placeholderProductName } from "@/lib/product-placeholder-name";
 import { readStoredImageAsDataUrl } from "@/lib/qc-image-storage";
 import {
   clearPending,
@@ -128,7 +129,7 @@ async function storedInputFromHistory(productId: string): Promise<QuickEnrichmen
     frontPhotoUrl: front?.imageUrl ?? createdFront,
     nutritionPhotoUrl: nutrition?.imageUrl ?? null,
     ingredientsPhotoUrl: ingredients?.imageUrl && ingredients.imageUrl !== nutrition?.imageUrl ? ingredients.imageUrl : null,
-    fallbackName: `Vare ${barcode}`,
+    fallbackName: placeholderProductName(barcode),
     barcodeAnalysisId: barcodeRow?.id ?? null,
     source: "history",
   };
