@@ -105,6 +105,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Danske kædemærker kendes altid (bruger 2026-10-15)**: ØGO, Salling, Coop 365,
+  Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
+  (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
+  Mangler et kædemærke, så tilføj det dér.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
