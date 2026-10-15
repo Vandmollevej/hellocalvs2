@@ -2215,36 +2215,6 @@ textarea.hf-input {
   }
 }
 
-/* Det senest klarede trin: lille, overstreget, med flueben. */
-.hf-scan-heading__done {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 18px;
-  opacity: 0.9;
-  animation: hf-scan-heading-in 350ms ease-out both;
-}
-
-.hf-scan-heading__done-text {
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
-}
-
-.hf-scan-heading__done-check {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 9999px;
-  background: var(--hf-color-positive);
-  color: var(--hf-color-white, #ffffff);
-  text-shadow: none;
-}
-
 /* Et trin er klaret (StepDoneOverlay, brugerens krav 2026-10-14): hvidt
    blink over hele billedet, trinnet stort i midten, overstreges, stort
    flueben, og linjen flyver op og bliver lille. Varighed i alt =
@@ -2324,7 +2294,7 @@ textarea.hf-input {
   width: 56px;
   height: 56px;
   border-radius: 9999px;
-  background: var(--hf-color-positive);
+  background: var(--hf-color-brand);
   color: var(--hf-color-white, #ffffff);
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
   transform: scale(0);
@@ -2337,8 +2307,7 @@ textarea.hf-input {
   }
 
   .hf-step-done__card,
-  .hf-scan-heading__title,
-  .hf-scan-heading__done {
+  .hf-scan-heading__title {
     animation: none;
   }
 

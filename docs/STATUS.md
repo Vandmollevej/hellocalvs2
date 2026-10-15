@@ -1,3 +1,7 @@
+## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
+
+- Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
+
 ## 2026-10-15: Brandet "DAGO" på Nettos ØGO-pose — årsag og rettelse
 
 - Forside-AI'en fik de første 750 brands alfabetisk som støtteliste; med ~3.000 brands sluttede listen ved "Dr. Oetker", så ØGO aldrig var med. Logoet var desuden delvist skåret af, og AI'en gættede "DAGO" (findes ikke i OFF-ordforrådet). Kendes navnet ikke, oprettes det som nyt brand, så "DAGO" ligger nu i Brand-tabellen.

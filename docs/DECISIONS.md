@@ -1,3 +1,8 @@
+## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, overskriften står alene
+
+- Brugerens krav: det lysegrønne flueben (`--hf-color-accent`) kunne ikke ses på de lyse trin-knapper. `CaptureCheckOverlay` (trin-knapper og opret-sidens 2×2-grid) og cirklen i `StepDoneOverlay` bruger nu `--hf-color-brand` (web + native `HcColors.Brand`). Erstatter "lysegrønne signaturfarve" fra 2026-10-14.
+- Den lille overstregede "senest klarede trin"-linje i `ScanHeading` er fjernet: det klarede trin skulle kun vises kort (`StepDoneOverlay`).
+
 ## 2026-10-14: Stavekontrol-robot — natlig rapport, læring af admins afgørelser, én fælles stavemotor
 
 Brugerens krav: "en natlig robot som scanner stavefejl og leverer en fuld rapport over ændringer og observationer som ikke kunne ændres grundet usikkerhed, men hvor jeg i tabelvisningen kan rette. Vis original sammenhæng ordet indgik i i en kolonne med stavefejlen highlighted og i kolonnen ved siden af forslaget. Og så er flueben … dropdown 'accepter rettelser'. Men der skal også være et felt … hvor jeg kan skrive MIN oversættelse." Og: "ikke hardcoded kun på dette issue men tænker det ind i en større kontekst."
