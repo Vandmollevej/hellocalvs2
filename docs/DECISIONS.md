@@ -1,3 +1,9 @@
+## 2026-10-15: Varetypen spørges direkte, før en vare hedder brand + subbrand
+
+- Giver forsiden ingen varetype (heller ikke ud fra synlig tekst), spørges OpenAI med et lille tekstkald: "Hvilken produkttype er <brand subbrand variant>?" (`askProductType` i `src/lib/product-type-name.ts`, sikkerhed ≥ 0,6, svaret må ikke bare gentage brand/variant). Først når det heller intet giver, hedder varen brand + subbrand.
+- Gælder forsidens aflæsning, stregkode-fotoet og vedligeholdet. Vedligeholdet spørger også én gang for scannede varer (ikke eksterne kilder), der allerede hedder brand + subbrand, og kun når forsiden blev læst uden varenavn og brugeren ikke selv valgte navnet. `products.productTypeAskedAt` (migration `20261015190000_product_type_asked`) sikrer, at hver vare kun spørges én gang. Registreringer med præcis nødnavnet får varetypen.
+- Opdater-banneret glider op og ned i stedet for at smække (web + native).
+
 ## 2026-10-15: Opdater-banneret — ingen fotoknap i den lukkede stribe
 
 Brugerens krav (gentaget): "dropdown for oven skal ikke indeholde fotoknappen … Først når man kører skærmen ned. Øverst skal der stå: optjen X ved at opdatere med et flot nyt billede. Og nedenunder fotoboksen og de felter (…) som der nu måtte være behov for."

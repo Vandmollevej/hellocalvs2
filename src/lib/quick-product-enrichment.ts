@@ -28,7 +28,7 @@ import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
 import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
-import { nameProductType } from "@/lib/product-type-name";
+import { askProductType, findProductType } from "@/lib/product-type-name";
 import { parseAlcoholPercent } from "@/lib/alcohol-label";
 import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 
@@ -167,10 +167,20 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
     // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
-    // ud fra brand, variant og synlig tekst (fx Eierlikör); ellers det hidtidige
+    // ud fra brand, variant og synlig tekst (fx Eierlikör), ellers spørges
+    // "Hvilken produkttype er <brand subbrand variant>?"; ellers det hidtidige
     // navn, ellers brand + subbrand. Aldrig "Vare <stregkode>" og aldrig
     // varianten (brugerens regel 2026-10-15).
-    const typeName = rawName ? null : await nameProductType(result).catch(() => null);
+    const typeName = rawName
+      ? null
+      : await findProductType(result, {
+          brand: brand?.name,
+          subbrand,
+          variant,
+          packageSizeText,
+          alcoholPercent: result.alcoholPercent,
+          language: result.language,
+        });
     const productName = rawName || typeName || "";
     recognized = Boolean(rawName || result.logoText?.trim() || result.productBox);
     const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
@@ -187,6 +197,8 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
         subbrand: subbrand ?? undefined,
         variant: variant || undefined,
         packageSizeText: packageSizeText || undefined,
+        // Varetypen er spurgt om — vedligeholdet spørger ikke igen.
+        productTypeAskedAt: rawName ? undefined : new Date(),
       },
       select: { id: true, name: true, createdAt: true },
     });
@@ -291,11 +303,20 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
 
     // Varianten står kun i sit eget felt (grøn linje) — aldrig i navnet
     // (brugerens regel 2026-10-02). Stod den allerede i navnet, fjernes den.
-    // Forsiden gav hverken varenavn eller brand: varen hedder brand + subbrand,
-    // når stregkode-fotoet gav brandet (brugerens regel 2026-10-15).
+    // Forsiden gav hverken varenavn eller brand: varen hedder varetypen eller
+    // brand + subbrand, når stregkode-fotoet gav brandet (brugerens regel 2026-10-15).
     const nameless = !product.name.trim() || isPlaceholderProductName(product.name);
     const brandOnlyName = nameless || product.name === brandProductName(product.brand?.name, product.subbrand);
-    if (nameless && brand) changes.name = brandProductName(brand.name, product.subbrand);
+    // Først spørges, hvilken produkttype brand + subbrand + variant er.
+    if (nameless && brand) {
+      const typeName = await askProductType({
+        brand: brand.name,
+        subbrand: product.subbrand,
+        variant: product.variant || result.variant,
+      }).catch(() => null);
+      changes.name = typeName ?? brandProductName(brand.name, product.subbrand);
+      changes.productTypeAskedAt = new Date();
+    }
 
     const variant = result.variant?.trim() ?? "";
     if (!product.variant && variant && result.variantConfidence >= 0.5) {

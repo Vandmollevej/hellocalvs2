@@ -14,6 +14,8 @@ import { IconCamera } from "@tabler/icons-react";
 // Scrolles siden nedad, foldes banneret sammen til stregen; når siden igen
 // rammer toppen, folder det sig ud til det, det var (brugerens regel
 // 2026-10-15). Har brugeren selv foldet det sammen, bliver det sådan.
+// Teksten og fotoboksene glider op og ned (brugerens regel 2026-10-15: ikke
+// smække ud og ind).
 const DRAG_THRESHOLD_PX = 16;
 // Så langt nede skal siden være, før banneret foldes sammen.
 const SCROLL_COLLAPSE_PX = 24;
@@ -93,16 +95,21 @@ export function UpdatePointsBanner({
 
   return (
     <div ref={rootRef} className="absolute inset-x-0 top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
-      {showBanner && (
-        <Link
-          href={href}
-          className="hf-type-small hf-type-strong block px-4 pt-3 text-center text-hf-black"
-        >
-          {text}
-        </Link>
-      )}
       <div
-        className="grid transition-[grid-template-rows] duration-200 ease-out"
+        className="grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none"
+        style={{ gridTemplateRows: showBanner ? "1fr" : "0fr", opacity: showBanner ? 1 : 0 }}
+      >
+        <div className="overflow-hidden" inert={!showBanner}>
+          <Link
+            href={href}
+            className="hf-type-small hf-type-strong block px-4 pt-3 text-center text-hf-black"
+          >
+            {text}
+          </Link>
+        </div>
+      </div>
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-in-out motion-reduce:transition-none"
         style={{ gridTemplateRows: showPanel ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">

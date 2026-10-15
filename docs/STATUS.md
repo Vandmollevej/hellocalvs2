@@ -1,3 +1,8 @@
+## 2026-10-15: Varetypen spørges direkte + banneret glider
+
+- Ingen varetype på forsiden → OpenAI spørges "Hvilken produkttype er <brand subbrand variant>?", før varen hedder brand + subbrand. Vedligeholdet spørger én gang for scannede varer, der allerede hedder brand + subbrand (fx Verpoorten → Eierlikör, vist som Æggelikør via oversættelsen). Migration `20261015190000_product_type_asked`. Ikke prøvet mod OpenAI/rigtig database her.
+- Opdater-banneret glider op og ned (300 ms) i stedet for at smække (web + native). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Udrulningerne — kun den nyeste
 
 - Ud over concurrency-gruppen (#444) springer deploy-jobbet over, når serveren allerede kører en nyere commit ("Skip stale release"), så en ældre commit aldrig rulles ud oven på en nyere. Se DEPLOYMENT.md.

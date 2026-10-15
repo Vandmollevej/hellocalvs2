@@ -1,6 +1,12 @@
 package dk.packroff.hellocal.screens.food
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -326,7 +332,10 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
     }
     val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
     Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
-        if (stage >= 1) {
+        // Text and tiles slide up and down instead of snapping (user rule 2026-10-15).
+        val enter = expandVertically(tween(300)) + fadeIn(tween(300))
+        val exit = shrinkVertically(tween(300)) + fadeOut(tween(300))
+        AnimatedVisibility(stage >= 1, enter = enter, exit = exit) {
             HcText(
                 text,
                 HcTypeRoles.Small,
@@ -336,7 +345,7 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
                 align = TextAlign.Center,
             )
         }
-        if (stage == 2) {
+        AnimatedVisibility(stage == 2, enter = enter, exit = exit) {
             Row(
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),

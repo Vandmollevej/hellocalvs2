@@ -1452,6 +1452,10 @@ model Product {
   // Sprogrobotten (scripts/quality-control-agent/language_local.py) har læst
   // teksten og evt. rettet language. null = ikke tjekket endnu.
   languageCheckedAt      DateTime?
+  // Varer uden varenavn (brand + subbrand): hvornår OpenAI er spurgt "Hvilken
+  // produkttype er <brand subbrand variant>?" (src/lib/product-type-name.ts).
+  // null = ikke spurgt endnu; vedligeholdet spørger én gang.
+  productTypeAskedAt     DateTime?
   // Landet, varen/retten sælges i (ISO, fx "DK", "DE"); sat af importen for
   // HelloFresh fra alle lande (scripts/hellofresh-import/markets.py). null = ukendt.
   market                 String?
