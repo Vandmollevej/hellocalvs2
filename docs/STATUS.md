@@ -2,6 +2,14 @@
 
 - Den lukkede stribe øverst på varesiden viser kun teksten ("… ved at opdatere med et flot nyt billede" på Open Food Facts-varer, ellers "… ved at opdatere varen"); fotoboksene kommer først, når den trækkes ned. Web + native. Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: "Har du fundet en fejl?" på alle varer
+
+- Knappen nederst på varesiden vises nu altid (web + native), også på generiske varer, varer uden stregkode og egne varer. Fejlrapporter på generiske varer knyttes via `bug_reports.genericIngredientId` (migration `20261015180000_bug_report_generic_ingredient` skal med deployet). Se DECISIONS 2026-10-15.
+
+## 2026-10-15: Oversat-linjen over ingredienslisten
+
+- Ændrer oversættelsen kun ingredienslisten (titel, variant, mængde m.m. er ens), står "Oversat til dansk fra svensk. Vis original" over ingredienslisten i stedet for over titlen; ændrer den intet, vises ingen linje. Web + native. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
 - Verpoorten Original fik titlen "Vare 40157818": forsidens AI gav brand og variant, men intet varenavn, og reservenavnet blev stående. Nu udfylder forsideprompten (front-v6) altid varetypen, og giver den alligevel intet navn, navngives varetypen ud fra brand, variant og synlig tekst (`src/lib/product-type-name.ts`). Eksisterende varer med reservenavnet rettes 90 sek. efter deploy og ved nattens `uncertainty-rerun`; registreringernes snapshots røres ikke. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
@@ -43,6 +51,7 @@
 - `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015130000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
 - Varesiden (web + native): oversat til brugerens app-sprog med "Oversat til dansk fra kinesisk. Vis original" over titlen; Indstillinger → Visning → Oversættelse (slået til som standard, web + native + webmenu).
 - Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset (bør vise dansk + linjen), en dansk Bilka-ost (ingen linje) og tryk "Vis original". Trin 2–3 og OFF-spørgsmålet: se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Admin → Varer → Generiske produkter
 
 - Ny adminside til generiske produkter: opret manuelt med hjælpetekst, importér CSV/Excel (arkets kolonner) med fejl pr. række før bekræftelse, søg/filtrér, ret og slet. Brugte produkter skjules i stedet for at slettes, så registreringer bevares. Migration `20261015140000_generic_ingredient_admin` skal med deployet. Prøvet mod lokal Postgres med det rigtige ark: 1.285 af 1.327 rækker oprettes; 41 rækker har samme Titel (ental) som en anden række i arket og springes over som dubletter. Se DECISIONS 2026-10-15.
@@ -76,12 +85,14 @@
 ## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
 
 - Udløseren tager nu fotoet i trykøjeblikket, og trinnet er klaret med det samme. Før blev energi-/indholdsfotoet først taget efter 1–3 s lokal OCR.
-- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende og vises i pillen over udløseren. Udløseren bruger fundene.
+- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende i baggrunden uden tekst på skærmen (brugerens krav 2026-10-15: ingen "Læser teksten …" eller fund-pille). Udløseren bruger fundene.
 - Synlig behandling: load-cirkel på trinnets knap + "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver sin tekst synligt. Overskrifterne hedder "Tag billede af energi/indholdsfortegnelsen".
 - Web `ProductCaptureFlow.tsx`, `HfLoader.tsx`, `product-capture.ts`, `/api/products/recognize-text`. Native kun tekster + dokumentation (ingen levende video). Se DECISIONS/REGLER 2026-10-15.
+
 ## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
 
 - Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Ny natlig robot `front-image-check` (04:50) finder de beskårne billeder (form + loggen) og sender varerne til scan-appens "Skal scannes", hvor det nye forsidefoto erstatter dem. Migration `20261015060000_front_image_suspect` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
+
 ## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
 
 - Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
@@ -187,6 +198,7 @@ Last updated: 2026-10-14
   bruger de eksisterende certifikatlogoer.
 - Detaljer og resterende arbejde: `docs/handoffs/2026-10-11-github-samling.md`.
 - Lokalt verificeret: 378 tests, lint uden fejl, build, Prisma, Python-syntaks og native sync/paritet. PR #400 er flettet som abd501c7. Android/iPhone og web/native er grønne på samlingscommitten. Build/deploy #714 er grønt, inklusive migration og alle robotter. Deep health svarer HTTP 200/status ok efter udrulningen.
+
 ## 2026-10-11: Codex overtager ni afbrudte opgaver
 
 - Samlet overlevering: `docs/handoffs/2026-10-11-codex-opfoelgning.md`.
@@ -199,6 +211,7 @@ Last updated: 2026-10-14
 ## 2026-10-11: Scan-kontekst (land + sprog) på varer
 
 - Nye kolonner `scannedCountry`, `scannedLanguage`, `scannedDeviceLocale` på varer og scanninger; migration `20261011180000_scan_context` skal med deployet (backfill DK/da). Ikke typetjekket / kørt her (node_modules mangler). Se DECISIONS.
+
 ## 2026-10-11: Admin langsom ved sideskift — hurtigere sider + valg mellem evigheds-scroll og sideinddelt
 
 - **Årsager:** ingen indlæsningsskelet (`loading.tsx`) i admin, så siden stod stille, til alle databasekald var færdige; Usikkerheder hentede op til 4000 rækker med joins og sendte dem alle til browseren, og "Øvrige advarsler" læste hele varekataloget for at finde dubletter; Dubletter kørte de tunge gruppe-opslag to gange pr. visning (tælling + side); admin-oversigten brugte hele usikkerhedslisten blot til at tælle; ingen cache.
@@ -215,6 +228,7 @@ Last updated: 2026-10-14
 
 - Ny `InfoBox` (`src/components/InfoBox.tsx`): hvid boks, 1 px sort kant, takket bund, fra hjulets række 2 over til række 2 under midten og til lidt før skærmens midte. Hele boksen er touch-område; swipe op/ned bladrer. Første visning: "puls over dagen" (vågne timer, y-akse fra lidt under hvilepuls til makspuls = zone 5's max).
 - **Ikke gjort:** native-skærmen (`HomeScreen.kt`) er ikke porteret (Kotlin kan ikke kompileres her); paritet accepteret, gæld i OPEN-TASKS (`forside-infoboks`). Flere AI-statistikvisninger mangler (afventer brugerens ønsker). Ikke prøvet i browser/på enhed.
+
 ## 2026-10-11: Webvisningen — Support nederst, større profilcirkel, tilføj-dropdown og sprogvælger
 
 - **Support** står nu nederst til venstre i sidebjælken i en egen boks under en skillelinje (`WEB_SUPPORT` i `web-nav.ts`, `.hf-shell__footer`); ikke længere sidste punkt blandt indstillingerne.
@@ -222,27 +236,32 @@ Last updated: 2026-10-14
 - **Den grønne tilføj-dropdown** viser de samme ikon-firkanter som mobilens "Tilføj"-vindue (`AddMenuList`, uden redigering og uden "Optag"); lukker ved klik udenfor.
 - **Sprogvælgeren på chat-siden** er en dropdown med landekode ("DK ▾") i stedet for flaget og bundarket; mobil (tale-siden) er uændret.
 - Ikke live-testet (login kræves). Tjek på desktop ≥ 1280 px: Support-boksen, cirklens størrelse, dropdownens rækker, "DK"-menuen på /chat.
+
 ## 2026-10-11: Open Food Facts → Billeder i admin (gennemgang af OFF-billeder)
 
 - Nyt undermenupunkt **Varedatabase → Open Food Facts → Billeder** (`/admin/product-database/open-food-facts/images`): alle OFF-billeder i et gitter, faner Til gennemgang / Godkendt / Afvist, størrelsesskyder (1 = ét billede ad gangen), sortering på interaktioner / tidspunkt i databasen / dato ændret, filter på mindst N interaktioner, pr. side 10–200, sidetal, "Marker alle som godkendt", klikbare halvdele og knapper. Se DECISIONS 2026-10-11.
 - Afviste billeder sendes til scan-appens **Skal scannes** (samme mekanisme som Open Food Facts-kontrollen); forsidefotoet fra "Opret vare" erstatter billedet. Banneret "Optjen 10 points" består, og natrobotten `external-image-ai` springer afviste billeder over.
 - DB: `Product.offImageReview*` (migration `20261011170000_off_image_review`) — skal med deployet.
 - **Ikke gjort/ikke prøvet:** ikke prøvet i browser eller mod rigtig database. Det afviste billede vises stadig for brugerne, indtil en ny forside er taget. Poster der kun findes i `off_products` (uden vare) er ikke med.
+
 ## 2026-10-11: Retter uden kendt energi vises aldrig
 
 - "0 kcal pr. servering" under Trender netop nu er rettet: retter med ukendt energi (nutritionMissing / 0 kcal) udelades i `/api/shared-recipes`, og web + native viser aldrig et nul. Se docs/DECISIONS.md og docs/REGLER.md.
 - **Ved deploy:** ingen migration. Ikke live-testet (ingen lokal DB/login): tjek Retter → Trender netop nu og Valdemarsro-retter uden Frida-match.
+
 ## 2026-10-11: Popups på web er lightboxe
 
 - Fra 1024 px er `BottomSheet` en centreret lightbox (680 px, `full` 960 px, bekræftelser 480 px, X øverst til højre, ingen trækstreg) i stedet for mobilens bundark; under 1024 px er alt uændret. Samme breakpoint som `AppFrame` (`src/lib/desktop-query.ts`), som hook i `src/lib/use-desktop-viewport.ts`.
 - Samme på web for popups fra oven/bunden uden `BottomSheet`: `StaleSyncPrompt`, åben `RescanBanner`, scan-appens `ShelfItemSheet` og "Slet billedet?". Regel: KRAV.md "Popups på web", DECISIONS 2026-10-11, REGLER (UI).
 - **Ikke prøvet i browser** (bevidst ingen skærmbilleder); breddemål og afstande kan finjusteres. Native uændret.
+
 ## 2026-10-11: Webversionen følger appen (menu + forside-popups)
 
 - Webmenuen (`src/lib/web-nav.ts`) dækker nu hele appens Profil og Indstillinger (Beskeder med tal, Status, Point, Vægtkalibrering, Kropsmål, Søvnmønster, Screeninger, Viden om, Hello Doc, Familie, Kommunikation, Visning med Prioritering/Resultatvisning/Kropsmål/Tips, Support-gruppen) + Favoritter og Log ud i profil-dropdownen. Kamera og Billeddagbog er udeladt (kræver kamera); plus-cirklen udelader mikrofon og kamera.
 - Vægt/tøj-popup, synk-påmindelse og pulsudsving ("Hvad foretog du dig?") vises nu også på desktop (kalenderen) via `WebStartPrompts`.
 - Ny test `src/lib/web-nav.test.mjs` holder webben i takt med appens menuer og forsidens popups. Se DECISIONS og REGLER samme dato.
 - Ikke prøvet i browser/mod rigtig login. **Tjek efter deploy:** at Screeninger/Beskeder/Status/Point står i sidebjælken, at Log ud virker, og at vægt-popuppen kommer på kalenderen.
+
 ## 2026-10-11: Cardio (Profil → Cardio)
 
 - Ny side `/profile/cardio` lige under Søvn: laveste hvilepuls, maxpuls, VO₂ max, iltmætning, HRV, åndedrætsfrekvens og pulsfald, hver med forløbsgraf (`HistoryLineChart`) og dropdown øverst for tidsinterval (30 dage – alt). Data læses automatisk fra de eksisterende ur-integrationer (`HealthMetric`) og kan indtastes manuelt som kropsmål (`POST /api/cardio`, kilde `MANUAL`, én værdi pr. type og dag).
@@ -256,21 +275,25 @@ Last updated: 2026-10-14
 - **Opdeleren** er målt mod arkene (produkttype forenelig 92 %, alt rigtigt 61 % hvor navnet indeholder typen); sikkerhedstallet er kalibreret derefter. `scripts/off-import/` har ordforrådsbygger, evaluering og `split-dump.mjs` til at køre på `Backup/off_raa`.
 - **Ved deploy:** migration `20261011150000_off_products` kører. Ikke live-testet (ingen lokal DB/login): tjek en scanning af en ukendt stregkode, listen og enkeltsiden, og "Indlæs udtræk" med en fil fra `Backup/off_raa`.
 - **Næste:** manuel rettelse af de opdelte felter i admin; genbyg `src/data/off-vocab.json` og kalibreringen, når arkene er rettet færdige; `npm test` fejler på `/settings/display/priority` (mangler i page-tree, ikke fra denne ændring).
+
 ## 2026-10-11: Open Food Facts-kontrol (admin → Scan-invites) + "Skal scannes" i scan-appen
 
 - Ny admin-side `/admin/scan-invites/off-kvalitet`: alle Open Food Facts-varer med vurdering (Dårlig/Svag/Acceptabel/God, 0–100), kategorier med kommentar pr. fund, søgning, filtre (vurdering, kategori, sendt/ikke sendt/scannet), sortering, afkrydsning og "Send til scan-appen" / "Træk tilbage" / "Send alle, der matcher filteret". Se DECISIONS 2026-10-11.
 - Scan-appen: sendte varer står som ikke scannede (minus + "Skal scannes" på hyldeoverlayet, "Scan varen" i bundarket) og i den nye liste Menu → Skal scannes; de klares, når en agent scanner varen.
 - Natlig robot `off-quality` (05:00) + knappen "Vurdér nu". Migration `20261011120000_product_quality_review` skal med deployet.
 - Tjekket: tsc mod isoleret Prisma-klient, nye tests (`off-quality.test.mjs`), genvejs- og sidetræs-tests. Ikke prøvet mod produktionsdata; vurderingen er første gang først tilgængelig efter "Vurdér nu" eller natkørslen.
+
 ## 2026-10-11: Dubletter → Varebilleder — Behold / Erstat med dette
 
 - Kun to knapper (Behold / Erstat med dette, begge sletter de øvrige varianter), øvrige alternativer som miniaturer under, ingen stregkode, lightbox med sidekolonner til at bladre og tal i bunden, og "Anbefalet" (lysegrøn ramme) for et tydeligt bedre alternativ, som så vises som standard. Se DECISIONS.md 2026-10-11 og REGLER.md.
+
 ## 2026-10-11: Synkroniseringssiden for forbundne integrationer
 
 - **Ny side** (`src/app/settings/integrations/[app]/ConnectedView.tsx`): hvid "Rediger visning" allerøverst (bundark med til/fra), "Aktiveret" + grøn cirkel, dagens log, historik-dropdown og sort "Deaktiver" fast nederst. Ny rute `GET /api/integrations/<app>/log?range=…`. Se DECISIONS 2026-10-11 og REGLER → UI.
 - **Google Health, iltmætning m.fl.:** timegennemsnit blander ikke længere dagsværdier ind, og migrationen `20261011080000_google_health_hourly_collapse` samler de eksisterende minutmålinger (skal med deployet).
 - **Rettet regel:** "Knapper står altid øverst" var forkert → nederst (REGLER → UI).
 - **Ikke prøvet i browser eller mod rigtig database** (ingen skærmtjek efter brugerens regel); web typecheckes/lintes, native kompileres kun i GitHub Actions.
+
 ## 2026-10-11: Admin-lister — mangler flagges, til/fra-status, markering + Handlinger, slettede
 
 - Varer og alle Retter-lister: rød kant/tekst og rød linje øverst ved manglende billede/næring (filtre), status som tekst + on/off-knap, markering med klik/Ctrl/Shift og "Handlinger" (Disable, Aktivér, Godkend, Send til gennemsyn, Slet; Gendan under Slettede), og "Slettede (N)" øverst på listerne. Se DECISIONS 2026-10-11 og REGLER → UI.
@@ -308,6 +331,7 @@ Last updated: 2026-10-14
 - Migration `20261010210000_search_events` og ny container `meilisearch` skal med deployet (begge håndteres af `build.yml`).
 - Samtidig rettet: de to røde tests på master (admin-genveje: genveje til Søgning, Synonymordbog, Dyrefoder-filter, Vejning: tøj; sidetræet: 55 manglende sider).
 - Tjekket: tsc, eslint, `npm test` (315/315 grønne), paritet, build. Lokalt mod Meilisearch v1.53.2 + Postgres 16 med de 2.830 REMA-/butiksvarer fra repoet: søgninger, indekssynk (2.830 varer på 5 s; anden kørsel 0 ændringer), statistik, raffinering, klik og admin-siden. AI-vurderingen er ikke prøvet (ingen OpenAI-nøgle lokalt), og intet er prøvet mod produktionsdata.
+
 ## 2026-10-10: HelloFresh-robotten opdaterer og rydder op automatisk
 
 - `hellofresh-import` henter nu hver opskrift igen mindst hver 30. dag, prøver retter uden billede igen og spærrer retter, HelloFresh har fjernet (genåbner dem, hvis de kommer tilbage). Nye opskrifter hentes som før løbende fra sitemap'en; ugemenuernes retter viderestiller til opskrifter, der allerede er i kataloget.
@@ -358,11 +382,13 @@ Last updated: 2026-10-14
 
 - `GET /api/products`: varer uden kalorietal er ikke længere skjult; accent-ufølsomt match; ved 0 hits søges på rettet tekst (`correctedQuery`/`originalQuery`), ved 1-2 hits foreslås `suggestedQuery`; `&exact=1` slår det fra. Linjen "Viser resultater for … · Søg i stedet efter …" / "Mente du …?" er i `/search`, `/create-dish`, `/foods` og de tre native skærme; loftet på 6 rækker er fjernet i `/search` og Opret ret. Tekster i `searchCorrection` (7 sprog).
 - Migration `20261010120000_search_unaccent_trgm` (extensions `unaccent`, `pg_trgm`, `fuzzystrmatch`, visning `search_words`) skal med deployet og er prøvet mod Postgres 16 lokalt, ikke mod produktionsdata. tsc og lint grønne; `npm run build` og paritet grønne; Kotlin ikke kompileret lokalt; ikke prøvet i browser/på telefon. Se DECISIONS samme dato.
+
 ## 2026-10-10: "Styres her"-link ved hver ekstern nøgle i admin
 
 - Admin → API-nøgler: hvert felt viser "Styres her: <menusti>" med det præcise link hos udbyderen (Google Auth Platform → Clients, Meta App settings → Basic, Apple Keys/Services IDs/Membership, Mailjet SMTP/API-nøgler/afsendere, Stripe API keys/Webhooks, Garmin My Apps/Endpoint Configuration, AppGallery Connect My projects m.fl.). Egne API'er kræver nu et link. Se DECISIONS 2026-10-10 og REGLER.
 - Hver tjeneste har et anker; forsidens Drift-widget, Beskeder og integrationssiderne linker direkte til tjenesten.
 - Kun admin (web) — ingen native-skærm berørt. Tjekket: tsc, eslint på ændrede filer, `npm test` (de 2 kendte røde på master), paritet. Ikke prøvet i browser; Polar, Passio, TeamMessage og Vipps-portalen har ingen fast dyb adresse, så der linkes til det indloggede område med menustien.
+
 ## 2026-10-10: Withings-data i realtid og tøj-popup med det samme
 
 - Withings melder nu nye data til `/api/integrations/withings/webhook`. Vægt, kropssammensætning, puls, blodtryk, temperatur, EKG og søvn hentes straks; aktivitet hentes, næste gang appen er fremme (`POST /api/integrations/app-open`, web + native). Forsiden (web + native) tjekker hvert 15. sekund og når appen kommer frem igen, så tøj-popuppen kommer inden for få sekunder. Se DECISIONS 2026-10-10.

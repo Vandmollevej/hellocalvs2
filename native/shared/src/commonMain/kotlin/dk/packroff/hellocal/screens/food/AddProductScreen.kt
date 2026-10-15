@@ -192,6 +192,14 @@ fun AddProductView(
     var detailsY by remember { mutableStateOf(0f) }
     // "Vis original"/"Vis oversættelse": the user's choice on the page, so polling doesn't switch back.
     var textChoice by remember { mutableStateOf<String?>(null) }
+    val toggleOriginalText: () -> Unit = {
+        val current = (state as? LoadState.Loaded)?.product
+        if (current?.translation != null) {
+            val swapped = swapProductTexts(current)
+            textChoice = swapped.translation?.showing
+            state = LoadState.Loaded(swapped)
+        }
+    }
 
     LaunchedEffect(id, registration) {
         profile = FoodProfile.refresh()
@@ -473,15 +481,8 @@ fun AddProductView(
                             Column(Modifier.fillMaxWidth()) {
                                 // The translated-from line sits above the title without moving it or the image (DECISIONS 2026-10-15).
                                 val translation = view.translation
-                                if (translation != null && !isPending("name")) {
-                                    TranslationNote(translation) {
-                                        val current = (state as? LoadState.Loaded)?.product
-                                        if (current?.translation != null) {
-                                            val swapped = swapProductTexts(current)
-                                            textChoice = swapped.translation?.showing
-                                            state = LoadState.Loaded(swapped)
-                                        }
-                                    }
+                                if (translation != null && translation.placement != "ingredients" && !isPending("name")) {
+                                    TranslationNote(translation, onToggle = toggleOriginalText)
                                 }
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
                                 // Without a green line the name takes at least two hero lines:
@@ -689,6 +690,11 @@ fun AddProductView(
                     if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty()) {
                         Column {
                             HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
+                            // Only the ingredients are translated: the note sits above the list instead of the title (DECISIONS 2026-10-15).
+                            val translation = view.translation
+                            if (translation != null && translation.placement == "ingredients" && !isPending("ingredients")) {
+                                TranslationNote(translation, inFlow = true, onToggle = toggleOriginalText)
+                            }
                             when {
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
@@ -711,13 +717,13 @@ fun AddProductView(
                         )
                     }
 
-                    if (view.barcodes.isNotEmpty() && view.createdByUserId != profile?.id) {
-                        HcButton(
-                            t.t("addProduct.reportBug"),
-                            onClick = { nav.push("/profile/report-bug?productId=$id") },
-                            leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
-                        )
-                    }
+                    // På alle varer — generiske, uden stregkode og egne
+                    // (brugerens regel 2026-10-15).
+                    HcButton(
+                        t.t("addProduct.reportBug"),
+                        onClick = { nav.push("/profile/report-bug?productId=$id") },
+                        leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
+                    )
                 }
             }
         }
@@ -1139,7 +1145,7 @@ private fun ExtendedNutritionSection(
 
 /** Small grey line above the product title: "Oversat til dansk fra kinesisk. Vis original" — takes no layout space. */
 @Composable
-private fun TranslationNote(translation: ProductTranslationInfo, onToggle: () -> Unit) {
+private fun TranslationNote(translation: ProductTranslationInfo, inFlow: Boolean = false, onToggle: () -> Unit) {
     val t = LocalTranslator.current
     val source = translation.sourceLanguageName
     val note = if (translation.showing == "original") {
@@ -1150,7 +1156,8 @@ private fun TranslationNote(translation: ProductTranslationInfo, onToggle: () ->
     }
     val link = t.t(if (translation.showing == "translated") "addProduct.showOriginal" else "addProduct.showTranslation")
     Row(
-        Modifier.layout { measurable, constraints ->
+        if (inFlow) Modifier.padding(bottom = 4.dp)
+        else Modifier.layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
             // Zero height: drawn in the gap above the title (web: absolute bottom-full mb-1).
             layout(placeable.width, 0) { placeable.place(0, -placeable.height - 4.dp.roundToPx()) }
