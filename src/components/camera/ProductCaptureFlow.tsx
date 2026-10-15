@@ -197,7 +197,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // De trin, der netop er klaret (StepDoneOverlay), og det senest klarede
   // (den lille overstregede linje over overskriften).
   const [stepDone, setStepDone] = useState<CaptureStep[] | null>(null);
-  const [lastDone, setLastDone] = useState<CaptureStep | null>(null);
   const flashRef = useRef(false);
   // Stregkoden er læst, men varen er ukendt: trinnet klares med visningen,
   // før flowet går til forsiden (kaldes fra opslaget via en ref, så
@@ -488,7 +487,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     if (leavingRef.current) return;
     setFlash(null);
     setStepDone(null);
-    setLastDone(justDone[justDone.length - 1] ?? null);
     flashRef.current = false;
     goToNextStep(completed);
   }
@@ -1057,7 +1055,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     dataRef.current = {};
     doneRef.current = {};
     setDone({});
-    setLastDone(null);
     setCreateFailed(false);
     setLookupError(false);
     setLookupBlockedMessage(null);
@@ -1278,12 +1275,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         )}
 
         {!cameraMessage && !stepDone && !submitting && (
-          <ScanHeading
-            number={stepNumber(step)}
-            title={stepHeadings[step]}
-            done={lastDone && lastDone !== step ? { number: stepNumber(lastDone), title: stepHeadings[lastDone] } : null}
-            doneLabel={lastDone ? t("cameraCreate.stepDone", { step: stepLabels[lastDone] }) : null}
-          />
+          <ScanHeading number={stepNumber(step)} title={stepHeadings[step]} />
         )}
       </div>
 

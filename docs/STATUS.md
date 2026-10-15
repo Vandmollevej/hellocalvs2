@@ -1,6 +1,15 @@
 ## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
 
 - Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Varer med et allerede beskåret billede skal have forsiden taget om. Se DECISIONS/REGLER 2026-10-15.
+## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
+
+- Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
+
+## 2026-10-15: Brandet "DAGO" på Nettos ØGO-pose — årsag og rettelse
+
+- Forside-AI'en fik de første 750 brands alfabetisk som støtteliste; med ~3.000 brands sluttede listen ved "Dr. Oetker", så ØGO aldrig var med. Logoet var desuden delvist skåret af, og AI'en gættede "DAGO" (findes ikke i OFF-ordforrådet). Kendes navnet ikke, oprettes det som nyt brand, så "DAGO" ligger nu i Brand-tabellen.
+- Rettet: `src/lib/known-brands.ts` giver de faste danske kædemærker (`PINNED_BRANDS`: ØGO, Salling, Coop 365, Änglamark, REMA 1000, First Price, Lidl-mærker …) først og derefter de mest brugte brands til forside-, stregkode- og natlig genkørsel. De faste mærker oprettes i Brand-tabellen, hvis de mangler, og ØGO (3 tegn) kan nu også findes i forsideteksten. Prompten front-v5 forbyder at gætte et delvist logo færdigt ud fra listen og nævner æ/ø/å.
+- Udestående (kræver produktions-DB): ret varen 5712872629689 til ØGO og slet/flet brandet "DAGO" i admin → Brands.
 
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 
