@@ -280,6 +280,8 @@ Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color
 Certifikater står nederst til venstre ud for cirklens bund (økologi altid nederst), advarsels-/kostikoner øverst ud for cirklens top; øverste har førsteret og æder certifikaterne, økologi sidst. Rækkefølge og allergen-tilstand sættes under Indstillinger → Visning → Prioritering af visning. Se `src/lib/circle-badges.ts`.
 - **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
 
+Økologimærker (Ø-mærket, EU-bladet, Bio-Siegel …) står ALDRIG i certifikater, kun i økologi-feltet `ProductFilters.organic` — flere mærker adskilt af ", " (fx "Økologisk, EU-økologisk"), og hvert vises med sit eget logo (user rule 2026-10-15). Se `src/lib/label-certifications.ts`.
+
 ## Trinindikator (HfProgressStepper)
 
 - Flows med mange trin (fx "Opret ny screening") viser kun teksten under det aktive trin (`activeLabelOnly`), og prikkerne i bjælken er tryk-bare (`onSelect`): tilbage altid, frem kun når de forudgående trin er udfyldt (`isStepEnabled`). Web og native (`ProfileProgressStepper`). 2026-10-10.

@@ -527,7 +527,6 @@ private fun kindForCertification(label: String): String {
         Regex("\\b(?:pgi|pdo)\\b").containsMatchIn(value) || value.contains("beskyttet geografisk") -> "pgi"
         value.contains("grana padano") -> "granaPadano"
         value.contains("bioland") -> "bioland"
-        value.contains("landbau") -> "landbau"
         value.contains("naturskånsom") || value.contains("natur skånsom") || value.contains("naturskaansom") -> "naturSkaansom"
         value.contains("dyrenes beskyttelse") || value.contains("dyrevelfærd") -> kindForAnimalWelfare(label)
         value.contains("økolog") || value.contains("organic") || value.contains("bio") -> kindForOrganic(label)
@@ -546,23 +545,31 @@ private fun kindForLabel(label: ProductLabelView): String = when {
     else -> kindForCertification(label.name)
 }
 
+private val ORGANIC_KINDS = setOf("organic", "euOrganic", "bioGermany", "landbau", "bioland")
+
 fun certificationBadges(filters: CertificationFilters?, labels: List<ProductLabelView>): List<CertificationBadge> {
     if (filters == null && labels.isEmpty()) return emptyList()
     val f = filters ?: CertificationFilters()
     val badges = mutableListOf<CertificationBadge>()
-    f.organic?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge(kindForOrganic(it), it) }
+    // Several organic marks are stored comma-separated (src/lib/label-certifications.ts).
+    for (mark in f.organic.orEmpty().split(",")) {
+        val kind = kindForOrganic(mark.trim())
+        if (mark.isNotBlank() && badges.none { it.kind == kind }) badges += CertificationBadge(kind, mark.trim())
+    }
     f.keyhole?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge("keyhole", it) }
     f.wholeGrain?.trim()?.takeIf { it.isNotEmpty() }?.let { badges += CertificationBadge("wholeGrain", it) }
     for (label in f.animalWelfare.orEmpty()) if (label.isNotBlank()) badges += CertificationBadge(kindForAnimalWelfare(label), label.trim())
     for (label in f.certifications.orEmpty()) if (label.isNotBlank()) badges += CertificationBadge(kindForCertification(label), label.trim())
     for (label in labels) {
         if (label.confidence < 0.8) continue
-        val match = badges.firstOrNull { it.label.lowercase() == label.name.lowercase() }
+        // An organic mark matches on its logo, so the EU leaf is never shown twice.
+        val kind = kindForLabel(label)
+        val match = badges.firstOrNull { it.label.lowercase() == label.name.lowercase() || (kind in ORGANIC_KINDS && it.kind == kind) }
         if (match != null) {
             if (label.imageUrl != null && match.imageUrl == null) match.imageUrl = label.imageUrl
             continue
         }
-        badges += CertificationBadge(kindForLabel(label), label.name, label.imageUrl)
+        badges += CertificationBadge(kind, label.name, label.imageUrl)
     }
     val seen = mutableSetOf<String>()
     return badges.filter { seen.add(it.label.lowercase()) }

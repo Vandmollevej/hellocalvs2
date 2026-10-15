@@ -43,29 +43,36 @@ function classify(label: string): { field: keyof LabelCertificationFilters; valu
   return null;
 }
 
-function addUnique(list: string[], value: string) {
-  if (!list.includes(value)) list.push(value);
+// Økologimærker står alle i organic, adskilt af ", " (fx "Økologisk,
+// EU-økologisk"), så Ø-mærket og EU-bladet vises som hvert sit logo. Ø-mærket
+// står først.
+export const ORGANIC_SEPARATOR = ", ";
+
+export function organicMarks(value: string | null | undefined): string[] {
+  return (value ?? "").split(",").map((mark) => mark.trim()).filter(Boolean);
+}
+
+export function joinOrganicMarks(marks: readonly string[]): string | null {
+  const unique = Array.from(new Set(marks.map((mark) => mark.trim()).filter(Boolean)));
+  unique.sort((a, b) => Number(b === ORGANIC) - Number(a === ORGANIC));
+  return unique.length ? unique.join(ORGANIC_SEPARATOR) : null;
 }
 
 export function certificationFiltersFromLabels(labels: readonly string[]): LabelCertificationFilters {
   const out: LabelCertificationFilters = { organic: null, keyhole: null, wholeGrain: null, animalWelfare: [], certifications: [] };
+  const organic: string[] = [];
   for (const label of labels) {
     const hit = classify(label);
     if (!hit) continue;
     if (hit.field === "animalWelfare" || hit.field === "certifications") {
       if (!out[hit.field].includes(hit.value)) out[hit.field].push(hit.value);
     } else if (hit.field === "organic") {
-      // Det danske Ø-mærke står i organic; EU-bladet m.fl. ved siden af står i
-      // certifications, så begge logoer vises (de står ofte begge på varen).
-      if (!out.organic || out.organic === hit.value) out.organic = hit.value;
-      else if (hit.value === ORGANIC) {
-        addUnique(out.certifications, out.organic);
-        out.organic = ORGANIC;
-      } else addUnique(out.certifications, hit.value);
+      organic.push(hit.value);
     } else {
       out[hit.field] = hit.value;
     }
   }
+  out.organic = joinOrganicMarks(organic);
   return out;
 }
 

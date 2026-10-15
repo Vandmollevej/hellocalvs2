@@ -1,9 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import { certificationFiltersFromLabels, hasCertificationFilters } from "@/lib/label-certifications";
+import {
+  certificationFiltersFromLabels,
+  hasCertificationFilters,
+  joinOrganicMarks,
+  organicMarks,
+} from "@/lib/label-certifications";
 
 // Gemmer mærkninger læst fra emballagen/Open Food Facts i ProductFilters
 // (docs/DECISIONS.md 2026-10-02). Tilføjer kun: et felt, der allerede er
-// udfyldt (fx af butiksimporten eller admin), overskrives aldrig.
+// udfyldt (fx af butiksimporten eller admin), overskrives aldrig; nye
+// økologimærker lægges dog til de gemte.
 export async function addCertificationFilters(productId: string, labels: readonly string[]) {
   const read = certificationFiltersFromLabels(labels);
   if (!hasCertificationFilters(read)) return [];
@@ -12,16 +18,13 @@ export async function addCertificationFilters(productId: string, labels: readonl
     select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
   });
   const merge = (current: string[] | undefined, next: string[]) => Array.from(new Set([...(current ?? []), ...next]));
-  // Står der allerede et andet økologimærke, kommer det nye ved siden af, så
-  // både Ø-mærket og EU-bladet vises.
-  const organic = existing?.organic || read.organic;
-  const extraOrganic = read.organic && read.organic !== organic ? [read.organic] : [];
   const data = {
-    organic,
+    // Økologimærker lægges sammen (Ø-mærket og EU-bladet kan begge stå på varen).
+    organic: joinOrganicMarks([...organicMarks(existing?.organic), ...organicMarks(read.organic)]),
     keyhole: existing?.keyhole || read.keyhole,
     wholeGrain: existing?.wholeGrain || read.wholeGrain,
     animalWelfare: merge(existing?.animalWelfare, read.animalWelfare),
-    certifications: merge(existing?.certifications, [...extraOrganic, ...read.certifications]),
+    certifications: merge(existing?.certifications, read.certifications),
   };
   await prisma.productFilters.upsert({ where: { productId }, update: data, create: { productId, ...data } });
   return [read.organic, read.keyhole, read.wholeGrain, ...read.animalWelfare, ...read.certifications].filter(

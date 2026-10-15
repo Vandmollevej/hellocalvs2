@@ -1,3 +1,4 @@
+import { joinOrganicMarks, organicMarks } from "./label-certifications.ts";
 import type { DetectedLabel } from "@/lib/product-label-ai";
 
 // Afbildning fra fundne mærkater til filtertabellen ProductFilters
@@ -45,6 +46,13 @@ const SCALAR_BY_KEY: Record<string, keyof Omit<FilterPatch, "animalWelfare" | "c
   "whole-grain": "wholeGrain",
 };
 
+// Samme navne som forside-AI'en/Open Food Facts (src/lib/label-certifications.ts).
+const ORGANIC_NAME_BY_KEY: Record<string, string> = {
+  "organic-dk": "Økologisk",
+  "organic-eu": "EU-økologisk",
+  "organic-de": "Biologisch",
+};
+
 const ORIGIN_BY_KEY: Record<string, string> = { "dk-origin": "Danmark", "de-origin": "Tyskland", "se-origin": "Sverige" };
 
 const CERTIFICATION_KEYS = new Set(["msc", "asc", "fairtrade", "rainforest-alliance", "svanemaerket", "qmilch", "qs", "ohne-gentechnik"]);
@@ -76,7 +84,10 @@ export function labelsToFilterPatch(labels: DetectedLabel[], current: FilterSnap
       continue;
     }
     if (label.key.startsWith("organic-") || label.category === "ORGANIC") {
-      if (!has(current?.organic) && !patch.organic) patch.organic = word;
+      // Alle økologimærker lægges til organic (Ø-mærket og EU-bladet kan begge stå på varen).
+      const marks = organicMarks(patch.organic ?? current?.organic);
+      const mark = ORGANIC_NAME_BY_KEY[label.key] ?? word;
+      if (!marks.some((m) => m.toLowerCase() === mark.toLowerCase())) patch.organic = joinOrganicMarks([...marks, mark]) ?? mark;
       continue;
     }
     const origin = ORIGIN_BY_KEY[label.key];

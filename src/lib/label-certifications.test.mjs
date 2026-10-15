@@ -6,18 +6,21 @@ import { certificationBadges } from "./certification-badges.ts";
 
 test("forside-AI'ens mærker bliver til filterfelter", () => {
   const filters = certificationFiltersFromLabels(["Ø-mærket", "EU-økologisk", "Nøglehullet", "Fairtrade", "Bedre Dyrevelfærd 2 hjerter"]);
-  assert.equal(filters.organic, "Økologisk");
+  assert.equal(filters.organic, "Økologisk, EU-økologisk");
   assert.equal(filters.keyhole, "Nøglehul");
-  assert.deepEqual(filters.certifications, ["EU-økologisk", "Fairtrade"]);
+  assert.deepEqual(filters.certifications, ["Fairtrade"]);
   assert.deepEqual(filters.animalWelfare, ["Bedre Dyrevelfærd 2"]);
 });
 
 test("Ø-mærket og EU-bladet på samme vare giver begge logoer", () => {
   for (const labels of [["Ø-mærket", "EU-økologisk"], ["EU organic leaf", "Statskontrolleret økologisk"]]) {
     const filters = certificationFiltersFromLabels(labels);
-    assert.equal(filters.organic, "Økologisk");
-    assert.deepEqual(filters.certifications, ["EU-økologisk"]);
+    assert.equal(filters.organic, "Økologisk, EU-økologisk");
+    assert.deepEqual(filters.certifications, []);
     assert.deepEqual(certificationBadges(filters).map((b) => b.kind), ["organic", "euOrganic"]);
+    // Mærkatjobbets EU-blad giver billede til samme badge, ikke et ekstra.
+    const found = [{ key: "organic-eu", name: "EU-økologi", category: "ORGANIC", imageUrl: "/x.png", confidence: 0.9 }];
+    assert.deepEqual(certificationBadges(filters, found).map((b) => b.kind), ["organic", "euOrganic"]);
   }
 });
 

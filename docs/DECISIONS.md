@@ -5291,5 +5291,5 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 
 ## 2026-10-15: Ø-mærket og EU-bladet vises begge
 
-- Står både det danske Ø-mærke og EU's økologi-blad på varen, vises begge logoer (brugerens krav). Før vandt Ø-mærket, og EU-bladet blev smidt væk, fordi `ProductFilters.organic` kun rummer ét mærke.
-- `organic` holder Ø-mærket ("Økologisk"); øvrige økologimærker (EU-økologisk, Bio-Siegel, Bioland …) lægges i `certifications`, hvor `certificationBadges` giver dem deres eget logo. `addCertificationFilters` gør det samme, når varen allerede har et andet økologimærke gemt.
+- Står både det danske Ø-mærke og EU's økologi-blad på varen, vises begge logoer (brugerens krav). Før vandt Ø-mærket, og EU-bladet blev smidt væk.
+- Alle økologimærker står i `ProductFilters.organic`, adskilt af ", " (fx "Økologisk, EU-økologisk"; Ø-mærket først). Økologimærker lægges aldrig i `certifications` (brugerens krav). `certificationBadges` (web + native) giver hvert mærke sit logo og viser hvert økologilogo én gang. Forside-AI'en, Open Food Facts, `addCertificationFilters` og det natlige mærkat-job (`labelsToFilterPatch`) lægger nye økologimærker til de gemte.

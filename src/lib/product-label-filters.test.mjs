@@ -22,7 +22,16 @@ test("usikre fund og dubletter ignoreres", () => {
   );
   assert.equal(patch.glutenFree, undefined);
   assert.equal(patch.certifications, undefined);
-  assert.equal(patch.organic, "EU-økologi");
+  assert.equal(patch.organic, "EU-økologisk");
+});
+
+test("EU-bladet lægges til Ø-mærket i økologi-feltet, ikke i certifikater", () => {
+  const patch = labelsToFilterPatch(
+    [label("organic-eu", "EU-økologi", "ORGANIC"), label("organic-dk", "Ø-mærket", "ORGANIC")],
+    { organic: "Økologisk", certifications: [] },
+  );
+  assert.equal(patch.organic, "Økologisk, EU-økologisk");
+  assert.equal(patch.certifications, undefined);
 });
 
 test("oprindelsesmærke giver land", () => {
