@@ -1,3 +1,7 @@
+## 2026-10-15: AI'en kan ikke længere opfinde brands
+
+- Et ukendt brandnavn fra AI'en oprettes kun ud fra et sikkert, helt synligt logo (`newBrandAllowed`); ellers intet brand og `brand_unknown_skipped` i loggen. Forsiden, stregkode-logoet og eksterne billeder. Se DECISIONS/REGLER 2026-10-15.
+
 ## 2026-10-15: Tilføj-kameraets forsidefoto = søgerens kvadrat
 
 - Forsidefotoet blev gemt som hele 9:16-kamerabilledet, mens søgeren kun viste midterkvadratet, så varen så langt væk ud bagefter og fik færre pixels til OCR. Nu er alle fotos præcis det, søgeren viste (kun web; native bruger telefonens kamera). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
