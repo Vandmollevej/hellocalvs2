@@ -56,7 +56,7 @@ export const JOBS: JobDefinition[] = [
     key: "label-scan",
     name: "Mærkater: AI-aflæsning",
     description:
-      "Finder mærkater på vareforsiden (laktosefri, Haltungsform, QMilch, Øko, Nøglehul, MSC …) for varer, der ikke er scannet for mærkater endnu. Mærkerne fritskrabes af billedrobotten, og sikre fund udfylder tomme filtre på varen.",
+      "Finder mærkater på vareforsiden (laktosefri, Haltungsform, QMilch, Øko, Nøglehul, MSC …) for varer, der ikke er scannet for mærkater endnu. Bruger den lokale mærkesøgning først; OpenAI læser kun forsiden, når intet blev fundet lokalt. Mærkerne fritskrabes af billedrobotten, og sikre fund udfylder filtre på varen.",
     runtime: "app",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "04:00",
@@ -295,6 +295,28 @@ export const JOBS: JobDefinition[] = [
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,
     defaultRunAtTime: null,
+  },
+  {
+    // Intern AI først for mærkat-jobbet (docs/DECISIONS.md 2026-10-15).
+    key: "label-local",
+    name: "Mærkater: lokal søgning",
+    description:
+      "Søger forsidefotoet af varer, der venter på mærkat-jobbet, igennem for kendte logoer og mærketekster — lokalt på serveren uden OpenAI. Mærkat-jobbet spørger kun OpenAI, når intet blev fundet her.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    // 2-års kvalitetstjek, intern AI først (docs/DECISIONS.md 2026-10-15).
+    key: "recheck-local",
+    name: "Varer over to år: lokal billedsammenligning",
+    description:
+      "Sammenligner kundens nye forsidefoto af varer over to år med varens nuværende billede — lokalt på serveren (DINOv2, farve, struktur) uden OpenAI. Kvalitetstjekket kl. 02:40 spørger kun OpenAI, når sammenligningen er i tvivl.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:15",
   },
   {
     key: "rema1000-import",

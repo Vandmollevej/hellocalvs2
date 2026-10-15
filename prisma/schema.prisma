@@ -1655,6 +1655,8 @@ model Product {
   // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
   labels             ProductLabel[]
   labelsScannedAt    DateTime?
+  // Den lokale mærkesøgning (quality-control-agent, 2026-10-15).
+  labelPhotoScans    LabelPhotoScan[]
   // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
   petFoodCheckedAt   DateTime?
   // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
@@ -1905,6 +1907,28 @@ model ProductLabel {
   @@unique([productId, key])
   @@index([key])
   @@map("product_labels")
+}
+
+// Lokal mærkesøgning (docs/DECISIONS.md 2026-10-15, brugerens regel: intern AI
+// først, OpenAI kun hvis intet findes). quality-control-agent søger
+// forsidefotoet af varer, der venter på mærkat-jobbet, igennem for kendte
+// logoer (OpenCV mod public/certifications og tidligere fritskrabede mærker) og
+// mærketekster (tesseract) og gemmer fundene her. Det natlige job "label-scan"
+// bruger fundene og spørger kun OpenAI, når intet blev fundet lokalt.
+model LabelPhotoScan {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
+  // Fotoets URL (som ai_product_analyses.image_url / products.imageUrl).
+  url       String
+  // [{ key, name, text, category, box, confidence }] — samme form som AI'ens fund.
+  labels    Json     @default("[]")
+  // Fotoet kunne ikke hentes eller læses lokalt.
+  failed    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([productId, url])
+  @@map("label_photo_scans")
 }
 
 enum ProductLabelCategory {
@@ -5220,6 +5244,14 @@ model ProductRecheck {
   // Varen, som den var ved scanningen: billede, navn, næring og ingredienser.
   originalImageUrl         String?
   original                 Json
+  // Intern AI først (REGLER: "AI: intern AI først"): quality-control-agent
+  // (`recheck-local`) sammenligner det nye foto med originalen lokalt
+  // (DINOv2, farve, struktur; 0-1). OpenAI spørges kun ved tvivl.
+  localVisualScore         Float?
+  localColorScore          Float?
+  localStructuralScore     Float?
+  localComparedAt          DateTime?
+  localError               String?
   // Nattens vurdering: om billedet er ændret (eller det nye er bedre), hvad
   // AI'en så, de aflæste værdier og de felter, der afviger fra originalen.
   analyzedAt               DateTime?

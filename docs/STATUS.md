@@ -1,6 +1,11 @@
 ## 2026-10-15: 2-års kvalitetstjek — varer over to år fremstår som nye ved scanning
 
-- En vare, der har ligget i databasen i over to år, fremstår som ny, når en indlogget kunde scanner den: kameraet tager forside, energi og indhold (web + native), kunden får varens tidligere info med det samme, og fotoene gemmes kun. Det natlige job `product-recheck` (02:40) sammenligner det nye foto med originalen og læser energi/indhold; ændringer går til admin → Nye varer → "2-års tjek" (tælles med på forsidens "Nye varer") med originalen og det nye foto side om side, det nyeste valgt som standard. Billedet fritlægges først efter admins ja, om natten. Nye tal gælder kun registreringer fra og med scanningen; historikken røres ikke. Migration `20261015120000_product_recheck` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
+- En vare, der har ligget i databasen i over to år, fremstår som ny, når en indlogget kunde scanner den: kameraet tager forside, energi og indhold (web + native), kunden får varens tidligere info med det samme, og fotoene gemmes kun. Om natten sammenligner intern AI (`recheck-local`, DINOv2 i quality-control-agent, 02:15) det nye foto med originalen; OpenAI spørges kun, når den lokale sammenligning er i tvivl. Jobbet `product-recheck` (02:40) læser energi/indhold (telefonens OCR først) og sender ændringer til admin → Nye varer → "2-års tjek" (tælles med på forsidens "Nye varer") med originalen og det nye foto side om side, det nyeste valgt som standard. Billedet fritlægges først efter admins ja, om natten. Nye tal gælder kun registreringer fra og med scanningen; historikken røres ikke. Migration `20261015120000_product_recheck` skal med deployet, og quality-control-agent skal genbygges. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
+
+## 2026-10-15: Mærkat-jobbet — intern AI først
+
+- Ny robot `label-local` (quality-control-agent) søger forsidefotos lokalt igennem for kendte logoer og mærketekster; `label-scan` spørger kun OpenAI, når intet blev fundet lokalt. Se DECISIONS 2026-10-15. Kvalitetskontrollens forkerte kolonnenavne er rettet.
+- Udestående: følg admin → Robotter efter deploy ("Mærkater: lokal søgning" og "Mærkater: AI-aflæsning" viser antal lokalt/OpenAI).
 
 ## 2026-10-15: Skelet-glimtet gjort tydeligt
 

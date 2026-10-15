@@ -204,17 +204,19 @@ function cleanBox(box: ImageBox | null): ImageBox | null {
   return width > 0.05 && height > 0.05 ? { x, y, width, height } : null;
 }
 
-async function compareFront(recheck: { frontPhotoUrl: string; originalImageUrl: string | null }) {
+type FrontResult = { changed: boolean; note: string; productBox: ImageBox | null };
+
+async function compareFront(recheck: Recheck): Promise<FrontResult | "WAIT"> {
+  if (!recheck.originalImageUrl) return { changed: true, note: "Varen havde intet billede", productBox: null };
+  // Intern AI først (docs/REGLER.md "AI: intern AI først"): quality-control-
+  // agentens lokale sammenligning afgør det sikre; OpenAI kun ved tvivl.
+  const local = localImageVerdict(recheck);
+  if (local === "WAIT") return "WAIT";
+  if (local) return local;
   const photo = await readStoredImageAsDataUrl(recheck.frontPhotoUrl);
   if (!photo) throw new Error("Det nye forsidefoto findes ikke på disken");
   const original = await imageForAi(recheck.originalImageUrl);
-  if (!original) {
-    return {
-      changed: true,
-      note: recheck.originalImageUrl ? "Det nuværende billede kunne ikke indlæses" : "Varen havde intet billede",
-      productBox: null,
-    };
-  }
+  if (!original) return { changed: true, note: "Det nuværende billede kunne ikke indlæses", productBox: null };
   // Lav detaljegrad: grafik og farver ses fint i lille størrelse og koster en brøkdel.
   const { value } = await callStructuredVision<FrontCompare>({
     photo: original,
@@ -230,12 +232,36 @@ async function compareFront(recheck: { frontPhotoUrl: string; originalImageUrl: 
     value.designChanged ? "ny emballage/grafik" : null,
     value.newPhotoBetter ? "det nye foto er bedre" : null,
   ].filter(Boolean);
-  const note = [reasons.join(", "), value.differences.trim()].filter(Boolean).join(" — ") || "Ingen ændringer i billedet";
+  const localText = recheck.localVisualScore != null ? `intern AI i tvivl (${Math.round(recheck.localVisualScore * 100)} % ens), OpenAI: ` : "OpenAI: ";
+  const note = localText + ([reasons.join(", "), value.differences.trim()].filter(Boolean).join(" — ") || "ingen ændringer i billedet");
   return {
     changed: !value.sameProduct || value.designChanged || value.newPhotoBetter,
     note,
     productBox: cleanBox(value.productBox),
   };
+}
+
+// Grænserne for den lokale billedlighed (DINOv2, 0-1). Originalen er oftest
+// fritlagt og lagt på hvid baggrund; kundens foto har baggrund og lys. Over
+// SAME er det samme emballage; under CHANGED er det ændret; derimellem
+// spørges OpenAI. Justeres her ud fra de gemte scorer på tjekkene.
+export const RECHECK_LOCAL_SAME = 0.9;
+export const RECHECK_LOCAL_CHANGED = 0.75;
+// Er fotoet ikke sammenlignet lokalt efter så længe (agenten nede), spørges OpenAI.
+const LOCAL_WAIT_MS = 2 * 24 * 60 * 60_000;
+
+function localImageVerdict(recheck: Recheck, now = Date.now()): FrontResult | "WAIT" | null {
+  const score = recheck.localVisualScore;
+  if (score == null) {
+    const waiting = !recheck.localComparedAt && now - recheck.createdAt.getTime() < LOCAL_WAIT_MS;
+    return waiting ? "WAIT" : null;
+  }
+  const percent = Math.round(score * 100);
+  if (score >= RECHECK_LOCAL_SAME) return { changed: false, note: `Intern AI: samme billede (${percent} % ens)`, productBox: null };
+  if (score <= RECHECK_LOCAL_CHANGED) {
+    return { changed: true, note: `Intern AI: billedet er ændret (kun ${percent} % ens)`, productBox: null };
+  }
+  return null;
 }
 
 type Recheck = Prisma.ProductRecheckGetPayload<{ include: { product: { select: { barcodes: { select: { code: true } } } } } }>;
@@ -335,13 +361,13 @@ function withReadValues(base: Record<RecheckNutritionField, number>, read: Reche
   return merged;
 }
 
-async function analyzeRecheck(recheck: Recheck): Promise<"NO_CHANGE" | "AWAITING_ADMIN" | "FAILED"> {
+async function analyzeRecheck(recheck: Recheck): Promise<"NO_CHANGE" | "AWAITING_ADMIN" | "FAILED" | "WAITING"> {
   const startedAt = Date.now();
   const original = asValues(recheck.original);
-  const [front, read] = await Promise.all([
-    compareFront(recheck).catch((error) => ({ error: errorText(error) })),
-    readLabels(recheck).catch((error) => ({ error: errorText(error) })),
-  ]);
+  const front = await compareFront(recheck).catch((error) => ({ error: errorText(error) }));
+  // Den lokale sammenligning er ikke kørt endnu: næste nat.
+  if (front === "WAIT") return "WAITING";
+  const read = await readLabels(recheck).catch((error) => ({ error: errorText(error) }));
   const frontError = "error" in front ? front.error : null;
   const readError = "error" in read ? read.error : null;
   const now = new Date();
@@ -488,7 +514,7 @@ export async function runProductRechecks(): Promise<{ message: string; count: nu
     take: NIGHT_BATCH,
     include: { product: { select: { barcodes: { select: { code: true } } } } },
   });
-  const outcome = { NO_CHANGE: 0, AWAITING_ADMIN: 0, FAILED: 0 };
+  const outcome = { NO_CHANGE: 0, AWAITING_ADMIN: 0, FAILED: 0, WAITING: 0 };
   for (const recheck of submitted) {
     outcome[await analyzeRecheck(recheck)] += 1;
   }
@@ -505,14 +531,15 @@ export async function runProductRechecks(): Promise<{ message: string; count: nu
   }
 
   const parts = [
-    `${submitted.length} vurderet`,
+    `${submitted.length - outcome.WAITING} vurderet`,
     `${outcome.NO_CHANGE} uændrede`,
     `${outcome.AWAITING_ADMIN} til admin`,
     outcome.FAILED ? `${outcome.FAILED} fejlede` : null,
+    outcome.WAITING ? `${outcome.WAITING} venter på den lokale billedsammenligning` : null,
     queued.length ? `${queued.length} billeder sendt til fritlægning` : null,
     applied ? `${applied} nye billeder sat på varen` : null,
   ].filter(Boolean);
-  return { message: `2-års tjek: ${parts.join(", ")}`, count: submitted.length + applied };
+  return { message: `2-års tjek: ${parts.join(", ")}`, count: submitted.length - outcome.WAITING + applied };
 }
 
 // ---------------------------------------------------------------------------
