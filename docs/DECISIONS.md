@@ -5345,6 +5345,15 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Økologisk i varenavnet læses på flere sprog (brugerens regel: dansk økologisk/øko, tysk bio, engelsk organic; tilsvarende på svensk, hollandsk, fransk, italiensk, spansk, polsk og finsk) i `product-certifications.ts`, `off-name-split.ts` og native `FoodLogic.kt`. Dansk "biologisk" er ikke økologi.
 
 
+## 2026-10-15: Mærkat-jobbet bruger intern AI først — OpenAI kun hvis intet findes
+
+- Brugerens regel: det natlige mærkat-job skal bruge intern AI først og må kun spørge OpenAI, når den lokale søgning intet finder på fotoet.
+- Ny lokal mærkesøgning `label-local` (admin → Robotter, hvert 5. min, i containeren `quality-control-agent`, `scripts/quality-control-agent/label_local.py`): forsidefotoet af hver vare, der venter på `label-scan`, søges igennem for kendte logoer — SIFT + RANSAC for logoer med struktur og farve + form + NCC for flade logoer (EU-bladet, nøglehullet) — mod `public/certifications` (hentes fra app-containeren) og tidligere fritskrabede mærker (`product_labels.imageUrl`), og for faste mærketekster med tesseract ("Statskontrolleret økologisk", "Laktosefri", "Glutenfri", "Ohne Gentechnik" …). Fundene gemmes i `label_photo_scans` (migration `20261015090000_label_photo_scans`).
+- `label-scan` bruger de lokale fund og kalder kun OpenAI, når den lokale søgning intet fandt. Er fotoet ikke søgt igennem endnu, venter varen til næste kørsel.
+- Grænserne er sat forsigtigt (ingen forkerte fund i testen): mindst 15 SIFT-match / NCC 0,8. Test på 50 syntetiske fotos (logoer indsat med skala, rotation, perspektiv, sløring, JPEG): 57 af 80 fundet, 0 forkerte; Ø-mærket blev også fundet på Salling ØKO-pakkerne og på brugerens ØGO-foto. Små eller slørede logoer findes ikke lokalt — fandt søgningen et andet mærke på fotoet, spørges OpenAI ikke.
+- Bagsidebillederne (`back-photo-scan`, #421) er uændrede: deres ene AI-kald læser også ingrediensliste/næring til stavekontrollen.
+- Rettet undervejs: `quality-control-agent` søgte efter kolonnerne `"productId"`/`"imageUrl"`/`"createdAt"` i `ai_product_analyses`, som hedder `product_id`/`image_url`/`created_at` — billedmatchet kunne derfor ikke finde fotos.
+
 ## 2026-10-15: Logoer — først online, AI-rentegning kun uden fritlagt fund
 
 - Brugerens regel: før noget AI-billedarbejde søges originalen online (Google Vision, logo-robotten). Kun hvis intet fritlagt (transparent) logo findes, rentegner AI originaludklippet med brugerens prompt, ordret: "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. Der må med andre ord ikke fortolkes og skabes noget med AI."
