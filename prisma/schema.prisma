@@ -144,6 +144,9 @@ model User {
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): ~ vises altid; denne
   // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
   autoExpandUncertainty   Boolean @default(false)
+  // Visning → Oversættelse (docs/DECISIONS.md 2026-10-15): varer på et andet
+  // sprog end appens vises oversat (standard) eller som original.
+  translateForeignText    Boolean @default(true)
 
   // Daglig kaloriegrænse pr. bruger (src/lib/goals.ts). Null = standardværdien
   // DAILY_KCAL_GOAL. Opdateres af brugeren via "Opdater"-popuppen
@@ -1440,6 +1443,13 @@ model Product {
   ingredientsOriginal    String?
   translationSourceLang  String?
   translationStatus      String?
+  // Varens sprog (docs/DECISIONS.md 2026-10-15): det sprog, kolonnerne står
+  // på (ISO 639-1, fx "da", "de", "zh"). Kolonnerne er altid originalen og
+  // overskrives aldrig af en oversættelse; oversættelser ligger i
+  // ProductTranslation. null = ukendt endnu (udfyldes af vedligeholdet,
+  // src/lib/product-language.ts) — en vare med ukendt sprog oversættes ikke.
+  language               String?
+  translations           ProductTranslation[]
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
@@ -5591,4 +5601,30 @@ model SpellingScan {
   scannedAt   DateTime @default(now())
 
   @@map("spelling_scans")
+}
+
+// Oversættelse af en vares tekst til ét app-sprog (docs/DECISIONS.md
+// 2026-10-15). Laves første gang en bruger med sproget ser varen og gemmes.
+// sourceHash er et fingeraftryk af varens originaltekst: ændres varen,
+// laves oversættelsen forfra. brandName er brandets navn skrevet med
+// latinske bogstaver (brandet selv omdøbes aldrig).
+model ProductTranslation {
+  id              String   @id @default(cuid())
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String
+  locale          String
+  sourceHash      String
+  name            String?
+  namePlural      String?
+  productType     String?
+  variant         String?
+  packageSizeText String?
+  ingredientsText String?
+  subbrand        String?
+  brandName       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([productId, locale])
+  @@map("product_translations")
 }

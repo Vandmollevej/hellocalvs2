@@ -11,6 +11,7 @@ import {
   IconArrowsSort,
   IconRuler,
   IconBabyCarriage,
+  IconLanguage,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -75,6 +76,12 @@ export default function DisplaySettingsIndexPage() {
             }
             label={t("displaySettings.uncertainty")}
             href="/settings/display/uncertainty"
+            divider
+          />
+          <ChevronRow
+            icon={<IconLanguage size={20} />}
+            label={t("settings.translation")}
+            href="/settings/display/translation"
             divider
           />
           <ChevronRow

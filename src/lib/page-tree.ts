@@ -313,6 +313,7 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/settings/display/front-page", label: "Visning: forside" },
               { path: "/settings/display/limits", label: "Visning: grænser" },
               { path: "/settings/display/uncertainty", label: "Visning: usikkerhed" },
+              { path: "/settings/display/translation", label: "Visning: oversættelse" },
               { path: "/settings/display/calendar-view", label: "Visning: kalender" },
               { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
               { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },

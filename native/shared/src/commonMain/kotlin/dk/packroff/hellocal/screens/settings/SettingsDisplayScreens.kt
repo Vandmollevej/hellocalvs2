@@ -67,11 +67,11 @@ private class SettingsProfileFlag(initialLoading: Boolean) {
 }
 
 @Composable
-private fun rememberProfileFlag(field: String): Pair<SettingsProfileFlag, (Boolean) -> Unit> {
+private fun rememberProfileFlag(field: String, default: Boolean = false): Pair<SettingsProfileFlag, (Boolean) -> Unit> {
     val scope = rememberCoroutineScope()
     val flag = remember { SettingsProfileFlag(initialLoading = true) }
     LaunchedEffect(field) {
-        flag.value = runCatching { settingsLoadProfile() }.getOrNull()?.let { it.settingsBool(field) ?: false }
+        flag.value = runCatching { settingsLoadProfile() }.getOrNull()?.let { it.settingsBool(field) ?: default }
         flag.loading = false
     }
     val save: (Boolean) -> Unit = { next ->
@@ -278,6 +278,28 @@ fun TipsSettingsScreen(args: RouteArgs) {
                 label = "Tips til at nå dine mål",
                 description = "Foreslår fx en gåtur eller flere gulerødder, hvis du plejer at spise mere end dagens mål.",
             )
+        }
+    }
+}
+
+/** Native port of src/app/settings/display/translation/page.tsx (User.translateForeignText, DECISIONS 2026-10-15). */
+@Composable
+fun TranslationSettingsScreen(args: RouteArgs) {
+    val t = LocalTranslator.current
+    val (flag, save) = rememberProfileFlag("translateForeignText", default = true)
+    HcScreen(title = t.t("settings.translation"), contentPadding = SettingsDisplayP4) {
+        val value = flag.value
+        when {
+            flag.loading -> HcLoader()
+            value == null -> SettingsLoadErrorText(t.t("settings.loadError"))
+            else -> SettingsPage {
+                HcToggle(
+                    checked = value,
+                    onChange = save,
+                    label = t.t("displaySettings.translateForeignText"),
+                    description = t.t("displaySettings.translateForeignTextDescription"),
+                )
+            }
         }
     }
 }

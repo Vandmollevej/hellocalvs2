@@ -2,6 +2,12 @@
 
 - Ny robot `back-photo-local` læser bagsidebillederne lokalt (tesseract + mærkesøgning); nattens `back-photo-scan` spørger kun OpenAI, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; tvivlsomme ord vurderes af AI og bliver forslag. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: Varens sprog og oversættelser — trin 1
+
+- `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015130000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
+- Varesiden (web + native): oversat til brugerens app-sprog med "Oversat til dansk fra kinesisk. Vis original" over titlen; Indstillinger → Visning → Oversættelse (slået til som standard, web + native + webmenu).
+- Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset (bør vise dansk + linjen), en dansk Bilka-ost (ingen linje) og tryk "Vis original". Trin 2–3 og OFF-spørgsmålet: se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Originalbilleder online før AI-billedarbejde; AI-rentegning af logoer
 
 - Produktbilleder: robotten `product-image-search` (logo-agent) søger hver nyscannet vare online med Google Vision, før kamerafotoet fritlægges; fundene står under Billedforslag ved siden af kamerafoto og udklip.

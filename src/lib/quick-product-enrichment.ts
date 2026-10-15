@@ -25,6 +25,8 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
+import { cleanLanguageSignals } from "@/lib/barcode-context";
+import { refreshProductLanguage } from "@/lib/product-translations";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -535,6 +537,12 @@ export async function enrichQuickProduct(
     parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
     parts.label ? enrichLabel(input) : Promise.resolve(),
   ]);
+  // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
+  // skriftens sprog, når forsiden har fx kinesiske tegn. Teksten røres ikke.
+  await refreshProductLanguage(
+    input.productId,
+    cleanLanguageSignals(input.signals).locationCountry ?? input.marketRegion,
+  ).catch((error) => console.error("Could not set product language", input.productId, error));
   await syncProductNutritionFeaturesSafely(input.productId);
 
   const product = await prisma.product

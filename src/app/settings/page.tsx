@@ -26,6 +26,7 @@ import {
   IconHistory,
   IconTrashOff,
   IconBulb,
+  IconLanguage,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -120,6 +121,7 @@ export default function SettingsPage() {
     { icon: <IconRuler size={20} />, label: t("settings.bodyMeasurementsDisplay"), href: "/settings/display/body-measurements" },
     { icon: <IconAlertTriangle size={20} />, label: t("settings.recommendedLimits"), href: "/settings/display/limits" },
     { icon: <IconAdjustments size={20} />, label: t("displaySettings.uncertainty"), href: "/settings/display/uncertainty" },
+    { icon: <IconLanguage size={20} />, label: t("settings.translation"), href: "/settings/display/translation" },
     { icon: <IconCalendarWeek size={20} />, label: t("settings.calendarView"), href: "/settings/display/calendar-view" },
     { icon: <IconMoon size={20} />, label: t("settings.sleepQuality"), href: "/settings/display/sleep-quality" },
     { icon: <IconBulb size={20} />, label: t("settings.tipsTitle"), href: "/settings/display/tips" },
@@ -285,6 +287,12 @@ export default function SettingsPage() {
               }
               label={t("displaySettings.uncertainty")}
               href="/settings/display/uncertainty"
+              divider
+            />
+            <ChevronRow
+              icon={<IconLanguage size={20} />}
+              label={t("settings.translation")}
+              href="/settings/display/translation"
               divider
             />
             <ChevronRow
