@@ -189,14 +189,15 @@ fun HcPillSearchField(value: String, onValueChange: (String) -> Unit, placeholde
 
 /**
  * src/components/hf/Skeleton.tsx (.hf-skeleton) — the shimmering placeholder
- * surface: a light band sweeps across every --hf-skeleton-duration.
+ * surface: a narrow light band (±0.35 × width) sweeps left to right from
+ * -0.5 to 1.5 × width every --hf-skeleton-duration, as in globals.css.
  */
 @Composable
 fun HcSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(HcDimens.RadiusCard)) {
     val transition = rememberInfiniteTransition()
     val phase by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
+        initialValue = 0f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(HcDurations.SkeletonDurationMs, easing = LinearEasing), RepeatMode.Restart),
     )
     Box(
@@ -204,12 +205,12 @@ fun HcSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(
             .clip(shape)
             .drawBehind {
                 val w = size.width.coerceAtLeast(1f)
-                val start = -w + 2f * w * phase
+                val peak = -0.5f * w + 2f * w * phase
                 drawRect(
                     Brush.linearGradient(
                         colors = listOf(HcColors.Skeleton, HcColors.SkeletonHighlight, HcColors.Skeleton),
-                        start = Offset(start, 0f),
-                        end = Offset(start + w, 0f),
+                        start = Offset(peak - 0.35f * w, 0f),
+                        end = Offset(peak + 0.35f * w, 0f),
                     ),
                 )
             },

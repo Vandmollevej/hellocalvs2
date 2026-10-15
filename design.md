@@ -816,8 +816,10 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
 
 Mens en side henter data, må der aldrig stå en "Henter…"-tekst. Siden tegner
 i stedet indholdets form som flader i `--hf-color-skeleton` (`#E2DACB`),
-og en lys gradient (`--hf-color-skeleton-highlight`, `#F2EEE6`) løber
-konstant hen over dem (1400 ms, lineær).
+og et smalt, lyst glimt (`--hf-color-skeleton-highlight`, `#FBF9F5`,
+±0,35 boksbredde) løber konstant fra venstre mod højre hen over dem
+(1400 ms, lineær). Glimtet skal være tydeligt — et bredt, svagt bånd ses
+som en statisk flade.
 
 - Alle skeletter på skærmen står i samme fase (fælles ur). Gradienten er
   relativ til boksens egen bredde, så ens bokse i en række glimter ens, mens

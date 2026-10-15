@@ -1,3 +1,8 @@
+## 2026-10-15: Skelet-glimtet gjort tydeligt
+
+- Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
+- Varesiden: mens brandet læses, står en glimtende boks på brandets plads ved cirklen (brand/subbrand skjules), og den grønne linje (størrelse · variant) er en glimtende boks, mens navnet læses.
+
 ## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
 
 - Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
