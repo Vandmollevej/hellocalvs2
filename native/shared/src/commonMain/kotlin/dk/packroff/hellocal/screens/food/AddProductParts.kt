@@ -295,10 +295,12 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
  * src/components/hf/UpdatePointsBanner.tsx — white overlay under the app bar
  * ("Optjen 20 points …"); it floats over the page and never pushes it. The grip
  * collapses it (drag up / tap) or pulls down an inverted popup with one camera
- * tile per missing item (drag down). Place it inside a Box over the content.
+ * tile per missing item (drag down). The closed strip is text only — the photo
+ * tiles appear only once it is pulled down (user rule 2026-10-15). Tiles are
+ * (label, href); a null href opens [href]. Place it inside a Box over the content.
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<String>, action: (@Composable () -> Unit)? = null) {
+fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<Pair<String, String?>>) {
     val nav = LocalNavigator.current
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
@@ -314,15 +316,14 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
                 align = TextAlign.Center,
             )
         }
-        if (stage >= 1 && action != null) Box(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) { action() }
         if (stage == 2) {
             Row(
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
             ) {
-                tiles.forEach { label ->
+                tiles.forEach { (label, tileHref) ->
                     Column(
-                        Modifier.width(96.dp).clickable { nav.push(href) },
+                        Modifier.width(96.dp).clickable { nav.push(tileHref ?: href) },
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {

@@ -2382,6 +2382,7 @@
   },
   "productUpdate": {
     "banner": "Earn {points} points by updating this product",
+    "bannerPhoto": "Earn {points} points by updating with a great new photo",
     "toggle": "Show or hide banner",
     "tileFront": "Front",
     "tileNutrition": "Energy",

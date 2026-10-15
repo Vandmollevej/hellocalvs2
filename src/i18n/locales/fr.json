@@ -2382,6 +2382,7 @@
   },
   "productUpdate": {
     "banner": "Gagne {points} points en mettant à jour le produit",
+    "bannerPhoto": "Gagne {points} points en ajoutant une belle nouvelle photo",
     "toggle": "Afficher ou masquer la bannière",
     "tileFront": "Face avant",
     "tileNutrition": "Énergie",

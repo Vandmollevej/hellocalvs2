@@ -1,3 +1,10 @@
+## 2026-10-15: Opdater-banneret — ingen fotoknap i den lukkede stribe
+
+Brugerens krav (gentaget): "dropdown for oven skal ikke indeholde fotoknappen … Først når man kører skærmen ned. Øverst skal der stå: optjen X ved at opdatere med et flot nyt billede. Og nedenunder fotoboksen og de felter (…) som der nu måtte være behov for."
+
+- `UpdatePointsBanner` har ikke længere en `action`: knappen "Tag billede af indholdet igen" stod i den lukkede stribe. Den er nu indholds-fotoboksen i den nedtrukne del (boksen fører til kameraets `retake=ingredients`, når AI'en ikke kunne læse indholdet; ellers til `/add/[id]/update`).
+- Mangler varen kun produktbilledet, er teksten "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.bannerPhoto`); ellers den hidtidige "… ved at opdatere varen". Fotoboksene vises kun for de manglende områder (uændret). Web + native.
+
 ## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
 
 Brugerens skærmbilleder (Jalapeño-ketchup): i søgeren fyldte flasken billedet, men det gemte foto viste flasken lille med vindue og bordplade omkring. Årsag: søgeren viser kun det midterste kvadrat af kamerastrømmen (`object-cover`), mens forsiden blev gemt som hele 9:16-rammen (`liveCrop("front") = "none"`). Det var også i strid med beslutningen tidligere i dag ("hele rammen, brugeren sigtede med … allerede et kvadratisk udsnit af søgeren").

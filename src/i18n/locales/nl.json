@@ -2382,6 +2382,7 @@
   },
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
+    "bannerPhoto": "Verdien {points} punten door een mooie nieuwe foto toe te voegen",
     "toggle": "Banner tonen of verbergen",
     "tileFront": "Voorkant",
     "tileNutrition": "Energie",

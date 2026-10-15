@@ -1,3 +1,7 @@
+## 2026-10-15: Opdater-banneret uden fotoknap i striben
+
+- Den lukkede stribe øverst på varesiden viser kun teksten ("… ved at opdatere med et flot nyt billede", når kun billedet mangler); fotoboksene kommer først, når den trækkes ned. Web + native. Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Tilføj-kameraets forsidefoto = søgerens kvadrat
 
 - Forsidefotoet blev gemt som hele 9:16-kamerabilledet, mens søgeren kun viste midterkvadratet, så varen så langt væk ud bagefter og fik færre pixels til OCR. Nu er alle fotos præcis det, søgeren viste (kun web; native bruger telefonens kamera). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.

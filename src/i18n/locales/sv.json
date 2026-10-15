@@ -2382,6 +2382,7 @@
   },
   "productUpdate": {
     "banner": "Tjäna {points} poäng genom att uppdatera varan",
+    "bannerPhoto": "Tjäna {points} poäng genom att uppdatera med en fin ny bild",
     "toggle": "Visa eller dölj banner",
     "tileFront": "Framsida",
     "tileNutrition": "Energi",

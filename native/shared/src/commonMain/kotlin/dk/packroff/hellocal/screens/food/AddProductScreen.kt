@@ -718,19 +718,17 @@ fun AddProductView(
             val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
             UpdatePointsBanner(
                 "/add/${encodeUri(id)}/update",
-                t.t("productUpdate.banner", "points" to offer.points),
+                t.t(if (offer.kinds == listOf("FRONT")) "productUpdate.bannerPhoto" else "productUpdate.banner", "points" to offer.points),
                 t.t("productUpdate.toggle"),
-                offer.kinds.mapNotNull { k -> tileKeys[k]?.let { t.t(it) } },
-            ) {
-                if (product?.ingredientsUnreadable == true) {
-                    HcButton(
-                        t.t("addProduct.retakeIngredients"),
-                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
-                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
-                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
-                    )
-                }
-            }
+                offer.kinds.mapNotNull { k ->
+                    tileKeys[k]?.let { key ->
+                        // Unreadable ingredients: the creator retakes them in the camera — as a
+                        // tile in the pulled-down panel, never a button in the closed strip.
+                        val retake = k == "INGREDIENTS" && product?.ingredientsUnreadable == true
+                        t.t(key) to (if (retake) "/camera?mode=product&retake=ingredients&product=${encodeUri(id)}" else null)
+                    }
+                },
+            )
         }
         }
 
