@@ -160,7 +160,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/add/[id]/update": {
-    "src/app/add/[id]/update/page.tsx": "990602920b325fae",
+    "src/app/add/[id]/update/page.tsx": "9273abf18130c59e",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "fc63c1a077a687a1",
@@ -317,7 +317,7 @@
     "src/components/camera/IngredientsRetakeFlow.tsx": "f127419703370cf7",
     "src/components/camera/LabelFillOverlay.tsx": "12b9f5a4cc2b4268",
     "src/components/camera/ObjectPickerOverlay.tsx": "b61a78af2889cb7b",
-    "src/components/camera/ProductCaptureFlow.tsx": "de95abb848d2b7a4",
+    "src/components/camera/ProductCaptureFlow.tsx": "f4d942a2dcdb41f5",
     "src/components/camera/ProductOutlineOverlay.tsx": "f83893ae6f78c81e",
     "src/components/camera/ScanHeading.tsx": "c59f5b70a0fd1670",
     "src/components/camera/StepDoneOverlay.tsx": "88c1e68e7bf2f3b3",

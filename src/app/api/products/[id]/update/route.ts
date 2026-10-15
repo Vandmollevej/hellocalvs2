@@ -18,6 +18,9 @@ import {
   type ProductUpdateKind,
 } from "@/lib/product-update";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
+import { discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
+import { hasLookupFrontImage } from "@/lib/product-rescan-offer";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
 // POST /api/products/[id]/update — brugeren udfylder en manglende ting på en
 // eksisterende vare med et foto (forside → billede + logo, energi, indhold).
@@ -45,6 +48,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const body = await req.json().catch(() => null);
   const kind = body?.kind as ProductUpdateKind;
   const photo = typeof body?.photo === "string" ? body.photo : "";
+  // Forsiden: hele kamerabilledet i fuld opløsning gemmes som varens kilde-
+  // billede; `photo` er den nedskalerede kopi til AI'en (brugerens krav
+  // 2026-10-15: "vi gemmer fuld opløsning").
+  const fullPhoto = typeof body?.fullPhoto === "string" && body.fullPhoto.startsWith("data:image/") ? body.fullPhoto : null;
   if (!KINDS.includes(kind) || !photo.startsWith("data:image/")) {
     return NextResponse.json({ message: "kind og photo er påkrævet" }, { status: 400 });
   }
@@ -66,7 +73,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       micronutrientsPer100g: true,
       pendingFields: true,
       privateOwnerId: true,
-      brand: { select: { logoUrl: true } },
+      externalSource: true,
+      rescannedAt: true,
+      brand: { select: { id: true, name: true, logoUrl: true } },
       barcodes: { select: { code: true }, take: 1 },
     },
   });
@@ -97,15 +106,34 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     let accepted = false;
 
     if (kind === "FRONT") {
-      const { analysisId, result, brandMatch } = await analyzeFrontPhoto(base);
+      const storedImageUrl = fullPhoto ? await saveDataUrlImage(fullPhoto).catch(() => null) : null;
+      const { analysisId, result, brandMatch } = await analyzeFrontPhoto({ ...base, storedImageUrl });
       await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: id, photoSource } });
       accepted = result.overallConfidence >= MIN_FRONT_CONFIDENCE;
+      let brand = product.brand;
       if (accepted && !product.brandId) {
         const brandName = (brandMatch?.name ?? result.brand ?? result.logoText ?? "").trim();
         if (brandName) {
-          const brand = await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } });
-          await prisma.product.update({ where: { id }, data: { brandId: brand.id } });
+          const created = await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } });
+          await prisma.product.update({ where: { id }, data: { brandId: created.id } });
+          brand = { id: created.id, name: created.name, logoUrl: created.logoUrl };
         }
+      }
+      if (accepted) {
+        // Open Food Facts-/USDA-billedet afløses: dets ventende fritlægning
+        // kasseres, og varen er nu fotograferet (banneret tilbyder ikke
+        // forsiden igen). Som ved "Scan varen igen" går det nye billede via
+        // fritlægning og admin-godkendelse.
+        if (hasLookupFrontImage(product)) {
+          await discardPendingFrontImage(id, product.imageUrl);
+          await prisma.product.update({ where: { id }, data: { rescannedAt: new Date(), rescannedByUserId: user.id } });
+        }
+        // Uden kobling blev fritlægningen aldrig varens billede.
+        await linkCutoutJobsToProduct({
+          frontAnalysisId: analysisId,
+          productId: id,
+          brand: brand ? { id: brand.id, name: brand.name } : null,
+        });
       }
     } else if (kind === "NUTRITION") {
       const { analysisId, result } = await analyzeNutritionPhoto(base);

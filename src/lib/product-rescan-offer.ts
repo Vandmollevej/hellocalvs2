@@ -32,6 +32,13 @@ export function hasProperCutout(product: RescanCandidate): boolean {
 // ingen har set emballagen, så både billede, næring og indhold tjekkes.
 const LOOKUP_SOURCES = new Set(["OPEN_FOOD_FACTS", "USDA"]);
 
+// Open Food Facts-/USDA-vare, som ingen endnu har fotograferet selv: dens
+// forsidebillede er kildens (ofte dårligt, lav opløsning), så opdater-varen-
+// banneret tilbyder altid et nyt forsidefoto (brugerens krav 2026-10-15).
+export function hasLookupFrontImage(product: { externalSource?: string | null; rescannedAt?: string | Date | null }): boolean {
+  return Boolean(product.externalSource && LOOKUP_SOURCES.has(product.externalSource) && !product.rescannedAt);
+}
+
 // Tom liste = intet banner. Open Food Facts/USDA: alle tre felter (forside,
 // energi, indhold). Egne online-varer uden PNG: kun forsiden. Kun første gang — er
 // varen allerede scannet igen af nogen, vises banneret ikke mere.

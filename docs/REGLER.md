@@ -274,6 +274,11 @@ Natlige robotter bruger intern AI (lokalt på serveren: OpenCV, tesseract, DINOv
 
 Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: kun hvis intet fritlagt logo findes, rentegner AI originaludklippet med prompten "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. Der må med andre ord ikke fortolkes og skabes noget med AI." Admin viser altid originaludklippet ved siden af det hentede/rentegnede logo (`/admin/logos`).
 
+## Open Food Facts-varer og forsidefotos i fuld opløsning (user rule 2026-10-15)
+
+- Alle Open Food Facts-/USDA-varer viser opdater-varen-banneret ("Optjen 20 points ved at opdatere varen") med forsiden som kort, til nogen har fotograferet varen (`rescannedAt`). OFF's billeder er dårlige og lavopløste; brugerens foto afløser dem (via fritlægning og admin-godkendelse). Logik: `hasLookupFrontImage` i `src/lib/product-rescan-offer.ts`, brugt af `productGaps`.
+- Forsidefotoet gemmes altid i fuld opløsning (op til 4096 px): kameraets opret-flow (`frontPhotoFull`) og opdater-varen (`fullPhoto`), web og app. AI'en får kun en nedskaleret kopi.
+
 ## Proces
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),

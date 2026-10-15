@@ -1,10 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { awardPoints } from "@/lib/points";
+import { hasLookupFrontImage } from "@/lib/product-rescan-offer";
 
 // Opdater-varen-banneret (brugerbeslutning 2026-10-03): mangler en vare
 // indhold, energi, logo eller produktbillede, tilbydes brugeren 20 points for
 // at udfylde det. Alle brugere kan optjene dem — også admin, så det kan testes.
-// Points udbetales højst én gang pr. bruger og vare.
+// Points udbetales højst én gang pr. bruger og vare. Open Food Facts-/USDA-
+// varer får altid tilbuddet om et nyt forsidefoto, til nogen har taget det
+// (brugerens krav 2026-10-15: "alle OFF skal have banneret").
 
 export const PRODUCT_UPDATE_POINTS = 20;
 
@@ -27,10 +30,12 @@ export function productGaps(product: {
   fridaEstimateId?: string | null;
   pendingFields: string[];
   brand: { logoUrl: string | null } | null;
+  externalSource?: string | null;
+  rescannedAt?: Date | string | null;
 }): ProductGaps {
   const reading = (field: string) => product.pendingFields.includes(field);
   return {
-    image: !product.imageUrl && !product.pendingImageUrl,
+    image: (!product.imageUrl && !product.pendingImageUrl) || hasLookupFrontImage(product),
     logo: !product.brand?.logoUrl,
     nutrition: (product.nutritionMissing || !!product.fridaEstimateId) && !reading("nutrition"),
     ingredients: !product.ingredientsText?.trim() && !reading("ingredients"),

@@ -38,6 +38,9 @@ export async function POST(req: Request) {
   const barcode = typeof body?.barcode === "string" ? body.barcode.replace(/\D/g, "") : "";
   const marketRegion = typeof body?.marketRegion === "string" ? body.marketRegion : "DK";
   const frontPhoto = body?.frontPhoto;
+  // Hele forsidebilledet i fuld opløsning (brugerens krav 2026-10-15): gemmes
+  // som varens billede; `frontPhoto` er kopien til AI'en.
+  const frontPhotoFull = isPhoto(body?.frontPhotoFull) ? body.frontPhotoFull : undefined;
   const nutritionPhoto = body?.nutritionPhoto;
   const ingredientsPhoto = isPhoto(body?.ingredientsPhoto) ? body.ingredientsPhoto : undefined;
   const nutritionOcrText = typeof body?.nutritionOcrText === "string" ? body.nutritionOcrText.slice(0, 8000) : "";
@@ -148,7 +151,8 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
-    const frontProblem = frontPhotoDataUrlProblem(frontPhoto);
+    const storedFront = frontPhotoFull ?? frontPhoto;
+    const frontProblem = frontPhotoDataUrlProblem(storedFront);
     if (frontProblem) {
       void debugLog({
         category: "scan",
@@ -162,7 +166,7 @@ export async function POST(req: Request) {
     // Alle fotos gemmes, så aflæsningen kan genoptages, hvis processen
     // genstartes undervejs (docs/DECISIONS.md 2026-10-02).
     const [imageUrl, nutritionPhotoUrl, ingredientsPhotoUrl] = await Promise.all([
-      saveDataUrlImage(frontPhoto)
+      saveDataUrlImage(storedFront)
         .catch((error) => {
           // Før blev fejlen sløret, og varen endte uden billede uden spor i loggen.
           void debugLog({
