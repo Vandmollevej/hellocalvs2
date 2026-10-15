@@ -62,7 +62,7 @@
 
 - Forside-AI'en fik de første 750 brands alfabetisk som støtteliste; med ~3.000 brands sluttede listen ved "Dr. Oetker", så ØGO aldrig var med. Logoet var desuden delvist skåret af, og AI'en gættede "DAGO" (findes ikke i OFF-ordforrådet). Kendes navnet ikke, oprettes det som nyt brand, så "DAGO" ligger nu i Brand-tabellen.
 - Rettet: `src/lib/known-brands.ts` giver de faste danske kædemærker (`PINNED_BRANDS`: ØGO, Salling, Coop 365, Änglamark, REMA 1000, First Price, Lidl-mærker …) først og derefter de mest brugte brands til forside-, stregkode- og natlig genkørsel. De faste mærker oprettes i Brand-tabellen, hvis de mangler, og ØGO (3 tegn) kan nu også findes i forsideteksten. Prompten front-v5 forbyder at gætte et delvist logo færdigt ud fra listen og nævner æ/ø/å.
-- Udestående (kræver produktions-DB): ret varen 5712872629689 til ØGO og slet/flet brandet "DAGO" i admin → Brands.
+- Varen 5712872629689 (og alle andre "DAGO"-varer) er flyttet til ØGO med migration `20261015150000_oego_brand_fix`, som også sender varen til scan-appens "Skal scannes" med det samme (beskåret forsidebillede, kan ikke genskabes — forsiden skal tages om). Det tomme brand "DAGO" slettes i admin → Brands. Prøvet mod lokal Postgres (alle migrationer, to kørsler).
 
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 
