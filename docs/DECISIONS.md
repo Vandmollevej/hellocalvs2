@@ -1,3 +1,12 @@
+## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
+
+Brugerens skærmbilleder (Jalapeño-ketchup): i søgeren fyldte flasken billedet, men det gemte foto viste flasken lille med vindue og bordplade omkring. Årsag: søgeren viser kun det midterste kvadrat af kamerastrømmen (`object-cover`), mens forsiden blev gemt som hele 9:16-rammen (`liveCrop("front") = "none"`). Det var også i strid med beslutningen tidligere i dag ("hele rammen, brugeren sigtede med … allerede et kvadratisk udsnit af søgeren").
+
+- Alle tre fototrin (forside, energi, indhold) og den lokale OCR bruger nu søgerens kvadrat (`PHOTO_CROP = "square"` i `ProductCaptureFlow.tsx`). Det er en fast beskæring til det, brugeren så — aldrig en AI-boks. Forsidefotoet får samtidig næsten dobbelt så mange pixels på varen (fx 2048×2048 i stedet for 1152×2048 af samme udsnit), hvilket giver bedre tekstlæsning.
+- Energi/indhold uploader stadig også hele, ubeskårne kamerabillede til nattens analyse (uændret).
+- Native bruger telefonens eget kamera (det gemte foto er det, brugeren så) og er uændret.
+- Vagt: `front-photo-never-cropped.test.mjs` fejler, hvis fotoet igen ikke er søgerens kvadrat.
+
 ## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
 
 Brugerens krav: administration af generiske produkter i adminpanelet med manuel oprettelse (hjælpetekst ved hvert felt), drag-and-drop-import af CSV/Excel i arkets format med fejl pr. række før bekræftelse, og redigér/slet med sikker håndtering af registreringer.
@@ -5443,3 +5452,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Ny robot `product-image-search` (løbende, i `logo-agent`, `scripts/logo-agent/product_images.py`): for hvert nyt PRODUCT_FRONT-fritlægningsjob søges kamerafotoets udsnit online; op til 8 fund hentes og vurderes (40 % visuel lighed, 30 % match-type, 30 % varens/brandets navn i linket eller sidens titel) og gemmes i `product_image_searches`/`product_image_candidates` (migration `20261015110000_product_image_search`). Intet vælges automatisk; hentede fund slettes 7 dage efter valget.
 - `image-agent` fritlægger først kamerafotoet, når søgningen er kørt (`image_cutout_jobs.webSearchedAt`), højst 30 min ventetid.
 - Admin → Billedforslag viser kamerafotoet ved siden af udklippet og fundene online. Vælges et fritlagt fund, bliver det varens billede; et fund med baggrund kopieres og fritlægges af image-agent og kommer tilbage som forslag. Godkend/afvis lukker åbne søgninger.
+
+## 2026-10-15: Billedforslag — palet-PNG'er får ikke længere sort baggrund
+
+- Brugeren så et produktbillede med sort baggrund. Kilden: `product-image-search` (logo-agent) gemte online-fund som RGB, når PNG'en var en palet-PNG (`P` med tRNS — typisk komprimerede webshop-billeder), fordi kun billeder med en "A"-kanal blev holdt gennemsigtige. Den gennemsigtige baggrund blev til paletfarven, oftest sort, og fundet blev markeret som ikke-fritlagt.
+- Nu bliver alle billeder med gennemsigtighed (`"transparency" in image.info`) konverteret til RGBA (`to_rgb_or_rgba` i `scripts/logo-agent/product_images.py`). Allerede gemte fund med sort baggrund rettes ikke; de afvises i Billedforslag.
+
+## 2026-10-15: Varesiden — ingen tom grøn linje under et navn på to linjer
+
+- Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
+- Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
