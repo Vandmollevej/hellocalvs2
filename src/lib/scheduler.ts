@@ -14,6 +14,7 @@ import { checkEnergySplits } from "@/lib/energy-split-check";
 import { checkFrontImages } from "@/lib/front-image-check";
 import { runProductRechecks } from "@/lib/product-recheck";
 import { runSpellingCheck } from "@/lib/spelling-robot";
+import { runBackPhotoScan } from "@/lib/product-back-photos";
 import { assessOffProducts } from "@/lib/off-quality-job";
 import { runFridaEstimates } from "@/lib/frida-estimates";
 import { syncProductIndex } from "@/lib/search-engine/product-index";
@@ -148,6 +149,7 @@ export function startScheduler() {
       "product-recheck": runProductRechecks,
       "off-quality": assessOffProducts,
       "spelling-check": runSpellingCheck,
+      "back-photo-scan": runBackPhotoScan,
       "frida-estimates": runFridaEstimates,
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,

@@ -10,6 +10,35 @@ Brugerens krav: "Når en kunde scanner et produkt, når produktet har eksisteret
 - **Registreringer (snapshot)**: når natten finder ændret næring, får registreringer fra og med scanningstidspunktet (kunden selv og andre, der har tilføjet varen siden) de nye tal med det samme, mens varen venter på admin. Admins valg gælder bagefter samme registreringer: nye tal, eller varens tal igen, hvis admin beholder de gamle. Registreringer før scanningen (historikken) røres aldrig.
 - Migration `20261015120000_product_recheck` (`products."qualityCheckedAt"`, tabellen `product_rechecks`). Afprøvet mod lokal Postgres: vare over to år → tjek gemt, nattens vurdering til admin, kundens registrering efter scanningen fik de nye tal, ældre registrering urørt, varen uændret til admin valgte, derefter fritlægning i kø og nyt billede sat næste nat.
 
+## 2026-10-15: Ubeskårne bagsidebilleder — natlig engangsanalyse (mærkninger, finlæsning, udvidet stavekontrol)
+
+Brugerens krav: "Jeg vil sikre mig at der tages fuldt billede af bagside mv og at billedet ikke beskæres på serveren … for at spotte certifikater som ikke findes på forsiden fx skal disse scannes om natten. De ekstra billeder skal IKKE indgå i nogen fremtidige kørsler, kun analyseres ÉN gang. Det skal også bruges til at finlæse teksten og køre udvidet stavekontrol mm."
+
+Før: energi- og indholdsfotoet blev beskåret til søgerens kvadrat på telefonen (højst 2048 px), og hele billedet nåede aldrig serveren. Mærkninger blev kun læst på forsiden (label-scan).
+
+- **Hele billedet tages af samme billede som fotoet** (`captureStillWithFull`, `src/lib/camera-still.ts`): ubeskåret, op til 4096 px (sensorens stillbillede, ellers det skarpeste af tre 4K-videobilleder, holdt som ImageBitmap), JPEG 0,9. Kvadratet sendes som før til oprettelsens AI.
+- **Upload under flowet:** `POST /api/products/back-photos` (login, flow-id i headeren, højst 15 MB). Filen gemmes byte for byte i qc-uploads (`saveDataUrlImage`, kun metadata fjernes, aldrig beskåret eller skaleret) som `ProductBackPhoto` (ny tabel `product_back_photos`, migration `20261015070000_product_back_photos`). Rækken kobles til varen ved oprettelse/genscanning (`linkBackPhotos`) eller, hvis uploaden blev færdig bagefter, via `QuickEnrichmentJob.input.flowId`. Oprettelsen venter højst 10 s; trinnets knap viser load-cirklen, til uploaden er færdig.
+- **Nattens robot `back-photo-scan` (04:20, `src/lib/product-back-photos.ts`)** analyserer hvert billede præcis én gang med ét AI-kald (`src/lib/back-photo-ai.ts`):
+  - mærkninger og certificeringer på bagsiden: gemmes som varens mærkater (`product_labels`) og udfylder tomme filtre (`storeDetectedLabels` med `markScanned: false`, `cutouts: false`, så forsidens label-scan ikke springes over, og intet fritskrabes fra bagsiden);
+  - finlæsning: ingrediensliste ordret, næringsdeklaration og øvrig tekst (allergenspor, opbevaring, producent) gemmes i `result`;
+  - udvidet stavekontrol: varens ingrediensliste holdes op mod den finlæste tekst. Ord, der står forskelligt samme sted og ligner hinanden, bliver PENDING-forslag under admin → Stavekontrol (grund `fine_read`, aldrig automatisk rettet). Ord, admin har afgjort, foreslås ikke igen.
+- **Kun én gang:** `analyzedAt` sættes efter analysen (også ved tredje fejlede forsøg), og robotten tager kun rækker uden. Billederne er ikke `AiProductAnalysis`-rækker, så uncertainty-rerun, kvalitetskontrol-agenten, genoptagelsen og label-scan ser dem aldrig. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.
+- Native: energi/indhold tager kameraets billede i 4096 px, uploader det ubeskåret under flowets id (`x-scan-flow`, også på oprettelsen) og sender en nedskaleret kopi til oprettelsen.
+
+## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning mens man sigter, synlig behandling
+
+Brugerens krav (efter PR #409, skærmbillede af "3. Scan energi"): "Jeg bad dig anvende en shutter knap i stedet. Men nu har jeg bare en shutterknap inden scanningsmetoden." Og: "Billedet skal selvfølgelig tages med det samme når man trykker. Men jeg havde oprindeligt udtrykt ønske om at kameraet kunne begynde at opsnappe tekst, logoer, tekst på forsiden (ocr) osv allerede inden der blev trykket på knappen. Desuden står der ikke nogen steder at billedet behandles?"
+
+Årsag: efter #409 startede udløseren den gamle analyse. Energi/indhold blev først læst lokalt (1–3 s), og først derefter blev fotoet til serveren taget. AI'en fik altså et billede fra sekunder efter trykket. "Analyserer billedet…" (`PhotoWorkingOverlay`) stod kun som skjult skærmlæsertekst.
+
+- **Fotoet tages i trykøjeblikket** (`capturePhoto` → `takeStill` straks), og trinnet er klaret med det samme ("trinnet er klaret"-visningen står fra trykket).
+- **Forlæsning** (`preReadFrame` via `useLiveFrames`, et billede ad gangen med 0,6 s pause): forsiden læses med lokal OCR, og teksten sendes til `/api/products/recognize-text` med `preRead: true` (dublet + kendt mærke fra Brand-tabellen, `matchBrandInTexts`, brandlisten caches 5 min; serveren logger kun fund). Energi/indhold læses med `readLabelPhoto`, og aflæsningerne lægges sammen (`mergeLabelAttempts`). Fundene vises i pillen over udløseren. Trinnet klares aldrig af sig selv.
+- **Udløseren bruger forlæsningen**, når den er under 5 s gammel og fandt feltet. Ellers læses udløserens eget videobillede, mens visningen står (højst 2,5 s, log `label_late`). Et sent svar gemmes blot til oprettelsen og springer ikke trin 4 over. Fandt forlæsningen en eksisterende vare, går udløseren direkte til den.
+- **Logoer** genkendes stadig på serveren efter oprettelsen (billedjobs). Forlæsningen finder mærket ud fra teksten. Billedgenkendelse af logoer i videoen ville kræve et AI-kald pr. billede og er ikke bygget.
+- **Synlig behandling:** Forsidens objektlog (`detectObjects`, fotoet beskæres aldrig), sene aflæsninger og uploaden af det ubeskårne bagsidebillede kører i baggrunden. Trinnets knap viser en load-cirkel, og "Behandler billeder: Forside …" står under kameraet. Oprettelsen venter højst 10 s på dem (log `pending_photos`). `PhotoWorkingOverlay` viser nu sin tekst synligt (`showLabel`).
+- Den gamle afvisning af forsider uden vare (`frontRejected`) er fjernet: udløseren afviser aldrig brugerens eget foto.
+- Overskrifterne: "3. Tag billede af energi", "4. Tag billede af indholdsfortegnelsen". Ny hjælpetekst `cameraCreate.preReadHint`.
+- Native: Fotoet tages allerede ved trykket (`CaptureHooks.takePhoto`, ingen levende video at forlæse fra), og overlayet viser allerede sin tekst. Kun teksterne følger med.
 ## 2026-10-15: Tilføj-kameraets forsidefoto beskæres ikke længere efter AI-boksen
 
 Brugerens skærmbillede (DAGO melblanding): produktbilledet var en smal stribe, hvor posen var skåret midt over ("DA|GO") og nabovaren stak ind fra siden. Årsag: siden 2026-10-14 valgte `pickObjectInFocus` automatisk varen i rammens midte og beskar fotoet til gpt-4o-mini's boks (`cropToObject`, 15 % luft). Den model giver upræcise bokse — her for smal og forskudt — og ingen så det beskårne billede, før det blev varens billede.
@@ -5320,3 +5349,9 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 ## 2026-10-15: AI'ens brand-støtteliste er de mest brugte brands
 
 - Forside- og stregkode-aflæsningen får højst 750 brandnavne som støtte: først de faste danske kædemærker (`PINNED_BRANDS` i `src/lib/known-brands.ts`, altid med og oprettet i Brand-tabellen), derefter efter antal varer, ikke alfabetisk (den alfabetiske liste stoppede ved "D", og Nettos ØGO blev læst som "DAGO"). Matchningen efter aflæsningen bruger stadig alle brands.
+
+## 2026-10-15: Ø-mærket og EU-bladet vises begge
+
+- Står både det danske Ø-mærke og EU's økologi-blad på varen, vises begge logoer (brugerens krav). Før vandt Ø-mærket, og EU-bladet blev smidt væk.
+- Alle økologimærker står i `ProductFilters.organic`, kommasepareret (fx "Økologisk, EU-økologi") i den rækkefølge, de er fundet, og kun mærker, der er fundet på varen — Ø-mærket giver aldrig automatisk EU-bladet eller omvendt. Mærkerne beholder deres oprindelige navn. Økologimærker lægges aldrig i `certifications` (brugerens krav). `certificationBadges` (web + native) giver hvert mærke sit logo (`organicLogoKind`, nu også KRAV/Naturland) og viser hvert logo én gang. Forside-AI'en, Open Food Facts, `addCertificationFilters` og det natlige mærkat-job lægger nye økologimærker til de gemte.
+- Økologisk i varenavnet læses på flere sprog (brugerens regel: dansk økologisk/øko, tysk bio, engelsk organic; tilsvarende på svensk, hollandsk, fransk, italiensk, spansk, polsk og finsk) i `product-certifications.ts`, `off-name-split.ts` og native `FoodLogic.kt`. Dansk "biologisk" er ikke økologi.

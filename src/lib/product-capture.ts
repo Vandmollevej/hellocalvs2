@@ -49,28 +49,50 @@ async function ocr(photo: string, languages: string[], tableLayout = false) {
   }
 }
 
-// Forsiden: lokal OCR bruges kun til dublet-tjek mod databasen. Returnerer
-// id'et på en eksisterende vare, hvis teksten matcher en (plus OCR-tallene
-// til admin "Log").
+// Forsiden: lokal OCR bruges til dublet-tjek mod databasen og til at finde et
+// kendt mærke i teksten. Returnerer id/navn på en eksisterende vare, hvis
+// teksten matcher en (plus OCR-tallene til admin "Log"). `preRead`: kaldet fra
+// forlæsningen, mens brugeren sigter (serveren logger da kun fund).
+export type FrontRead = {
+  duplicateId: string | null;
+  duplicateName: string | null;
+  brand: string | null;
+  textLength: number;
+  confidence: number;
+  lookupFailed: boolean;
+  ocrFailed: boolean;
+};
+
 export async function readFrontPhoto(
   photo: string,
   languages: string[],
   flowId?: string,
-): Promise<{ duplicateId: string | null; textLength: number; confidence: number; lookupFailed: boolean; ocrFailed: boolean }> {
+  options: { preRead?: boolean } = {},
+): Promise<FrontRead> {
   const { text, confidence, ocrFailed } = await ocr(photo, languages);
-  const stats = { textLength: text.length, confidence, ocrFailed };
-  if (!text) return { duplicateId: null, lookupFailed: false, ...stats };
+  const stats = { textLength: text.length, confidence, ocrFailed, duplicateId: null, duplicateName: null, brand: null };
+  if (!text) return { ...stats, lookupFailed: false };
   try {
     const response = await fetch("/api/products/recognize-text", {
       method: "POST",
       headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, preRead: options.preRead === true }),
     });
-    if (!response.ok) return { duplicateId: null, lookupFailed: true, ...stats };
-    const data = (await response.json()) as { product: { id: string } | null };
-    return { duplicateId: data.product?.id ?? null, lookupFailed: false, ...stats };
+    if (!response.ok) return { ...stats, lookupFailed: true };
+    const data = (await response.json()) as {
+      product: { id: string; name?: string; brand?: { name?: string } | null } | null;
+      brand?: { name: string } | null;
+    };
+    const product = data.product;
+    return {
+      ...stats,
+      lookupFailed: false,
+      duplicateId: product?.id ?? null,
+      duplicateName: product ? `${product.brand?.name ?? ""} ${product.name ?? ""}`.trim() || null : null,
+      brand: data.brand?.name ?? null,
+    };
   } catch {
-    return { duplicateId: null, lookupFailed: true, ...stats };
+    return { ...stats, lookupFailed: true };
   }
 }
 
@@ -150,6 +172,29 @@ export async function saveBarcodePhoto(
     return data?.analysisId ?? null;
   } catch {
     return null;
+  }
+}
+
+// Energi-/indholdstrinnets hele, ubeskårne kamerabillede (docs/DECISIONS.md
+// 2026-10-15) uploades under flowet og kobles til varen ved oprettelsen;
+// nattens robot analyserer det én gang (mærkninger, finlæsning, stavekontrol).
+export const BACK_PHOTO_TIMEOUT_MS = 60_000;
+
+export async function uploadBackPhoto(
+  photo: { url: string; width: number; height: number },
+  step: "nutrition" | "ingredients",
+  flowId: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/products/back-photos", {
+      method: "POST",
+      signal: AbortSignal.timeout(BACK_PHOTO_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
+      body: JSON.stringify({ photo: photo.url, step, width: photo.width, height: photo.height }),
+    });
+    return response.ok;
+  } catch {
+    return false;
   }
 }
 

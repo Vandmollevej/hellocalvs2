@@ -30,6 +30,9 @@ type ImageCaptureConstructor = new (track: MediaStreamTrack) => ImageCaptureLike
 // OpenAI skalerer selv større billeder ned, så mere end dette er spildt upload.
 const MAX_SIDE = 2048;
 const MAX_SENSOR_SIDE = 4096;
+// Hele kamerabilledet til bagsidebilledet (docs/DECISIONS.md 2026-10-15):
+// ubeskåret og i op til sensorens opløsning, så små mærker og tekst kan læses.
+const FULL_MAX_SIDE = MAX_SENSOR_SIDE;
 const TAKE_PHOTO_TIMEOUT_MS = 2500;
 const VIDEO_FRAMES = 3;
 const VIDEO_FRAME_GAP_MS = 70;
@@ -122,6 +125,13 @@ function toStill(canvas: HTMLCanvasElement, source: Still["source"]): Still {
 }
 
 async function takePhoto(video: HTMLVideoElement, crop: StillCrop): Promise<Still | null> {
+  return takePhotoBitmap(video, (bitmap) => {
+    const canvas = render(bitmap, bitmap.width, bitmap.height, crop, MAX_SIDE);
+    return canvas ? toStill(canvas, "photo") : null;
+  });
+}
+
+async function takePhotoBitmap<T>(video: HTMLVideoElement, fromBitmap: (bitmap: ImageBitmap) => T | null): Promise<T | null> {
   const ImageCapture = imageCaptureConstructor();
   const track = (video.srcObject as MediaStream | null)?.getVideoTracks()[0];
   if (!ImageCapture || !track || track.readyState !== "live") return null;
@@ -143,8 +153,7 @@ async function takePhoto(video: HTMLVideoElement, crop: StillCrop): Promise<Stil
       if (portrait !== video.videoHeight >= video.videoWidth) return null;
       // Aldrig et stillbillede, der er mindre end videobilledet.
       if (Math.min(bitmap.width, bitmap.height) < Math.min(video.videoWidth, video.videoHeight)) return null;
-      const canvas = render(bitmap, bitmap.width, bitmap.height, crop, MAX_SIDE);
-      return canvas ? toStill(canvas, "photo") : null;
+      return fromBitmap(bitmap);
     } finally {
       bitmap.close();
     }
@@ -185,4 +194,60 @@ export function captureVideoFrame(
 export async function captureStill(video: HTMLVideoElement | null, crop: StillCrop): Promise<Still | null> {
   if (!video || !video.videoWidth || !video.videoHeight) return null;
   return (await takePhoto(video, crop)) ?? (await sharpestVideoFrame(video, crop, MAX_SIDE));
+}
+
+// Fotoet (evt. beskåret til søgerens kvadrat) og hele kamerabilledet fra
+// SAMME billede (docs/DECISIONS.md 2026-10-15): energi/indhold sender
+// kvadratet til oprettelsens AI og gemmer det hele, ubeskårne billede til
+// nattens engangsanalyse (mærkninger på bagsiden, finlæsning).
+export type StillPair = { still: Still; full: Still };
+
+function renderPair(image: CanvasImageSource, width: number, height: number, crop: StillCrop, source: Still["source"]): StillPair | null {
+  const cropped = render(image, width, height, crop, MAX_SIDE);
+  if (!cropped) return null;
+  const still = toStill(cropped, source);
+  const whole = render(image, width, height, "none", FULL_MAX_SIDE);
+  return whole ? { still, full: toStill(whole, source) } : null;
+}
+
+// Det skarpeste af tre videobilleder; billederne holdes som ImageBitmap, så
+// det hele billede er netop det valgte (ellers tegnes videoen igen straks).
+async function sharpestVideoFramePair(video: HTMLVideoElement, crop: StillCrop): Promise<StillPair | null> {
+  let best: { still: Still; bitmap: ImageBitmap | null } | null = null;
+  for (let index = 0; index < VIDEO_FRAMES; index++) {
+    if (index) await wait(VIDEO_FRAME_GAP_MS);
+    if (!video.videoWidth || !video.videoHeight) continue;
+    const bitmap = await createImageBitmap(video).catch(() => null);
+    const canvas = bitmap
+      ? render(bitmap, bitmap.width, bitmap.height, crop, MAX_SIDE)
+      : render(video, video.videoWidth, video.videoHeight, crop, MAX_SIDE);
+    if (!canvas) {
+      bitmap?.close();
+      continue;
+    }
+    const still = toStill(canvas, "video");
+    if (!best || still.sharpness > best.still.sharpness) {
+      best?.bitmap?.close();
+      best = { still, bitmap };
+    } else {
+      bitmap?.close();
+    }
+  }
+  if (!best) return null;
+  try {
+    const whole = best.bitmap
+      ? render(best.bitmap, best.bitmap.width, best.bitmap.height, "none", FULL_MAX_SIDE)
+      : render(video, video.videoWidth, video.videoHeight, "none", FULL_MAX_SIDE);
+    return whole ? { still: best.still, full: toStill(whole, "video") } : null;
+  } finally {
+    best.bitmap?.close();
+  }
+}
+
+export async function captureStillWithFull(video: HTMLVideoElement | null, crop: StillCrop): Promise<StillPair | null> {
+  if (!video || !video.videoWidth || !video.videoHeight) return null;
+  return (
+    (await takePhotoBitmap(video, (bitmap) => renderPair(bitmap, bitmap.width, bitmap.height, crop, "photo"))) ??
+    (await sharpestVideoFramePair(video, crop))
+  );
 }

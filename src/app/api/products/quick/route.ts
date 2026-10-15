@@ -13,6 +13,7 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
 import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
+import { linkBackPhotos } from "@/lib/product-back-photos";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -242,6 +243,11 @@ export async function POST(req: Request) {
       },
     });
 
+    // Flowets ubeskårne bagsidebilleder hører til varen (docs/DECISIONS.md 2026-10-15).
+    await linkBackPhotos(flowId, product.id, sessionUser?.id ?? null).catch((error) =>
+      console.error("Could not link back photos", product.id, error),
+    );
+
     if (frontProblem && imageUrl) {
       await flagCroppedFront(product.id, imageUrl, frontProblem).catch((error) =>
         console.error("Could not flag cropped front photo", product.id, error),
@@ -249,6 +255,7 @@ export async function POST(req: Request) {
     }
 
     await createQuickEnrichmentJob(product.id, {
+      flowId: flowId ?? undefined,
       barcode,
       marketRegion,
       signals,

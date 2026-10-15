@@ -16,6 +16,7 @@ import { SPELLING_PAGE_SIZE, type SpellingIssueRow, type SpellingTabKey } from "
 const REASON_LABELS: Record<string, string> = {
   learned: "Lært af admin",
   look_alike: "Forvekslede tegn",
+  fine_read: "Finlæsning af bagsidebillede",
   allergen: "Allergen (STORE bogstaver)",
   junk: "Volapyk",
   e_number: "E-nummer",
