@@ -22,7 +22,7 @@ test("usikre fund og dubletter ignoreres", () => {
   );
   assert.equal(patch.glutenFree, undefined);
   assert.equal(patch.certifications, undefined);
-  assert.equal(patch.organic, "EU-økologisk");
+  assert.equal(patch.organic, "EU-økologi");
 });
 
 test("EU-bladet lægges til Ø-mærket i økologi-feltet, ikke i certifikater", () => {
@@ -30,7 +30,8 @@ test("EU-bladet lægges til Ø-mærket i økologi-feltet, ikke i certifikater", 
     [label("organic-eu", "EU-økologi", "ORGANIC"), label("organic-dk", "Ø-mærket", "ORGANIC")],
     { organic: "Økologisk", certifications: [] },
   );
-  assert.equal(patch.organic, "Økologisk, EU-økologisk");
+  // Mærkets eget navn; Ø-mærket står der allerede (samme logo).
+  assert.equal(patch.organic, "Økologisk, EU-økologi");
   assert.equal(patch.certifications, undefined);
 });
 

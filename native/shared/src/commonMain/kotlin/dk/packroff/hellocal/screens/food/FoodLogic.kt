@@ -412,8 +412,17 @@ enum class NameCertification(val file: String, val label: String) {
     Msc("msc.png", "MSC"),
 }
 
+// Organic in other languages too (Danish økologisk/øko, German bio/öko, English
+// organic …). Longest first, so "økologiske" is removed before "øko".
+private val ORGANIC_NAME_WORDS = listOf(
+    "økologiske", "økologisk", "ökologische", "ökologischer", "ökologisch", "ekologiska", "ekologiskt", "ekologisk",
+    "ekologiczne", "ekologiczna", "ekologiczny", "biologische", "biologisch", "biologiques", "biologique",
+    "biologico", "biológico", "biologica", "biológica", "biologici", "biologiche", "ecológico", "ecológica",
+    "ecologico", "ecologica", "orgánico", "orgánica", "organic", "luomu", "øko.", "øko", "öko", "oeko", "eko", "bio.", "bio",
+)
+
 private val NAME_CERT_WORDS: List<Pair<NameCertification, List<String>>> = listOf(
-    NameCertification.Organic to listOf("økologiske", "økologisk", "øko.", "øko", "oeko", "organic", "bio.", "bio"),
+    NameCertification.Organic to ORGANIC_NAME_WORDS,
     NameCertification.Keyhole to listOf("nøglehulsmærket", "nøglehul"),
     NameCertification.Fairtrade to listOf("fair trade", "fairtrade"),
     NameCertification.Msc to listOf("msc-mærket", "msc"),
@@ -482,6 +491,8 @@ private fun word(value: String, w: String) = Regex("\\b$w\\b").containsMatchIn(v
 
 private fun kindForOrganic(label: String): String {
     val value = label.lowercase()
+    if (word(value, "krav")) return "krav"
+    if (value.contains("naturland")) return "naturland"
     if (value.contains("bioland")) return "bioland"
     if (value.contains("landbau")) return "landbau"
     if (value.contains("biologisch") || word(value, "bio")) return "bioGermany"

@@ -775,7 +775,14 @@ export function splitOffProduct(input: OffSplitInput, vocab: VocabIndex): OffSpl
     return false;
   };
 
-  const orgWords = new Set(["økologisk", "økologiske", "øko", "økol", "bio", "organic", "biologisk", "biologiske", "økologi", "økologiskt"]);
+  // Økologisk på flere sprog (compactKey: ö → ø, accenter fjernet). Dansk
+  // "biologisk" er ikke økologi og tæller ikke.
+  const orgWords = new Set([
+    "økologisk", "økologiske", "øko", "økol", "økologi", "økologiskt", "bio", "organic",
+    "økologisch", "økologische", "økologischer", "ekologisk", "ekologiska", "ekologiskt", "eko",
+    "biologisch", "biologische", "biologique", "biologiques", "biologico", "biologica", "biologici", "biologiche",
+    "ecologico", "ecologica", "organico", "organica", "ekologiczny", "ekologiczna", "ekologiczne", "luomu",
+  ]);
   const orgInName = consume((c) => orgWords.has(c.ck));
   // sammensætning: "Økohavregryn" → "Havregryn"
   chunks.forEach((c) => {

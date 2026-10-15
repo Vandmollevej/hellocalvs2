@@ -104,8 +104,11 @@ export function certificationLogoSrc(kind: CertificationKind): string | null {
   return kind === "generic" ? null : `/certifications/${CERTIFICATION_LOGO_FILES[kind]}`;
 }
 
-function kindForOrganic(label: string): CertificationKind {
+// Logoet for et økologimærke i organic-feltet.
+export function organicLogoKind(label: string): CertificationKind {
   const value = label.toLowerCase();
+  if (/\bkrav\b/.test(value)) return "krav";
+  if (value.includes("naturland")) return "naturland";
   if (value.includes("bioland")) return "bioland";
   if (value.includes("landbau")) return "landbau";
   if (value.includes("biologisch") || /\bbio\b/.test(value)) return "bioGermany";
@@ -153,7 +156,7 @@ function kindForCertification(label: string): CertificationKind {
   if (value.includes("bioland")) return "bioland";
   if (value.includes("naturskånsom") || value.includes("natur skånsom") || value.includes("naturskaansom")) return "naturSkaansom";
   if (value.includes("dyrenes beskyttelse") || value.includes("dyrevelfærd")) return kindForAnimalWelfare(label);
-  if (value.includes("økolog") || value.includes("organic") || value.includes("bio")) return kindForOrganic(label);
+  if (value.includes("økolog") || value.includes("organic") || value.includes("bio")) return organicLogoKind(label);
   return "generic";
 }
 
@@ -169,7 +172,7 @@ export function certificationBadges(
   const text = (value?: string | null) => value?.trim() || null;
   // Flere økologimærker står i organic adskilt af komma (src/lib/label-certifications.ts).
   for (const organic of (filters.organic ?? "").split(",")) {
-    const kind = kindForOrganic(organic.trim());
+    const kind = organicLogoKind(organic.trim());
     if (organic.trim() && !badges.some((b) => b.kind === kind)) badges.push({ kind, label: organic.trim() });
   }
   const keyhole = text(filters.keyhole);

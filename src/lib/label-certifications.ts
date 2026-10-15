@@ -44,8 +44,8 @@ function classify(label: string): { field: keyof LabelCertificationFilters; valu
 }
 
 // Økologimærker står alle i organic, adskilt af ", " (fx "Økologisk,
-// EU-økologisk"), så Ø-mærket og EU-bladet vises som hvert sit logo. Ø-mærket
-// står først.
+// EU-økologisk"), så Ø-mærket og EU-bladet vises som hvert sit logo. Kun mærker,
+// der er fundet på varen, og i den rækkefølge de blev fundet.
 export const ORGANIC_SEPARATOR = ", ";
 
 export function organicMarks(value: string | null | undefined): string[] {
@@ -54,7 +54,6 @@ export function organicMarks(value: string | null | undefined): string[] {
 
 export function joinOrganicMarks(marks: readonly string[]): string | null {
   const unique = Array.from(new Set(marks.map((mark) => mark.trim()).filter(Boolean)));
-  unique.sort((a, b) => Number(b === ORGANIC) - Number(a === ORGANIC));
   return unique.length ? unique.join(ORGANIC_SEPARATOR) : null;
 }
 
