@@ -21,6 +21,7 @@
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
 - "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; står varetypen ikke på forsiden, navngives den (Eierlikör), ellers brand + subbrand; varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes efter deploy og hver nat. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
+- Opfølgning: Verpoorten (40157818) hed stadig "Vare 40157818" efter deploy — engangsoprydningen sprang varer over, hvis navn hang som ventende, og AI-kaldet havde ingen tidsgrænse. Nu: oprydning hvert kvarter (også ventende navne efter 30 min, som så ryddes), 60 s tidsgrænse på tekstkaldet, og varesidens API viser aldrig reservenavnet (brand + subbrand i stedet).
 
 ## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
 
