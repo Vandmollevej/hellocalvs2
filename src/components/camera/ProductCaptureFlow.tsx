@@ -7,7 +7,7 @@ import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
-import { cropToObject, detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
+import { detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import { LabelFillOverlay } from "@/components/camera/LabelFillOverlay";
 import { ScanHeading } from "@/components/camera/ScanHeading";
@@ -761,10 +761,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     });
   }
 
-  // Ved flere varer i billedet vælges den i rammens midte automatisk
-  // (src/lib/object-picker.ts, brugerens krav 2026-10-14), og billedet
-  // beskæres til den. Ét eller ingen objekt — eller intet i midten: hele
-  // billedet. Kameraet fryser aldrig, og brugeren skal ikke trykke på noget.
+  // Objektgenkendelsen afgør kun, om der er en vare i billedet (afvisning af
+  // bukseben/bord) og logger, hvilken der står i rammens midte. Forsidefotoet
+  // beskæres ALDRIG efter AI'ens boks (bruger 2026-10-15: "halveret … Det må
+  // ikke ske"): boksene er upræcise og skar varen midt over. Rammen, brugeren
+  // sigter med, er udsnittet — hele billedet bruges altid.
   async function chooseObject(frame: string): Promise<{ chosen: string; objects: ObjectBox[] | null }> {
     const startedAt = Date.now();
     const objects = await detectObjects(frame);
@@ -776,14 +777,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         : objects.length < 2
           ? `Forsiden: ${objects.length} objekt(er) fundet — hele billedet bruges`
           : picked
-            ? `Forsiden: ${objects.length} objekter fundet — "${picked.label}" i rammens midte bruges`
+            ? `Forsiden: ${objects.length} objekter fundet — "${picked.label}" i rammens midte; hele billedet bruges`
             : `Forsiden: ${objects.length} objekter fundet, ingen i rammens midte — hele billedet bruges`,
       barcode: dataRef.current.barcode,
       durationMs: Date.now() - startedAt,
       data: { objects: objects?.map((object) => object.label) ?? null, picked: picked?.label ?? null },
     });
-    if (!picked || leavingRef.current) return { chosen: frame, objects };
-    return { chosen: await cropToObject(frame, picked), objects };
+    return { chosen: frame, objects };
   }
 
   // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre

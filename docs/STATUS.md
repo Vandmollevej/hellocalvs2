@@ -3,6 +3,9 @@
 - Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
 - Varesiden: mens brandet læses, står en glimtende boks på brandets plads ved cirklen (brand/subbrand skjules), og den grønne linje (størrelse · variant) er en glimtende boks, mens navnet læses.
 
+## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
+
+- Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Ny natlig robot `front-image-check` (04:50) finder de beskårne billeder (form + loggen) og sender varerne til scan-appens "Skal scannes", hvor det nye forsidefoto erstatter dem. Migration `20261015060000_front_image_suspect` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
 ## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
 
 - Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
