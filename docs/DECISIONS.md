@@ -1,3 +1,9 @@
+## 2026-10-15: Oversat-linjen står ved det, der faktisk er oversat
+
+- Brugerens ønske: en vare, hvor kun ingredienslisten er på et fremmed sprog (fx svensk), og titlen allerede er på et sprog brugeren forstår, skal ikke have "Oversat til dansk fra svensk" over titlen.
+- `translationPlacement` (`src/lib/product-text-swap.ts`) sammenligner original og oversættelse felt for felt (uden forskel på store/små bogstaver og mellemrum). Kun `ingredientsText` ændret → `translation.placement = "ingredients"`, og linjen med "Vis original" står over ingredienslisten. Ellers `"title"` som før. Intet ændret → ingen `translation` og ingen linje.
+- Web (`AddProductView`) og native (`AddProductScreen`, `ProductTranslationInfo.placement`) ens.
+
 ## 2026-10-15: Admin → Varer → Generiske produkter (opret, importér, ret, slet)
 
 Brugerens krav: administration af generiske produkter i adminpanelet med manuel oprettelse (hjælpetekst ved hvert felt), drag-and-drop-import af CSV/Excel i arkets format med fejl pr. række før bekræftelse, og redigér/slet med sikker håndtering af registreringer.

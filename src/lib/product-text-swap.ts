@@ -13,7 +13,25 @@ export type ProductTranslationInfo = {
   targetLanguageName: string;
   // Den anden version af de samme felter (brand = brandets navn).
   alternate: ProductTexts;
+  // Hvor linjen "Oversat til …" står: over titlen, eller over ingredienslisten,
+  // når kun ingredienserne er oversat (titel, variant, mængde … er ens).
+  placement: TranslationPlacement;
 };
+
+export type TranslationPlacement = "title" | "ingredients";
+
+function sameText(a: string | null | undefined, b: string | null | undefined): boolean {
+  const norm = (value: string | null | undefined) => (value ?? "").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+  return norm(a) === norm(b);
+}
+
+// Hvor oversættelsen skal nævnes — null, når den ikke ændrer noget (så vises
+// ingen linje). Kun ingredienserne ændret = "ingredients".
+export function translationPlacement(original: ProductTexts, translated: ProductTexts): TranslationPlacement | null {
+  const changed = Object.keys(translated).filter((key) => !sameText(original[key], translated[key]));
+  if (!changed.length) return null;
+  return changed.every((key) => key === "ingredientsText") ? "ingredients" : "title";
+}
 
 type WithTexts = { brand?: { name: string } | null } & Record<string, unknown>;
 
