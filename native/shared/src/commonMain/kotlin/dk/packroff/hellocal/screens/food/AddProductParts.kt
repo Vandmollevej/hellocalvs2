@@ -57,15 +57,18 @@ import dk.packroff.hellocal.api.HelloCalConfig
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.capture.CaptureHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.FoodScrollSheet
+import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.foodSelected
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Pieces of src/components/add/AddProductView.tsx and the hf/* components it uses.
@@ -298,20 +301,74 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
     }
 }
 
+/** One photo box in [UpdatePointsBanner]; [retake] = the unreadable ingredients are taken again. */
+data class UpdateTile(val kind: String, val label: String, val retake: Boolean = false)
+
+/**
+ * Opens the phone's camera for [tile] and sends the photo (web: UpdateCameraPanel):
+ * POST /api/products/[id]/update, or /ingredients-photo for a retake. Returns
+ * (outcome, points) — outcome "done" | "unreadable" | "error" — or null when the
+ * user cancelled the camera. [onStart] runs once a photo was taken.
+ */
+private suspend fun captureUpdatePhoto(productId: String, tile: UpdateTile, onStart: () -> Unit): Pair<String, Int>? {
+    // The front is also kept in full resolution (web: fullPhoto, DECISIONS 2026-10-15).
+    val takeFull = CaptureHooks.takeFullPhoto
+    var fullPhoto: FoodPhoto? = null
+    val photo = if (tile.kind == "FRONT" && takeFull != null) {
+        val full = runCatching { takeFull() }.getOrNull() ?: return null
+        fullPhoto = FoodPhoto(full)
+        FoodPhoto(CaptureHooks.scaleForUpload(full) ?: full)
+    } else {
+        FoodPlatform.photo(fromGallery = false) ?: return null
+    }
+    onStart()
+    return try {
+        if (tile.retake) {
+            val data = Api.post("/api/products/${encodeUri(productId)}/ingredients-photo", mapOf("photo" to photo.dataUrl()))
+            (if (data.bool("ingredientsFound") == true) "done" else "unreadable") to 0
+        } else {
+            val body = buildMap<String, Any> {
+                put("kind", tile.kind)
+                put("photo", photo.dataUrl())
+                fullPhoto?.let { put("fullPhoto", it.dataUrl()) }
+                put("photoTakenAt", photo.takenAtMillis ?: FoodTime.now().toEpochMilliseconds())
+            }
+            val data = Api.post("/api/products/${encodeUri(productId)}/update", body)
+            (if (data.bool("accepted") == true) "done" else "unreadable") to (data.num("pointsAwarded")?.toInt() ?: 0)
+        }
+    } catch (_: Exception) {
+        "error" to 0
+    }
+}
+
 /**
  * src/components/hf/UpdatePointsBanner.tsx — white overlay under the app bar
  * ("Optjen 20 points …"); it floats over the page and never pushes it. The grip
  * collapses it (drag up / tap) or pulls down an inverted popup with one camera
- * tile per missing item (drag down). The closed strip is text only — the photo
- * tiles appear only once it is pulled down (user rule 2026-10-15). Tiles are
- * (label, href); a null href opens [href]. Place it inside a Box over the content.
+ * tile per missing item (drag down, or tap the text). The closed strip is text
+ * only — the photo tiles appear only once it is pulled down (user rule
+ * 2026-10-15). A tile opens the phone's own camera right away and the photo is
+ * read in place — never a new page (user rule 2026-10-15; the web shows its live
+ * viewfinder in the panel, src/components/hf/UpdateCameraPanel.tsx). Place it
+ * inside a Box over the content.
  * [scrollOffset] is the page's scroll position: scrolling down folds the banner
  * to its grip, reaching the top again unfolds it to what it was — unless the
  * user folded it themselves (user rule 2026-10-15).
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<Pair<String, String?>>, scrollOffset: Int = 0) {
-    val nav = LocalNavigator.current
+fun UpdatePointsBanner(
+    productId: String,
+    text: String,
+    toggleLabel: String,
+    tiles: List<UpdateTile>,
+    onUpdated: () -> Unit,
+    scrollOffset: Int = 0,
+) {
+    val t = LocalTranslator.current
+    val scope = rememberCoroutineScope()
+    var workingKind by remember { mutableStateOf<String?>(null) }
+    var outcomes by remember { mutableStateOf(mapOf<String, String>()) }
+    var earned by remember { mutableStateOf(0) }
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
     // The stage before scrolling folded it; null when scrolling did not fold it.
@@ -339,30 +396,63 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
             HcText(
                 text,
                 HcTypeRoles.Small,
-                Modifier.fillMaxWidth().clickable { nav.push(href) }.padding(start = 16.dp, end = 16.dp, top = 12.dp),
+                Modifier.fillMaxWidth().clickable {
+                    restoreTo = null
+                    stage = 2
+                }.padding(start = 16.dp, end = 16.dp, top = 12.dp),
                 color = HcColors.Black,
                 bold = true,
                 align = TextAlign.Center,
             )
         }
         AnimatedVisibility(stage == 2, enter = enter, exit = exit) {
-            Row(
+            Column(
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                tiles.forEach { (label, tileHref) ->
-                    Column(
-                        Modifier.width(96.dp).clickable { nav.push(tileHref ?: href) },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Box(
-                            Modifier.size(96.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Page),
-                            contentAlignment = Alignment.Center,
-                        ) { HcIcon("Camera", size = 32.dp, color = HcColors.Black) }
-                        HcText(label, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center)
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)) {
+                    tiles.forEach { tile ->
+                        val done = outcomes[tile.kind] == "done"
+                        Column(
+                            Modifier.width(96.dp).clickable(enabled = workingKind == null && !done) {
+                                scope.launch {
+                                    val result = captureUpdatePhoto(productId, tile, onStart = { workingKind = tile.kind }) ?: return@launch
+                                    workingKind = null
+                                    outcomes = outcomes + (tile.kind to result.first)
+                                    earned += result.second
+                                    if (tiles.all { outcomes[it.kind] == "done" }) {
+                                        delay(2500)
+                                        onUpdated()
+                                    }
+                                }
+                            },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Box(
+                                Modifier.size(96.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Page),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                when {
+                                    workingKind == tile.kind -> HcLoader(Modifier)
+                                    done -> HcIcon("Check", size = 32.dp, color = HcColors.Black)
+                                    else -> HcIcon("Camera", size = 32.dp, color = HcColors.Black)
+                                }
+                            }
+                            HcText(tile.label, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center)
+                        }
                     }
                 }
+                val caption = when {
+                    workingKind != null -> t.t("productUpdate.reading")
+                    earned > 0 -> t.t("productUpdate.earned", "points" to earned)
+                    outcomes.values.lastOrNull() == "done" -> t.t("productUpdate.done")
+                    outcomes.values.lastOrNull() == "unreadable" -> t.t("productUpdate.unreadable")
+                    outcomes.values.lastOrNull() == "error" -> t.t("productUpdate.error")
+                    else -> null
+                }
+                caption?.let { HcText(it, HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.Black, align = TextAlign.Center) }
             }
         }
         Box(

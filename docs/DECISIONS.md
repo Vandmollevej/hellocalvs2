@@ -5636,3 +5636,12 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 
 - Brugeren spurgte, hvorfor der ikke skete noget. Årsag: alle sessioner fletter til master, hvert push starter et deploy, og deploy-jobbet kører på den ene server (self-hosted) uden kø-regel. Deploys stod i lang kø, blev kørt i tilfældig rækkefølge (fx #439 efter #433) og kunne dermed rulle produktionen tilbage til en ældre version, indtil næste deploy.
 - Brugerens valg: deploy-jobbet i `.github/workflows/build.yml` har nu `concurrency: production-deploy` (`cancel-in-progress: false`): én udrulning ad gangen, og kun den nyeste ventende master-version udrulles; ældre ventende springes over. En igangværende udrulning afbrydes aldrig.
+
+## 2026-10-15: Kameraet i opdater-bannerets dropdown
+
+- Brugerens krav: dropdownen i "Optjen X points …" skal vise hele kameralinsen som ved oprettelse og ikke lande på en ny side; den gamle kameraside med "Tag billede"-knap er forældet. Favoritikonet må ikke stå oven på dropdownen.
+- Web: `UpdateCameraPanel` (i `UpdatePointsBanner`s nedtrukne del) starter kameraet, når dropdownen åbnes, og stopper det, når den lukkes. Kvadratisk søger, `useAutoCapture` + udløser; forsiden sendes med fuld opløsning (`captureStillWithFull`, kvadrat). Fotoet går til `POST /api/products/[id]/update` — ulæseligt indhold til `/ingredients-photo` som før. Flere manglende ting vælges med knapper under søgeren. Når alt er udfyldt, står "Tak"/points i 2,5 s, hvorefter varen hentes igen.
+- Teksten i striben åbner nu dropdownen i stedet for `/add/[id]/update`. Siderne `/add/[id]/update` og `/camera?retake=ingredients` findes stadig, men banneret linker ikke længere til dem.
+- Native har ingen indlejret live-søger i fælleskoden: boksen åbner telefonens eget kamera og sender fotoet direkte, uden at skifte side.
+- Banneret har z-40 (favoritikonet z-30).
+- Hjemmesiden (desktop-skallen, `useDesktopViewport`) tager ikke billeder (brugerens regel 2026-10-15): opdater-banneret vises kun i webappen på telefonen og i native.
