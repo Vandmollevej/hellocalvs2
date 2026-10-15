@@ -130,6 +130,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:15",
   },
   {
+    // Beskårne forsidebilleder (docs/DECISIONS.md 2026-10-15).
+    key: "front-image-check",
+    name: "Forsidebilleder: beskåret/halveret",
+    description:
+      "Måler alle forsidefotos fra kameraet og finder dem, der er beskåret (smallere end 0,45 eller under 240 px), samt varer, hvis foto blev skåret til AI'ens objektboks ved oprettelsen (loggen). Varen sendes til scan-appens \"Skal scannes\", og et nyt forsidefoto fra scan-appen erstatter det beskårne billede. Sagen lukkes, når billedet er skiftet.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:50",
+  },
+  {
     // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
     // listen under admin → Scan-invites → Open Food Facts-kontrol.
     key: "off-quality",

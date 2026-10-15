@@ -7,6 +7,7 @@ import { lookupStoreName } from "@/lib/scan/storage";
 import { readScanContext } from "@/lib/scan/device-context";
 import { completeScanRequest } from "@/lib/scan/review-requests";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { resolveCroppedFront } from "@/lib/front-image-check";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 
 // "Opret vare" i Oprettelses-appen (docs/OPRETTELSES-APP.md). Produktet
@@ -58,10 +59,14 @@ export async function POST(req: Request) {
     // billede (ellers bliver det aldrig udskiftet) og kobles til
     // billedrobotten, så varen bliver fritlagt som ved en scanning.
     const frontAnalysisId = typeof analysisIds.front === "string" ? analysisIds.front : null;
+    // Samme for et beskåret forsidefoto (front-image-check, docs/DECISIONS.md 2026-10-15).
+    const croppedFront = Boolean(product.frontImageSuspectAt && !product.frontImageFixedAt);
     const replacedImageUrl =
-      product.offImageReview === "REJECTED" && product.imageUrl?.startsWith("https://") && imageUrl?.startsWith("data:image/")
+      ((product.offImageReview === "REJECTED" && product.imageUrl?.startsWith("https://")) || croppedFront) &&
+      imageUrl?.startsWith("data:image/")
         ? await saveDataUrlImage(imageUrl).catch(() => null)
         : null;
+    if (croppedFront && replacedImageUrl) await resolveCroppedFront(product.id);
 
     await prisma.product.update({
       where: { id: product.id },

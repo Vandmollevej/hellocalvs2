@@ -5,6 +5,7 @@ import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { frontPhotoDataUrlProblem } from "@/lib/front-photo-guard";
+import { flagCroppedFront } from "@/lib/front-image-check";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
@@ -240,6 +241,12 @@ export async function POST(req: Request) {
         marketRegion,
       },
     });
+
+    if (frontProblem && imageUrl) {
+      await flagCroppedFront(product.id, imageUrl, frontProblem).catch((error) =>
+        console.error("Could not flag cropped front photo", product.id, error),
+      );
+    }
 
     await createQuickEnrichmentJob(product.id, {
       barcode,
