@@ -29,6 +29,8 @@ import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
 import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
 import { nameProductType } from "@/lib/product-type-name";
+import { parseAlcoholPercent } from "@/lib/alcohol-label";
+import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -189,6 +191,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       select: { id: true, name: true, createdAt: true },
     });
     if (product.name) await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    await recordAlcoholPercent(
+      productId,
+      result.alcoholPercent ?? parseAlcoholPercent([...(result.visibleText ?? []), ...(result.claims ?? [])].join(" ")),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
     // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
     const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
       console.error("Could not save certifications", productId, error);
@@ -506,6 +512,12 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       }
     }
 
+    // Alkoholprocenten står også, når der ingen næringstabel er (spiritus).
+    await recordAlcoholPercent(
+      productId,
+      nutrition?.result.alcoholPercent ?? parseAlcoholPercent(`${nutritionText}\n${ingredientsText}`),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
+
     if (ingredients) {
       await prisma.aiProductAnalysis.update({ where: { id: ingredients.analysisId }, data: { productId } });
       if (ingredients.result.ingredientsText) {
@@ -566,6 +578,11 @@ export async function enrichQuickProduct(
     parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
     parts.label ? enrichLabel(input) : Promise.resolve(),
   ]);
+  // Alkoholisk drik uden næringstabel: energien skønnes ud fra % vol og
+  // varetypen, i stedet for at stå med 0 kcal (docs/DECISIONS.md 2026-10-15).
+  if (!input.existingProduct && (await estimateAlcoholNutrition(input.productId))) {
+    await refreshRegistrationSnapshots(input.productId, input).catch(() => {});
+  }
   // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
   // skriftens sprog, når forsiden har fx kinesiske tegn. Teksten røres ikke.
   await refreshProductLanguage(
