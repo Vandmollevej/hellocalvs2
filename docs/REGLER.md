@@ -173,6 +173,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   (brugerens regel 2026-10-09; Hello Doc-disclaimeren er fjernet).
 - Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
   dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
+- Skelet-loading skal tydeligt ses at loade (user rule 2026-10-15): et smalt,
+  lyst glimt (`--hf-color-skeleton-highlight` `#FBF9F5`, ±0,35 boksbredde)
+  løber fra venstre mod højre over alle skelet-flader (web `.hf-skeleton`,
+  native `HcSkeleton`). Et bredt, svagt bånd blev set som en statisk boks.
 
 ## Scan-appen: manuel udløser, aldrig automatisk (user rule 2026-10-14)
 

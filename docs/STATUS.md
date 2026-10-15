@@ -1,3 +1,7 @@
+## 2026-10-15: Skelet-glimtet gjort tydeligt
+
+- Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
+
 ## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
 
 - Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.

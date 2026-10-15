@@ -111,7 +111,7 @@
   /* Skelet-loading (design.md §6.14). Varigheden skal matche
      SKELETON_SHIMMER_MS i src/components/hf/Skeleton.tsx. */
   --hf-color-skeleton: #e2dacb;
-  --hf-color-skeleton-highlight: #f2eee6;
+  --hf-color-skeleton-highlight: #fbf9f5;
   --hf-skeleton-duration: 1400ms;
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -2510,7 +2510,10 @@ textarea.hf-input {
    står i samme fase (fælles ur via --hf-skeleton-delay, sat af
    src/components/hf/Skeleton.tsx), så ens bokse i en række glimter ens.
    Gradienten er relativ til boksens egen bredde: forskellige boksetyper ser
-   forskellige ud, samme type ser ens ud. Farver/varighed står i :root øverst. */
+   forskellige ud, samme type ser ens ud. Farver/varighed står i :root øverst.
+   Glimtet er et smalt, lyst bånd (±0,35 boksbredde), der løber fra venstre
+   til højre og er synligt ca. 80 % af tiden — et bredt, svagt bånd blev
+   opfattet som en statisk flade (brugerfeedback 2026-10-15). */
 @keyframes hf-skeleton-shimmer {
   from {
     background-position: 100% 0;
@@ -2543,9 +2546,9 @@ textarea.hf-input {
   background-image: linear-gradient(
     90deg,
     var(--hf-color-skeleton) 0%,
-    var(--hf-color-skeleton) 30%,
+    var(--hf-color-skeleton) 38%,
     var(--hf-color-skeleton-highlight) 50%,
-    var(--hf-color-skeleton) 70%,
+    var(--hf-color-skeleton) 62%,
     var(--hf-color-skeleton) 100%
   );
   background-size: 300% 100%;
