@@ -14,7 +14,7 @@ import {
 } from "@/lib/brand-logo-layout";
 import { displayedSubbrand } from "@/lib/subbrand-names";
 import { useElementSize } from "@/lib/use-element-size";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -78,6 +78,8 @@ import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 import { imageThumb } from "@/lib/image-thumb";
+import { UpdateCameraPanel } from "@/components/hf/UpdateCameraPanel";
+import { useDesktopViewport } from "@/lib/use-desktop-viewport";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -393,6 +395,9 @@ export function AddProductView({
   // til udgangspunktet (profilens autoExpandUncertainty).
   const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
+  // Hjemmesiden (desktop-skallen) tager ikke billeder — kun webappen på
+  // telefonen; opdater-banneret er et kamerabanner (brugerens regel 2026-10-15).
+  const desktop = useDesktopViewport();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
   // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): åbne Awards
@@ -480,6 +485,22 @@ export function AddProductView({
     !!state.product.createdAt &&
     openedAt - new Date(state.product.createdAt).getTime() < CUTOUT_WAIT_MS;
   const shouldPoll = pendingFields.length > 0 || awaitingCutout;
+
+  // Efter et foto i opdater-banneret: varen hentes igen (banneret forsvinder,
+  // når intet mangler længere).
+  const reloadProduct = useCallback(() => {
+    fetch(`/api/products/${id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.product) return;
+        setState((current) =>
+          current.status === "loaded"
+            ? { status: "loaded", product: applyRegistrationSnapshot(withTextChoice({ ...data.product }, textChoiceRef.current), registration) }
+            : current,
+        );
+      })
+      .catch(() => {});
+  }, [id, registration]);
 
   useEffect(() => {
     if (!shouldPoll) return;
@@ -886,26 +907,28 @@ export function AddProductView({
   const Frame = inSheet ? SheetFrame : ScreenFrame;
   // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
-    !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
+    !desktop && !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
-              href={`/add/${encodeURIComponent(id)}/update`}
               // "… med et flot nyt billede" kun på Open Food Facts-varer (brugerens regel 2026-10-15).
               text={t(
                 state.product.externalSource === "OPEN_FOOD_FACTS" ? "productUpdate.bannerPhoto" : "productUpdate.banner",
                 { points: state.product.updateOffer.points },
               )}
               toggleLabel={t("productUpdate.toggle")}
-              tiles={state.product.updateOffer.kinds.map((kind) => ({
-                kind,
-                label: t(UPDATE_TILE_LABELS[kind]),
-                // Kunne AI'en ikke læse indholdet, tager opretteren det om i
-                // kameraet — som fotoboks i den nedtrukne del, aldrig som knap
-                // i den lukkede stribe (brugerens regel 2026-10-15).
-                href:
-                  kind === "INGREDIENTS" && state.product.ingredientsUnreadable
-                    ? `/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`
-                    : undefined,
-              }))}
+              panel={(open) => (
+                <UpdateCameraPanel
+                  productId={id}
+                  active={open}
+                  onUpdated={reloadProduct}
+                  tiles={state.product.updateOffer!.kinds.map((kind) => ({
+                    kind,
+                    label: t(UPDATE_TILE_LABELS[kind]),
+                    // Kunne AI'en ikke læse indholdet, tager opretteren det om
+                    // i dropdownens kamera (brugerens regel 2026-10-15).
+                    retake: kind === "INGREDIENTS" && !!state.product.ingredientsUnreadable,
+                  }))}
+                />
+              )}
             />
     ) : null;
 

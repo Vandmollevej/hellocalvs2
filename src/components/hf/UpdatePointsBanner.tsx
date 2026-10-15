@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { IconCamera } from "@tabler/icons-react";
 
 // Banner "Optjen 20 points ved at opdatere varen" som lag UDEN PÅ siden: det
 // ligger over indholdet og skubber aldrig siden (brugerrettelse 2026-10-09).
+// z-40: over varesidens favoritikon (z-30), som aldrig må stå oven på
+// dropdownen (brugerens regel 2026-10-15).
 // Trækstregen kan både minimere banneret (træk op / tryk) og trække en omvendt
-// popup ned (træk ned) med et kamerafelt pr. manglende ting. Bruges kun når
+// popup ned (træk ned eller tryk på teksten) med kameraet. Bruges kun når
 // varen mangler indhold, energi eller produktbillede (src/lib/product-update.ts).
-// Den lukkede stribe er KUN teksten — fotoboksene (og alle andre fotoknapper)
-// står først, når banneret er trukket ned (brugerens regel 2026-10-15).
+// Den lukkede stribe er KUN teksten — kameraet (og alle andre fotoknapper)
+// står først, når banneret er trukket ned (brugerens regel 2026-10-15). Den
+// nedtrukne del viser hele kamerasøgeren direkte i dropdownen, aldrig en ny
+// side (brugerens regel 2026-10-15, `panel`).
 // Scrolles siden nedad, foldes banneret sammen til stregen; når siden igen
 // rammer toppen, folder det sig ud til det, det var (brugerens regel
 // 2026-10-15). Har brugeren selv foldet det sammen, bliver det sådan.
@@ -22,18 +24,15 @@ const SCROLL_COLLAPSE_PX = 24;
 
 type Stage = "collapsed" | "banner" | "panel";
 
-export type UpdateTile = { kind: string; label: string; href?: string };
-
 export function UpdatePointsBanner({
-  href,
   text,
   toggleLabel,
-  tiles,
+  panel,
 }: {
-  href: string;
   text: string;
   toggleLabel: string;
-  tiles: UpdateTile[];
+  /** Indholdet i den nedtrukne del; får at vide, om den er trukket ned. */
+  panel: (open: boolean) => React.ReactNode;
 }) {
   const [stage, setStage] = useState<Stage>("banner");
   const startY = useRef<number | null>(null);
@@ -94,18 +93,22 @@ export function UpdatePointsBanner({
   const showPanel = stage === "panel";
 
   return (
-    <div ref={rootRef} className="absolute inset-x-0 top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+    <div ref={rootRef} className="absolute inset-x-0 top-0 z-40 max-h-full overflow-y-auto rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
       <div
         className="grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none"
         style={{ gridTemplateRows: showBanner ? "1fr" : "0fr", opacity: showBanner ? 1 : 0 }}
       >
         <div className="overflow-hidden" inert={!showBanner}>
-          <Link
-            href={href}
-            className="hf-type-small hf-type-strong block px-4 pt-3 text-center text-hf-black"
+          <button
+            type="button"
+            onClick={() => {
+              restoreTo.current = null;
+              setStage("panel");
+            }}
+            className="hf-type-small hf-type-strong block w-full px-4 pt-3 text-center text-hf-black"
           >
             {text}
-          </Link>
+          </button>
         </div>
       </div>
       <div
@@ -113,20 +116,7 @@ export function UpdatePointsBanner({
         style={{ gridTemplateRows: showPanel ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
-          <div className="flex justify-center gap-4 px-4 pt-3" inert={!showPanel}>
-            {tiles.map((tile) => (
-              <Link
-                key={tile.kind}
-                href={tile.href ?? href}
-                className="flex w-24 flex-col items-center gap-2 text-center"
-              >
-                <span className="flex aspect-square w-full items-center justify-center rounded-2xl bg-hf-cream text-hf-black">
-                  <IconCamera size={32} aria-hidden="true" />
-                </span>
-                <span className="hf-type-small text-hf-black">{tile.label}</span>
-              </Link>
-            ))}
-          </div>
+          <div inert={!showPanel}>{panel(showPanel)}</div>
         </div>
       </div>
       <button
