@@ -1666,6 +1666,7 @@ model Product {
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
+  backPhotos         ProductBackPhoto[]
   cutoutJobs         ImageCutoutJob[]
   matchChecks        ProductMatchCheck[]
   photoAwards        ProductPhotoAward[]
@@ -5129,6 +5130,37 @@ model QuickEnrichmentJob {
 
   @@index([finishedAt, startedAt])
   @@map("quick_enrichment_jobs")
+}
+
+// Ubeskårne bagsidebilleder fra Tilføj-kameraet (docs/DECISIONS.md
+// 2026-10-15): energi-/indholdstrinnets hele kamerabillede, gemt uden
+// beskæring ved siden af det kvadrat, AI læser ved oprettelsen. Uploades
+// under flowet (flowId) og kobles til varen, når den er oprettet. Nattens
+// robot "back-photo-scan" analyserer hvert billede præcis ÉN gang
+// (mærkninger, der ikke står på forsiden, finlæsning, udvidet stavekontrol);
+// analyzedAt sat = færdig, billedet indgår aldrig i senere kørsler.
+model ProductBackPhoto {
+  id         String    @id @default(cuid())
+  productId  String?
+  product    Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String?
+  flowId     String
+  // "nutrition" | "ingredients" — trinnet, billedet blev taget på.
+  step       String
+  imageUrl   String
+  width      Int?
+  height     Int?
+  attempts   Int       @default(0)
+  // Analysens svar (mærkninger, finlæst tekst, stavefund) eller fejlen.
+  result     Json?
+  error      String?
+  analyzedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([analyzedAt, createdAt])
+  @@index([flowId])
+  @@index([productId])
+  @@map("product_back_photos")
 }
 
 // Natlig robot "energy-split-check" (docs/DECISIONS.md 2026-10-07): en vare,

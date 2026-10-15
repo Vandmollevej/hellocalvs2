@@ -39,10 +39,18 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
+import io.ktor.client.request.header
+import io.ktor.http.HttpMethod
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -57,6 +65,12 @@ private enum class CaptureStep(val key: String, val icon: String) {
 
 /** Valid market regions (src/lib/regions.ts isRegionCode) fall back to DK like buildBarcodeContext. */
 private val REGION_CODE = Regex("^[A-Z]{2}$")
+
+/** The scan flow's id header (src/lib/scan-debug-log.ts SCAN_FLOW_HEADER). */
+private const val SCAN_FLOW_HEADER = "x-scan-flow"
+
+/** Creation waits at most this long for back photos still uploading (web: PENDING_PHOTOS_WAIT_MS). */
+private const val PENDING_PHOTOS_WAIT_MS = 10_000L
 
 /**
  * Native port of src/components/camera/ProductCaptureFlow.tsx (Tilføj → kamera,
@@ -73,7 +87,19 @@ private val REGION_CODE = Regex("^[A-Z]{2}$")
  * check, line flies up) before the next step, the barcode and energy/contents
  * fields are small with the rest of the picture dark, and the front keeps the
  * big frame.
+ *
+ * 2026-10-15 (user): the web reads the text in the live video while the user
+ * aims (front text + known brand, nutrition table, ingredients list), shows
+ * the finds in the viewfinder, and the shutter takes the photo at the moment
+ * of the press. The native photo steps already take the photo on the press
+ * through CaptureHooks.takePhoto (no live video to pre-read from), and the
+ * headings follow the web texts ("3. Tag billede af energi"). The working
+ * overlay shows its label visibly, like the web's PhotoWorkingOverlay now does.
+ * The energy/contents steps take the whole camera photo (4096 px) and upload
+ * it uncropped to /api/products/back-photos under the flow's id; the create
+ * request gets a scaled copy. The night robot reads each back photo once.
  */
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 internal fun ProductCaptureFlow(returnSuffix: String) {
     val t = LocalTranslator.current
@@ -95,6 +121,11 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     var photos by remember { mutableStateOf(mapOf<CaptureStep, String>()) }
     var lastPhoto by remember { mutableStateOf<ByteArray?>(null) }
     var status by remember { mutableStateOf(CameraStatus.Active) }
+    // One id per opened camera flow (web: newScanFlowId): links the back photos to the product.
+    val flowId = remember { Uuid.random().toString() }
+    // Back photos still uploading; the step shows a spinner and creation waits for them.
+    var uploading by remember { mutableStateOf(setOf<CaptureStep>()) }
+    val uploads = remember { mutableListOf<Job>() }
 
     // The user's region is the primary language signal (docs/DECISIONS.md 2026-09-12).
     LaunchedEffect(Unit) {
@@ -111,10 +142,29 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
     }.getOrNull()
 
+    // The whole, uncropped photo for the night robot (web: uploadFullPhoto).
+    fun uploadBackPhoto(stepItem: CaptureStep, bytes: ByteArray) {
+        uploading = uploading + stepItem
+        uploads += scope.launch {
+            try {
+                Api.send(
+                    HttpMethod.Post,
+                    "/api/products/back-photos",
+                    mapOf("photo" to jpegDataUrl(bytes), "step" to stepItem.key),
+                ) { header(SCAN_FLOW_HEADER, flowId) }
+            } catch (_: Exception) {
+                // The product is created anyway; only the night analysis misses this photo.
+            } finally {
+                uploading = uploading - stepItem
+            }
+        }
+    }
+
     suspend fun createProduct() {
         working = true
         submitting = true
         createFailed = false
+        withTimeoutOrNull(PENDING_PHOTOS_WAIT_MS) { uploads.toList().joinAll() }
         try {
             val body = buildMap<String, Any> {
                 barcode?.let { put("barcode", it) }
@@ -124,7 +174,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
                 photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
             }
-            val id = Api.post("/api/products/quick", body).jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+            val id = Api.send(HttpMethod.Post, "/api/products/quick", body) { header(SCAN_FLOW_HEADER, flowId) }
+                .jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
                 ?: throw IllegalStateException("no id")
             nav.push("/add/$id$returnSuffix")
         } catch (e: Exception) {
@@ -214,16 +265,25 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             }
             return
         }
-        val take = CaptureHooks.takePhoto
+        val current = step
+        val labelStep = current == CaptureStep.Nutrition || current == CaptureStep.Ingredients
+        val take = if (labelStep) CaptureHooks.takeFullPhoto else CaptureHooks.takePhoto
         if (take == null) {
             status = CameraStatus.Unavailable
             return
         }
-        val current = step
         scope.launch {
             try {
-                val bytes = take() ?: return@launch
+                val taken = take() ?: return@launch
                 status = CameraStatus.Active
+                // Energy/contents: the whole photo goes uncropped to the night robot,
+                // the create request gets a scaled copy (web: captureStillWithFull).
+                val bytes = if (labelStep) {
+                    uploadBackPhoto(current, taken)
+                    CaptureHooks.scaleForUpload(taken) ?: taken
+                } else {
+                    taken
+                }
                 lastPhoto = bytes
                 photos = photos + (current to jpegDataUrl(bytes))
                 val completed = done + current
@@ -337,6 +397,11 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                         HcText(stepLabels.getValue(item), HcTypeRoles.Micro, color = HcColors.Black, maxLines = 1)
                     }
                     if (item in done) CheckBadge(48.dp)
+                    if (item in uploading) {
+                        Box(Modifier.matchParentSize().padding(6.dp), contentAlignment = Alignment.TopEnd) {
+                            HcLoader(Modifier.size(16.dp))
+                        }
+                    }
                 }
             }
         }
@@ -347,6 +412,15 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 HcButton(t.t("cameraCreate.retry"), onClick = { scope.launch { createProduct() } })
             }
         } else {
+            if (uploading.isNotEmpty()) {
+                HcText(
+                    t.t("cameraCreate.processingPhotos", mapOf("steps" to CaptureStep.entries.filter { it in uploading }.joinToString(", ") { stepLabels.getValue(it) })),
+                    HcTypeRoles.Small,
+                    Modifier.fillMaxWidth(),
+                    bold = true,
+                    align = TextAlign.Center,
+                )
+            }
             HcText(stepHints.getValue(step), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (step != CaptureStep.Barcode) {
                 HcText(t.t("cameraCreate.shutterHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)

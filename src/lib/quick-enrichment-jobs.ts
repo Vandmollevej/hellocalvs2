@@ -34,6 +34,9 @@ const ADOPT_MAX_AGE_DAYS = 14;
 const BATCH_SIZE = 10;
 
 export type QuickEnrichmentStoredInput = {
+  // Kameraflowets id: bagsidebilleder, der uploades efter oprettelsen, finder
+  // varen gennem det (src/lib/product-back-photos.ts).
+  flowId?: string;
   barcode: string;
   marketRegion: string;
   signals?: unknown;
