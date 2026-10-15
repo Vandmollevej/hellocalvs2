@@ -202,17 +202,24 @@ export async function captureStill(video: HTMLVideoElement | null, crop: StillCr
 // nattens engangsanalyse (mærkninger på bagsiden, finlæsning).
 export type StillPair = { still: Still; full: Still };
 
-function renderPair(image: CanvasImageSource, width: number, height: number, crop: StillCrop, source: Still["source"]): StillPair | null {
+function renderPair(
+  image: CanvasImageSource,
+  width: number,
+  height: number,
+  crop: StillCrop,
+  fullCrop: StillCrop,
+  source: Still["source"],
+): StillPair | null {
   const cropped = render(image, width, height, crop, MAX_SIDE);
   if (!cropped) return null;
   const still = toStill(cropped, source);
-  const whole = render(image, width, height, "none", FULL_MAX_SIDE);
+  const whole = render(image, width, height, fullCrop, FULL_MAX_SIDE);
   return whole ? { still, full: toStill(whole, source) } : null;
 }
 
 // Det skarpeste af tre videobilleder; billederne holdes som ImageBitmap, så
 // det hele billede er netop det valgte (ellers tegnes videoen igen straks).
-async function sharpestVideoFramePair(video: HTMLVideoElement, crop: StillCrop): Promise<StillPair | null> {
+async function sharpestVideoFramePair(video: HTMLVideoElement, crop: StillCrop, fullCrop: StillCrop): Promise<StillPair | null> {
   let best: { still: Still; bitmap: ImageBitmap | null } | null = null;
   for (let index = 0; index < VIDEO_FRAMES; index++) {
     if (index) await wait(VIDEO_FRAME_GAP_MS);
@@ -236,18 +243,24 @@ async function sharpestVideoFramePair(video: HTMLVideoElement, crop: StillCrop):
   if (!best) return null;
   try {
     const whole = best.bitmap
-      ? render(best.bitmap, best.bitmap.width, best.bitmap.height, "none", FULL_MAX_SIDE)
-      : render(video, video.videoWidth, video.videoHeight, "none", FULL_MAX_SIDE);
+      ? render(best.bitmap, best.bitmap.width, best.bitmap.height, fullCrop, FULL_MAX_SIDE)
+      : render(video, video.videoWidth, video.videoHeight, fullCrop, FULL_MAX_SIDE);
     return whole ? { still: best.still, full: toStill(whole, "video") } : null;
   } finally {
     best.bitmap?.close();
   }
 }
 
-export async function captureStillWithFull(video: HTMLVideoElement | null, crop: StillCrop): Promise<StillPair | null> {
+// `fullCrop`: energi/indhold gemmer hele, ubeskårne billede; forsiden gemmer
+// søgerens kvadrat i fuld opløsning (brugerens krav 2026-10-15).
+export async function captureStillWithFull(
+  video: HTMLVideoElement | null,
+  crop: StillCrop,
+  fullCrop: StillCrop = "none",
+): Promise<StillPair | null> {
   if (!video || !video.videoWidth || !video.videoHeight) return null;
   return (
-    (await takePhotoBitmap(video, (bitmap) => renderPair(bitmap, bitmap.width, bitmap.height, crop, "photo"))) ??
-    (await sharpestVideoFramePair(video, crop))
+    (await takePhotoBitmap(video, (bitmap) => renderPair(bitmap, bitmap.width, bitmap.height, crop, fullCrop, "photo"))) ??
+    (await sharpestVideoFramePair(video, crop, fullCrop))
   );
 }

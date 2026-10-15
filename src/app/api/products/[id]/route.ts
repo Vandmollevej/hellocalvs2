@@ -4,7 +4,7 @@ import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/li
 import { isEstimatedSource } from "@/lib/nutrients";
 import { getSessionUser } from "@/lib/session";
 import {
-  PRODUCT_UPDATE_POINTS,
+  updatePointsFor,
   hasEarnedUpdatePoints,
   productGaps,
   updateKindsFor,
@@ -150,7 +150,7 @@ export async function GET(
           translation,
           subbrandLogoUrl,
           nutrients,
-          updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
+          updateOffer: updateKinds.length ? { kinds: updateKinds, points: updatePointsFor(product) } : null,
           lastAmountGrams: last?.amountGrams ?? null,
           ingredientsUnreadable,
           // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en

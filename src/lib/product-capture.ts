@@ -23,6 +23,9 @@ export type CaptureData = {
   // fastfrosset ved scanningen (src/lib/language-signals.ts).
   languageSignals?: LanguageSignals;
   frontPhoto?: string;
+  // Hele forsidebilledet i fuld opløsning — gemmes som varens billede
+  // (brugerens krav 2026-10-15); frontPhoto er kopien til AI'en.
+  frontPhotoFull?: string;
   nutritionPhoto?: string;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
@@ -213,6 +216,7 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
       signals: data.languageSignals,
       barcodeAnalysisId: data.barcodeAnalysisId,
       frontPhoto: data.frontPhoto,
+      frontPhotoFull: data.frontPhotoFull,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,
       nutritionOcrConfidence: data.nutritionOcrConfidence,

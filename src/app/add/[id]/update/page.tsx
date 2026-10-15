@@ -19,20 +19,23 @@ const KIND_KEYS: Record<Kind, { title: "productUpdate.kindFront" | "productUpdat
   INGREDIENTS: { title: "productUpdate.kindIngredients", hint: "productUpdate.hintIngredients" },
 };
 
+// AI'en får en nedskaleret kopi; forsiden gemmes desuden i fuld opløsning
+// (brugerens krav 2026-10-15), samme grænse som kameraets hele billede.
 const MAX_EDGE_PX = 1600;
+const FULL_EDGE_PX = 4096;
 
-function readFileAsJpegDataUrl(file: File): Promise<string> {
+function readFileAsJpegDataUrl(file: File, maxEdge = MAX_EDGE_PX, quality = 0.85): Promise<string> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const image = new Image();
     image.onload = () => {
-      const scale = Math.min(1, MAX_EDGE_PX / Math.max(image.width, image.height));
+      const scale = Math.min(1, maxEdge / Math.max(image.width, image.height));
       const canvas = document.createElement("canvas");
       canvas.width = Math.round(image.width * scale);
       canvas.height = Math.round(image.height * scale);
       canvas.getContext("2d")?.drawImage(image, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL("image/jpeg", 0.85));
+      resolve(canvas.toDataURL("image/jpeg", quality));
     };
     image.onerror = () => {
       URL.revokeObjectURL(url);
@@ -79,10 +82,11 @@ export default function ProductUpdatePage() {
     setWorkingKind(kind);
     try {
       const photo = await readFileAsJpegDataUrl(file);
+      const fullPhoto = kind === "FRONT" ? await readFileAsJpegDataUrl(file, FULL_EDGE_PX, 0.92) : undefined;
       const res = await fetch(`/api/products/${encodeURIComponent(id)}/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, photo, photoTakenAt: file.lastModified }),
+        body: JSON.stringify({ kind, photo, fullPhoto, photoTakenAt: file.lastModified }),
       });
       if (!res.ok) throw new Error();
       const data = (await res.json()) as { accepted: boolean; pointsAwarded?: number };

@@ -5591,6 +5591,15 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
 - Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
 
+## 2026-10-15: Alle OFF-varer får opdater-banneret; forsiden gemmes i fuld opløsning
+
+- Brugerens krav: alle Open Food Facts-varer skal have banneret øverst med mulighed for at optjene points, og vi skal gemme fuld opløsning ("Open Food Facts er lortebilleder"). Udløst af Brinkers Weiße Crunchy Mandel Creme, hvis OFF-foto mod mørk baggrund stod i cirklen uden banner.
+- Siden 2026-10-03 viste varesiden kun det hvide opdater-banner, og det kom kun, når noget manglede. En OFF-vare med billede fik derfor intet banner. Nu tæller en OFF-forside, som ingen har fotograferet (`rescannedAt` tom), som et hul (`productGaps.image`), så banneret med kortet "Forside" altid tilbydes (stadig kun ét banner, én gang pr. bruger og vare).
+- Brugerens valg (2026-10-15): banneret gælder OFF-varer og varer uden billede, ikke USDA; på OFF-varer kun forsiden (energi/indhold som før kun, når de mangler); en OFF-vare giver 10 points, andre 20 (`updatePointsFor`); OFF-billedet afløses først efter fritlægning og admin-godkendelse.
+- `POST /api/products/[id]/update` (forside): en godkendt aflæsning kasserer OFF-billedets ventende fritlægning, sætter `rescannedAt`/`rescannedByUserId` og kobler fotoets fritlægningsjob til varen. Koblingen manglede helt før, så et forsidefoto fra opdater-varen blev aldrig varens billede.
+- Fuld opløsning: forsidefotoet sendes også i fuld opløsning (op til 4096 px, JPEG 0,92/0,9; i web-kameraet samme kvadrat som søgeren, jf. #438) og gemmes som kildebillede, som fritlægningen bruges fra. AI'en får som før en nedskaleret kopi (opdater-varen 1600 px, kameraet 2048 px). Gælder kameraets opret-flow (`frontPhotoFull` på `/api/products/quick`) og opdater-varen (`fullPhoto`) på web og i appen. Før blev forsiden gemt i højst 1600–2048 px.
+- Ikke ændret: "Scan varen igen"-flowet (`RescanBanner`, ikke koblet på siden) og 2-års-tjekket sender stadig kun den nedskalerede forside.
+
 ## 2026-10-15: Aldrig reservenavnet "Vare <stregkode>" som varens titel
 
 - Brugeren så Verpoorten Original med titlen "Vare 40157818" (grøn linje "Original"). Årsag: hurtig-oprettelsen giver varen reservenavnet `Vare <stregkode>`, og forsidens AI returnerede `productName = null` (varetypen "Eierlikör" står ikke stort på flasken, og prompten sagde "gæt ikke"), så reservenavnet blev beholdt.

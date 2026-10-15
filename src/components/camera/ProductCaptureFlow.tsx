@@ -278,6 +278,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const labelFailuresRef = useRef(0);
   // Udløserens tryk pr. trin: svar fra et billede, der er taget om, smides væk.
   const shotRef = useRef<Partial<Record<CaptureStep, number>>>({});
+  // Forsidens hele billede i fuld opløsning, hørende til et bestemt skud.
+  const frontFullRef = useRef<{ shot: number; url: string } | null>(null);
   // Trin, hvis billede stadig behandles efter udløseren ("Behandles …"), og
   // arbejdet, oprettelsen venter på.
   const [processing, setProcessing] = useState<Partial<Record<CaptureStep, boolean>>>({});
@@ -904,6 +906,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP);
       captured = pair?.still ?? null;
       if (pair) trackProcessing(step, shot, uploadFullPhoto(step, pair.full));
+    } else if (step === "front") {
+      // Forsiden gemmes i fuld opløsning (brugerens krav 2026-10-15) — samme
+      // kvadrat som søgeren; AI'en får den nedskalerede kopi af samme billede.
+      const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP, PHOTO_CROP);
+      captured = pair?.still ?? null;
+      frontFullRef.current = pair ? { shot, url: pair.full.url } : null;
     } else {
       captured = await captureStill(videoRef.current, PHOTO_CROP);
     }
@@ -1090,6 +1098,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const photo = still.then(async (taken) => {
       if (!current()) return;
       data.frontPhoto = taken.url;
+      const full = frontFullRef.current;
+      data.frontPhotoFull = full?.shot === shot ? full.url : undefined;
       const { chosen, objects } = await chooseObject(taken.url);
       if (!current()) return;
       data.frontPhoto = chosen;
