@@ -61,6 +61,17 @@ ikke her, er den ikke registreret og skal tilføjes.
   - Skal gælde alle steder: originale, til gennemgang, færdige. Filer i
     Færdig-mapper må også ligge i Original, men aldrig i Fejlet/Til gennemgang.
 - **Open Food Facts** (2026-10-11): OFF-varer gemmes lokalt i `off_products` med rå svar + navnet opdelt efter reglerne her (`src/lib/off-name-split.ts`), med en sikkerhed i %. Samme navneregler som arkene; ordforrådet bygges af arkene (`scripts/off-import/build_vocab.py`). Rettes en navneregel, skal opdeleren følge med (og kalibreringen køres igen). Se DECISIONS 2026-10-11.
+- **Generiske produkter = hverdagsnavne, Frida kun som reference** (brugerens
+  regel 2026-10-15): arket `Produkter/Generiske produkter.xlsx` bruger de navne,
+  danske butikker bruger (Brie, ikke Brie-ost; Sukker, ikke Stødt melis; Chili,
+  ikke Peber chili), og kategorier med hverdagsnavne (Skæreost og hård ost, ikke
+  Fast løbeost). Fridas navn og FoodID står kun som reference-kolonner. Kolonnen
+  `Kilde` siger, hvor næringsdata kommer fra; varer uden Frida-data (fx fra
+  HelloFresh) markeres "Ingen Frida-data" — næringstal gættes aldrig. Forskelle
+  der forsvinder ved omdøbning (gul/brun sennep, burhøns/frilandsæg) flyttes til
+  Variation. Gennemgangen ligger i `Produkter/Generiske produkter - gennemgang.xlsx`.
+- **Næringsdata kun fra sporbar kilde** (brugerens regel 2026-10-15): Frida eller
+  egne produktdata, med kilde pr. tal. Ingen egne skøn; intet match = tomt.
 - **Boolske felter**: aldrig "Ja"; brug beskrivende ord (Sukkerfri, Laktosefri,
   Vegansk).
 - **Dyrefoder**: spærres (blacklist) — se docs/DECISIONS.md "Pet-food blacklist".
