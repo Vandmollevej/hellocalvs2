@@ -68,6 +68,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
   gen-tegnet som SVG.
+- **Certifikatlogoer er hele mærker (bruger 2026-10-15)**: filerne i
+  `public/certifications` viser hele mærket uden beskæring og uden luft om
+  (beskåret til mærkets egen kant), så de står på linje med cirklens bund og
+  holder badge-højden (30 px). Ø-mærket er Open Food Facts' komplette SVG
+  (`danish-state-controlled-organic`), renderet transparent.
 - **API-logoer (bruger 2026-10-11)**: hver tjeneste under admin → API-nøgler har
   et transparent, kvadratisk (1:1, 512×512) bomærke i `public/api-logos/<tjeneste-id>.png`
   — aldrig et bogstav i en cirkel. Ny tjeneste i `src/lib/api-keys/catalog.ts`
