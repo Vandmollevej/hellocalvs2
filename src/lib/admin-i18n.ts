@@ -143,6 +143,7 @@ const DICTIONARY = {
   products_title: { DA: "Nye varer", EN: "New products" },
   products_tab_user: { DA: "Bruger-indsendte", EN: "User-submitted" },
   products_tab_auto: { DA: "Auto-importerede", EN: "Auto-imported" },
+  products_tab_recheck: { DA: "2-års tjek", EN: "2-year check" },
 
   users_title: { DA: "Brugere", EN: "Users" },
   users_col_user: { DA: "Bruger", EN: "User" },

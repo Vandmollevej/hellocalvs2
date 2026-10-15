@@ -1,8 +1,17 @@
 ## 2026-10-15: Varens sprog og oversættelser — trin 1
 
-- `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015120000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
+- `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015130000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
 - Varesiden (web + native): oversat til brugerens app-sprog med "Oversat til dansk fra kinesisk. Vis original" over titlen; Indstillinger → Visning → Oversættelse (slået til som standard, web + native + webmenu).
 - Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset (bør vise dansk + linjen), en dansk Bilka-ost (ingen linje) og tryk "Vis original". Trin 2–3 og OFF-spørgsmålet: se DECISIONS 2026-10-15.
+
+## 2026-10-15: 2-års kvalitetstjek — varer over to år fremstår som nye ved scanning
+
+- En vare, der har ligget i databasen i over to år, fremstår som ny, når en indlogget kunde scanner den: kameraet tager forside, energi og indhold (web + native), kunden får varens tidligere info med det samme, og fotoene gemmes kun. Om natten sammenligner intern AI (`recheck-local`, DINOv2 i quality-control-agent, 02:15) det nye foto med originalen; OpenAI spørges kun, når den lokale sammenligning er i tvivl. Jobbet `product-recheck` (02:40) læser energi/indhold (telefonens OCR først) og sender ændringer til admin → Nye varer → "2-års tjek" (tælles med på forsidens "Nye varer") med originalen og det nye foto side om side, det nyeste valgt som standard. Billedet fritlægges først efter admins ja, om natten. Nye tal gælder kun registreringer fra og med scanningen; historikken røres ikke. Migration `20261015120000_product_recheck` skal med deployet, og quality-control-agent skal genbygges. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
+
+## 2026-10-15: Mærkat-jobbet — intern AI først
+
+- Ny robot `label-local` (quality-control-agent) søger forsidefotos lokalt igennem for kendte logoer og mærketekster; `label-scan` spørger kun OpenAI, når intet blev fundet lokalt. Se DECISIONS 2026-10-15. Kvalitetskontrollens forkerte kolonnenavne er rettet.
+- Udestående: følg admin → Robotter efter deploy ("Mærkater: lokal søgning" og "Mærkater: AI-aflæsning" viser antal lokalt/OpenAI).
 
 ## 2026-10-15: Skelet-glimtet gjort tydeligt
 

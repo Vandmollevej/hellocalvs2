@@ -31,6 +31,7 @@ import type { OcrBox } from "@/lib/product-ocr-prioritized";
 import {
   CAPTURE_STEPS,
   submitProductRescan,
+  submitProductQualityCheck,
   createQuickProduct,
   findCreatedProduct,
   readFrontPhoto,
@@ -219,6 +220,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const lastBarcodeSeenAtRef = useRef(0);
   const barcodeSightingsRef = useRef<BarcodeSighting[]>([]);
   const dataRef = useRef<CaptureData>(rescan ? { barcode: rescan.barcode } : {});
+  // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): stregkoden er kendt,
+  // men varen er over to år gammel og fremstår som ny — fotoene tages som ved
+  // en ny vare og gemmes til nattens vurdering; kunden får varen bagefter.
+  const qualityCheckProductIdRef = useRef<string | null>(null);
   const leavingRef = useRef(false);
   // Admin "Log" (docs/DECISIONS.md 2026-09-28): ét flow-id pr. åbning af
   // kameraet samler alle trin, telefonens og serverens.
@@ -470,6 +475,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
 
   async function submitCapture() {
     if (rescan) await submitRescan();
+    else if (qualityCheckProductIdRef.current) await submitQualityCheck(qualityCheckProductIdRef.current);
     else await createProduct();
   }
 
@@ -488,6 +494,32 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       durationMs: Date.now() - startedAt,
       data: { pending: pending.length },
     });
+  }
+
+  // Fotoene til 2-års tjekket. Kunden skal have varen med det samme, så et
+  // fejlet upload stopper ikke flowet — det logges blot.
+  async function submitQualityCheck(productId: string) {
+    setWorking(true);
+    setSubmitting(true);
+    await awaitPendingPhotos();
+    const startedAt = Date.now();
+    const barcode = dataRef.current.barcode;
+    const saved = await submitProductQualityCheck(
+      productId,
+      { ...dataRef.current, languageSignals: dataRef.current.languageSignals ?? readLanguageSignals(locale), flowId },
+      marketRegion(),
+    );
+    scanLog(flowId, "flow_done", {
+      level: saved ? "info" : "warn",
+      message: saved
+        ? "2-års tjek: fotos sendt — går til varen med dens tidligere info"
+        : "2-års tjek: fotoene kunne ikke sendes — går til varen alligevel",
+      barcode,
+      productId,
+      durationMs: Date.now() - flowStartedAtRef.current,
+      data: { outcome: "quality-check", saved, submitMs: Date.now() - startedAt },
+    });
+    leaveTo(`/add/${productId}${returnSuffix}`);
   }
 
   async function submitRescan() {
@@ -624,8 +656,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         const response = await fetch(`/api/products/lookup/${encodeURIComponent(code)}`, {
           headers: scanFlowHeaders(flowId),
         });
-        if (response.ok) {
-          const data = (await response.json()) as { product: { id: string }; source?: string };
+        const known = response.ok
+          ? ((await response.json()) as { product: { id: string }; source?: string; qualityCheck?: boolean })
+          : null;
+        if (known && !known.qualityCheck) {
+          const data = known;
           scanLog(flowId, "flow_done", {
             message: `Kendt stregkode (${data.source ?? "ukendt kilde"}) — går direkte til varen`,
             barcode: code,
@@ -660,16 +695,24 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             return;
           }
         }
-        if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
+        if (!known && response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
         // Ukendt vare: gem stregkoden, vis trinnet som klaret og gå videre
         // til forsiden. Stregkodefotoet gemmes kun til serverens kvalitets-
         // kontrol/logo — det klarer ikke energi/indhold for brugeren (2026-10-14).
-        const frame = captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
+        // En vare over to år (2-års tjek) går samme vej uden stregkodefotoet.
+        qualityCheckProductIdRef.current = known?.product.id ?? null;
+        const frame = known ? null : captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
         dataRef.current.barcode = code;
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
-        if (frame) {
+        if (known) {
+          scanLog(flowId, "barcode_quality_check", {
+            message: "Kendt vare over to år gammel — fremstår som ny, kameraet tager nye fotos (2-års tjek)",
+            barcode: code,
+            productId: known.product.id,
+          });
+        } else if (frame) {
           void saveBarcodePhoto(frame.url, code, context.marketRegion, context.signals, flowId).then((id) => {
             if (id) dataRef.current.barcodeAnalysisId = id;
             else scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Stregkode-fotoet blev ikke gemt", barcode: code });
@@ -682,7 +725,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         activeCodeRef.current = null;
         lookupInProgressRef.current = false;
         scanLog(flowId, "barcode_unknown", {
-          message: "Ukendt stregkode — trin 1 klaret, videre til forsiden",
+          message: known ? "2-års tjek — trin 1 klaret, videre til forsiden" : "Ukendt stregkode — trin 1 klaret, videre til forsiden",
           barcode: code,
           durationMs: Date.now() - startedAt,
         });
@@ -1028,8 +1071,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const languages = ocrLanguages();
     const pre = frontPreReadRef.current;
     const fresh = pre && pre.read.textLength > 0 && pressedAt - pre.at <= PRE_READ_FRESH_MS ? pre.read : null;
-    // Ved en genscanning er "dubletten" netop varen selv.
-    if (fresh?.duplicateId && !rescan) {
+    // Ved en genscanning eller et 2-års tjek er "dubletten" netop varen selv.
+    if (fresh?.duplicateId && !rescan && !qualityCheckProductIdRef.current) {
       scanLog(flowId, "flow_done", {
         message: `Forlæsningen fandt en eksisterende vare${fresh.duplicateName ? ` ("${fresh.duplicateName}")` : ""} — går til den`,
         barcode: data.barcode,
@@ -1072,7 +1115,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     trackProcessing("front", shot, Promise.all([photo, logged]));
     const early = await Promise.race([logged, wait(SHUTTER_ANALYSIS_WAIT_MS).then(() => null)]);
     if (leavingRef.current || !current()) return;
-    if (early?.duplicateId && !rescan) {
+    // Ved et 2-års tjek er "dubletten" netop varen selv.
+    if (early?.duplicateId && !rescan && !qualityCheckProductIdRef.current) {
       scanLog(flowId, "flow_done", {
         message: "Forsideteksten matcher en eksisterende vare — går til den",
         barcode: data.barcode,
@@ -1287,6 +1331,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     });
     resetLiveScan();
     dataRef.current = {};
+    qualityCheckProductIdRef.current = null;
     doneRef.current = {};
     shotRef.current = {};
     pendingPhotosRef.current = [];
