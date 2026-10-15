@@ -2372,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Optjen {points} points ved at opdatere varen",
+    "bannerPhoto": "Optjen {points} points ved at opdatere med et flot nyt billede",
     "toggle": "Vis eller skjul banner",
     "tileFront": "Forside",
     "tileNutrition": "Energi",

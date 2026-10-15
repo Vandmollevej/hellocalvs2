@@ -1,3 +1,10 @@
+## 2026-10-15: Opdater-banneret — ingen fotoknap i den lukkede stribe
+
+Brugerens krav (gentaget): "dropdown for oven skal ikke indeholde fotoknappen … Først når man kører skærmen ned. Øverst skal der stå: optjen X ved at opdatere med et flot nyt billede. Og nedenunder fotoboksen og de felter (…) som der nu måtte være behov for."
+
+- `UpdatePointsBanner` har ikke længere en `action`: knappen "Tag billede af indholdet igen" stod i den lukkede stribe. Den er nu indholds-fotoboksen i den nedtrukne del (boksen fører til kameraets `retake=ingredients`, når AI'en ikke kunne læse indholdet; ellers til `/add/[id]/update`).
+- Teksten "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.bannerPhoto`) står KUN på Open Food Facts-varer (`externalSource = OPEN_FOOD_FACTS`, brugerens rettelse); alle andre varer beholder "… ved at opdatere varen". Fotoboksene vises kun for de manglende områder (uændret). Web + native.
+
 ## 2026-10-15: "Har du fundet en fejl?" på alle varer
 
 Brugeren opdagede, at knappen manglede nederst på varesiden. Den var siden 2026-09-12 (`fb2dbe04`) kun vist på varer med stregkode, som brugeren ikke selv havde oprettet — en udokumenteret begrænsning. Brugerens valg: vis den altid.

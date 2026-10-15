@@ -20,7 +20,6 @@ import Link from "next/link";
 import {
   IconChevronDown,
   IconAlertTriangle,
-  IconCamera,
   IconMessage,
   IconLock,
   IconLockOpen,
@@ -889,22 +888,23 @@ export function AddProductView({
     !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               href={`/add/${encodeURIComponent(id)}/update`}
-              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+              // "… med et flot nyt billede" kun på Open Food Facts-varer (brugerens regel 2026-10-15).
+              text={t(
+                state.product.externalSource === "OPEN_FOOD_FACTS" ? "productUpdate.bannerPhoto" : "productUpdate.banner",
+                { points: state.product.updateOffer.points },
+              )}
               toggleLabel={t("productUpdate.toggle")}
               tiles={state.product.updateOffer.kinds.map((kind) => ({
                 kind,
                 label: t(UPDATE_TILE_LABELS[kind]),
+                // Kunne AI'en ikke læse indholdet, tager opretteren det om i
+                // kameraet — som fotoboks i den nedtrukne del, aldrig som knap
+                // i den lukkede stribe (brugerens regel 2026-10-15).
+                href:
+                  kind === "INGREDIENTS" && state.product.ingredientsUnreadable
+                    ? `/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`
+                    : undefined,
               }))}
-              action={
-                state.product.ingredientsUnreadable ? (
-                  <Link
-                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                    className="hf-control hf-btn-secondary justify-center gap-2"
-                  >
-                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                  </Link>
-                ) : undefined
-              }
             />
     ) : null;
 

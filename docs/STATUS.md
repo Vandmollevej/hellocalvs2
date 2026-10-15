@@ -1,3 +1,7 @@
+## 2026-10-15: Opdater-banneret uden fotoknap i striben
+
+- Den lukkede stribe øverst på varesiden viser kun teksten ("… ved at opdatere med et flot nyt billede" på Open Food Facts-varer, ellers "… ved at opdatere varen"); fotoboksene kommer først, når den trækkes ned. Web + native. Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: "Har du fundet en fejl?" på alle varer
 
 - Knappen nederst på varesiden vises nu altid (web + native), også på generiske varer, varer uden stregkode og egne varer. Fejlrapporter på generiske varer knyttes via `bug_reports.genericIngredientId` (migration `20261015180000_bug_report_generic_ingredient` skal med deployet). Se DECISIONS 2026-10-15.

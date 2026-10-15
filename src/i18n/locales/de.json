@@ -2372,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
+    "bannerPhoto": "Verdiene {points} Punkte, indem du ein schönes neues Foto hinzufügst",
     "toggle": "Banner ein- oder ausblenden",
     "tileFront": "Vorderseite",
     "tileNutrition": "Energie",
