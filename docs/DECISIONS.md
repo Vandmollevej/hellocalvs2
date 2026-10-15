@@ -1,3 +1,11 @@
+## 2026-10-15: Tilføj-kameraets forsidefoto beskæres ikke længere efter AI-boksen
+
+Brugerens skærmbillede (DAGO melblanding): produktbilledet var en smal stribe, hvor posen var skåret midt over ("DA|GO") og nabovaren stak ind fra siden. Årsag: siden 2026-10-14 valgte `pickObjectInFocus` automatisk varen i rammens midte og beskar fotoet til gpt-4o-mini's boks (`cropToObject`, 15 % luft). Den model giver upræcise bokse — her for smal og forskudt — og ingen så det beskårne billede, før det blev varens billede.
+
+- Forsidefotoet er nu altid hele rammen, brugeren sigtede med (det er allerede et kvadratisk udsnit af søgeren). Objektgenkendelsen bruges kun til at afvise billeder uden vare (`front_rejected`) og til loggen (`front_objects` nævner varen i midten). Tekstlæsning/dublet-tjek kører også på hele billedet.
+- Native beskar aldrig og er uændret. Måltids-/HelloFresh-kameraet (`src/app/camera/page.tsx`), hvor brugeren selv trykker på en cirkel, er uændret.
+- Varer, der allerede har fået et beskåret billede, skal have forsiden taget om; det gamle billede kan ikke genskabes (scan-loggen gemte også det beskårne).
+
 ## 2026-10-14: Stavekontrol-robot — natlig rapport, læring af admins afgørelser, én fælles stavemotor
 
 Brugerens krav: "en natlig robot som scanner stavefejl og leverer en fuld rapport over ændringer og observationer som ikke kunne ændres grundet usikkerhed, men hvor jeg i tabelvisningen kan rette. Vis original sammenhæng ordet indgik i i en kolonne med stavefejlen highlighted og i kolonnen ved siden af forslaget. Og så er flueben … dropdown 'accepter rettelser'. Men der skal også være et felt … hvor jeg kan skrive MIN oversættelse." Og: "ikke hardcoded kun på dette issue men tænker det ind i en større kontekst."
