@@ -90,3 +90,27 @@ export function matchBrandInTexts(
   }
   return best;
 }
+
+// Et brandnavn, som Brand-tabellen ikke kender, oprettes kun ud fra et sikkert
+// og helt synligt logo (docs/DECISIONS.md 2026-10-15): Nettos ØGO-pose blev
+// læst som "DAGO", fordi logoet var skåret af ved billedkanten, og navnet blev
+// oprettet som nyt brand. Usikkert eller afskåret → varen får intet brand, og
+// et kendt brand (match) bruges altid uanset dette.
+export const NEW_BRAND_MIN_CONFIDENCE = 0.85;
+const LOGO_EDGE_MARGIN = 0.02;
+
+export type LogoBox = { x: number; y: number; width: number; height: number } | null | undefined;
+
+export function logoTouchesEdge(box: LogoBox): boolean {
+  if (!box) return false;
+  return (
+    box.x <= LOGO_EDGE_MARGIN ||
+    box.y <= LOGO_EDGE_MARGIN ||
+    box.x + box.width >= 1 - LOGO_EDGE_MARGIN ||
+    box.y + box.height >= 1 - LOGO_EDGE_MARGIN
+  );
+}
+
+export function newBrandAllowed(confidence: number | null | undefined, logoBox?: LogoBox): boolean {
+  return (confidence ?? 0) >= NEW_BRAND_MIN_CONFIDENCE && !logoTouchesEdge(logoBox);
+}

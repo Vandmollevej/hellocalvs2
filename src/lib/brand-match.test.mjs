@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { matchBrand, matchBrandInTexts } from "./brand-match.ts";
+import { matchBrand, matchBrandInTexts, newBrandAllowed } from "./brand-match.ts";
 
 const brands = [
   { id: "1", name: "ØGO" },
@@ -23,4 +23,13 @@ test("short brands match in front text only when allowed", () => {
 
 test("longest known brand in the text wins", () => {
   assert.equal(matchBrandInTexts(["EDEKA Herzstücke"], brands)?.name, "EDEKA");
+});
+
+test("an unknown brand needs a sure, fully visible logo", () => {
+  // DAGO: logoet skåret af ved venstre kant.
+  assert.equal(newBrandAllowed(0.95, { x: 0, y: 0.3, width: 0.4, height: 0.2 }), false);
+  assert.equal(newBrandAllowed(0.6, { x: 0.3, y: 0.3, width: 0.4, height: 0.2 }), false);
+  assert.equal(newBrandAllowed(0.9, { x: 0.3, y: 0.3, width: 0.4, height: 0.2 }), true);
+  assert.equal(newBrandAllowed(0.9, null), true);
+  assert.equal(newBrandAllowed(undefined), false);
 });
