@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
+import { loadKnownBrands } from "@/lib/known-brands";
 import { callStructuredVision } from "@/lib/product-ai";
 import {
   FRONT_PROMPT_VERSION,
@@ -106,9 +107,7 @@ export async function rerunUncertainAnalyses(): Promise<{ message: string; count
       let promptVersion: string;
       let model: string;
       if (analysis.kind === "FRONT") {
-        knownBrands ??= (await prisma.brand.findMany({ select: { name: true }, orderBy: { name: "asc" }, take: 750 })).map(
-          (b) => b.name,
-        );
+        knownBrands ??= (await loadKnownBrands()).promptNames;
         const result = await callStructuredVision<Record<string, unknown>>({
           photo,
           schemaName: "hello_cal_product_front",
