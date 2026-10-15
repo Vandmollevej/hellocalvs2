@@ -181,6 +181,7 @@ fun AddProductView(
     var openMicronutrient by remember { mutableStateOf<String?>(null) }
     var uncertaintyToggled by remember { mutableStateOf(setOf<String>()) }
     var additiveNames by remember { mutableStateOf(mapOf<String, String>()) }
+    var reloadKey by remember { mutableStateOf(0) }
     var isFavorite by remember { mutableStateOf(false) }
     var favoritePending by remember { mutableStateOf(false) }
     var photoAwards by remember { mutableStateOf<List<PhotoAward>>(emptyList()) }
@@ -229,6 +230,16 @@ fun AddProductView(
             } else LoadState.Failed
         } catch (_: Exception) {
             state = LoadState.Failed
+        }
+    }
+
+    // After a photo in the update banner: fetch the product again (the banner
+    // disappears once nothing is missing).
+    LaunchedEffect(reloadKey) {
+        if (reloadKey == 0 || id.isEmpty()) return@LaunchedEffect
+        runCatching {
+            val product = ApiJson.decodeFromJsonElement(ProductResponse.serializer(), Api.get("/api/products/$id")).product
+            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(withTextChoice(product, textChoice), registration))
         }
     }
 
@@ -730,18 +741,18 @@ fun AddProductView(
         if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
             val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
             UpdatePointsBanner(
-                "/add/${encodeUri(id)}/update",
+                productId = id,
                 // "… with a great new photo" only on Open Food Facts products (user rule 2026-10-15).
-                t.t(if (product?.externalSource == "OPEN_FOOD_FACTS") "productUpdate.bannerPhoto" else "productUpdate.banner", "points" to offer.points),
-                t.t("productUpdate.toggle"),
-                offer.kinds.mapNotNull { k ->
+                text = t.t(if (product?.externalSource == "OPEN_FOOD_FACTS") "productUpdate.bannerPhoto" else "productUpdate.banner", "points" to offer.points),
+                toggleLabel = t.t("productUpdate.toggle"),
+                tiles = offer.kinds.mapNotNull { k ->
                     tileKeys[k]?.let { key ->
-                        // Unreadable ingredients: the creator retakes them in the camera — as a
-                        // tile in the pulled-down panel, never a button in the closed strip.
-                        val retake = k == "INGREDIENTS" && product?.ingredientsUnreadable == true
-                        t.t(key) to (if (retake) "/camera?mode=product&retake=ingredients&product=${encodeUri(id)}" else null)
+                        // Unreadable ingredients: the creator retakes them with the camera from
+                        // the pulled-down panel, never a button in the closed strip.
+                        UpdateTile(k, t.t(key), retake = k == "INGREDIENTS" && product?.ingredientsUnreadable == true)
                     }
                 },
+                onUpdated = { reloadKey++ },
                 scrollOffset = scrollState.value,
             )
         }
