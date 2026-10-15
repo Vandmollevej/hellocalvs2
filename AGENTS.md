@@ -17,6 +17,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 7. Read `docs/REGLER.md` — the single lookup for global system rules (naming, generic products, logos, UI conventions). Search it FIRST before digging through STATUS/DECISIONS or old sessions, and add every new rule there.
 
+## Product text in the user's language (user rule 2026-10-15)
+
+Product columns hold the product's original language (`products.language`) and
+are never overwritten by a translation. Every new screen, list or API that shows
+a product name or product text to a user must show it in the user's app language:
+the product page uses `translationFor`, lists use `localizedProductNames`
+(`src/lib/product-translations.ts`). Never translate inside search, and never
+overwrite registration snapshots. Details: `docs/REGLER.md` → Varens sprog.
+
 ## Web and native must change together (user rule 2026-10-07)
 
 Hello Cal is also a fully native Android + iPhone app (`native/`, one Kotlin

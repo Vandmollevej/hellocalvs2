@@ -8,6 +8,15 @@ Brugerens krav: administration af generiske produkter i adminpanelet med manuel 
 - **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
 - **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
 - **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+## 2026-10-15: Varens sprog — trin 2 (lister, OFF på originalsprog, importerede venter)
+
+Brugerens svar: "Vent med oversættelse af produktark, frida mv. Resten ja og sørg for at det opdateres når vi designer videre." (resten = trin 2 og valg A for Open Food Facts).
+
+- **Importerede kilder venter:** `isTranslatableSource` — FRIDA, REMA1000, BILKA, VALDEMARSRO, RETNEMT, BETTERFEAST, HELLOFRESH og varer uden kilde og uden opretter oversættes ikke (heller ikke på varesiden). Brugerscannede varer og OFF/USDA oversættes. Én konstant, `TRANSLATE_IMPORTED_SOURCES`, slår dem til senere. Generiske varer (Frida) er derfor ikke med i trin 2.
+- **Lister:** `GET /api/registrations`, `/api/favorites`, `/api/products/most-used` viser varens navn på brugerens sprog via `localizedProductNames` (kun gemte oversættelser, manglende laves i baggrunden, maks. 10 pr. kald). Dagbogens `titleSnapshot` erstattes kun i svaret og kun, når den stadig er varens originalnavn. Ingen klientændring (web og native læser samme felter).
+- **Open Food Facts (valg A):** `translateToDanish` er fjernet; nye OFF-varer gemmes på originalsproget med `language` fra OFF. Admins side-om-side-godkendelse får ikke nye varer. `src/lib/translate-da.ts` slettet.
+- **Fremover:** AGENTS.md og REGLER kræver, at nye skærme/lister/API'er med varetekst bruger `translationFor`/`localizedProductNames`.
+
 ## 2026-10-15: Import — egen indgang, side pr. app og trin i startguiden
 
 Brugerens ord: "i flow ved oprettelse: Har du allerede en konto hos anden udbyder kan du måske importere den. Importer nu/ senere. Sæt også op under indstillinger med Import … Benytter du allerede myFitnessPal eller [den anden] kan du importere dine data automatisk. Benytter du en anden udbyder … så kontakt os (kontaktformular). Nedenunder knap til hhv myfitnesspal og den anden. Det leder til siden med optagelse. Når man har valgt hvilken man importerer fra kender systemet jo også algoritmen allerede."

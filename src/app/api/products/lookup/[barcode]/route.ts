@@ -6,7 +6,7 @@ import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
-import { translateToDanish } from "@/lib/translate-da";
+import { languageCode } from "@/lib/product-language";
 import { applyOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
 import { OFF_USE_FIELDS_MIN_CONFIDENCE, OFF_USE_NAME_MIN_CONFIDENCE } from "@/lib/off-record";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
@@ -140,16 +140,20 @@ export async function GET(
     });
     if (externalBlock) return blockedResponse(externalBlock.reason, externalBlock.match, externalProduct.name);
 
-    // OFF-tekst på fremmedsprog oversættes; originalen gemmes til admins side-om-side-godkendelse.
-    const needsTranslation = !!offProduct?.needsTranslation;
-    const translated = needsTranslation
-      ? await translateToDanish({ name: externalProduct.name, ingredients: offProduct?.ingredientsText ?? null })
+    // Varens tekst gemmes på OFF's originalsprog og oversættes aldrig i
+    // kolonnerne; brugere med et andet sprog ser en oversættelse
+    // (docs/DECISIONS.md 2026-10-15, brugerens valg A). Uden dansk titel er
+    // sproget OFF's lang, ellers dansk.
+    const offLanguage = offProduct
+      ? offProduct.needsTranslation
+        ? languageCode(offProduct.sourceLang)
+        : "da"
       : null;
 
     // OFF-varen gemmes i off_products med navnet opdelt efter vores navneregler
     // (mærke, sub brand, produkttype, variation, nøgleord, mængde, filtre).
     const savedOff = offProduct
-      ? await saveOffRecordSafely({ barcode, raw: offProduct.raw, source: "SCAN", translatedName: translated?.name ?? null })
+      ? await saveOffRecordSafely({ barcode, raw: offProduct.raw, source: "SCAN" })
       : null;
     const split = savedOff?.split ?? null;
     const useFields = !!split && split.confidence >= OFF_USE_FIELDS_MIN_CONFIDENCE;
@@ -169,7 +173,7 @@ export async function GET(
 
     const product = await prisma.product.create({
       data: {
-        name: useName ? split!.title : (translated?.name ?? externalProduct.name),
+        name: useName ? split!.title : externalProduct.name,
         ...(useFields
           ? {
               subbrand: split!.subbrand ?? undefined,
@@ -180,14 +184,7 @@ export async function GET(
               packCount: split!.packCount ?? undefined,
             }
           : {}),
-        ...(needsTranslation
-          ? {
-              nameOriginal: externalProduct.name,
-              ingredientsOriginal: offProduct?.ingredientsText ?? null,
-              translationSourceLang: offProduct?.sourceLang ?? "en",
-              translationStatus: "PENDING",
-            }
-          : {}),
+        ...(offLanguage ? { language: offLanguage } : {}),
         brandId: brand?.id,
         imageUrl: externalProduct.imageUrl,
         kcalPer100g: externalProduct.kcalPer100g,
@@ -198,7 +195,7 @@ export async function GET(
         servingSizeUnitSingular: offProduct?.servingIsSlice ? "skive" : undefined,
         servingSizeUnitPlural: offProduct?.servingIsSlice ? "skiver" : undefined,
         productCategory: offProduct?.isBeverage ? "DRINK" : undefined,
-        ingredientsText: translated?.ingredients ?? offProduct?.ingredientsText ?? null,
+        ingredientsText: offProduct?.ingredientsText ?? null,
         allergens: offProduct?.allergens ?? [],
         additives: offProduct?.additives ?? [],
         saturatedFatPer100g: offProduct?.saturatedFatPer100g ?? null,
