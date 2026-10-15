@@ -6,7 +6,7 @@ import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
-import { repairPlaceholderNames } from "@/lib/product-type-name";
+import { repairPlaceholderNames } from "@/lib/product-placeholder-repair";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";

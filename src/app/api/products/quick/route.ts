@@ -1,6 +1,5 @@
 import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { placeholderProductName } from "@/lib/product-placeholder-name";
 import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
@@ -181,7 +180,9 @@ export async function POST(req: Request) {
       ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
     ]);
     // Ved opfyldning beholdes OFF-navnet, hvis AI'en ikke kan læse forsiden.
-    const fallbackName = refill && existing?.product ? existing.product.name : placeholderProductName(barcode);
+    // En ny vare har intet navn, til forsiden er læst (varesiden viser imens en
+    // skeleton) — aldrig "Vare <stregkode>" (brugerens regel 2026-10-15).
+    const fallbackName = refill && existing?.product ? existing.product.name : "";
     const snapshotsSince = refill ? new Date() : undefined;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 
@@ -226,7 +227,7 @@ export async function POST(req: Request) {
     void debugLog({
       category: "scan",
       event: "product_create",
-      message: `${refill ? "Tynd Open Food Facts-vare fyldes op fra fotoene" : `Vare oprettet som "${fallbackName}"`} — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
+      message: `${refill ? "Tynd Open Food Facts-vare fyldes op fra fotoene" : "Vare oprettet uden navn"} — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
       flowId,
       userId: sessionUser?.id,
       barcode,

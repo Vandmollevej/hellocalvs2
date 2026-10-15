@@ -1,12 +1,19 @@
-// Reservenavnet "Vare <stregkode>" får en hurtigt oprettet vare, indtil AI'en
-// har læst forsiden. Det må aldrig blive stående som varens titel: kunne
-// forsiden ikke give et varenavn, navngives varetypen ud fra resten af
-// forsiden (src/lib/product-type-name.ts).
-
-export function placeholderProductName(barcode: string) {
-  return `Vare ${barcode}`;
-}
+// Brugerens regel (2026-10-15): en vare må aldrig vises som "Vare <stregkode>"
+// — heller ikke mens den oprettes. Har varen intet egentligt varenavn (fx
+// Verpoorten Original: brand + variant), hedder den brand + subbrand; varianten
+// står i sit eget felt (grøn linje) og aldrig i navnet. Varetypen opfindes
+// ikke. Reservenavnet fra før reglen genkendes, så det kan erstattes.
 
 export function isPlaceholderProductName(name: string | null | undefined) {
   return /^Vare \d{6,14}$/.test((name ?? "").trim());
+}
+
+// Navnet på en vare uden varenavn: brand + subbrand, uden gentagelse.
+export function brandProductName(brand: string | null | undefined, subbrand: string | null | undefined) {
+  const b = brand?.trim() ?? "";
+  const s = subbrand?.trim() ?? "";
+  if (!b || !s) return b || s;
+  if (s.toLowerCase().includes(b.toLowerCase())) return s;
+  if (b.toLowerCase().includes(s.toLowerCase())) return b;
+  return `${b} ${s}`;
 }

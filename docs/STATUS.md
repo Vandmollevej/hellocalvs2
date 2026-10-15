@@ -1,6 +1,6 @@
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
-- Verpoorten Original fik titlen "Vare 40157818": forsidens AI gav brand og variant, men intet varenavn, og reservenavnet blev stående. Nu udfylder forsideprompten (front-v6) altid varetypen, og giver den alligevel intet navn, navngives varetypen ud fra brand, variant og synlig tekst (`src/lib/product-type-name.ts`). Eksisterende varer med reservenavnet rettes 90 sek. efter deploy og ved nattens `uncertainty-rerun`; registreringernes snapshots røres ikke. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
+- "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; uden egentligt varenavn hedder den brand + subbrand, varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes lokalt efter deploy og hver nat. AI-navngivningen af varetypen er fjernet. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
 

@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { placeholderProductName } from "@/lib/product-placeholder-name";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { analyzeFrontPhoto } from "@/lib/product-photo-analysis";
 import { discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
@@ -110,7 +109,7 @@ export async function enrichRescan(input: RescanInput) {
     const enrichment: QuickEnrichmentInput = {
       ...input,
       nutritionPhoto: input.nutritionPhoto!,
-      fallbackName: current?.name ?? placeholderProductName(input.barcode),
+      fallbackName: current?.name ?? "",
       existingProduct: true,
     };
     const [front, label] = await Promise.all([enrichFront(enrichment), enrichLabel(enrichment)]);

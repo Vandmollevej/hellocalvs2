@@ -27,7 +27,7 @@ import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
-import { nameProductType } from "@/lib/product-type-name";
+import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -163,16 +163,17 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    // Intet varenavn på forsiden: varetypen navngives ud fra brand, variant og
-    // synlig tekst, så reservenavnet "Vare <stregkode>" ikke bliver titlen.
-    const typeName = rawName ? null : await nameProductType(result).catch(() => null);
-    const productName = rawName || typeName || "";
+    const productName = rawName;
     recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
+    // Intet varenavn på forsiden (fx Verpoorten Original): det hidtidige navn,
+    // ellers brand + subbrand. Aldrig "Vare <stregkode>", aldrig varianten og
+    // aldrig en opfundet varetype (brugerens regel 2026-10-15).
+    const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
         ? composeProductName({ productType: productName, variant })
         : normalizeProductName(productName)
-      : input.fallbackName;
+      : fallbackName || brandProductName(brand?.name, subbrand);
     const product = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -184,7 +185,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       },
       select: { id: true, name: true, createdAt: true },
     });
-    await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    if (product.name) await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
     // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
     const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
       console.error("Could not save certifications", productId, error);
@@ -198,10 +199,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     await debugLog({
       category: "scan",
       event: "enrich_front",
-      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${
-        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : " (intet navn fundet, reservenavn beholdt)"
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name || "(intet navn)"}${
+        productName ? "" : name ? " (intet varenavn — brand + subbrand)" : " (intet varenavn og intet brand)"
       }`,
-      level: productName ? "info" : "warn",
+      level: name ? "info" : "warn",
       productId,
       durationMs: Date.now() - startedAt,
       data: {
@@ -265,7 +266,7 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     const { result, brandMatch, imageUrl } = read;
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: { name: true, variant: true, brand: { select: { id: true, name: true } } },
+      select: { name: true, variant: true, subbrand: true, brand: { select: { id: true, name: true } } },
     });
     if (!product) return;
 
@@ -281,10 +282,16 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
 
     // Varianten står kun i sit eget felt (grøn linje) — aldrig i navnet
     // (brugerens regel 2026-10-02). Stod den allerede i navnet, fjernes den.
+    // Forsiden gav hverken varenavn eller brand: varen hedder brand + subbrand,
+    // når stregkode-fotoet gav brandet (brugerens regel 2026-10-15).
+    const nameless = !product.name.trim() || isPlaceholderProductName(product.name);
+    const brandOnlyName = nameless || product.name === brandProductName(product.brand?.name, product.subbrand);
+    if (nameless && brand) changes.name = brandProductName(brand.name, product.subbrand);
+
     const variant = result.variant?.trim() ?? "";
     if (!product.variant && variant && result.variantConfidence >= 0.5) {
       changes.variant = variant;
-      if (product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
+      if (!brandOnlyName && product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
         changes.name = composeProductName({ productType: product.name, variant });
       }
     }

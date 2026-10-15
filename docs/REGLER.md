@@ -32,7 +32,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
-- **Aldrig "Vare <stregkode>" som titel** (2026-10-15): reservenavnet fra hurtig-oprettelsen skal altid erstattes af varetypen — fra forsiden, ellers navngivet ud fra brand/variant/synlig tekst (`src/lib/product-type-name.ts`). Varetypen er aldrig kun brand eller variant.
+- **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Har varen intet egentligt varenavn, hedder den brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet, og varetypen opfindes ikke.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,

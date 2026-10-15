@@ -23,7 +23,7 @@ import {
 import { labelNutrientsFromPrediction, asNumberRecord } from "@/lib/nutrients";
 import { applyAnalysisValues } from "@/lib/uncertainty-corrections";
 import { UNCERTAINTY_TARGET } from "@/lib/uncertainty-thresholds";
-import { repairPlaceholderNames } from "@/lib/product-type-name";
+import { repairPlaceholderNames } from "@/lib/product-placeholder-repair";
 
 // Natlig AI-genkørsel for admin "Uncertainties" (job "uncertainty-rerun",
 // docs/DECISIONS.md 2026-09-25): kører samme aflæsning igen på de gemte
