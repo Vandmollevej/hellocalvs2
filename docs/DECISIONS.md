@@ -5359,3 +5359,11 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Brugerens regel: før noget AI-billedarbejde søges originalen online (Google Vision, logo-robotten). Kun hvis intet fritlagt (transparent) logo findes, rentegner AI originaludklippet med brugerens prompt, ordret: "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. Der må med andre ord ikke fortolkes og skabes noget med AI."
 - Logo-robotten (`scripts/logo-agent/agent.py`, `ai_redraw`): uden automatisk valg og uden et fritlagt kandidat-fund kaldes OpenAI `gpt-image-1` (images/edits, originaludklippet som input, `input_fidelity=high`, transparent baggrund). Resultatet gemmes som kandidat med `aiGenerated` (migration `20261015100000_logo_ai_redraw`) og vælges altid manuelt i admin → Logoer, hvor det står først ved siden af originaludklippet ("AI-rentegnet"). `OPENAI_API_KEY` er givet til logo-agent i compose.
 - Scanningens fritlagte logo-udsnit (`image-agent/cutout.py`, BRAND_LOGO) sættes ikke længere selv som brandets logo (`LOGO_AUTO_APPLY_FROM_SCAN=false`); "Genkør logo" i admin virker som før.
+
+
+## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
+
+- Brugerens regel: OCR først; intern AI før OpenAI; stavekontrol med "Ordbog først, AI ved tvivl".
+- Ny robot `back-photo-local` (quality-control-agent, `scripts/quality-control-agent/back_local.py`, hvert 5. min): hvert bagsidebillede læses lokalt — mærker med samme logo-/tekstsøgning som forsiden og al tekst med tesseract (dan+deu+eng, op til 3000 px, sikkerhed pr. ord). Gemmes i `product_back_photos.localResult` (migration `20261015120000_back_photo_local`).
+- `back-photo-scan` (04:20) bruger den lokale læsning: lokale mærkefund gemmes uden OpenAI; kun uden lokale mærkefund læser OpenAI billedet som før (og så bruges AI'ens tekst). Billeder uden lokal læsning venter højst et døgn.
+- Stavningen (`src/lib/back-photo-spelling.ts`): hvor den gemte liste og læsningen er uenige, afgør ordbogen — kendt gemt ord røres ikke; ukendt gemt ord med kendt, lignende læsning rettes automatisk (`AUTO_FIXED`, kan fortrydes under Stavekontrol); er begge ukendte, vurderer AI ordene i sammenhængen med ét tekstkald (`callStructuredText`) og resultatet bliver forslag (`fine_read_ai`).
