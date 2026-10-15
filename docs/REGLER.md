@@ -174,7 +174,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Tilføj-kameraet (user rule 2026-10-14)
 
-- Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Scan energi", "4. Scan indholdsfortegnelse" (`ScanHeading`). Det senest klarede trin står lille, overstreget og med flueben over den aktuelle overskrift.
+- Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Scan energi", "4. Scan indholdsfortegnelse" (`ScanHeading`). Overskriften står alene — det klarede trin vises kun kort i `StepDoneOverlay`, aldrig som en blivende overstreget linje (user rule 2026-10-15).
+- Flueben på trin-knapperne og opret-sidens fotobokse (`CaptureCheckOverlay`) og i `StepDoneOverlay` er mørk signaturgrøn (`--hf-color-brand`), aldrig den lysegrønne `--hf-color-accent`, som ikke kan ses på lyse flader (user rule 2026-10-15).
 - Hvert klaret trin vises, før flowet går videre (`StepDoneOverlay`): hvidt blink over hele billedet, trinnet stort i midten, overstreges, stort flueben, og linjen flyver op og bliver lille. Også stregkoden, når varen er ukendt — flowet må aldrig bare springe videre.
 - Stregkoden læses levende af videoen (uændret). **Forside, energi og indhold tages med udløseren nederst i kamerabilledet** (`.hf-shutter`, native `ShutterRow`) — "gammeldags billede", ingen automatisk scanning, intet tryk på selve billedet (user rule 2026-10-14: "Jeg har ikke tillid til den anden metode. Ingen scanning mere."). Energi/indhold læses én gang lokalt efter trykket; AI læser resten.
 - "Spring over" til højre for udløseren på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native.

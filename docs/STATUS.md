@@ -1,3 +1,7 @@
+## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
+
+- Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
+
 ## 2026-10-14: Stavekontrol-robot og admin → Stavekontrol
 
 - Natlig robot `spelling-check` (04:15, app-job) + fælles stavemotor + side `/admin/spelling` med flueben, dropdown ("Accepter rettelser" …), original sammenhæng med fremhævet ord, forslag og "Min rettelse". Ordbogen lærer af katalogets ordforråd og admins afgørelser. Migration `20261014230000_spelling_robot` skal med deployet. Prøvet lokalt mod Postgres (alle migrationer, robot, godkend/afvis/fortryd/egen rettelse, læring, 20.000 lister) og i browser. Se DECISIONS/REGLER 2026-10-14.
