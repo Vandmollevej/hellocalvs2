@@ -1,3 +1,9 @@
+## 2026-10-15: Varens sprog og oversættelser — trin 1
+
+- `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015120000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.
+- Varesiden (web + native): oversat til brugerens app-sprog med "Oversat til dansk fra kinesisk. Vis original" over titlen; Indstillinger → Visning → Oversættelse (slået til som standard, web + native + webmenu).
+- Ikke prøvet mod rigtig database/OpenAI her: åbn chiliglasset (bør vise dansk + linjen), en dansk Bilka-ost (ingen linje) og tryk "Vis original". Trin 2–3 og OFF-spørgsmålet: se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Skelet-glimtet gjort tydeligt
 
 - Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.

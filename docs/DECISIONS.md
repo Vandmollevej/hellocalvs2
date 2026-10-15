@@ -1,3 +1,14 @@
+## 2026-10-15: Varens sprog — originalen i kolonnerne, oversættelser i egen tabel (trin 1)
+
+Brugerens krav (efter et kinesisk chiliglas og en afvist første løsning, PR #411, der overskrev kolonnerne med dansk): "Alle sprog skal kunne oversættes … så alt vises på samme sprog … Jeg behandler bare på dansk … men det er ikke nødvendigvis single source of truth. Vi kan jo have original sprog og så de andre oversættelser." Og: "Du må ikke begynde at oversætte tekst som står i den danske database til dansk!!! Mange oste fx har franske navne."
+
+- **Model:** `products.language` = kolonnernes originalsprog; `product_translations` (vare × app-sprog, `sourceHash` af originalteksten). Kolonnerne overskrives aldrig. PR #411 lukket uflettet.
+- **Sproget fra kilden** (`inferProductLanguage`): ikke-latinske tegn → skriftens sprog (brugerens valg: også DK-varer); danske kilder (FRIDA, REMA1000, BILKA, VALDEMARSRO, RETNEMT, BETTERFEAST, HELLOFRESH) → `da`; OFF → `lang` (eller `da`, når det ældre OFF-opslag allerede har oversat kolonnerne); scanningsland → oprindelsesland → stregkodens GS1-land; ellers `""` (ukendt, oversættes ikke). Vedligeholdet udfylder 500 varer pr. kørsel uden AI; scanning sætter det efter AI-aflæsningen; varesiden udfylder det ved første visning.
+- **Oversættelse ved behov:** første gang en bruger med et andet app-sprog åbner varen, oversætter gpt-4o-mini felterne (navn, flertal, produkttype, variant, mængde, ingredienser; brand/subbrand kun translittereret ved ikke-latinske tegn) og gemmer rækken. Mislykket kald prøves tidligst igen efter 10 min.; imens vises originalen.
+- **Visning → Oversættelse** (`users.translateForeignText`, standard til) og linjen "Oversat til <sprog> fra <sprog>. Vis original" over titlen (web + native, `src/lib/product-text-swap.ts` / `ProductTextSwap.kt`).
+- **Næste trin (aftalt):** 2) lister, dagbog (titel slås op, snapshot bevares) og favoritter + generiske varer overalt; 3) søgning kun på brugerens sprog + engelsk + landets stregkoder (ingen oversættelse i søgningen), natligt job for sprog med aktive brugere, Python-sprogrobot (fx lingua) til usikre scannede/OFF-varer.
+- **Åbent:** det ældre OFF-opslag (`translateToDanish` i `/api/products/lookup/[barcode]`) skriver stadig dansk i kolonnerne for OFF-varer uden dansk tekst — strider mod "kolonnerne er originalen"; afklares med brugeren før trin 3.
+
 ## 2026-10-15: Ubeskårne bagsidebilleder — natlig engangsanalyse (mærkninger, finlæsning, udvidet stavekontrol)
 
 Brugerens krav: "Jeg vil sikre mig at der tages fuldt billede af bagside mv og at billedet ikke beskæres på serveren … for at spotte certifikater som ikke findes på forsiden fx skal disse scannes om natten. De ekstra billeder skal IKKE indgå i nogen fremtidige kørsler, kun analyseres ÉN gang. Det skal også bruges til at finlæse teksten og køre udvidet stavekontrol mm."

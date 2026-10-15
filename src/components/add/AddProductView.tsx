@@ -50,6 +50,7 @@ import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
 import { MicronutrientInfoModal } from "@/components/hf/MicronutrientInfoModal";
 import { MICRONUTRIENT_INFO_BY_KEY } from "@/lib/micronutrient-info";
+import { swapProductTexts, type ProductTranslationInfo } from "@/lib/product-text-swap";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DecimalText } from "@/components/DecimalText";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
@@ -100,6 +101,14 @@ const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "phot
   NUTRITION: "photoAward.photoTypeNutrition",
   INGREDIENTS: "photoAward.photoTypeIngredients",
 };
+
+// Brugerens "Vis original"/"Vis oversættelse"-valg lagt på en nyhentet vare.
+function withTextChoice(product: Product, choice: ProductTranslationInfo["showing"] | null): Product {
+  const translation = product.translation;
+  if (!translation || !choice || choice === translation.showing) return product;
+  const swapped = swapProductTexts(product, translation);
+  return { ...swapped.product, translation: swapped.translation };
+}
 
 function currentTimeString() {
   const now = new Date();
@@ -205,6 +214,9 @@ type Product = {
   // Mindst én værdi kommer fra Frida → Fridas kildeangivelse nederst i det
   // udfoldede næringsfelt (DECISIONS 2026-10-10).
   fridaSource?: boolean;
+  // Oversat fra varens originalsprog (docs/DECISIONS.md
+  // 2026-10-15): den anden version til "Vis original"/"Vis oversættelse".
+  translation?: ProductTranslationInfo | null;
 };
 
 type ProfileUser = {
@@ -392,6 +404,9 @@ export function AddProductView({
   const [isProductEditingUnlocked, setIsProductEditingUnlocked] = useState(false);
   const [macroOverrideSnapshot, setMacroOverrideSnapshot] = useState<typeof macroOverride>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
+  // "Vis original"/"Vis oversættelse": brugerens valg på siden, så polling
+  // ikke skifter tilbage (null = som serveren sender det).
+  const textChoiceRef = useRef<ProductTranslationInfo["showing"] | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -468,7 +483,7 @@ export function AddProductView({
           if (!data?.product) return;
           setState((current) =>
             current.status === "loaded"
-              ? { status: "loaded", product: applyRegistrationSnapshot({ ...data.product }, registration) }
+              ? { status: "loaded", product: applyRegistrationSnapshot(withTextChoice({ ...data.product }, textChoiceRef.current), registration) }
               : current,
           );
         })
@@ -476,6 +491,15 @@ export function AddProductView({
     }, PENDING_POLL_MS);
     return () => clearTimeout(timer);
   }, [shouldPoll, state, id, registration]);
+
+  function toggleOriginalText() {
+    setState((current) => {
+      if (current.status !== "loaded" || !current.product.translation) return current;
+      const swapped = swapProductTexts(current.product, current.product.translation);
+      textChoiceRef.current = swapped.translation.showing;
+      return { status: "loaded", product: { ...swapped.product, translation: swapped.translation } };
+    });
+  }
 
   async function handleToggleFavorite() {
     if (favoritePending) return;
@@ -825,6 +849,16 @@ export function AddProductView({
   );
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
+  function translationNote(translation: ProductTranslationInfo) {
+    if (translation.showing === "original") {
+      return translation.sourceLanguageName
+        ? t("addProduct.originalLanguage", { source: translation.sourceLanguageName })
+        : t("addProduct.originalText");
+    }
+    return translation.sourceLanguageName
+      ? t("addProduct.translatedFrom", { target: translation.targetLanguageName, source: translation.sourceLanguageName })
+      : t("addProduct.translatedTo", { target: translation.targetLanguageName });
+  }
   const Frame = inSheet ? SheetFrame : ScreenFrame;
   // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
@@ -1056,7 +1090,17 @@ export function AddProductView({
                       </p>
                     ))}
                 </div>
-                <div className="flex w-full flex-col items-start">
+                <div className="relative flex w-full flex-col items-start">
+                {/* Oversat-linjen ligger over overskriften uden at flytte den
+                    eller billedet (docs/DECISIONS.md 2026-10-15). */}
+                {view?.translation && !isPending("name") && (
+                  <p className="hf-type-caption absolute bottom-full left-0 mb-1 text-text-secondary">
+                    {translationNote(view.translation)}{" "}
+                    <button type="button" onClick={toggleOriginalText} className="underline">
+                      {t(view.translation.showing === "translated" ? "addProduct.showOriginal" : "addProduct.showTranslation")}
+                    </button>
+                  </p>
+                )}
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="hero" width={200} />

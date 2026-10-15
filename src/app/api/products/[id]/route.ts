@@ -10,6 +10,9 @@ import {
   updateKindsFor,
 } from "@/lib/product-update";
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
+import { appLocaleOf, needsTranslation } from "@/lib/product-language";
+import { languageName, refreshProductLanguage, translationFor } from "@/lib/product-translations";
+import { applyProductTexts, productTextsFor, type ProductTranslationInfo } from "@/lib/product-text-swap";
 
 export async function GET(
   _req: Request,
@@ -70,6 +73,34 @@ export async function GET(
       if (user?.id !== product.privateOwnerId) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
     }
     if (product) {
+      // Varens sprog og brugerens oversættelse (docs/DECISIONS.md 2026-10-15):
+      // kolonnerne er originalen; står varen på et andet sprog end brugerens
+      // app-sprog, sendes oversættelsen i felterne og originalen i
+      // translation.alternate til "Vis original". Slået fra under Visning →
+      // Oversættelse = originalen uden linjen.
+      const viewer = await getSessionUser().catch(() => null);
+      const language =
+        product.language === null
+          ? await refreshProductLanguage(product.id).catch(() => null)
+          : product.language;
+      let shown = product;
+      let translation: ProductTranslationInfo | null = null;
+      const viewerLocale = appLocaleOf(viewer?.appLocale);
+      if (viewer && viewer.translateForeignText !== false && needsTranslation(language, viewerLocale)) {
+        const texts = await translationFor({ ...product, language }, viewerLocale).catch((error) => {
+          console.error("Product translation failed", error);
+          return null;
+        });
+        if (texts) {
+          shown = applyProductTexts(product, texts);
+          translation = {
+            showing: "translated",
+            sourceLanguageName: languageName(language, viewerLocale),
+            targetLanguageName: languageName(viewerLocale, viewerLocale) ?? viewerLocale,
+            alternate: productTextsFor(product, Object.keys(texts)),
+          };
+        }
+      }
       // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer
       // ud over makroerne, pr. 100 g, med estimeret-flag.
       const nutrients = await resolveProductNutrients(product).catch((error) => {
@@ -78,7 +109,7 @@ export async function GET(
       });
       // Brugerens seneste mængde for varen — startmængde i mængdevælgeren
       // (src/lib/default-amount.ts).
-      const user = await getSessionUser().catch(() => null);
+      const user = viewer;
       const last = user
         ? await prisma.registration.findFirst({
             where: { userId: user.id, productId: product.id },
@@ -111,7 +142,9 @@ export async function GET(
       });
       return NextResponse.json({
         product: {
-          ...product,
+          ...shown,
+          language,
+          translation,
           subbrandLogoUrl,
           nutrients,
           updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,

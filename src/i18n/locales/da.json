@@ -446,7 +446,8 @@
     "showTooltips": "Vis tooltips",
     "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
     "showStartupTips": "Vis start-up tips",
-    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt."
+    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt.",
+    "translation": "Oversættelse"
   },
   "guide": {
     "back": "Tilbage",
@@ -515,7 +516,9 @@
     "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke.",
     "uncertainty": "Usikkerhed",
     "autoExpandUncertainty": "Fold usikkerhed ud automatisk",
-    "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke."
+    "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke.",
+    "translateForeignText": "Oversæt fremmedsprog til dansk",
+    "translateForeignTextDescription": "Varer på et andet sprog end dansk vises oversat. Over varens navn står, hvilket sprog den er oversat fra, med et link til originalen. Slår du det fra, vises varen på sit originalsprog."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Spørg om nattens søvn",
@@ -2355,7 +2358,13 @@
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Skift mellem rumfang og gram"
+    "swapLiquidUnit": "Skift mellem rumfang og gram",
+    "translatedFrom": "Oversat til {target} fra {source}.",
+    "translatedTo": "Oversat til {target}.",
+    "originalLanguage": "Original på {source}.",
+    "originalText": "Originaltekst.",
+    "showOriginal": "Vis original",
+    "showTranslation": "Vis oversættelse"
   },
   "photoAward": {
     "bannerSingle": "Du kan optjene {points} points ved at tage et nyt billede af {photoType}.",

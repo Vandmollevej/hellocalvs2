@@ -10,6 +10,14 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
 
+## Varens sprog og oversættelse (user rule 2026-10-15)
+
+- **Kolonnerne er originalen.** En vares tekst står på dens originalsprog (`products.language`, ISO 639-1) og overskrives **aldrig** af en oversættelse. Dansk er ikke facit — det er ét af sprogene.
+- **Sproget bestemmes af kilden, aldrig af ordene:** danske ark/butikker/Frida/HelloFresh.dk = `da` (franske ostenavne og "cheese" røres ikke), Open Food Facts = OFF's `lang`, scannede varer = scanningslandet, ellers stregkodens land. **Undtagelse:** ikke-latinske tegn (kinesisk, kyrillisk …) giver skriftens sprog — også på en DK-vare. Ukendt sprog = `""` og oversættes ikke. Regler: `src/lib/product-language.ts`.
+- **Oversættelser** ligger i `product_translations` (én række pr. vare og app-sprog), laves første gang en bruger med sproget ser varen og laves forfra, når varens tekst ændres (`sourceHash`). Brand/subbrand oversættes aldrig, kun translittereres ved ikke-latinske tegn; brandet omdøbes aldrig. `src/lib/product-translations.ts`.
+- **Visning → Oversættelse** (`User.translateForeignText`, slået til som standard): over en oversat vares navn står med lille grå tekst "Oversat til dansk fra kinesisk." + understreget "Vis original"/"Vis oversættelse"; linjen flytter hverken overskrift eller billede. Fra = originalsproget uden linjen.
+- Trin 1 (2026-10-15) dækker varesiden. Lister/dagbog/favoritter, generiske varer, søgefilteret (kun brugerens sprog + engelsk + landets stregkoder, ingen oversættelse i søgningen), natligt job og Python-sprogrobot er trin 2–3.
+
 ## Varer og navngivning
 
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
