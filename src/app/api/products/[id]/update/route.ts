@@ -10,16 +10,16 @@ import {
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import {
-  PRODUCT_UPDATE_POINTS,
   awardUpdatePointsOnce,
   isFreshCameraPhoto,
   productGaps,
   updateKindsFor,
+  updatePointsFor,
   type ProductUpdateKind,
 } from "@/lib/product-update";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 import { discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
-import { hasLookupFrontImage } from "@/lib/product-rescan-offer";
+import { hasOffFrontImage } from "@/lib/product-rescan-offer";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
 // POST /api/products/[id]/update — brugeren udfylder en manglende ting på en
@@ -84,6 +84,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const gaps = productGaps(product);
+  // Før forsiden sætter rescannedAt: en OFF-vare giver 10 points, ellers 20.
+  const points = updatePointsFor(product);
   if (!updateKindsFor(gaps).includes(kind)) {
     // Det, fotoet skulle udfylde, mangler ikke (mere).
     return NextResponse.json({ accepted: false, reason: "not-missing" });
@@ -120,11 +122,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         }
       }
       if (accepted) {
-        // Open Food Facts-/USDA-billedet afløses: dets ventende fritlægning
+        // Open Food Facts-billedet afløses: dets ventende fritlægning
         // kasseres, og varen er nu fotograferet (banneret tilbyder ikke
         // forsiden igen). Som ved "Scan varen igen" går det nye billede via
         // fritlægning og admin-godkendelse.
-        if (hasLookupFrontImage(product)) {
+        if (hasOffFrontImage(product)) {
           await discardPendingFrontImage(id, product.imageUrl);
           await prisma.product.update({ where: { id }, data: { rescannedAt: new Date(), rescannedByUserId: user.id } });
         }
@@ -174,17 +176,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     const pointsAwarded =
       accepted && photoSource === "CAMERA"
-        ? await awardUpdatePointsOnce(user.id, id)
+        ? await awardUpdatePointsOnce(user.id, id, points)
         : false;
     void debugLog({
       category: "scan",
       event: "product_update",
       level: accepted ? "info" : "warn",
-      message: `Opdater vare (${kind}): ${accepted ? "udfyldt" : "kunne ikke læses"}${pointsAwarded ? ` · ${PRODUCT_UPDATE_POINTS} points givet` : ""}`,
+      message: `Opdater vare (${kind}): ${accepted ? "udfyldt" : "kunne ikke læses"}${pointsAwarded ? ` · ${points} points givet` : ""}`,
       ...context,
       durationMs: Date.now() - startedAt,
     });
-    return NextResponse.json({ accepted, pointsAwarded: pointsAwarded ? PRODUCT_UPDATE_POINTS : 0 });
+    return NextResponse.json({ accepted, pointsAwarded: pointsAwarded ? points : 0 });
   } catch (error) {
     console.error("Product update failed", id, error);
     void debugLog({

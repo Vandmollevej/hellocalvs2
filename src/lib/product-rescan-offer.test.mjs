@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hasLookupFrontImage, hasProperCutout, rescanStepsFor } from "./product-rescan-offer.ts";
+import { hasOffFrontImage, hasProperCutout, rescanStepsFor } from "./product-rescan-offer.ts";
 
 const barcodes = [{ code: "5701234567890" }];
 
@@ -34,10 +34,10 @@ test("intet banner for brugeroprettede, private eller stregkodeløse varer", () 
   assert.equal(hasProperCutout({ imageUrl: null }), false);
 });
 
-test("Opdater-banneret: OFF/USDA-forsiden tilbydes, til nogen har fotograferet varen", () => {
-  assert.equal(hasLookupFrontImage({ externalSource: "OPEN_FOOD_FACTS" }), true);
-  assert.equal(hasLookupFrontImage({ externalSource: "USDA" }), true);
-  assert.equal(hasLookupFrontImage({ externalSource: "OPEN_FOOD_FACTS", rescannedAt: "2026-10-15" }), false);
-  assert.equal(hasLookupFrontImage({ externalSource: "REMA1000" }), false);
-  assert.equal(hasLookupFrontImage({ externalSource: null }), false);
+test("Opdater-banneret: OFF-forsiden tilbydes, til nogen har fotograferet varen (ikke USDA)", () => {
+  assert.equal(hasOffFrontImage({ externalSource: "OPEN_FOOD_FACTS" }), true);
+  assert.equal(hasOffFrontImage({ externalSource: "OPEN_FOOD_FACTS", rescannedAt: "2026-10-15" }), false);
+  assert.equal(hasOffFrontImage({ externalSource: "USDA" }), false);
+  assert.equal(hasOffFrontImage({ externalSource: "REMA1000" }), false);
+  assert.equal(hasOffFrontImage({ externalSource: null }), false);
 });

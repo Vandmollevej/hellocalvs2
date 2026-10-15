@@ -1,15 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { awardPoints } from "@/lib/points";
-import { hasLookupFrontImage } from "@/lib/product-rescan-offer";
+import { hasOffFrontImage } from "@/lib/product-rescan-offer";
 
 // Opdater-varen-banneret (brugerbeslutning 2026-10-03): mangler en vare
 // indhold, energi, logo eller produktbillede, tilbydes brugeren 20 points for
 // at udfylde det. Alle brugere kan optjene dem — også admin, så det kan testes.
-// Points udbetales højst én gang pr. bruger og vare. Open Food Facts-/USDA-
-// varer får altid tilbuddet om et nyt forsidefoto, til nogen har taget det
-// (brugerens krav 2026-10-15: "alle OFF skal have banneret").
+// Points udbetales højst én gang pr. bruger og vare. Open Food Facts-varer får
+// altid tilbuddet om et nyt forsidefoto, til nogen har taget det, og giver 10
+// points (brugerens valg 2026-10-15).
 
 export const PRODUCT_UPDATE_POINTS = 20;
+export const OFF_FRONT_POINTS = 10;
+
+// Points for at opdatere varen: 10 på en Open Food Facts-vare, som ingen har
+// fotograferet endnu, ellers 20.
+export function updatePointsFor(product: { externalSource?: string | null; rescannedAt?: Date | string | null }): number {
+  return hasOffFrontImage(product) ? OFF_FRONT_POINTS : PRODUCT_UPDATE_POINTS;
+}
 
 export type ProductUpdateKind = "FRONT" | "NUTRITION" | "INGREDIENTS";
 
@@ -35,7 +42,7 @@ export function productGaps(product: {
 }): ProductGaps {
   const reading = (field: string) => product.pendingFields.includes(field);
   return {
-    image: (!product.imageUrl && !product.pendingImageUrl) || hasLookupFrontImage(product),
+    image: (!product.imageUrl && !product.pendingImageUrl) || hasOffFrontImage(product),
     logo: !product.brand?.logoUrl,
     nutrition: (product.nutritionMissing || !!product.fridaEstimateId) && !reading("nutrition"),
     ingredients: !product.ingredientsText?.trim() && !reading("ingredients"),
@@ -77,8 +84,8 @@ export function isFreshCameraPhoto(lastModifiedMs: unknown, now = Date.now()): b
   );
 }
 
-export async function awardUpdatePointsOnce(userId: string, productId: string): Promise<boolean> {
+export async function awardUpdatePointsOnce(userId: string, productId: string, points = PRODUCT_UPDATE_POINTS): Promise<boolean> {
   if (await hasEarnedUpdatePoints(userId, productId)) return false;
-  await awardPoints(userId, "PRODUCT_UPDATED", PRODUCT_UPDATE_POINTS, { productId });
+  await awardPoints(userId, "PRODUCT_UPDATED", points, { productId });
   return true;
 }
