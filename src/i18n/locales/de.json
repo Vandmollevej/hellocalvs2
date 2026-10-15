@@ -2381,8 +2381,7 @@
     "submitted": "Danke! Dein Foto wird jetzt geprüft."
   },
   "productUpdate": {
-    "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
-    "bannerPhoto": "Verdiene {points} Punkte, indem du ein schönes neues Foto hinzufügst",
+    "banner": "Verdiene {points} Punkte, indem du ein schönes neues Foto hinzufügst",
     "toggle": "Banner ein- oder ausblenden",
     "tileFront": "Vorderseite",
     "tileNutrition": "Energie",

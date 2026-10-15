@@ -3,7 +3,7 @@
 Brugerens krav (gentaget): "dropdown for oven skal ikke indeholde fotoknappen … Først når man kører skærmen ned. Øverst skal der stå: optjen X ved at opdatere med et flot nyt billede. Og nedenunder fotoboksen og de felter (…) som der nu måtte være behov for."
 
 - `UpdatePointsBanner` har ikke længere en `action`: knappen "Tag billede af indholdet igen" stod i den lukkede stribe. Den er nu indholds-fotoboksen i den nedtrukne del (boksen fører til kameraets `retake=ingredients`, når AI'en ikke kunne læse indholdet; ellers til `/add/[id]/update`).
-- Mangler varen kun produktbilledet, er teksten "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.bannerPhoto`); ellers den hidtidige "… ved at opdatere varen". Fotoboksene vises kun for de manglende områder (uændret). Web + native.
+- Teksten er altid "Optjen {points} points ved at opdatere med et flot nyt billede" (`productUpdate.banner`, før "… ved at opdatere varen"). Fotoboksene vises kun for de manglende områder (uændret). Web + native.
 
 ## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
 

@@ -718,7 +718,7 @@ fun AddProductView(
             val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
             UpdatePointsBanner(
                 "/add/${encodeUri(id)}/update",
-                t.t(if (offer.kinds == listOf("FRONT")) "productUpdate.bannerPhoto" else "productUpdate.banner", "points" to offer.points),
+                t.t("productUpdate.banner", "points" to offer.points),
                 t.t("productUpdate.toggle"),
                 offer.kinds.mapNotNull { k ->
                     tileKeys[k]?.let { key ->

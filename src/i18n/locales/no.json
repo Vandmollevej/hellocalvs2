@@ -2381,8 +2381,7 @@
     "submitted": "Takk! Bildet ditt venter nå på gjennomgang."
   },
   "productUpdate": {
-    "banner": "Tjen {points} poeng ved å oppdatere varen",
-    "bannerPhoto": "Tjen {points} poeng ved å oppdatere med et flott nytt bilde",
+    "banner": "Tjen {points} poeng ved å oppdatere med et flott nytt bilde",
     "toggle": "Vis eller skjul banner",
     "tileFront": "Forside",
     "tileNutrition": "Energi",

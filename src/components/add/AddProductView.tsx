@@ -864,12 +864,7 @@ export function AddProductView({
     !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               href={`/add/${encodeURIComponent(id)}/update`}
-              text={t(
-                state.product.updateOffer.kinds.length === 1 && state.product.updateOffer.kinds[0] === "FRONT"
-                  ? "productUpdate.bannerPhoto"
-                  : "productUpdate.banner",
-                { points: state.product.updateOffer.points },
-              )}
+              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
               toggleLabel={t("productUpdate.toggle")}
               tiles={state.product.updateOffer.kinds.map((kind) => ({
                 kind,
