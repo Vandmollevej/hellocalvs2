@@ -1,3 +1,7 @@
+## 2026-10-15: Alkoholprocent og kalorieskøn for spiritus
+
+- "20 % vol" læses nu (lokal OCR først, ellers AI på for- og bagside) og gemmes på varen. En ny alkoholisk drik uden næringstabel får sit kalorietal regnet ud: alkoholen præcist, resten skønnet ud fra varetypen (∼). Verpoorten-varen fra før rettelsen får det først ved en ny scanning. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Opdater-banneret uden fotoknap i striben
 
 - Den lukkede stribe øverst på varesiden viser kun teksten ("… ved at opdatere med et flot nyt billede" på Open Food Facts-varer, ellers "… ved at opdatere varen"); fotoboksene kommer først, når den trækkes ned. Web + native. Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.
@@ -12,7 +16,7 @@
 
 ## 2026-10-15: Aldrig "Vare <stregkode>" som titel
 
-- Verpoorten Original fik titlen "Vare 40157818": forsidens AI gav brand og variant, men intet varenavn, og reservenavnet blev stående. Nu udfylder forsideprompten (front-v6) altid varetypen, og giver den alligevel intet navn, navngives varetypen ud fra brand, variant og synlig tekst (`src/lib/product-type-name.ts`). Eksisterende varer med reservenavnet rettes 90 sek. efter deploy og ved nattens `uncertainty-rerun`; registreringernes snapshots røres ikke. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
+- "Vare" + nummer vises aldrig, heller ikke under oprettelsen: en ny vare har tomt navn (skeleton), til forsiden er læst; står varetypen ikke på forsiden, navngives den (Eierlikör), ellers brand + subbrand; varianten står på den grønne linje. Eksisterende varer med reservenavnet omdøbes efter deploy og hver nat. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
 
 ## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
 

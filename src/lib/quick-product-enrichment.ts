@@ -27,7 +27,10 @@ import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
+import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
 import { nameProductType } from "@/lib/product-type-name";
+import { parseAlcoholPercent } from "@/lib/alcohol-label";
+import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -163,16 +166,19 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    // Intet varenavn på forsiden: varetypen navngives ud fra brand, variant og
-    // synlig tekst, så reservenavnet "Vare <stregkode>" ikke bliver titlen.
+    // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
+    // ud fra brand, variant og synlig tekst (fx Eierlikör); ellers det hidtidige
+    // navn, ellers brand + subbrand. Aldrig "Vare <stregkode>" og aldrig
+    // varianten (brugerens regel 2026-10-15).
     const typeName = rawName ? null : await nameProductType(result).catch(() => null);
     const productName = rawName || typeName || "";
-    recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
+    recognized = Boolean(rawName || result.logoText?.trim() || result.productBox);
+    const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
         ? composeProductName({ productType: productName, variant })
         : normalizeProductName(productName)
-      : input.fallbackName;
+      : fallbackName || brandProductName(brand?.name, subbrand);
     const product = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -184,7 +190,11 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       },
       select: { id: true, name: true, createdAt: true },
     });
-    await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    if (product.name) await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    await recordAlcoholPercent(
+      productId,
+      result.alcoholPercent ?? parseAlcoholPercent([...(result.visibleText ?? []), ...(result.claims ?? [])].join(" ")),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
     // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
     const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
       console.error("Could not save certifications", productId, error);
@@ -198,10 +208,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     await debugLog({
       category: "scan",
       event: "enrich_front",
-      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${
-        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : " (intet navn fundet, reservenavn beholdt)"
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name || "(intet navn)"}${
+        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : name ? " (intet varenavn — brand + subbrand)" : " (intet varenavn og intet brand)"
       }`,
-      level: productName ? "info" : "warn",
+      level: name ? "info" : "warn",
       productId,
       durationMs: Date.now() - startedAt,
       data: {
@@ -265,7 +275,7 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     const { result, brandMatch, imageUrl } = read;
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: { name: true, variant: true, brand: { select: { id: true, name: true } } },
+      select: { name: true, variant: true, subbrand: true, brand: { select: { id: true, name: true } } },
     });
     if (!product) return;
 
@@ -281,10 +291,16 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
 
     // Varianten står kun i sit eget felt (grøn linje) — aldrig i navnet
     // (brugerens regel 2026-10-02). Stod den allerede i navnet, fjernes den.
+    // Forsiden gav hverken varenavn eller brand: varen hedder brand + subbrand,
+    // når stregkode-fotoet gav brandet (brugerens regel 2026-10-15).
+    const nameless = !product.name.trim() || isPlaceholderProductName(product.name);
+    const brandOnlyName = nameless || product.name === brandProductName(product.brand?.name, product.subbrand);
+    if (nameless && brand) changes.name = brandProductName(brand.name, product.subbrand);
+
     const variant = result.variant?.trim() ?? "";
     if (!product.variant && variant && result.variantConfidence >= 0.5) {
       changes.variant = variant;
-      if (product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
+      if (!brandOnlyName && product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
         changes.name = composeProductName({ productType: product.name, variant });
       }
     }
@@ -496,6 +512,12 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       }
     }
 
+    // Alkoholprocenten står også, når der ingen næringstabel er (spiritus).
+    await recordAlcoholPercent(
+      productId,
+      nutrition?.result.alcoholPercent ?? parseAlcoholPercent(`${nutritionText}\n${ingredientsText}`),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
+
     if (ingredients) {
       await prisma.aiProductAnalysis.update({ where: { id: ingredients.analysisId }, data: { productId } });
       if (ingredients.result.ingredientsText) {
@@ -556,6 +578,11 @@ export async function enrichQuickProduct(
     parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
     parts.label ? enrichLabel(input) : Promise.resolve(),
   ]);
+  // Alkoholisk drik uden næringstabel: energien skønnes ud fra % vol og
+  // varetypen, i stedet for at stå med 0 kcal (docs/DECISIONS.md 2026-10-15).
+  if (!input.existingProduct && (await estimateAlcoholNutrition(input.productId))) {
+    await refreshRegistrationSnapshots(input.productId, input).catch(() => {});
+  }
   // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
   // skriftens sprog, når forsiden har fx kinesiske tegn. Teksten røres ikke.
   await refreshProductLanguage(
