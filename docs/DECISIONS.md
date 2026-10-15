@@ -1,3 +1,18 @@
+## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning mens man sigter, synlig behandling
+
+Brugerens krav (efter PR #409, skærmbillede af "3. Scan energi"): "Jeg bad dig anvende en shutter knap i stedet. Men nu har jeg bare en shutterknap inden scanningsmetoden." Og: "Billedet skal selvfølgelig tages med det samme når man trykker. Men jeg havde oprindeligt udtrykt ønske om at kameraet kunne begynde at opsnappe tekst, logoer, tekst på forsiden (ocr) osv allerede inden der blev trykket på knappen. Desuden står der ikke nogen steder at billedet behandles?"
+
+Årsag: efter #409 startede udløseren den gamle analyse. Energi/indhold blev først læst lokalt (1–3 s), og først derefter blev fotoet til serveren taget. AI'en fik altså et billede fra sekunder efter trykket. "Analyserer billedet…" (`PhotoWorkingOverlay`) stod kun som skjult skærmlæsertekst.
+
+- **Fotoet tages i trykøjeblikket** (`capturePhoto` → `takeStill` straks), og trinnet er klaret med det samme ("trinnet er klaret"-visningen står fra trykket).
+- **Forlæsning** (`preReadFrame` via `useLiveFrames`, et billede ad gangen med 0,6 s pause): forsiden læses med lokal OCR, og teksten sendes til `/api/products/recognize-text` med `preRead: true` (dublet + kendt mærke fra Brand-tabellen, `matchBrandInTexts`, brandlisten caches 5 min; serveren logger kun fund). Energi/indhold læses med `readLabelPhoto`, og aflæsningerne lægges sammen (`mergeLabelAttempts`). Fundene vises i pillen over udløseren. Trinnet klares aldrig af sig selv.
+- **Udløseren bruger forlæsningen**, når den er under 5 s gammel og fandt feltet. Ellers læses udløserens eget videobillede, mens visningen står (højst 2,5 s, log `label_late`). Et sent svar gemmes blot til oprettelsen og springer ikke trin 4 over. Fandt forlæsningen en eksisterende vare, går udløseren direkte til den.
+- **Logoer** genkendes stadig på serveren efter oprettelsen (billedjobs). Forlæsningen finder mærket ud fra teksten. Billedgenkendelse af logoer i videoen ville kræve et AI-kald pr. billede og er ikke bygget.
+- **Synlig behandling:** Forsidens udsnit (varen i rammens midte, `detectObjects`) og sene aflæsninger kører i baggrunden. Trinnets knap viser en load-cirkel, og "Behandler billeder: Forside …" står under kameraet. Oprettelsen venter højst 10 s på dem (log `pending_photos`). `PhotoWorkingOverlay` viser nu sin tekst synligt (`showLabel`).
+- Den gamle afvisning af forsider uden vare (`frontRejected`) er fjernet: udløseren afviser aldrig brugerens eget foto.
+- Overskrifterne: "3. Tag billede af energi", "4. Tag billede af indholdsfortegnelsen". Ny hjælpetekst `cameraCreate.preReadHint`.
+- Native: Fotoet tages allerede ved trykket (`CaptureHooks.takePhoto`, ingen levende video at forlæse fra), og overlayet viser allerede sin tekst. Kun teksterne følger med.
+
 ## 2026-10-14: Stavekontrol-robot — natlig rapport, læring af admins afgørelser, én fælles stavemotor
 
 Brugerens krav: "en natlig robot som scanner stavefejl og leverer en fuld rapport over ændringer og observationer som ikke kunne ændres grundet usikkerhed, men hvor jeg i tabelvisningen kan rette. Vis original sammenhæng ordet indgik i i en kolonne med stavefejlen highlighted og i kolonnen ved siden af forslaget. Og så er flueben … dropdown 'accepter rettelser'. Men der skal også være et felt … hvor jeg kan skrive MIN oversættelse." Og: "ikke hardcoded kun på dette issue men tænker det ind i en større kontekst."

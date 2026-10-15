@@ -2,18 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { useRouter } from "next/navigation";
-import { IconBolt, IconBoltOff, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBolt, IconBoltOff, IconCheck, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
-import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
+import { HfLoader, PhotoWorkingOverlay } from "@/components/hf/HfLoader";
 import { cropToObject, detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import { LabelFillOverlay } from "@/components/camera/LabelFillOverlay";
 import { ScanHeading } from "@/components/camera/ScanHeading";
 import { StepDoneOverlay } from "@/components/camera/StepDoneOverlay";
 import { useCameraWatchdog } from "@/components/camera/useCameraWatchdog";
-import { labelFound, type LabelAttempt, type LabelNeed } from "@/lib/live-scan";
+import { countsAsAttempt, labelFound, mergeLabelAttempts, type LabelAttempt, type LabelNeed } from "@/lib/live-scan";
 import {
   barcodeGuideBoxFraction,
   barcodePoseFromPoints,
@@ -38,6 +38,8 @@ import {
   saveBarcodePhoto,
   type CaptureData,
   type CaptureStep,
+  type FrontRead,
+  type LabelRead,
 } from "@/lib/product-capture";
 import { useFrameQuality } from "./useFrameQuality";
 import { useOnlineStatus } from "@/lib/use-online-status";
@@ -50,7 +52,7 @@ import {
   setTorch,
   type CameraControls,
 } from "@/lib/camera-controls";
-import type { LiveFrame } from "./useLiveFrames";
+import { useLiveFrames, type LiveFrame } from "./useLiveFrames";
 import { cameraVideoConstraints, captureStill, captureVideoFrame, stillPhotoSupported, type Still, type StillCrop } from "@/lib/camera-still";
 import { newScanFlowId, scanFlowHeaders, scanLog, scanLogPhoto } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -60,10 +62,14 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // Energi, Indhold — og kameraet starter altid på stregkoden, som læses
 // levende af videoen som hidtil. En kendt stregkode går direkte til varen. En
 // ukendt fører videre til forside → energi → indhold, hvor brugeren selv
-// trykker på udløseren nederst i kamerabilledet (ingen automatisk scanning,
+// trykker på udløseren nederst i kamerabilledet (ingen automatisk billede,
 // brugerens krav 2026-10-14: "Jeg har ikke tillid til den anden metode").
-// Forsidefotoet analyseres (varen i rammens midte, dublet-tjek); energi- og
-// indholdsfotoet læses én gang med lokal OCR — står indholdet på
+// Mens brugeren sigter, forlæser telefonen teksten i videoen (forsidens tekst
+// og mærke, næringstabel, ingrediensliste) og viser fundene i billedet
+// (2026-10-15). Udløseren tager fotoet i trykøjeblikket, og trinnet er klaret
+// med det samme: forlæsningen bruges, ellers læses udløserens billede, mens
+// "trinnet er klaret" står; varen i rammens midte vælges i baggrunden, og
+// trinnets knap viser "Behandles …", til det er gjort. Står indholdet på
 // energibilledet, klares begge trin. Indholds-trinnet har "Spring over" til
 // højre for udløseren (varer uden indholdsfortegnelse). Når et trin er
 // klaret, blinker billedet hvidt, trinnet streges over med et stort flueben
@@ -100,9 +106,22 @@ const GUIDE_INSET: Record<Exclude<CaptureStep, "barcode">, string> = { front: "4
 const GUIDE_DIM: Record<Exclude<CaptureStep, "barcode">, number> = { front: 0.2, nutrition: 0.65, ingredients: 0.65 };
 // Fejlede tekstlæsninger i træk på energi/indhold: hvert femte logges.
 const LABEL_LOG_EVERY = 5;
-// Billedet til den lokale OCR (udløserens videobillede): energi/indhold
-// beskæres til søgerens kvadrat, forsiden ikke (docs/DECISIONS.md 2026-09-17).
+// Billedet til den lokale OCR (forlæsningen og udløserens videobillede):
+// energi/indhold beskæres til søgerens kvadrat, forsiden ikke
+// (docs/DECISIONS.md 2026-09-17).
 const LIVE_FRAME_MAX_SIDE = 1600;
+// Forlæsningen (docs/DECISIONS.md 2026-10-15): et billede læses, når videoen
+// har været skarp og stille i to målinger, og der holdes så lang en pause
+// mellem to aflæsninger, så video og udløser ikke hakker.
+const PRE_READ_MIN_PROGRESS = 0.5;
+const PRE_READ_GAP_MS = 600;
+// Så længe efter sidste fund bruges forlæsningen af udløseren.
+const PRE_READ_FRESH_MS = 5000;
+// Efter udløseren ventes højst så længe på aflæsningen (mens "trinnet er
+// klaret" står); svar, der kommer senere, gemmes blot til oprettelsen.
+const SHUTTER_ANALYSIS_WAIT_MS = 2500;
+// Oprettelsen venter højst så længe på billeder, der stadig behandles.
+const PENDING_PHOTOS_WAIT_MS = 10000;
 // Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
 const BARCODE_PHOTO_MAX_SIDE = 1920;
 
@@ -142,6 +161,22 @@ function labelFlash(frame: Frame, regions: LabelRegions, need?: LabelNeed): Flas
   const boxes = regionBoxes(regions, need);
   return boxes.length ? { kind: "label", width: frame.width, height: frame.height, boxes } : { kind: "object" };
 }
+
+// Forlæsningen pr. trin: det bedste fund indtil nu og hvornår der sidst blev
+// læst tekst. Visningen er det, kamerabilledet skriver.
+type FrontPreRead = { at: number; read: FrontRead; reads: number };
+type LabelPreRead = { at: number; attempt: LabelAttempt<LiveFrame> | null; reads: number };
+type PreReadView = {
+  reading: boolean;
+  reads: number;
+  textFound: boolean;
+  brand: string | null;
+  duplicate: string | null;
+  nutrition: boolean;
+  ingredients: boolean;
+};
+const EMPTY_PRE_READ: PreReadView = { reading: false, reads: 0, textFound: false, brand: null, duplicate: null, nutrition: false, ingredients: false };
+const EMPTY_LABEL_READ: LabelRead = { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null };
 
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -218,15 +253,22 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
 
-  // Ét billede ad gangen er under analyse (busy); runId stiger ved hvert
-  // trinskift, så svar fra et forladt trin smides væk.
-  const busyRef = useRef(false);
+  // runId stiger ved hvert trinskift, så forlæsninger fra et forladt trin
+  // smides væk. Én forlæsning ad gangen (preReadBusy).
   const runIdRef = useRef(0);
-  const labelStartedAtRef = useRef(0);
+  const preReadBusyRef = useRef(false);
+  const preReadNextAtRef = useRef(0);
+  const frontPreReadRef = useRef<FrontPreRead | null>(null);
+  const labelPreReadRef = useRef<LabelPreRead | null>(null);
+  const [preRead, setPreRead] = useState<PreReadView>(EMPTY_PRE_READ);
   // Fejlede tekstlæsninger i træk på energi/indhold.
   const labelFailuresRef = useRef(0);
-  // Forsidebilledet blev afvist (ingen tekst og ingen vare — fx tøj/bord).
-  const [frontRejected, setFrontRejected] = useState(false);
+  // Udløserens tryk pr. trin: svar fra et billede, der er taget om, smides væk.
+  const shotRef = useRef<Partial<Record<CaptureStep, number>>>({});
+  // Trin, hvis billede stadig behandles efter udløseren ("Behandles …"), og
+  // arbejdet, oprettelsen venter på.
+  const [processing, setProcessing] = useState<Partial<Record<CaptureStep, boolean>>>({});
+  const pendingPhotosRef = useRef<Promise<unknown>[]>([]);
 
   const scanning = step === "barcode" && !done.barcode;
   const [cameraControls, setCameraControls] = useState<CameraControls>(NO_CAMERA_CONTROLS);
@@ -396,10 +438,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // fra det gamle trin, ignoreres.
   function resetLiveScan() {
     runIdRef.current += 1;
-    busyRef.current = false;
-    labelStartedAtRef.current = 0;
+    preReadBusyRef.current = false;
+    preReadNextAtRef.current = 0;
+    frontPreReadRef.current = null;
+    labelPreReadRef.current = null;
     labelFailuresRef.current = 0;
-    setFrontRejected(false);
+    setPreRead(EMPTY_PRE_READ);
   }
 
   useEffect(() => () => resetLiveScan(), []);
@@ -420,11 +464,29 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     else await createProduct();
   }
 
+  // Billeder, der stadig behandles (forsidens udsnit, sene aflæsninger),
+  // kommer med i oprettelsen; der ventes højst PENDING_PHOTOS_WAIT_MS.
+  async function awaitPendingPhotos() {
+    const pending = pendingPhotosRef.current;
+    if (!pending.length) return;
+    const startedAt = Date.now();
+    const finished = await Promise.race([Promise.all(pending).then(() => true), wait(PENDING_PHOTOS_WAIT_MS).then(() => false)]);
+    pendingPhotosRef.current = [];
+    scanLog(flowId, "pending_photos", {
+      level: finished ? "info" : "warn",
+      message: finished ? "Billederne var behandlet før oprettelsen" : `Billederne var ikke behandlet efter ${PENDING_PHOTOS_WAIT_MS / 1000} s — oprettes alligevel`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - startedAt,
+      data: { pending: pending.length },
+    });
+  }
+
   async function submitRescan() {
     if (!rescan) return;
     setWorking(true);
     setSubmitting(true);
     setCreateFailed(false);
+    await awaitPendingPhotos();
     const startedAt = Date.now();
     try {
       await submitProductRescan(
@@ -497,6 +559,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     setWorking(true);
     setSubmitting(true);
     setCreateFailed(false);
+    await awaitPendingPhotos();
+    if (leavingRef.current) return;
     const startedAt = Date.now();
     const barcode = dataRef.current.barcode;
     try {
@@ -723,6 +787,20 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     }
   }, [frameIssue, flowId]);
 
+  // Forlæsningen kører på fototrinnene, mens kameraet er fremme og intet
+  // trin er ved at blive klaret (docs/DECISIONS.md 2026-10-15).
+  const preReadFrameRef = useRef<(frame: LiveFrame) => void>(() => {});
+  useEffect(() => {
+    preReadFrameRef.current = (frame) => void preReadFrame(frame);
+  });
+  const canPreRead = useCallback(
+    () => !preReadBusyRef.current && Date.now() >= preReadNextAtRef.current && !flashRef.current && !leavingRef.current,
+    [],
+  );
+  const onPreReadFrame = useCallback((frame: LiveFrame) => preReadFrameRef.current(frame), []);
+  const preReading = step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone && !submitting && !createFailed;
+  useLiveFrames(videoRef, preReading, PRE_READ_MIN_PROGRESS, liveCrop(step), LIVE_FRAME_MAX_SIDE, canPreRead, onPreReadFrame);
+
   // Stregkoden holdes ca. 20 cm fra kameraet. Autofokus er standard; er
   // billedet stadig uskarpt, skiftes der mellem fast fokus på 20 cm og
   // autofokus, til koden læses. Andre trin bruger altid autofokus.
@@ -763,6 +841,97 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     });
   }
 
+  // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre
+  // videobilleder); fejler det, bruges udløserens eget videobillede. Kaldes i
+  // samme øjeblik, som udløseren trykkes (brugerens krav 2026-10-15).
+  async function takeStill(step: CaptureStep, fallback: LiveFrame): Promise<Still> {
+    const startedAt = Date.now();
+    const still = (await captureStill(videoRef.current, liveCrop(step))) ?? fallback;
+    scanLog(flowId, "photo_captured", {
+      message: `Foto til trinnet "${step}": ${still === fallback ? "udløserens videobillede" : still.source === "photo" ? "stillbillede" : "videobillede"} ${still.width}×${still.height}, skarphed ${still.sharpness}`,
+      barcode: dataRef.current.barcode,
+      durationMs: Date.now() - startedAt,
+      data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness, stillPhoto: stillPhotoSupported() },
+    });
+    return still;
+  }
+
+  // Forlæsningen (brugerens krav 2026-10-15): mens brugeren sigter, læses et
+  // videobillede ad gangen lokalt — forsidens tekst (dublet + kendt mærke) og
+  // energi/indholds næringstabel og ingrediensliste. Fundene vises i
+  // kamerabilledet og bruges af udløseren; trinnet klares aldrig af sig selv.
+  async function preReadFrame(frame: LiveFrame) {
+    const current = stepRef.current;
+    if (current === "barcode" || preReadBusyRef.current) return;
+    preReadBusyRef.current = true;
+    const runId = runIdRef.current;
+    setPreRead((view) => (view.reading ? view : { ...view, reading: true }));
+    try {
+      if (current === "front") {
+        const read = await readFrontPhoto(frame.url, ocrLanguages(), flowId, { preRead: true });
+        if (runId !== runIdRef.current) return;
+        const previous = frontPreReadRef.current;
+        // Et fund (dublet, mærke) holdes fast; en senere, uskarpere aflæsning sletter det ikke.
+        const merged: FrontRead = previous
+          ? {
+              ...read,
+              textLength: Math.max(read.textLength, previous.read.textLength),
+              duplicateId: read.duplicateId ?? previous.read.duplicateId,
+              duplicateName: read.duplicateId ? read.duplicateName : previous.read.duplicateName,
+              brand: read.brand ?? previous.read.brand,
+            }
+          : read;
+        const reads = (previous?.reads ?? 0) + 1;
+        const at = read.textLength ? Date.now() : (previous?.at ?? 0);
+        frontPreReadRef.current = { at, read: merged, reads };
+        setPreRead({
+          ...EMPTY_PRE_READ,
+          reads,
+          textFound: merged.textLength > 0,
+          brand: merged.brand,
+          duplicate: merged.duplicateId ? (merged.duplicateName ?? "") : null,
+        });
+        return;
+      }
+      const need: LabelNeed = current;
+      const read = await readLabelPhoto(frame.url, ocrLanguages());
+      if (runId !== runIdRef.current) return;
+      if (read.ocrFailed) {
+        labelFailuresRef.current += 1;
+        if (labelFailuresRef.current === 1 || labelFailuresRef.current % LABEL_LOG_EVERY === 0) {
+          scanLog(flowId, "label_ocr_error", {
+            level: "error",
+            message: `${need === "nutrition" ? "Energi" : "Indhold"}: forlæsningen fejlede (${labelFailuresRef.current} gang(e)) — AI læser billedet`,
+            barcode: dataRef.current.barcode,
+            data: { failures: labelFailuresRef.current },
+          });
+        }
+      }
+      const previous = labelPreReadRef.current;
+      const reads = (previous?.reads ?? 0) + 1;
+      const attempt = countsAsAttempt(read)
+        ? mergeLabelAttempts(previous?.attempt ?? null, { frame, read }, need)
+        : (previous?.attempt ?? null);
+      labelPreReadRef.current = {
+        at: countsAsAttempt(read) ? Date.now() : (previous?.at ?? 0),
+        attempt,
+        reads,
+      };
+      setPreRead({
+        ...EMPTY_PRE_READ,
+        reads,
+        textFound: Boolean(attempt?.read.text),
+        nutrition: attempt ? labelFound(attempt.read, "nutrition") : false,
+        ingredients: attempt ? labelFound(attempt.read, "ingredients") : false,
+      });
+    } finally {
+      if (runId === runIdRef.current) {
+        preReadBusyRef.current = false;
+        preReadNextAtRef.current = Date.now() + PRE_READ_GAP_MS;
+      }
+    }
+  }
+
   // Ved flere varer i billedet vælges den i rammens midte automatisk
   // (src/lib/object-picker.ts, brugerens krav 2026-10-14), og billedet
   // beskæres til den. Ét eller ingen objekt — eller intet i midten: hele
@@ -788,225 +957,247 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     return { chosen: await cropToObject(frame, picked), objects };
   }
 
-  // Fotoet til serveren: kameraets stillbillede (ellers det skarpeste af tre
-  // videobilleder); fejler det, bruges den levende scannings eget billede.
-  async function takeStill(step: CaptureStep, fallback: LiveFrame): Promise<Still> {
-    const startedAt = Date.now();
-    const still = (await captureStill(videoRef.current, liveCrop(step))) ?? fallback;
-    scanLog(flowId, "photo_captured", {
-      message: `Foto til trinnet "${step}": ${still === fallback ? "scanningens videobillede" : still.source === "photo" ? "stillbillede" : "videobillede"} ${still.width}×${still.height}, skarphed ${still.sharpness}`,
-      barcode: dataRef.current.barcode,
-      durationMs: Date.now() - startedAt,
-      data: { step, source: still === fallback ? "live" : still.source, width: still.width, height: still.height, sharpness: still.sharpness, stillPhoto: stillPhotoSupported() },
+  // Et billede, der stadig behandles efter udløseren: trinnets knap viser
+  // "Behandles …", og oprettelsen venter på det (højst PENDING_PHOTOS_WAIT_MS).
+  function trackProcessing(step: CaptureStep, shot: number, work: Promise<unknown>) {
+    setProcessing((current) => ({ ...current, [step]: true }));
+    const settled = work.catch(() => {}).finally(() => {
+      if (shotRef.current[step] === shot) setProcessing((current) => ({ ...current, [step]: false }));
     });
-    return still;
+    pendingPhotosRef.current.push(settled);
   }
 
-  // Forsiden: når serien er skarp, tages stillbilledet, som analyseres —
-  // objekter, dublet-tjek — og varens kontur fyldes hvid, når trinnet er klaret.
-  // Et billede uden vare — ingen læsbar tekst OG ingen vare fundet af
-  // objektgenkendelsen (et bukseben, bordet, gulvet) — afvises, og
-  // scanningen fortsætter (bruger 2026-10-14: "tog automatisk et billede af
-  // bukserne"). Et tryk på billedet (`forced`) bruger det alligevel.
-  async function processFront(frame: LiveFrame, forced = false) {
-    if (busyRef.current || leavingRef.current) return;
-    busyRef.current = true;
-    const runId = runIdRef.current;
-    setWorking(true);
-    setFrontRejected(false);
-    const languages = ocrLanguages();
+  // "Trinnet er klaret" står fra trykket; flowet går først videre, når
+  // visningen har stået, og fotoet er i hus.
+  async function finishShutterStep(pressedAt: number, justDone: CaptureStep[], photo: Promise<unknown>) {
+    const reduced = reducedMotion();
+    const holdMs = Math.max(reduced ? FLASH_REDUCED_MS : FLASH_MS, reduced ? STEP_DONE_REDUCED_MS : STEP_DONE_MS);
+    await Promise.all([wait(Math.max(0, pressedAt + holdMs - Date.now())), photo.catch(() => {})]);
+    if (leavingRef.current) return;
+    setFlash(null);
+    setStepDone(null);
+    setLastDone(justDone[justDone.length - 1] ?? null);
+    flashRef.current = false;
+    goToNextStep({ ...doneRef.current });
+  }
+
+  // Forsiden efter udløseren: trinnet er klaret med det samme. Fandt
+  // forlæsningen en eksisterende vare, går flowet til den. Ellers vælges
+  // varen i rammens midte i baggrunden, og uden forlæsning læses teksten af
+  // udløserens billede (dublet-tjek, højst SHUTTER_ANALYSIS_WAIT_MS).
+  async function shootFront(live: LiveFrame, still: Promise<Still>, pressedAt: number, shot: number) {
     const data = dataRef.current;
-    const startedAt = Date.now();
-    const still = await takeStill("front", frame);
-    if (leavingRef.current || runId !== runIdRef.current) return;
-    const { chosen, objects } = await chooseObject(still.url);
-    if (leavingRef.current || runId !== runIdRef.current) return;
-    const front = await readFrontPhoto(chosen, languages, flowId);
-    if (leavingRef.current || runId !== runIdRef.current) return;
-    if (!forced && objects !== null && objects.length === 0 && !front.textLength && !front.ocrFailed) {
-      scanLog(flowId, "front_rejected", {
-        level: "warn",
-        message: "Forsiden afvist: ingen læsbar tekst og ingen vare i billedet (tøj, bord, gulv …) — scanner videre",
+    const languages = ocrLanguages();
+    const pre = frontPreReadRef.current;
+    const fresh = pre && pre.read.textLength > 0 && pressedAt - pre.at <= PRE_READ_FRESH_MS ? pre.read : null;
+    // Ved en genscanning er "dubletten" netop varen selv.
+    if (fresh?.duplicateId && !rescan) {
+      scanLog(flowId, "flow_done", {
+        message: `Forlæsningen fandt en eksisterende vare${fresh.duplicateName ? ` ("${fresh.duplicateName}")` : ""} — går til den`,
         barcode: data.barcode,
-        durationMs: Date.now() - startedAt,
-        data: { sharpness: still.sharpness, languages },
+        productId: fresh.duplicateId,
+        durationMs: Date.now() - flowStartedAtRef.current,
+        data: { outcome: "duplicate", source: "preRead" },
       });
-      busyRef.current = false;
-      setFrontRejected(true);
-      setWorking(false);
+      leaveTo(`/add/${fresh.duplicateId}${returnSuffix}`);
       return;
     }
-    data.frontPhoto = chosen;
-    scanLogPhoto(flowId, "front", chosen, data.barcode);
-    scanLog(flowId, "front_photo", {
-      level: front.lookupFailed || front.ocrFailed ? "warn" : "info",
-      message: front.textLength
-        ? `Forside læst lokalt (${front.textLength} tegn, sikkerhed ${Math.round(front.confidence)} %)${front.duplicateId ? " — dublet fundet" : ""}`
-        : front.ocrFailed
-          ? "Forside: den lokale tekstlæsning fejlede (AI læser den efter oprettelse)"
-          : `Forside: ingen læsbar tekst lokalt${forced ? " — taget med tryk" : ""} (AI læser den efter oprettelse)`,
-      barcode: data.barcode,
-      productId: front.duplicateId,
-      durationMs: Date.now() - startedAt,
-      data: { ...front, languages, sharpness: still.sharpness, forced, objects: objects?.length ?? null },
+    setFlash({ kind: "object" });
+    setStepDone(["front"]);
+    markDone("front");
+    const current = () => shotRef.current.front === shot && !leavingRef.current;
+    const photo = still.then(async (taken) => {
+      if (!current()) return;
+      data.frontPhoto = taken.url;
+      const { chosen, objects } = await chooseObject(taken.url);
+      if (!current()) return;
+      data.frontPhoto = chosen;
+      scanLogPhoto(flowId, "front", chosen, data.barcode);
+      return objects;
     });
-    // Ved en genscanning er "dubletten" netop varen selv.
-    if (front.duplicateId && !rescan) {
+    const textRead = fresh ? Promise.resolve(fresh) : readFrontPhoto(live.url, languages, flowId);
+    const logged = textRead.then((front) => {
+      scanLog(flowId, "front_photo", {
+        level: front.lookupFailed || front.ocrFailed ? "warn" : "info",
+        message: front.textLength
+          ? `Forside læst ${fresh ? "af forlæsningen" : "af udløserens billede"} (${front.textLength} tegn, sikkerhed ${Math.round(front.confidence)} %)${front.brand ? `, mærke "${front.brand}"` : ""}${front.duplicateId ? " — dublet fundet" : ""}`
+          : front.ocrFailed
+            ? "Forside: den lokale tekstlæsning fejlede (AI læser den efter oprettelse)"
+            : "Forside: ingen læsbar tekst lokalt (AI læser den efter oprettelse)",
+        barcode: data.barcode,
+        productId: front.duplicateId,
+        durationMs: Date.now() - pressedAt,
+        data: { ...front, languages, source: fresh ? "preRead" : "shutter", preReads: pre?.reads ?? 0 },
+      });
+      return front;
+    });
+    trackProcessing("front", shot, Promise.all([photo, logged]));
+    const early = await Promise.race([logged, wait(SHUTTER_ANALYSIS_WAIT_MS).then(() => null)]);
+    if (leavingRef.current || !current()) return;
+    if (early?.duplicateId && !rescan) {
       scanLog(flowId, "flow_done", {
         message: "Forsideteksten matcher en eksisterende vare — går til den",
         barcode: data.barcode,
-        productId: front.duplicateId,
+        productId: early.duplicateId,
         durationMs: Date.now() - flowStartedAtRef.current,
-        data: { outcome: "duplicate" },
+        data: { outcome: "duplicate", source: "shutter" },
       });
-      leaveTo(`/add/${front.duplicateId}${returnSuffix}`);
+      leaveTo(`/add/${early.duplicateId}${returnSuffix}`);
       return;
     }
-    setWorking(false);
-    await flashThenContinue({ kind: "object" }, markDone("front"), ["front"]);
+    await finishShutterStep(pressedAt, ["front"], still);
   }
 
-  // Energi/indhold: udløserens billede læses én gang lokalt (så telefonens
-  // aflæsning kan bruges, når den er sikker, og så indhold på energibilledet
-  // klarer begge trin); derefter er trinnet klaret — AI læser resten.
-  async function processLabelFrame(frame: LiveFrame) {
-    const need: LabelNeed = stepRef.current === "ingredients" ? "ingredients" : "nutrition";
-    if (busyRef.current) return;
-    busyRef.current = true;
-    setWorking(true);
-    const runId = runIdRef.current;
-    labelStartedAtRef.current = Date.now();
-    const startedAt = Date.now();
-    const read = await readLabelPhoto(frame.url, ocrLanguages());
-    if (leavingRef.current || runId !== runIdRef.current) return;
-    busyRef.current = false;
-    const best: LabelAttempt<LiveFrame> = { frame, read };
-    scanLog(flowId, "label_attempt", {
-      message: `${need === "nutrition" ? "Energi" : "Indhold"}: billedet læst (${read.text.length} tegn, sikkerhed ${Math.round(read.confidence)} %)`,
-      barcode: dataRef.current.barcode,
-      durationMs: Date.now() - startedAt,
-      data: {
-        textLength: read.text.length,
-        confidence: read.confidence,
-        sharpness: Math.round(frame.sharpness),
-        nutrition: Boolean(read.nutrition),
-        ingredients: Boolean(read.ingredientsText),
-        nutritionRegion: Boolean(read.regions.nutrition),
-        ingredientsRegion: Boolean(read.regions.ingredients),
-      },
-    });
-    const stepName = need === "nutrition" ? "Energi" : "Indhold";
-    if (read.ocrFailed) {
-      labelFailuresRef.current += 1;
-      if (labelFailuresRef.current === 1 || labelFailuresRef.current % LABEL_LOG_EVERY === 0) {
-        scanLog(flowId, "label_ocr_error", {
-          level: "error",
-          message: `${stepName}: den lokale tekstlæsning fejlede (${labelFailuresRef.current} gang(e)) — AI læser billedet`,
-          barcode: dataRef.current.barcode,
-          data: { failures: labelFailuresRef.current },
-        });
-      }
-    }
-    finishLabel(need, best, 1);
-  }
-
-  // Trinnet er klaret: telefonens egen aflæsning gemmes nu, og stillbilledet
-  // til serveren tages, mens udfyldningen vises (det erstatter videobilledet).
-  function finishLabel(need: LabelNeed, best: LabelAttempt<LiveFrame>, attempts: number) {
-    const { frame, read } = best;
+  // Energi/indholds aflæsning gemmes til oprettelsen (serveren bruger
+  // telefonens aflæsning, når den er sikker; ellers læser AI fotoet).
+  // `canSkip`: står ingredienslisten på energibilledet, klares indholds-
+  // trinnet også — kun når aflæsningen var klar, mens trinnet stod.
+  function applyLabel(need: LabelNeed, attempt: LabelAttempt<LiveFrame> | null, source: string, pressedAt: number, canSkip: boolean) {
     const data = dataRef.current;
+    const read = attempt?.read ?? EMPTY_LABEL_READ;
     const languages = ocrLanguages();
-    const durationMs = Date.now() - labelStartedAtRef.current;
-    const stillReady = takeStill(need, frame).then((still) => {
-      scanLogPhoto(flowId, need, still.url, data.barcode);
-      if (need === "nutrition") {
-        data.nutritionPhoto = still.url;
-        if (data.ingredientsOnNutritionPhoto) data.ingredientsPhoto = still.url;
-      } else {
-        data.ingredientsPhoto = still.url;
-      }
-    });
     if (need === "nutrition") {
-      // "Ingredienser" på billedet udløser altid indholds-trinnet — kan listen
-      // ikke læses lokalt, læser OpenAI den fra samme billede.
-      const ingredientsFound = labelFound(read, "ingredients");
+      const ingredientsFound = canSkip && labelFound(read, "ingredients");
       scanLog(flowId, "nutrition_photo", {
         message: read.nutrition
-          ? `Energi læst lokalt efter ${attempts} billede(r) (sikkerhed ${Math.round(read.confidence)} %)${ingredientsFound ? " + ingrediensliste på samme billede" : ""}`
-          : `Energi: næringstabellen kunne ikke læses lokalt på ${attempts} billede(r) (${read.text.length} tegn) — AI læser den${ingredientsFound ? " (+ ingrediensliste på samme billede)" : ""}`,
+          ? `Energi læst lokalt (${source}, sikkerhed ${Math.round(read.confidence)} %)${ingredientsFound ? " + ingrediensliste på samme billede" : ""}`
+          : `Energi: næringstabellen kunne ikke læses lokalt (${source}, ${read.text.length} tegn) — AI læser den${ingredientsFound ? " (+ ingrediensliste på samme billede)" : ""}`,
         barcode: data.barcode,
-        durationMs,
+        durationMs: Date.now() - pressedAt,
         data: {
-          attempts,
+          source,
           textLength: read.text.length,
           confidence: read.confidence,
           nutrition: read.nutrition,
           ingredientsOnSamePhoto: ingredientsFound,
           localIngredients: Boolean(read.ingredientsText),
-          nutritionRegion: Boolean(read.regions.nutrition),
-          ingredientsRegion: Boolean(read.regions.ingredients),
           languages,
         },
       });
-      data.nutritionPhoto = frame.url;
       data.nutritionOcrText = read.text;
       data.nutritionOcrConfidence = read.confidence;
       data.localNutrition = read.nutrition;
-      data.ingredientsOnNutritionPhoto = ingredientsFound;
-      if (ingredientsFound) {
-        // Indholdet står ved siden af næringstabellen: begge får flueben.
-        data.localIngredientsText = read.ingredientsText ?? undefined;
-        void flashThenContinue(
-          labelFlash(frame, read.regions),
-          markDone("nutrition", "ingredients"),
-          ["nutrition", "ingredients"],
-          stillReady,
-        );
-      } else {
-        void flashThenContinue(labelFlash(frame, read.regions, "nutrition"), markDone("nutrition"), ["nutrition"], stillReady);
+      if (canSkip) {
+        data.ingredientsOnNutritionPhoto = ingredientsFound;
+        if (ingredientsFound) {
+          data.localIngredientsText = read.ingredientsText ?? undefined;
+          if (data.nutritionPhoto) data.ingredientsPhoto = data.nutritionPhoto;
+        }
       }
-      return;
+      return ingredientsFound;
     }
-
     const ingredientsText = read.ingredientsText ?? "";
     scanLog(flowId, "ingredients_photo", {
       message: ingredientsText
-        ? `Ingredienser læst lokalt efter ${attempts} billede(r) (${ingredientsText.length} tegn, sikkerhed ${Math.round(read.confidence)} %)`
-        : `Ingredienser: ingen ingrediensliste fundet lokalt på ${attempts} billede(r) (${read.text.length} tegn) — AI læser den`,
+        ? `Ingredienser læst lokalt (${source}, ${ingredientsText.length} tegn, sikkerhed ${Math.round(read.confidence)} %)`
+        : `Ingredienser: ingen ingrediensliste fundet lokalt (${source}, ${read.text.length} tegn) — AI læser den`,
       barcode: data.barcode,
-      durationMs,
-      data: {
-        attempts,
-        textLength: read.text.length,
-        confidence: read.confidence,
-        ingredientsLength: ingredientsText.length,
-        ingredientsRegion: Boolean(read.regions.ingredients),
-        languages,
-      },
+      durationMs: Date.now() - pressedAt,
+      data: { source, textLength: read.text.length, confidence: read.confidence, ingredientsLength: ingredientsText.length, languages },
     });
-    data.ingredientsPhoto = frame.url;
     data.ingredientsOcrText = read.text;
     data.ingredientsOcrConfidence = read.confidence;
     data.ingredientsOnNutritionPhoto = false;
-    if (ingredientsText) data.localIngredientsText = ingredientsText;
-    void flashThenContinue(labelFlash(frame, read.regions, "ingredients"), markDone("ingredients"), ["ingredients"], stillReady);
+    data.localIngredientsText = ingredientsText || undefined;
+    return false;
   }
 
-  // Udløseren nederst i kamerabilledet (bruger 2026-10-14): forsiden tages
-  // og analyseres nu; energi/indhold tages og læses én gang.
+  // Energi/indhold efter udløseren: trinnet er klaret med det samme.
+  // Forlæsningen bruges, hvis den fandt feltet; ellers læses udløserens
+  // billede (højst SHUTTER_ANALYSIS_WAIT_MS, mens "trinnet er klaret" står —
+  // kommer svaret senere, gemmes det blot til oprettelsen).
+  async function shootLabel(need: LabelNeed, live: LiveFrame, still: Promise<Still>, pressedAt: number, shot: number) {
+    const data = dataRef.current;
+    const pre = labelPreReadRef.current;
+    const fresh = pre?.attempt && pressedAt - pre.at <= PRE_READ_FRESH_MS ? pre.attempt : null;
+    const ready = fresh && labelFound(fresh.read, need) ? fresh : null;
+    const current = () => shotRef.current[need] === shot && !leavingRef.current;
+    const analysis: Promise<{ attempt: LabelAttempt<LiveFrame>; source: string }> = ready
+      ? Promise.resolve({ attempt: ready, source: "forlæsning" })
+      : readLabelPhoto(live.url, ocrLanguages()).then((read) => {
+          const own = { frame: live, read };
+          return { attempt: fresh ? mergeLabelAttempts(fresh, own, need) : own, source: "udløserens billede" };
+        });
+    const photo = still.then((taken) => {
+      if (!current()) return;
+      scanLogPhoto(flowId, need, taken.url, data.barcode);
+      if (need === "nutrition") {
+        data.nutritionPhoto = taken.url;
+        if (data.ingredientsOnNutritionPhoto) data.ingredientsPhoto = taken.url;
+      } else {
+        data.ingredientsPhoto = taken.url;
+      }
+    });
+    setFlash(ready ? labelFlash(ready.frame, ready.read.regions, need === "ingredients" ? "ingredients" : undefined) : null);
+    setStepDone([need]);
+    markDone(need);
+    // Aflæsningen gemmes én gang: med det samme, hvis den var klar, mens
+    // "trinnet er klaret" stod (så kan indholds-trinnet springes over), ellers
+    // når den kommer. Oprettelsen venter på den (trackProcessing).
+    let resolveApplied: () => void = () => {};
+    const applied = new Promise<void>((resolve) => {
+      resolveApplied = resolve;
+    });
+    trackProcessing(need, shot, Promise.all([photo, applied]));
+    const early = await Promise.race([analysis, wait(SHUTTER_ANALYSIS_WAIT_MS).then(() => null)]).catch(() => null);
+    if (!early) {
+      void analysis
+        .then((result) => {
+          if (current()) applyLabel(need, result.attempt, result.source, pressedAt, false);
+        })
+        .catch(() => {})
+        .finally(resolveApplied);
+    }
+    if (leavingRef.current || !current()) {
+      resolveApplied();
+      return;
+    }
+    const justDone: CaptureStep[] = [need];
+    if (early) {
+      const bothOnPhoto = applyLabel(need, early.attempt, early.source, pressedAt, need === "nutrition");
+      resolveApplied();
+      if (bothOnPhoto) {
+        // Indholdet står ved siden af næringstabellen: begge får flueben.
+        markDone("ingredients");
+        justDone.push("ingredients");
+        setStepDone([...justDone]);
+        setFlash(labelFlash(early.attempt.frame, early.attempt.read.regions));
+      } else if (!ready) {
+        setFlash(labelFlash(early.attempt.frame, early.attempt.read.regions, need === "ingredients" ? "ingredients" : undefined));
+      }
+    } else {
+      scanLog(flowId, "label_late", {
+        level: "warn",
+        message: `${need === "nutrition" ? "Energi" : "Indhold"}: aflæsningen var ikke klar efter ${SHUTTER_ANALYSIS_WAIT_MS / 1000} s — flowet går videre, AI læser fotoet`,
+        barcode: data.barcode,
+        data: { step: need },
+      });
+    }
+    await finishShutterStep(pressedAt, justDone, still);
+  }
+
+  // Udløseren nederst i kamerabilledet (bruger 2026-10-14): billedet tages i
+  // trykøjeblikket, og trinnet er klaret med det samme (2026-10-15).
   function capturePhoto() {
-    if (working || step === "barcode" || flash || stepDone || cameraStatus !== "active") return;
-    const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(step));
+    if (working || step === "barcode" || flash || stepDone || flashRef.current || cameraStatus !== "active") return;
+    const current = step;
+    const pressedAt = Date.now();
+    const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(current));
     if (!live) {
-      scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
+      scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${current}"`, barcode: dataRef.current.barcode });
       return;
     }
-    scanLog(flowId, "shutter", { message: `Udløseren trykket på trinnet "${step}"`, barcode: dataRef.current.barcode, data: { step, sharpness: Math.round(live.sharpness) } });
-    if (step === "front") {
-      void processFront(live, true);
-      return;
-    }
-    void processLabelFrame(live);
+    flashRef.current = true;
+    const shot = (shotRef.current[current] ?? 0) + 1;
+    shotRef.current[current] = shot;
+    const still = takeStill(current, live);
+    scanLog(flowId, "shutter", {
+      message: `Udløseren trykket på trinnet "${current}"`,
+      barcode: dataRef.current.barcode,
+      data: { step: current, sharpness: Math.round(live.sharpness), preRead },
+    });
+    if (current === "front") void shootFront(live, still, pressedAt, shot);
+    else void shootLabel(current, live, still, pressedAt, shot);
   }
 
   // "Spring over" nederst i kamerabilledet på indholds-trinnet (bruger
@@ -1027,6 +1218,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     data.ingredientsOcrConfidence = undefined;
     data.localIngredientsText = undefined;
     data.ingredientsOnNutritionPhoto = false;
+    // Et tidligere indholdsbillede, der stadig behandles, må ikke skrive bagefter.
+    shotRef.current.ingredients = (shotRef.current.ingredients ?? 0) + 1;
+    setProcessing((current) => ({ ...current, ingredients: false }));
     resetLiveScan();
     goToNextStep(markDone("ingredients"));
   }
@@ -1056,6 +1250,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     resetLiveScan();
     dataRef.current = {};
     doneRef.current = {};
+    shotRef.current = {};
+    pendingPhotosRef.current = [];
+    setProcessing({});
     setDone({});
     setLastDone(null);
     setCreateFailed(false);
@@ -1116,25 +1313,42 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           : cameraStatus === "error"
             ? t("camera.error")
             : null;
-  // Analyse-overlayet ligger over videoen, mens et foto analyseres og under
-  // oprettelsen — ikke mens "trinnet er klaret" eller udfyldningen vises.
-  const sweeping = !scanning && !flash && !stepDone && !submitting && cameraStatus === "active" && working;
   // Forsiden står bag oprettelsen i stedet for et sort, slukket kamera.
   const submitPhoto = submitting ? (dataRef.current.frontPhoto ?? null) : null;
   const submitText = t(rescan ? "cameraCreate.sendingPhotos" : "cameraCreate.creating");
-  // Beskeden nederst i kamerabilledet: afvist forside, ingen tekst, ellers lys/fokus.
-  const viewfinderNotice =
-    frontRejected && step === "front"
-      ? t("cameraCreate.frontNoProduct")
-      : frameIssue
-          ? frameIssue === "dark"
-            ? cameraControls.torch && !torchOn
-              ? t("camera.qualityDarkTorch")
-              : t("camera.qualityDark")
-            : scanning
-              ? t("camera.qualityBlurryBarcode")
-              : t("camera.qualityBlurry")
-          : null;
+  // Beskeden nederst i kamerabilledet: lys/fokus.
+  const viewfinderNotice = frameIssue
+    ? frameIssue === "dark"
+      ? cameraControls.torch && !torchOn
+        ? t("camera.qualityDarkTorch")
+        : t("camera.qualityDark")
+      : scanning
+        ? t("camera.qualityBlurryBarcode")
+        : t("camera.qualityBlurry")
+    : null;
+  // Forlæsningens fund (brugerens krav 2026-10-15: "kameraet kan begynde at
+  // opsnappe tekst … allerede inden der blev trykket på knappen").
+  const preReadFound: string[] =
+    step === "front"
+      ? preRead.duplicate !== null
+        ? [preRead.duplicate ? t("cameraCreate.preReadDuplicate", { name: preRead.duplicate }) : t("cameraCreate.preReadDuplicateUnnamed")]
+        : [
+            ...(preRead.brand ? [t("cameraCreate.preReadBrand", { brand: preRead.brand })] : []),
+            ...(preRead.textFound ? [t("cameraCreate.preReadText")] : []),
+          ]
+      : [
+          ...(preRead.nutrition ? [t("cameraCreate.preReadNutrition")] : []),
+          ...(preRead.ingredients ? [t("cameraCreate.preReadIngredients")] : []),
+        ];
+  const preReadNotice = !preReading
+    ? null
+    : preReadFound.length
+      ? preReadFound.join(" · ")
+      : preRead.reads >= 2 && !preRead.reading
+        ? t(step === "front" ? "cameraCreate.preReadNothing" : "cameraCreate.labelNoText")
+        : t("cameraCreate.preReading");
+  // Trin, hvis billede stadig behandles efter udløseren.
+  const processingSteps = visibleSteps.filter((item) => processing[item]);
   // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
   const stepNumber = (item: CaptureStep) => visibleSteps.indexOf(item) + 1;
   const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
@@ -1179,15 +1393,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           />
         )}
 
-        {sweeping && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
-
         {submitting && (
           <div className="absolute inset-0 bg-hf-black">
             {submitPhoto && (
               // eslint-disable-next-line @next/next/no-img-element -- lokalt data-URL-foto
               <img src={submitPhoto} alt="" className="absolute inset-0 h-full w-full object-cover" />
             )}
-            <PhotoWorkingOverlay label={submitText} />
+            <PhotoWorkingOverlay label={submitText} showLabel={false} />
             <div className="hf-camera-overlay" aria-hidden>
               <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{submitText}</p>
             </div>
@@ -1201,13 +1413,15 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           flowId={flowId}
         />
 
-        {viewfinderNotice && !cameraMessage && !stepDone && !submitting && (
+        {(viewfinderNotice || preReadNotice) && !cameraMessage && !stepDone && !submitting && (
           <div
             className={`pointer-events-none absolute inset-x-3 flex justify-center ${showShutter ? "bottom-24" : "bottom-3"}`}
             aria-live="polite"
           >
-            <p className="hf-type-small hf-type-strong bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
-              {viewfinderNotice}
+            <p className="hf-type-small hf-type-strong flex items-center gap-1.5 bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
+              {!viewfinderNotice && preReadFound.length > 0 && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-accent" aria-hidden />}
+              {!viewfinderNotice && !preReadFound.length && preRead.reading && <HfLoader size={14} className="text-hf-white" />}
+              {viewfinderNotice ?? preReadNotice}
             </p>
           </div>
         )}
@@ -1312,6 +1526,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
               {done[item] && (
                 <CaptureCheckOverlay label={t("cameraCreate.stepDone", { step: stepLabels[item] })} size={48} />
               )}
+              {processing[item] && (
+                <span className="absolute right-1.5 top-1.5" aria-hidden>
+                  <HfLoader size={16} className="text-hf-green" />
+                </span>
+              )}
             </button>
           );
         })}
@@ -1330,9 +1549,15 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         </div>
       ) : (
         <>
+          {processingSteps.length > 0 && (
+            <p className="hf-type-small hf-type-strong flex items-center justify-center gap-2 text-center" role="status">
+              <HfLoader size={16} />
+              {t("cameraCreate.processingPhotos", { steps: processingSteps.map((item) => stepLabels[item]).join(", ") })}
+            </p>
+          )}
           <p className="hf-type-caption text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
-            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.shutterHint")}</p>
+            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.preReadHint")}</p>
           )}
           {!rescan && Object.values(done).some(Boolean) && (
             <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.retakeHint")}</p>

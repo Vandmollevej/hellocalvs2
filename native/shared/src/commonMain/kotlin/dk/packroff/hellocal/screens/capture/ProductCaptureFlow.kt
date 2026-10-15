@@ -73,6 +73,14 @@ private val REGION_CODE = Regex("^[A-Z]{2}$")
  * check, line flies up) before the next step, the barcode and energy/contents
  * fields are small with the rest of the picture dark, and the front keeps the
  * big frame.
+ *
+ * 2026-10-15 (user): the web reads the text in the live video while the user
+ * aims (front text + known brand, nutrition table, ingredients list), shows
+ * the finds in the viewfinder, and the shutter takes the photo at the moment
+ * of the press. The native photo steps already take the photo on the press
+ * through CaptureHooks.takePhoto (no live video to pre-read from), and the
+ * headings follow the web texts ("3. Tag billede af energi"). The working
+ * overlay shows its label visibly, like the web's PhotoWorkingOverlay now does.
  */
 @Composable
 internal fun ProductCaptureFlow(returnSuffix: String) {

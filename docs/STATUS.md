@@ -1,3 +1,10 @@
+## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
+
+- Udløseren tager nu fotoet i trykøjeblikket, og trinnet er klaret med det samme. Før blev energi-/indholdsfotoet først taget efter 1–3 s lokal OCR.
+- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende og vises i pillen over udløseren. Udløseren bruger fundene.
+- Synlig behandling: load-cirkel på trinnets knap + "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver sin tekst synligt. Overskrifterne hedder "Tag billede af energi/indholdsfortegnelsen".
+- Web `ProductCaptureFlow.tsx`, `HfLoader.tsx`, `product-capture.ts`, `/api/products/recognize-text`. Native kun tekster + dokumentation (ingen levende video). Se DECISIONS/REGLER 2026-10-15.
+
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 
 - `public/certifications/oekologimaerket.png` var et beskåret udsnit (400×160), der blev 75 px bredt og skåret af foroven/forneden. Udskiftet med det komplette Ø-mærke (Open Food Facts-SVG, transparent, 421×400) — står nu ca. 32×30 px med bunden i cirklens bund. Native henter samme fil fra serveren. Regel i REGLER.md.
