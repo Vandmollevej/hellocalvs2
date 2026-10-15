@@ -316,10 +316,9 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - **Brugeren er ligeglad med mellemstatus (bruger 2026-10-10, global):** meld ikke automatiske hændelser (PR-abonnement, ventende CI, planlagte tjek, "tests kører stadig") til brugeren. Gør arbejdet færdigt i stilhed, og skriv kun, når der er et resultat, en blokering eller et spørgsmål (i spørgsmålsboksen). Afløser kravet om at melde status hvert 10. minut under "Aldrig hænge". Brugeren gider ikke høre om, hvordan det gøres — det skal bare komme til at virke: løs problemet helt (også følgefejl og deploy), og meld kort, at det virker.
 - **Tidspunkter altid i dansk tid** (Europe/Copenhagen, sommer-/vintertid) over for brugeren, aldrig UTC (bruger 2026-10-10).
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
-- Alle opgaver auto-arkiveres umiddelbart, så snart de melder klar til arkivering – i samme tur, uden at vente (bruger 2026-10-09, gentaget).
-- Færdig opgave: slut med "arkiver mig", og arkivér derefter selv sessionen (`archive_session`), når PR er flettet. Manglende test er aldrig en gyldig grund til ikke at arkivere (global regel, bruger 2026-10-09). Stop-hook `scripts/archive-reminder.mjs` minder om det (bruger 2026-10-09; AGENTS.md).
+- **Arkivér aldrig selv en session (bruger 2026-10-15, afløser auto-arkivering fra 2026-10-09):** kald aldrig `archive_session`, heller ikke på andre sessioner — brugeren arkiverer selv. Slut kun med "arkiver mig", når opgaven er helt løst (flettet og deployet), aldrig efter blot et svar på et spørgsmål eller mens noget er uløst.
 - Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
-- Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR og arkivér blot (bruger 2026-10-09; AGENTS.md).
+- Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
 
 ## Crawlere og billeder
