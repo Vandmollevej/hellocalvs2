@@ -15,6 +15,7 @@ import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 import { RecipeUnitToggle, type RecipeUnitMode } from "@/components/recipe-view/RecipeUnitToggle";
 import { gramsAsMeasureText } from "@/lib/kitchen-conversions";
+import { imageThumb } from "@/lib/image-thumb";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -414,7 +415,7 @@ function RecipeDetailContent() {
                     <div className="h-9 w-9 flex-shrink-0">
                       {ingredient.imageUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={ingredient.imageUrl} alt="" className="h-full w-full object-contain" />
+                        <img src={imageThumb(ingredient.imageUrl, 128)} alt="" className="h-full w-full object-contain" />
                       )}
                     </div>
                     <div className="flex-1">

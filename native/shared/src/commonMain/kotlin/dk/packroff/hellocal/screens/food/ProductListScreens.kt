@@ -341,7 +341,7 @@ fun FoodRecipeRow(name: String, imageUrl: String?, subtitle: String, onClick: ()
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Box(Modifier.size(44.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan), contentAlignment = Alignment.Center) {
-                if (imageUrl != null) FoodImage(imageUrl, Modifier.size(44.dp), ContentScale.Crop)
+                if (imageUrl != null) FoodImage(imageUrl, Modifier.size(44.dp), ContentScale.Crop, thumbWidth = 128)
                 else HcIcon("Soup", size = 20.dp, color = HcColors.Black.copy(alpha = 0.5f))
             }
             Column(Modifier.weight(1f)) {

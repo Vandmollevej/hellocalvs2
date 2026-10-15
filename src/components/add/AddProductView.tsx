@@ -77,6 +77,7 @@ import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
+import { imageThumb } from "@/lib/image-thumb";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -993,7 +994,7 @@ export function AddProductView({
                       // aldrig zoomet ind (design.md §6.12).
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={displayImageUrl}
+                        src={imageThumb(displayImageUrl, 640)}
                         alt=""
                         className="block h-full w-full max-h-full max-w-full object-contain p-3"
                       />
@@ -1010,7 +1011,7 @@ export function AddProductView({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={displayImageUrl}
-                      src={displayImageUrl}
+                      src={imageThumb(displayImageUrl, 640)}
                       alt=""
                       onLoad={(event) =>
                         setImageLandscape(event.currentTarget.naturalWidth > event.currentTarget.naturalHeight)
@@ -1029,7 +1030,7 @@ export function AddProductView({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={circleLogo.url}
-                      src={circleLogo.url}
+                      src={imageThumb(circleLogo.url, 640)}
                       alt={circleLogo.name}
                       onLoad={(event) =>
                         setCircleLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
@@ -1069,7 +1070,7 @@ export function AddProductView({
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={view.brand.logoUrl}
+                        src={imageThumb(view.brand.logoUrl, 384)}
                         alt={view.brand.name}
                         onLoad={(event) =>
                           setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
@@ -1096,7 +1097,7 @@ export function AddProductView({
                     (view.subbrandLogoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={view.subbrandLogoUrl}
+                        src={imageThumb(view.subbrandLogoUrl, 384)}
                         alt={subbrand}
                         onLoad={(event) =>
                           setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))

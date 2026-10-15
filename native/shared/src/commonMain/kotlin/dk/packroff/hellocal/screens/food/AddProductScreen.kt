@@ -821,13 +821,13 @@ private fun ProductCircle(
     Box(modifier.size(180.dp)) {
         Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
             when {
-                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp).padding(12.dp), ContentScale.Fit)
+                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp).padding(12.dp), ContentScale.Fit, thumbWidth = 640)
                 imageUrl == null && showSkeleton -> FoodSkeleton(Modifier.size(180.dp), CircleShape)
             }
         }
         if (imageUrl != null && isCutout) {
             // Cut-out product: 110 % of the circle — standing items rise 10 % above it, lying items 10 % to the right.
-            val model = Api.absoluteUrl(imageUrl)
+            val model = Api.thumbUrl(imageUrl, 640)
             AsyncImage(
                 model = model,
                 contentDescription = null,
@@ -842,7 +842,7 @@ private fun ProductCircle(
             var logoRatio by remember(circleLogoUrl) { mutableStateOf<Float?>(null) }
             val (logoWidth, logoHeight) = circleLogoSizeDp(logoRatio)
             AsyncImage(
-                model = Api.absoluteUrl(circleLogoUrl),
+                model = Api.thumbUrl(circleLogoUrl, 640),
                 contentDescription = if (subbrandInCircle) subbrand else brand?.name,
                 contentScale = ContentScale.Fit,
                 onState = { s ->
@@ -867,7 +867,7 @@ private fun ProductCircle(
         if (!brandPending && brand != null && !brandInCircle) {
             if (!brand.logoUrl.isNullOrEmpty()) {
                 Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
-                    FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name)
+                    FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name, thumbWidth = 384)
                 }
             } else {
                 val left = logoLeftDp(brandNameHeight, 0)
@@ -884,7 +884,7 @@ private fun ProductCircle(
             val bottom = if (brandHeight > 0) brandHeight + SUBBRAND_GAP_DP else 0
             if (!subbrandLogoUrl.isNullOrEmpty()) {
                 Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_LOGO_HEIGHT_DP, bottom).dp, y = (-bottom).dp)) {
-                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand)
+                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand, thumbWidth = 384)
                 }
             } else {
                 val left = logoLeftDp(subbrandNameHeight, bottom)

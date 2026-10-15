@@ -1,3 +1,7 @@
+## 2026-10-15: Billeder loader hurtigere
+
+- Billeder vises som nedskalerede WebP-udgaver via `/_next/image` (`imageThumb`, web + native) i stedet for originalerne (logoer op til 15 MB), og originalerne caches i browseren (1 time + ETag/304). Ikke målt mod produktionen herfra (ingen adgang til hellocal.io). Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Varetypen spørges direkte + banneret glider
 
 - Ingen varetype på forsiden → OpenAI spørges "Hvilken produkttype er <brand subbrand variant>?", før varen hedder brand + subbrand. Vedligeholdet spørger én gang for scannede varer, der allerede hedder brand + subbrand (fx Verpoorten → Eierlikör, vist som Æggelikør via oversættelsen). Migration `20261015190000_product_type_asked`. Ikke prøvet mod OpenAI/rigtig database her.

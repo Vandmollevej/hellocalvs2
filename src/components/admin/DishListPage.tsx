@@ -6,6 +6,7 @@ import { LIST_PROBLEM_LABELS, problemText, type ListProblem } from "@/lib/admin-
 import type { BulkKind } from "@/lib/admin-bulk-actions";
 import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 import { StatusToggle } from "@/components/admin/StatusToggle";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Fælles liste for admin → Retter (docs/DECISIONS.md 2026-09-28): søgning,
 // liste med billede, kcal og status, og sider à 48. Siden 2026-10-11: rækker
@@ -37,7 +38,7 @@ function Row({ row, kind }: { row: DishRow; kind: BulkKind }) {
       {row.imageUrl ? (
         <div className="hf-surface h-12 w-12 shrink-0 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={row.imageUrl} alt="" loading="lazy" className={`h-full w-full object-cover ${dim ? "opacity-50" : ""}`} />
+          <img src={imageThumb(row.imageUrl, 128)} alt="" loading="lazy" className={`h-full w-full object-cover ${dim ? "opacity-50" : ""}`} />
         </div>
       ) : (
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-hf-red-dark bg-hf-tan text-hf-red-dark" title="Intet billede">
