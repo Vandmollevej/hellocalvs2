@@ -527,6 +527,7 @@ private fun kindForCertification(label: String): String {
         Regex("\\b(?:pgi|pdo)\\b").containsMatchIn(value) || value.contains("beskyttet geografisk") -> "pgi"
         value.contains("grana padano") -> "granaPadano"
         value.contains("bioland") -> "bioland"
+        value.contains("landbau") -> "landbau"
         value.contains("naturskånsom") || value.contains("natur skånsom") || value.contains("naturskaansom") -> "naturSkaansom"
         value.contains("dyrenes beskyttelse") || value.contains("dyrevelfærd") -> kindForAnimalWelfare(label)
         value.contains("økolog") || value.contains("organic") || value.contains("bio") -> kindForOrganic(label)

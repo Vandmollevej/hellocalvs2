@@ -43,6 +43,10 @@ function classify(label: string): { field: keyof LabelCertificationFilters; valu
   return null;
 }
 
+function addUnique(list: string[], value: string) {
+  if (!list.includes(value)) list.push(value);
+}
+
 export function certificationFiltersFromLabels(labels: readonly string[]): LabelCertificationFilters {
   const out: LabelCertificationFilters = { organic: null, keyhole: null, wholeGrain: null, animalWelfare: [], certifications: [] };
   for (const label of labels) {
@@ -51,8 +55,13 @@ export function certificationFiltersFromLabels(labels: readonly string[]): Label
     if (hit.field === "animalWelfare" || hit.field === "certifications") {
       if (!out[hit.field].includes(hit.value)) out[hit.field].push(hit.value);
     } else if (hit.field === "organic") {
-      // Det danske Ø-mærke vinder over EU-bladet (begge står ofte på varen).
-      if (!out.organic || hit.value === ORGANIC) out.organic = hit.value;
+      // Det danske Ø-mærke står i organic; EU-bladet m.fl. ved siden af står i
+      // certifications, så begge logoer vises (de står ofte begge på varen).
+      if (!out.organic || out.organic === hit.value) out.organic = hit.value;
+      else if (hit.value === ORGANIC) {
+        addUnique(out.certifications, out.organic);
+        out.organic = ORGANIC;
+      } else addUnique(out.certifications, hit.value);
     } else {
       out[hit.field] = hit.value;
     }

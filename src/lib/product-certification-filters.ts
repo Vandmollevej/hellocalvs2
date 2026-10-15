@@ -12,12 +12,16 @@ export async function addCertificationFilters(productId: string, labels: readonl
     select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
   });
   const merge = (current: string[] | undefined, next: string[]) => Array.from(new Set([...(current ?? []), ...next]));
+  // Står der allerede et andet økologimærke, kommer det nye ved siden af, så
+  // både Ø-mærket og EU-bladet vises.
+  const organic = existing?.organic || read.organic;
+  const extraOrganic = read.organic && read.organic !== organic ? [read.organic] : [];
   const data = {
-    organic: existing?.organic || read.organic,
+    organic,
     keyhole: existing?.keyhole || read.keyhole,
     wholeGrain: existing?.wholeGrain || read.wholeGrain,
     animalWelfare: merge(existing?.animalWelfare, read.animalWelfare),
-    certifications: merge(existing?.certifications, read.certifications),
+    certifications: merge(existing?.certifications, [...extraOrganic, ...read.certifications]),
   };
   await prisma.productFilters.upsert({ where: { productId }, update: data, create: { productId, ...data } });
   return [read.organic, read.keyhole, read.wholeGrain, ...read.animalWelfare, ...read.certifications].filter(

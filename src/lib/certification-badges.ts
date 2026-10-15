@@ -151,6 +151,7 @@ function kindForCertification(label: string): CertificationKind {
   if (/\b(?:pgi|pdo)\b/.test(value) || value.includes("beskyttet geografisk")) return "pgi";
   if (value.includes("grana padano")) return "granaPadano";
   if (value.includes("bioland")) return "bioland";
+  if (value.includes("landbau")) return "landbau";
   if (value.includes("naturskånsom") || value.includes("natur skånsom") || value.includes("naturskaansom")) return "naturSkaansom";
   if (value.includes("dyrenes beskyttelse") || value.includes("dyrevelfærd")) return kindForAnimalWelfare(label);
   if (value.includes("økolog") || value.includes("organic") || value.includes("bio")) return kindForOrganic(label);
