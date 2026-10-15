@@ -85,12 +85,18 @@ export async function storeDetectedLabels({
   sourceUrl,
   labels,
   filters,
+  markScanned = true,
+  cutouts = true,
 }: {
   productId: string;
   analysisId: string | null;
   sourceUrl: string;
   labels: DetectedLabel[];
   filters: Candidate["filters"];
+  // Bagsidebilledets engangsanalyse (src/lib/product-back-photos.ts): forsiden
+  // markeres ikke som scannet, og mærkerne fritskrabes ikke fra bagsiden.
+  markScanned?: boolean;
+  cutouts?: boolean;
 }) {
   const kept = labels.filter((l) => l.confidence >= MIN_STORE_CONFIDENCE);
   await prisma.$transaction(async (tx) => {
@@ -107,7 +113,7 @@ export async function storeDetectedLabels({
         ? await tx.productLabel.update({ where: { id: existing.id }, data: base })
         : await tx.productLabel.create({ data: { ...base, productId, key: label.key } });
       // Fritskrabning kun én gang pr. mærke, og kun når der er en boks.
-      if (label.box && !existing?.cutoutJobId && !existing?.imageUrl) {
+      if (cutouts && label.box && !existing?.cutoutJobId && !existing?.imageUrl) {
         const job = await tx.imageCutoutJob.create({
           data: {
             kind: "PRODUCT_LABEL",
@@ -126,7 +132,7 @@ export async function storeDetectedLabels({
     if (Object.keys(patch).length) {
       await tx.productFilters.upsert({ where: { productId }, create: { productId, ...patch }, update: patch });
     }
-    await tx.product.update({ where: { id: productId }, data: { labelsScannedAt: new Date() } });
+    if (markScanned) await tx.product.update({ where: { id: productId }, data: { labelsScannedAt: new Date() } });
   });
   return kept.length;
 }

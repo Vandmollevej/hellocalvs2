@@ -3,6 +3,18 @@
 - Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
 - Varesiden: mens brandet læses, står en glimtende boks på brandets plads ved cirklen (brand/subbrand skjules), og den grønne linje (størrelse · variant) er en glimtende boks, mens navnet læses.
 
+## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
+
+- Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
+- Ny robot `back-photo-scan` (04:20): ét AI-kald pr. billede, præcis én gang. Mærkninger fra bagsiden → `product_labels` + tomme filtre. Finlæst ingrediensliste/næring/øvrig tekst gemmes. Forskelle mod varens ingrediensliste → forslag under Stavekontrol ("Finlæsning af bagsidebillede").
+- **Migration `20261015070000_product_back_photos` skal med deployet.** Prøvet lokalt mod Postgres med falsk OpenAI-svar: kobling før/efter oprettelse, mærke gemt uden at forsidens label-scan markeres, to staveforslag (SOIASAUCE→SOJASAUCE, krydderler→krydderier), anden kørsel analyserer intet igen. Native ikke kompileret lokalt (CI "native").
+
+## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
+
+- Udløseren tager nu fotoet i trykøjeblikket, og trinnet er klaret med det samme. Før blev energi-/indholdsfotoet først taget efter 1–3 s lokal OCR.
+- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende og vises i pillen over udløseren. Udløseren bruger fundene.
+- Synlig behandling: load-cirkel på trinnets knap + "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver sin tekst synligt. Overskrifterne hedder "Tag billede af energi/indholdsfortegnelsen".
+- Web `ProductCaptureFlow.tsx`, `HfLoader.tsx`, `product-capture.ts`, `/api/products/recognize-text`. Native kun tekster + dokumentation (ingen levende video). Se DECISIONS/REGLER 2026-10-15.
 ## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
 
 - Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Ny natlig robot `front-image-check` (04:50) finder de beskårne billeder (form + loggen) og sender varerne til scan-appens "Skal scannes", hvor det nye forsidefoto erstatter dem. Migration `20261015060000_front_image_suspect` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
