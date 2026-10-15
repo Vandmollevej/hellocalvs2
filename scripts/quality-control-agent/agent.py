@@ -24,6 +24,7 @@ import cv2
 import numpy as np
 import psycopg2
 
+import back_local
 import label_local
 from job_control import run_forever
 import requests
@@ -247,6 +248,14 @@ def main():
     threading.Thread(
         target=run_forever,
         args=(DATABASE_URL, "label-local", label_local.run_once),
+        kwargs={"interval_minutes": 5},
+        daemon=True,
+    ).start()
+    # Bagsidebillederne læses lokalt (OCR + mærker) før nattens analyse
+    # (back_local.py, docs/DECISIONS.md 2026-10-15).
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "back-photo-local", back_local.run_once),
         kwargs={"interval_minutes": 5},
         daemon=True,
     ).start()

@@ -156,3 +156,48 @@ async function requestStructuredVision<T>({
     usage: data.usage ?? null,
   };
 }
+
+
+// Struktureret tekstkald uden billede (fx stavekontrollens tvivlsomme ord,
+// docs/DECISIONS.md 2026-10-15). Samme privatlivsregler: store: false.
+export async function callStructuredText<T>({
+  system,
+  text,
+  schemaName,
+  schema,
+}: {
+  system: string;
+  text: string;
+  schemaName: string;
+  schema: JsonSchema;
+}): Promise<{ value: T; model: string }> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("OPENAI_API_KEY er ikke sat");
+  const model = getProductVisionModel();
+  const startedAt = Date.now();
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      store: false,
+      input: [
+        { role: "system", content: [{ type: "input_text", text: system }] },
+        { role: "user", content: [{ type: "input_text", text }] },
+      ],
+      text: { format: { type: "json_schema", name: schemaName, schema, strict: true } },
+    }),
+  });
+  if (!response.ok) throw new Error(`OpenAI-kald fejlede (${response.status}): ${await response.text()}`);
+  const data = (await response.json()) as OpenAiResponsesPayload;
+  const output = readOutputText(data);
+  if (!output) throw new Error("Intet struktureret svar fra OpenAI");
+  void debugLog({
+    category: "ai",
+    event: schemaName,
+    message: `OpenAI-tekstkald (${model}) på ${Date.now() - startedAt} ms`,
+    durationMs: Date.now() - startedAt,
+    data: { model, usage: data.usage ?? null },
+  });
+  return { value: JSON.parse(output) as T, model };
+}

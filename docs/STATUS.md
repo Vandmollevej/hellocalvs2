@@ -1,3 +1,7 @@
+## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
+
+- Ny robot `back-photo-local` læser bagsidebillederne lokalt (tesseract + mærkesøgning); nattens `back-photo-scan` spørger kun OpenAI, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; tvivlsomme ord vurderes af AI og bliver forslag. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Varens sprog og oversættelser — trin 1
 
 - `products.language` + tabellen `product_translations` + `users.translateForeignText` (migration `20261015130000_product_language`). Kolonnerne er originalen og overskrives aldrig. Sproget fra kilden (`src/lib/product-language.ts`, 8 tests), oversættelse ved behov (`src/lib/product-translations.ts`), vedligeholdet udfylder sprog for eksisterende varer.

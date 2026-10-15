@@ -5246,6 +5246,12 @@ model ProductBackPhoto {
   result     Json?
   error      String?
   analyzedAt DateTime?
+  // Lokal læsning først (quality-control-agent back_local.py, brugerens regel
+  // 2026-10-15: OCR først, intern AI før OpenAI): { labels, text, confidence,
+  // doubtfulWords }. Nattens analyse bruger den; OpenAI læser kun billedet,
+  // når den lokale søgning ingen mærker fandt.
+  localResult    Json?
+  localScannedAt DateTime?
   createdAt  DateTime  @default(now())
 
   @@index([analyzedAt, createdAt])

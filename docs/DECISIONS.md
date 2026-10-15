@@ -1,14 +1,3 @@
-## 2026-10-15: Varens sprog — originalen i kolonnerne, oversættelser i egen tabel (trin 1)
-
-Brugerens krav (efter et kinesisk chiliglas og en afvist første løsning, PR #411, der overskrev kolonnerne med dansk): "Alle sprog skal kunne oversættes … så alt vises på samme sprog … Jeg behandler bare på dansk … men det er ikke nødvendigvis single source of truth. Vi kan jo have original sprog og så de andre oversættelser." Og: "Du må ikke begynde at oversætte tekst som står i den danske database til dansk!!! Mange oste fx har franske navne."
-
-- **Model:** `products.language` = kolonnernes originalsprog; `product_translations` (vare × app-sprog, `sourceHash` af originalteksten). Kolonnerne overskrives aldrig. PR #411 lukket uflettet.
-- **Sproget fra kilden** (`inferProductLanguage`): ikke-latinske tegn → skriftens sprog (brugerens valg: også DK-varer); danske kilder (FRIDA, REMA1000, BILKA, VALDEMARSRO, RETNEMT, BETTERFEAST, HELLOFRESH) → `da`; OFF → `lang` (eller `da`, når det ældre OFF-opslag allerede har oversat kolonnerne); scanningsland → oprindelsesland → stregkodens GS1-land; ellers `""` (ukendt, oversættes ikke). Vedligeholdet udfylder 500 varer pr. kørsel uden AI; scanning sætter det efter AI-aflæsningen; varesiden udfylder det ved første visning.
-- **Oversættelse ved behov:** første gang en bruger med et andet app-sprog åbner varen, oversætter gpt-4o-mini felterne (navn, flertal, produkttype, variant, mængde, ingredienser; brand/subbrand kun translittereret ved ikke-latinske tegn) og gemmer rækken. Mislykket kald prøves tidligst igen efter 10 min.; imens vises originalen.
-- **Visning → Oversættelse** (`users.translateForeignText`, standard til) og linjen "Oversat til <sprog> fra <sprog>. Vis original" over titlen (web + native, `src/lib/product-text-swap.ts` / `ProductTextSwap.kt`).
-- **Næste trin (aftalt):** 2) lister, dagbog (titel slås op, snapshot bevares) og favoritter + generiske varer overalt; 3) søgning kun på brugerens sprog + engelsk + landets stregkoder (ingen oversættelse i søgningen), natligt job for sprog med aktive brugere, Python-sprogrobot (fx lingua) til usikre scannede/OFF-varer.
-- **Åbent:** det ældre OFF-opslag (`translateToDanish` i `/api/products/lookup/[barcode]`) skriver stadig dansk i kolonnerne for OFF-varer uden dansk tekst — strider mod "kolonnerne er originalen"; afklares med brugeren før trin 3.
-
 ## 2026-10-15: 2-års kvalitetstjek — varer over to år fremstår som nye ved scanning
 
 Brugerens krav: "Når en kunde scanner et produkt, når produktet har eksisteret i databasen i mere end to år, skal produktet fremstå som 'nyt' og nye billeder og scanninger tages … (admin skal adviseres som ved nye varer) … Admin skal tage stilling INDEN billedet fritlægges, så vi ikke spilder unødige tokens … admin blot se det nye billede som taget ved siden af originalen … kun køre som natligt job og den tidligere info leveres direkte hos kunden … Ændringer … kun opdateres hos den bruger som netop har tilføjet produktet (og dem imellemtiden indtil de nye ændringer er blevet godkendt). Det skal ikke tilpasse bagudrettet med hvad brugeren ser i historikken."
@@ -21,6 +10,17 @@ Brugerens krav: "Når en kunde scanner et produkt, når produktet har eksisteret
 - **Fritlægning først efter admins ja og kun om natten**: et valgt billede bliver `APPROVED`, og næste nats kørsel lægger det i billedrobottens kø (`image_cutout_jobs` uden `productId`, så robotten ikke laver et nyt godkendelsesforslag) og venter op til 3 min. Resultatet sættes direkte som varens billede (admin har allerede valgt), et gammelt ikke-godkendt forslag kasseres, og en evt. "beskåret forsidebillede"-sag lukkes. Fejler fritlægningen, beholdes originalen, og grunden står på sagen.
 - **Registreringer (snapshot)**: når natten finder ændret næring, får registreringer fra og med scanningstidspunktet (kunden selv og andre, der har tilføjet varen siden) de nye tal med det samme, mens varen venter på admin. Admins valg gælder bagefter samme registreringer: nye tal, eller varens tal igen, hvis admin beholder de gamle. Registreringer før scanningen (historikken) røres aldrig.
 - Migration `20261015120000_product_recheck` (`products."qualityCheckedAt"`, tabellen `product_rechecks`). Afprøvet mod lokal Postgres: vare over to år → tjek gemt, nattens vurdering til admin, kundens registrering efter scanningen fik de nye tal, ældre registrering urørt, varen uændret til admin valgte, derefter fritlægning i kø og nyt billede sat næste nat.
+
+## 2026-10-15: Varens sprog — originalen i kolonnerne, oversættelser i egen tabel (trin 1)
+
+Brugerens krav (efter et kinesisk chiliglas og en afvist første løsning, PR #411, der overskrev kolonnerne med dansk): "Alle sprog skal kunne oversættes … så alt vises på samme sprog … Jeg behandler bare på dansk … men det er ikke nødvendigvis single source of truth. Vi kan jo have original sprog og så de andre oversættelser." Og: "Du må ikke begynde at oversætte tekst som står i den danske database til dansk!!! Mange oste fx har franske navne."
+
+- **Model:** `products.language` = kolonnernes originalsprog; `product_translations` (vare × app-sprog, `sourceHash` af originalteksten). Kolonnerne overskrives aldrig. PR #411 lukket uflettet.
+- **Sproget fra kilden** (`inferProductLanguage`): ikke-latinske tegn → skriftens sprog (brugerens valg: også DK-varer); danske kilder (FRIDA, REMA1000, BILKA, VALDEMARSRO, RETNEMT, BETTERFEAST, HELLOFRESH) → `da`; OFF → `lang` (eller `da`, når det ældre OFF-opslag allerede har oversat kolonnerne); scanningsland → oprindelsesland → stregkodens GS1-land; ellers `""` (ukendt, oversættes ikke). Vedligeholdet udfylder 500 varer pr. kørsel uden AI; scanning sætter det efter AI-aflæsningen; varesiden udfylder det ved første visning.
+- **Oversættelse ved behov:** første gang en bruger med et andet app-sprog åbner varen, oversætter gpt-4o-mini felterne (navn, flertal, produkttype, variant, mængde, ingredienser; brand/subbrand kun translittereret ved ikke-latinske tegn) og gemmer rækken. Mislykket kald prøves tidligst igen efter 10 min.; imens vises originalen.
+- **Visning → Oversættelse** (`users.translateForeignText`, standard til) og linjen "Oversat til <sprog> fra <sprog>. Vis original" over titlen (web + native, `src/lib/product-text-swap.ts` / `ProductTextSwap.kt`).
+- **Næste trin (aftalt):** 2) lister, dagbog (titel slås op, snapshot bevares) og favoritter + generiske varer overalt; 3) søgning kun på brugerens sprog + engelsk + landets stregkoder (ingen oversættelse i søgningen), natligt job for sprog med aktive brugere, Python-sprogrobot (fx lingua) til usikre scannede/OFF-varer.
+- **Åbent:** det ældre OFF-opslag (`translateToDanish` i `/api/products/lookup/[barcode]`) skriver stadig dansk i kolonnerne for OFF-varer uden dansk tekst — strider mod "kolonnerne er originalen"; afklares med brugeren før trin 3.
 
 ## 2026-10-15: Ubeskårne bagsidebilleder — natlig engangsanalyse (mærkninger, finlæsning, udvidet stavekontrol)
 
@@ -5384,6 +5384,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Logo-robotten (`scripts/logo-agent/agent.py`, `ai_redraw`): uden automatisk valg og uden et fritlagt kandidat-fund kaldes OpenAI `gpt-image-1` (images/edits, originaludklippet som input, `input_fidelity=high`, transparent baggrund). Resultatet gemmes som kandidat med `aiGenerated` (migration `20261015100000_logo_ai_redraw`) og vælges altid manuelt i admin → Logoer, hvor det står først ved siden af originaludklippet ("AI-rentegnet"). `OPENAI_API_KEY` er givet til logo-agent i compose.
 - Scanningens fritlagte logo-udsnit (`image-agent/cutout.py`, BRAND_LOGO) sættes ikke længere selv som brandets logo (`LOGO_AUTO_APPLY_FROM_SCAN=false`); "Genkør logo" i admin virker som før.
 
+
+## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
+
+- Brugerens regel: OCR først; intern AI før OpenAI; stavekontrol med "Ordbog først, AI ved tvivl".
+- Ny robot `back-photo-local` (quality-control-agent, `scripts/quality-control-agent/back_local.py`, hvert 5. min): hvert bagsidebillede læses lokalt — mærker med samme logo-/tekstsøgning som forsiden og al tekst med tesseract (dan+deu+eng, op til 3000 px, sikkerhed pr. ord). Gemmes i `product_back_photos.localResult` (migration `20261015130000_back_photo_local`).
+- `back-photo-scan` (04:20) bruger den lokale læsning: lokale mærkefund gemmes uden OpenAI; kun uden lokale mærkefund læser OpenAI billedet som før (og så bruges AI'ens tekst). Billeder uden lokal læsning venter højst et døgn.
+- Stavningen (`src/lib/back-photo-spelling.ts`): hvor den gemte liste og læsningen er uenige, afgør ordbogen — kendt gemt ord røres ikke; ukendt gemt ord med kendt, lignende læsning rettes automatisk (`AUTO_FIXED`, kan fortrydes under Stavekontrol); er begge ukendte, vurderer AI ordene i sammenhængen med ét tekstkald (`callStructuredText`) og resultatet bliver forslag (`fine_read_ai`).
 
 ## 2026-10-15: Produktbilleder — originalen søges online før fritlægningen
 
