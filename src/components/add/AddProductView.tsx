@@ -6,12 +6,14 @@ import {
   BRAND_NAME_HEIGHT_PX,
   brandLogoLeftPx,
   brandLogoRenderedHeight,
+  brandNameMaxWidthPx,
   brandSlotHeight,
   circleLogoFor,
   circleLogoSize,
   subbrandBottomPx,
 } from "@/lib/brand-logo-layout";
 import { displayedSubbrand } from "@/lib/subbrand-names";
+import { useElementSize } from "@/lib/use-element-size";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -376,6 +378,11 @@ export function AddProductView({
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
   const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
+  // Brand- og subbrandnavne brydes i linjer inden for sidens kant; deres
+  // målte højde flytter dem ud fra cirklen (src/lib/brand-logo-layout.ts).
+  const [circleColumnRef, circleColumnSize] = useElementSize<HTMLDivElement>();
+  const [brandNameRef, brandNameSize] = useElementSize<HTMLParagraphElement>();
+  const [subbrandNameRef, subbrandNameSize] = useElementSize<HTMLParagraphElement>();
   // Logoet, der står stort i cirklen uden produktbillede (samme fil).
   const [circleLogoRatio, setCircleLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
@@ -845,8 +852,15 @@ export function AddProductView({
       ? circleLogoFor({ brand: view.brand, subbrand, subbrandLogoUrl: view.subbrandLogoUrl })
       : null;
   const subbrandBottom = subbrandBottomPx(
-    brandSlotHeight(circleLogo?.kind === "brand" ? null : view?.brand, brandLogoRatio),
+    brandSlotHeight(
+      circleLogo?.kind === "brand" ? null : view?.brand,
+      brandLogoRatio,
+      brandNameSize?.height || BRAND_NAME_HEIGHT_PX,
+    ),
   );
+  const columnWidth = circleColumnSize?.width ?? null;
+  const brandNameLeft = brandLogoLeftPx(brandNameSize?.height || BRAND_NAME_HEIGHT_PX);
+  const subbrandNameLeft = brandLogoLeftPx(subbrandNameSize?.height || BRAND_NAME_HEIGHT_PX, subbrandBottom);
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   function translationNote(translation: ProductTranslationInfo) {
@@ -969,7 +983,7 @@ export function AddProductView({
                   og 62 px under appbaren (16 + 46), 33 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
                   mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
-              <div className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
+              <div ref={circleColumnRef} className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
                 <ProductCircleBadges topBadges={topBadges} certificates={circleCertificates} />
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
@@ -1065,15 +1079,17 @@ export function AddProductView({
                       />
                     ) : (
                       <p
-                        style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 whitespace-nowrap text-hf-green"
+                        ref={brandNameRef}
+                        style={{ left: brandNameLeft, maxWidth: brandNameMaxWidthPx(columnWidth, brandNameLeft) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 w-max text-hf-green"
                       >
                         {view.brand.name}
                       </p>
                     ))}
                   {/* Subbrandet står oven over brandet efter samme regel:
                       logoet, hvis det findes, ellers navnet i fed grøn tekst
-                      (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
+                      (DECISIONS 2026-10-10). Uden brand står det i bunden.
+                      Navne brydes i linjer i stedet for at gå ud over kanten. */}
                   {!isPending("brand") &&
                     subbrand &&
                     circleLogo?.kind !== "subbrand" &&
@@ -1093,8 +1109,13 @@ export function AddProductView({
                       />
                     ) : (
                       <p
-                        style={{ bottom: subbrandBottom, left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX, subbrandBottom) }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 whitespace-nowrap text-hf-green"
+                        ref={subbrandNameRef}
+                        style={{
+                          bottom: subbrandBottom,
+                          left: subbrandNameLeft,
+                          maxWidth: brandNameMaxWidthPx(columnWidth, subbrandNameLeft),
+                        }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 w-max text-hf-green"
                       >
                         {subbrand}
                       </p>

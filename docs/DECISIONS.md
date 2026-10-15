@@ -4,6 +4,14 @@
 - `translationPlacement` (`src/lib/product-text-swap.ts`) sammenligner original og oversættelse felt for felt (uden forskel på store/små bogstaver og mellemrum). Kun `ingredientsText` ændret → `translation.placement = "ingredients"`, og linjen med "Vis original" står over ingredienslisten. Ellers `"title"` som før. Intet ændret → ingen `translation` og ingen linje.
 - Web (`AddProductView`) og native (`AddProductScreen`, `ProductTranslationInfo.placement`) ens.
 
+## 2026-10-15: Ukendte brands fra AI'en kræver et sikkert, helt synligt logo
+
+Nettos ØGO-pose blev oprettet med brandet "DAGO": logoet var skåret af ved billedkanten, AI'en gættede resten, og koden oprettede ethvert ukendt navn som nyt brand.
+
+- `newBrandAllowed` (`src/lib/brand-match.ts`): et navn, Brand-tabellen ikke kender, oprettes kun ved logoConfidence ≥ 0,85, og når logoboksen ikke rører billedkanten (2 %). Kendte brands (match i tabellen eller ordret i forsideteksten) bruges som før.
+- Gælder forsidescanningen (`enrichFront`), stregkode-fotoets logo (`enrichBarcodeLogo`) og analysen af eksterne billeder (`external-image-ai.ts`). Springes et navn over, logges `brand_unknown_skipped` (admin → Log), og varen står uden brand, til en agent eller admin sætter det.
+- Sammen med #417 (kædemærker altid i brandlisten, prompt mod at gætte halve logoer) og #418 (forsidefotoet beskæres aldrig efter AI-boksen + natlig robot `front-image-check`).
+
 ## 2026-10-15: Tilføj-kameraets forsidefoto er søgerens kvadrat
 
 Brugerens skærmbilleder (Jalapeño-ketchup): i søgeren fyldte flasken billedet, men det gemte foto viste flasken lille med vindue og bordplade omkring. Årsag: søgeren viser kun det midterste kvadrat af kamerastrømmen (`object-cover`), mens forsiden blev gemt som hele 9:16-rammen (`liveCrop("front") = "none"`). Det var også i strid med beslutningen tidligere i dag ("hele rammen, brugeren sigtede med … allerede et kvadratisk udsnit af søgeren").
@@ -5468,3 +5476,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 
 - Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
 - Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
+
+## 2026-10-15: Aldrig reservenavnet "Vare <stregkode>" som varens titel
+
+- Brugeren så Verpoorten Original med titlen "Vare 40157818" (grøn linje "Original"). Årsag: hurtig-oprettelsen giver varen reservenavnet `Vare <stregkode>`, og forsidens AI returnerede `productName = null` (varetypen "Eierlikör" står ikke stort på flasken, og prompten sagde "gæt ikke"), så reservenavnet blev beholdt.
+- Forsideprompten front-v6: `productName` er varetypen og udfyldes altid, når det kan ses, hvad varen er — også udledt af emballage, brand og synlig tekst. Aldrig kun brand eller variant.
+- Giver forsiden stadig intet navn, navngiver et lille tekstkald (`nameProductType`, ingen ny billedaflæsning) varetypen ud fra brand, subbrand, variant og synlig tekst, på emballagens sprog. Under 60 % sikkerhed beholdes reservenavnet. Der findes ingen lokal metode til at navngive en varetype ud fra et brand, derfor OpenAI direkte (undtagelse fra "intern AI først").
+- Eksisterende varer med reservenavnet (`isPlaceholderProductName`, `src/lib/product-placeholder-name.ts`) navngives fra deres gemte forsideaflæsning: én gang 90 sek. efter opstart (deploy) og hver nat med `uncertainty-rerun`, højst 20 pr. kørsel. Kun varen selv ændres; registreringernes `titleSnapshot` røres ikke.
