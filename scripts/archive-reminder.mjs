@@ -1,7 +1,8 @@
 // Claude Code Stop hook: a session that stops with a finished task must end
 // with the text "arkiver mig" (AGENTS.md, user rule 2026-10-05). Blocks once
 // with a reminder; stays silent while work is in progress (dirty tree,
-// unpushed commits) or the session is asking something.
+// unpushed commits) or the session is asking something. Never archives:
+// sessions are archived by the user only (user rule 2026-10-15).
 import { execSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 
