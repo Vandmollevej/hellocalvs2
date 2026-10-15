@@ -5,6 +5,12 @@ Brugeren opdagede, at knappen manglede nederst på varesiden. Den var siden 2026
 - Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`) viser knappen på alle varer.
 - Generiske varer ligger i `generic_ingredients`, så `bug_reports.genericIngredientId` (migration `20261015180000_bug_report_generic_ingredient`) knytter rapporten til dem; API'et slår id'et op i begge tabeller. Én afventende rapport pr. vare gælder også for generiske. Admin → Fejlrapporter viser "Varerettelse (generisk vare)".
 
+## 2026-10-15: Oversat-linjen står ved det, der faktisk er oversat
+
+- Brugerens ønske: en vare, hvor kun ingredienslisten er på et fremmed sprog (fx svensk), og titlen allerede er på et sprog brugeren forstår, skal ikke have "Oversat til dansk fra svensk" over titlen.
+- `translationPlacement` (`src/lib/product-text-swap.ts`) sammenligner original og oversættelse felt for felt (uden forskel på store/små bogstaver og mellemrum). Kun `ingredientsText` ændret → `translation.placement = "ingredients"`, og linjen med "Vis original" står over ingredienslisten. Ellers `"title"` som før. Intet ændret → ingen `translation` og ingen linje.
+- Web (`AddProductView`) og native (`AddProductScreen`, `ProductTranslationInfo.placement`) ens.
+
 ## 2026-10-15: Ukendte brands fra AI'en kræver et sikkert, helt synligt logo
 
 Nettos ØGO-pose blev oprettet med brandet "DAGO": logoet var skåret af ved billedkanten, AI'en gættede resten, og koden oprettede ethvert ukendt navn som nyt brand.
