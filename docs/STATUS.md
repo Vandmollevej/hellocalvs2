@@ -1,3 +1,7 @@
+## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
+
+- Varesiden (web + native): brand- og subbrandnavne i tekst brydes i flere linjer i stedet for at gå ud over sidens kant (fx "Barbeque Buddies" over Johnny's). Se REGLER.md.
+
 ## 2026-10-15: AI'en kan ikke længere opfinde brands
 
 - Et ukendt brandnavn fra AI'en oprettes kun ud fra et sikkert, helt synligt logo (`newBrandAllowed`); ellers intet brand og `brand_unknown_skipped` i loggen. Forsiden, stregkode-logoet og eksterne billeder. Se DECISIONS/REGLER 2026-10-15.

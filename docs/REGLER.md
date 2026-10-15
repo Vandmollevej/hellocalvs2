@@ -107,6 +107,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
+  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
+  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
+  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
