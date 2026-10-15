@@ -130,6 +130,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
   Mangler et kædemærke, så tilføj det dér.
+- **AI'en må ikke opfinde brands (bruger 2026-10-15)**: et brandnavn, som
+  Brand-tabellen ikke kender, oprettes kun ud fra et sikkert (logoConfidence
+  ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
+  (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
+  og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
