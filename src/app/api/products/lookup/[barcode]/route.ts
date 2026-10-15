@@ -13,6 +13,7 @@ import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { getSessionUser } from "@/lib/session";
+import { isProductRecheckDue } from "@/lib/product-recheck";
 
 // GET /api/products/lookup/:barcode
 //
@@ -94,11 +95,16 @@ export async function GET(
     }
 
     if (existing) {
-      log("barcode_lookup", `Fundet i egen database: ${existing.product.name}`, {
+      // 2-års kvalitetstjek (src/lib/product-recheck.ts): en vare over to år
+      // fremstår som ny for en indlogget kunde — kameraet tager fotos som ved
+      // en ny vare, men kunden får varens tidligere info med det samme.
+      const sessionUser = await getSessionUser();
+      const qualityCheck = sessionUser ? await isProductRecheckDue(existing.product.id).catch(() => false) : false;
+      log("barcode_lookup", `Fundet i egen database: ${existing.product.name}${qualityCheck ? " — over to år gammel, kameraet tager nye fotos (2-års tjek)" : ""}`, {
         productId: existing.product.id,
-        data: { source: "local", status: existing.product.status },
+        data: { source: "local", status: existing.product.status, qualityCheck },
       });
-      return NextResponse.json({ source: "local", product: existing.product });
+      return NextResponse.json({ source: "local", product: existing.product, ...(qualityCheck ? { qualityCheck: true } : {}) });
     }
 
     const offProduct = await lookupOpenFoodFacts(barcode);

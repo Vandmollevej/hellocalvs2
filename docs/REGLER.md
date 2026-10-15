@@ -202,6 +202,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Spring over" til højre for udløseren på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native.
 - Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
 - **Forsidefotoet beskæres ALDRIG efter AI'ens objektboks** (user rule 2026-10-15: "halveret … Det må ikke ske"). Objektgenkendelsen bruges kun til at afvise billeder uden vare og til loggen; varens billede er altid hele rammen, brugeren sigtede med. Vagt: `src/lib/front-photo-never-cropped.test.mjs`. Serveren melder desuden et forsidefoto, der er smallere end 0,45 (kort/lang side) eller under 240 px, som `front_image_suspect` (fejl) i admin → Log (`src/lib/front-photo-guard.ts`). Den natlige robot `front-image-check` finder beskårne forsidebilleder (form + loggen) og sender dem til scan-appens "Skal scannes"; scan-appens nye forsidefoto erstatter dem.
+- **Varer over to år fremstår som nye (user rule 2026-10-15)**: har en vare ligget i databasen i over to år (eller er det over to år siden, den sidst blev tjekket), tager kameraet forside, energi og indhold som ved en ny vare, når en indlogget kunde scanner den — men kunden får varens tidligere info med det samme. Fotoene vurderes KUN om natten: intern AI (`recheck-local`, DINOv2) sammenligner nyt foto med originalen, OpenAI kun ved tvivl, og `product-recheck` læser energi/indhold (telefonens OCR først). Ændringer går til admin → Nye varer → 2-års tjek med det nye foto ved siden af originalen; det nyeste er valgt som standard. Admin tager stilling, FØR billedet fritlægges (ingen spildte tokens); det valgte fritlægges om natten. Nye tal gælder kun registreringer fra og med scanningen (kunden selv og dem imellem) — historikken før scanningen ændres aldrig. Web + native. Se DECISIONS.md 2026-10-15.
 - Kun brugerens egne fotos klarer et trin. Stregkodefotoet klarer aldrig energi/indhold. "Indhold på energibilledet" giver stadig begge flueben.
 - Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
 - `ImageCapture.takePhoto` bruges ALDRIG på WebKit/iPhone (`isWebKit`, `src/lib/camera-webkit.ts`): den hænger og gør videoen sort. Fotoet er dér det skarpeste af tre 4K-videobilleder. Se DECISIONS.md 2026-10-14.
@@ -245,7 +246,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## AI: intern AI først (user rule 2026-10-15)
 
-Natlige robotter bruger intern AI (lokalt på serveren: OpenCV, tesseract, DINOv2 …) først og spørger kun OpenAI, når den lokale søgning intet finder. Mærkat-jobbet: `label-local` → `label-scan` (se DECISIONS 2026-10-15).
+Natlige robotter bruger intern AI (lokalt på serveren: OpenCV, tesseract, DINOv2 …) først og spørger kun OpenAI, når den lokale søgning intet finder. Mærkat-jobbet: `label-local` → `label-scan` (se DECISIONS 2026-10-15) 2-års tjekket: `recheck-local` → `product-recheck`.
 
 ## Billeder og logoer: originalen online først (user rule 2026-10-15)
 

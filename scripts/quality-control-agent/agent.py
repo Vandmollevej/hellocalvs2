@@ -173,6 +173,73 @@ def run_once(conn):
     return f"{done} fotos sammenlignet", done
 
 
+# 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): intern AI først. Det nye
+# forsidefoto fra kunden sammenlignes med varens nuværende billede med de samme
+# tre signaler som ovenfor; app-jobbet "product-recheck" afgør ud fra dem og
+# spørger kun OpenAI, når scoren ligger i tvivlsområdet (src/lib/product-recheck.ts).
+def load_image_on_white(public_url: str) -> Image.Image:
+    with_alpha = load_image_rgba(public_url)
+    background = Image.new("RGBA", with_alpha.size, (255, 255, 255, 255))
+    return Image.alpha_composite(background, with_alpha).convert("RGB")
+
+
+def load_image_rgba(public_url: str) -> Image.Image:
+    if public_url.startswith(PUBLIC_PATH_PREFIX):
+        local_path = os.path.join(IMAGES_DIR, public_url[len(PUBLIC_PATH_PREFIX) :].split("?")[0].lstrip("/"))
+        with open(local_path, "rb") as handle:
+            return Image.open(io.BytesIO(handle.read())).convert("RGBA")
+    response = requests.get(public_url, timeout=15)
+    response.raise_for_status()
+    return Image.open(io.BytesIO(response.content)).convert("RGBA")
+
+
+def run_rechecks(conn):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT id, "originalImageUrl", "frontPhotoUrl"
+            FROM product_rechecks
+            WHERE status = 'SUBMITTED' AND "localComparedAt" IS NULL AND "originalImageUrl" IS NOT NULL
+            ORDER BY "createdAt" ASC
+            LIMIT 100
+            """
+        )
+        rows = cur.fetchall()
+    if not rows:
+        return "Ingen 2-års tjek at sammenligne", 0
+    done = 0
+    for recheck_id, original_url, photo_url in rows:
+        try:
+            original = load_image_on_white(original_url)
+            photo = load_image_on_white(photo_url)
+            visual = visual_similarity(original, photo)
+            color = color_similarity(original, photo)
+            structural = structural_similarity_score(original, photo)
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE product_rechecks
+                    SET "localVisualScore" = %s, "localColorScore" = %s, "localStructuralScore" = %s,
+                        "localComparedAt" = now(), "localError" = NULL
+                    WHERE id = %s
+                    """,
+                    (round(visual, 4), round(color, 4), round(structural, 4), recheck_id),
+                )
+            conn.commit()
+            done += 1
+            log.info("recheck %s: visual %.3f color %.3f structural %.3f", recheck_id, visual, color, structural)
+        except Exception as error:  # noqa: BLE001 - one bad photo must not stop the batch
+            conn.rollback()
+            log.exception("recheck %s failed", recheck_id)
+            with conn.cursor() as cur:
+                cur.execute(
+                    'UPDATE product_rechecks SET "localComparedAt" = now(), "localError" = %s WHERE id = %s',
+                    (str(error)[:500], recheck_id),
+                )
+            conn.commit()
+    return f"{done} af {len(rows)} 2-års tjek sammenlignet lokalt", done
+
+
 def main():
     log.info("quality-control agent started, polling every %ss", POLL_INTERVAL_SECONDS)
     # Lokal mærkesøgning (label_local.py, docs/DECISIONS.md 2026-10-15) kører
@@ -181,6 +248,13 @@ def main():
         target=run_forever,
         args=(DATABASE_URL, "label-local", label_local.run_once),
         kwargs={"interval_minutes": 5},
+        daemon=True,
+    ).start()
+    # 2-års kvalitetstjek: kun om natten, før app-jobbet "product-recheck" (02:40).
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "recheck-local", run_rechecks),
+        kwargs={"run_at_time": "02:15"},
         daemon=True,
     ).start()
     # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);

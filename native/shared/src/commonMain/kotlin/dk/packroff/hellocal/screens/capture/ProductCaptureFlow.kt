@@ -118,6 +118,11 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     var lookupBlockedMessage by remember { mutableStateOf<String?>(null) }
     var region by remember { mutableStateOf("DK") }
     var barcode by remember { mutableStateOf<String?>(null) }
+    // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15, web: qualityCheckProductIdRef):
+    // a known product over two years old appears as new — the photos are taken
+    // as for a new product and stored for the night's check; the customer then
+    // gets the product with its previous info.
+    var qualityCheckProductId by remember { mutableStateOf<String?>(null) }
     var photos by remember { mutableStateOf(mapOf<CaptureStep, String>()) }
     var lastPhoto by remember { mutableStateOf<ByteArray?>(null) }
     var status by remember { mutableStateOf(CameraStatus.Active) }
@@ -160,7 +165,31 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
+    // Stores the photos for the 2-year check (POST /api/products/[id]/quality-check).
+    // A failed upload never stops the customer from getting the product.
+    suspend fun submitQualityCheck(productId: String) {
+        working = true
+        submitting = true
+        runCatching {
+            Api.post(
+                "/api/products/${Location.encode(productId)}/quality-check",
+                buildMap<String, Any> {
+                    put("marketRegion", marketRegion())
+                    put("signals", mapOf("appLanguage" to t.locale.code))
+                    photos[CaptureStep.Front]?.let { put("frontPhoto", it) }
+                    photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
+                    photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
+                },
+            )
+        }
+        nav.push("/add/$productId$returnSuffix")
+    }
+
     suspend fun createProduct() {
+        qualityCheckProductId?.let {
+            submitQualityCheck(it)
+            return
+        }
         working = true
         submitting = true
         createFailed = false
@@ -215,6 +244,16 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         try {
             val data = Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject
             val id = data["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+            if (id != null && data["qualityCheck"]?.jsonPrimitive?.contentOrNull == "true") {
+                // Over two years old: go on to the photos like an unknown barcode.
+                qualityCheckProductId = id
+                barcode = code
+                val completed = done + CaptureStep.Barcode
+                done = completed
+                working = false
+                showDoneThenContinue(listOf(CaptureStep.Barcode), completed)
+                return
+            }
             if (id != null) {
                 nav.push("/add/$id$returnSuffix")
                 return
@@ -315,6 +354,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         if (next != CaptureStep.Barcode && CaptureStep.Barcode !in done) return
         if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) {
             barcode = null
+            qualityCheckProductId = null
             photos = emptyMap()
             lastPhoto = null
             done = emptySet()
