@@ -243,6 +243,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
+## AI: intern AI først (user rule 2026-10-15)
+
+Natlige robotter bruger intern AI (lokalt på serveren: OpenCV, tesseract, DINOv2 …) først og spørger kun OpenAI, når den lokale søgning intet finder. Mærkat-jobbet: `label-local` → `label-scan` (se DECISIONS 2026-10-15).
+
 ## Proces
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),

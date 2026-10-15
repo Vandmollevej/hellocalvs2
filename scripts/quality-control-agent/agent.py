@@ -17,12 +17,14 @@ fremtidig fejlanalyse kan se *hvorfor* motoren tog fejl, ikke kun at den gjorde.
 import io
 import logging
 import os
+import threading
 import time
 
 import cv2
 import numpy as np
 import psycopg2
 
+import label_local
 from job_control import run_forever
 import requests
 import torch
@@ -70,16 +72,16 @@ def fetch_candidate_analyses(conn, limit):
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT a.id, a."productId", a.kind, a."imageUrl", p."imageUrl"
+            SELECT a.id, a.product_id, a.kind, a.image_url, p."imageUrl"
             FROM ai_product_analyses a
-            JOIN products p ON p.id = a."productId"
+            JOIN products p ON p.id = a.product_id
             LEFT JOIN product_match_checks c ON c."analysisId" = a.id
             WHERE a.kind IN ('BARCODE', 'NUTRITION', 'INGREDIENTS')
-              AND a."productId" IS NOT NULL
-              AND a."imageUrl" IS NOT NULL
+              AND a.product_id IS NOT NULL
+              AND a.image_url IS NOT NULL
               AND p."imageUrl" IS NOT NULL
               AND c.id IS NULL
-            ORDER BY a."createdAt" ASC
+            ORDER BY a.created_at ASC
             LIMIT %s
             """,
             (limit,),
@@ -173,6 +175,14 @@ def run_once(conn):
 
 def main():
     log.info("quality-control agent started, polling every %ss", POLL_INTERVAL_SECONDS)
+    # Lokal mærkesøgning (label_local.py, docs/DECISIONS.md 2026-10-15) kører
+    # som sit eget job i samme container, så den kan pauses for sig i admin.
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "label-local", label_local.run_once),
+        kwargs={"interval_minutes": 5},
+        daemon=True,
+    ).start()
     # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);
     # POLL_INTERVAL_SECONDS er kun standard-intervallet første gang.
     run_forever(DATABASE_URL, "quality-control-agent", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
