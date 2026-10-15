@@ -60,11 +60,14 @@ export function matchBrand(text: string | null | undefined, brands: BrandCandida
 // Finder et kendt brand, der står ordret (normaliseret) i en af AI'ens
 // tekster på forsiden — subbrand, logotekst, synlig tekst eller claims.
 // Kun eksakt match (score 1), og kun navne på mindst 4 tegn, så et kort/
-// generisk ord aldrig matcher ved et tilfælde. Længste navn vinder.
+// generisk ord aldrig matcher ved et tilfælde — undtagen navnene i
+// `shortAllowed` (fx ØGO, 3 tegn). Længste navn vinder.
 export function matchBrandInTexts(
   texts: (string | null | undefined)[],
   brands: BrandCandidate[],
+  shortAllowed: string[] = [],
 ): BrandMatch | null {
+  const allowed = new Set(shortAllowed.map(normalizeBrandName));
   const haystack = new Set<string>();
   for (const text of texts) {
     if (!text) continue;
@@ -82,7 +85,7 @@ export function matchBrandInTexts(
   let best: BrandMatch | null = null;
   for (const brand of brands) {
     const normalized = normalizeBrandName(brand.name);
-    if (normalized.length < 4 || !haystack.has(normalized)) continue;
+    if ((normalized.length < 4 && !allowed.has(normalized)) || !haystack.has(normalized)) continue;
     if (!best || normalized.length > normalizeBrandName(best.name).length) best = { id: brand.id, name: brand.name, score: 1 };
   }
   return best;
