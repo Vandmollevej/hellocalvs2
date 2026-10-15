@@ -2,7 +2,7 @@
 
 - Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
 - Ny robot `back-photo-scan` (04:20): ét AI-kald pr. billede, præcis én gang. Mærkninger fra bagsiden → `product_labels` + tomme filtre. Finlæst ingrediensliste/næring/øvrig tekst gemmes. Forskelle mod varens ingrediensliste → forslag under Stavekontrol ("Finlæsning af bagsidebillede").
-- **Migration `20261015060000_product_back_photos` skal med deployet.** Prøvet lokalt mod Postgres med falsk OpenAI-svar: kobling før/efter oprettelse, mærke gemt uden at forsidens label-scan markeres, to staveforslag (SOIASAUCE→SOJASAUCE, krydderler→krydderier), anden kørsel analyserer intet igen. Native ikke kompileret lokalt (CI "native").
+- **Migration `20261015070000_product_back_photos` skal med deployet.** Prøvet lokalt mod Postgres med falsk OpenAI-svar: kobling før/efter oprettelse, mærke gemt uden at forsidens label-scan markeres, to staveforslag (SOIASAUCE→SOJASAUCE, krydderler→krydderier), anden kørsel analyserer intet igen. Native ikke kompileret lokalt (CI "native").
 
 ## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
 
@@ -10,6 +10,18 @@
 - Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende og vises i pillen over udløseren. Udløseren bruger fundene.
 - Synlig behandling: load-cirkel på trinnets knap + "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver sin tekst synligt. Overskrifterne hedder "Tag billede af energi/indholdsfortegnelsen".
 - Web `ProductCaptureFlow.tsx`, `HfLoader.tsx`, `product-capture.ts`, `/api/products/recognize-text`. Native kun tekster + dokumentation (ingen levende video). Se DECISIONS/REGLER 2026-10-15.
+## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
+
+- Tilføj-kameraet beskar forsidefotoet til gpt-4o-mini's objektboks, som var for smal og forskudt (DAGO-posen skåret midt over). Nu bruges altid hele rammen; objektgenkendelsen afviser kun billeder uden vare. Ny vagt-test `src/lib/front-photo-never-cropped.test.mjs`, og serveren logger et smalt/lille forsidefoto som `front_image_suspect` i admin → Log. Native beskar aldrig. Ny natlig robot `front-image-check` (04:50) finder de beskårne billeder (form + loggen) og sender varerne til scan-appens "Skal scannes", hvor det nye forsidefoto erstatter dem. Migration `20261015060000_front_image_suspect` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
+## 2026-10-15: Tilføj-kameraet — mørkegrønne flueben, ingen overstreget linje
+
+- Fluebenene på trin-knapperne, opret-sidens fotobokse og i "trin klaret"-animationen er nu mørk signaturgrøn (`--hf-color-brand`) i stedet for den lysegrønne, som ikke kunne ses. Den blivende overstregede linje over trin-overskriften er fjernet; overskriften står alene. Web + native. Se REGLER 2026-10-15.
+
+## 2026-10-15: Brandet "DAGO" på Nettos ØGO-pose — årsag og rettelse
+
+- Forside-AI'en fik de første 750 brands alfabetisk som støtteliste; med ~3.000 brands sluttede listen ved "Dr. Oetker", så ØGO aldrig var med. Logoet var desuden delvist skåret af, og AI'en gættede "DAGO" (findes ikke i OFF-ordforrådet). Kendes navnet ikke, oprettes det som nyt brand, så "DAGO" ligger nu i Brand-tabellen.
+- Rettet: `src/lib/known-brands.ts` giver de faste danske kædemærker (`PINNED_BRANDS`: ØGO, Salling, Coop 365, Änglamark, REMA 1000, First Price, Lidl-mærker …) først og derefter de mest brugte brands til forside-, stregkode- og natlig genkørsel. De faste mærker oprettes i Brand-tabellen, hvis de mangler, og ØGO (3 tegn) kan nu også findes i forsideteksten. Prompten front-v5 forbyder at gætte et delvist logo færdigt ud fra listen og nævner æ/ø/å.
+- Udestående (kræver produktions-DB): ret varen 5712872629689 til ØGO og slet/flet brandet "DAGO" i admin → Brands.
 
 ## 2026-10-15: Ø-mærket på produktcirklen — helt, mindre og på linje
 

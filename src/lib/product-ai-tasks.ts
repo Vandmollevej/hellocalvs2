@@ -31,7 +31,9 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // kvalitetsmærker/hjerter/segl er ikke logoer (hjertet på EDEKA-kartonen blev
 // brand-logo i testen 2026-10-01). Derudover certifications (mærkningslogoer
 // på emballagen), gemt i ProductFilters, så varesiden viser logoerne.
-export const FRONT_PROMPT_VERSION = "front-v4-2026-10-02-certifications";
+// front-v5 (2026-10-15): et logo, der kun ses delvist, må ikke gættes færdigt
+// ud fra brandlisten (Nettos ØGO-pose blev læst som "DAGO").
+export const FRONT_PROMPT_VERSION = "front-v5-2026-10-15-partial-logo";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -116,6 +118,7 @@ export const FRONT_SYSTEM = [
   "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
   "Kvalitetsmærker, hjerter, segl, stjerner, slogans (fx 'Markenqualität mit Herz') og certificeringer er IKKE logoer og aldrig brand. Står producentens kendte mærke (fx EDEKA, Arla, REMA 1000) på forsiden, er det brand, og en vareserie (fx Herzstücke, LactoFREE) er subbrand.",
   "logoText = navnet som hovedlogoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
+  "Læs logoet bogstav for bogstav, også æ, ø og å (fx ØGO). Er en del af logoet skåret af, skjult eller ulæselig, så gæt ikke resten og vælg ikke et lignende navn fra brandlisten — returnér det, du sikkert kan læse, eller null, med lav logoConfidence.",
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
   "productBox = rektangel om hele den fysiske vare/emballage i billedet, samme format. null hvis varen ikke kan afgrænses.",

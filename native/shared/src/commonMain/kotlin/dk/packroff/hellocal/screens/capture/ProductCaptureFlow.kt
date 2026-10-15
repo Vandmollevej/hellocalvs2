@@ -110,7 +110,6 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     // The step(s) just completed (StepDoneOverlay) and the most recently
     // completed one (the small struck-through line above the heading).
     var stepDone by remember { mutableStateOf<List<CaptureStep>?>(null) }
-    var lastDone by remember { mutableStateOf<CaptureStep?>(null) }
     var working by remember { mutableStateOf(false) }
     var createFailed by remember { mutableStateOf(false) }
     // The product is being created: "Opretter varen …" over the last photo (web 2026-10-14).
@@ -206,7 +205,6 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         stepDone = justDone
         delay(STEP_DONE_MS)
         stepDone = null
-        lastDone = justDone.last()
         goToNextStep(completed)
     }
 
@@ -320,7 +318,6 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             photos = emptyMap()
             lastPhoto = null
             done = emptySet()
-            lastDone = null
             createFailed = false
             lookupError = false
             lookupBlockedMessage = null
@@ -379,7 +376,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             } else if (celebrating != null) {
                 StepDoneOverlay(celebrating.map { numbered(it) })
             } else {
-                ScanHeading(numbered(step), lastDone?.takeIf { it != step }?.let { numbered(it) })
+                ScanHeading(numbered(step))
             }
         }
 

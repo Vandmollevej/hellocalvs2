@@ -7,7 +7,7 @@ import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { HfLoader, PhotoWorkingOverlay } from "@/components/hf/HfLoader";
-import { cropToObject, detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
+import { detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import { LabelFillOverlay } from "@/components/camera/LabelFillOverlay";
 import { ScanHeading } from "@/components/camera/ScanHeading";
@@ -77,8 +77,9 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // og mærke, næringstabel, ingrediensliste) og viser fundene i billedet
 // (2026-10-15). Udløseren tager fotoet i trykøjeblikket, og trinnet er klaret
 // med det samme: forlæsningen bruges, ellers læses udløserens billede, mens
-// "trinnet er klaret" står; varen i rammens midte vælges i baggrunden, og
-// trinnets knap viser "Behandles …", til det er gjort. Står indholdet på
+// "trinnet er klaret" står, og trinnets knap viser "Behandles …", til
+// billedet er behandlet (energi/indhold: hele billedet uploadet til nattens
+// engangsanalyse). Står indholdet på
 // energibilledet, klares begge trin. Indholds-trinnet har "Spring over" til
 // højre for udløseren (varer uden indholdsfortegnelse). Når et trin er
 // klaret, blinker billedet hvidt, trinnet streges over med et stort flueben
@@ -240,7 +241,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // De trin, der netop er klaret (StepDoneOverlay), og det senest klarede
   // (den lille overstregede linje over overskriften).
   const [stepDone, setStepDone] = useState<CaptureStep[] | null>(null);
-  const [lastDone, setLastDone] = useState<CaptureStep | null>(null);
   const flashRef = useRef(false);
   // Stregkoden er læst, men varen er ukendt: trinnet klares med visningen,
   // før flowet går til forsiden (kaldes fra opslaget via en ref, så
@@ -559,7 +559,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     if (leavingRef.current) return;
     setFlash(null);
     setStepDone(null);
-    setLastDone(justDone[justDone.length - 1] ?? null);
     flashRef.current = false;
     goToNextStep(completed);
   }
@@ -964,10 +963,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     }
   }
 
-  // Ved flere varer i billedet vælges den i rammens midte automatisk
-  // (src/lib/object-picker.ts, brugerens krav 2026-10-14), og billedet
-  // beskæres til den. Ét eller ingen objekt — eller intet i midten: hele
-  // billedet. Kameraet fryser aldrig, og brugeren skal ikke trykke på noget.
+  // Objektgenkendelsen afgør kun, om der er en vare i billedet (afvisning af
+  // bukseben/bord) og logger, hvilken der står i rammens midte. Forsidefotoet
+  // beskæres ALDRIG efter AI'ens boks (bruger 2026-10-15: "halveret … Det må
+  // ikke ske"): boksene er upræcise og skar varen midt over. Rammen, brugeren
+  // sigter med, er udsnittet — hele billedet bruges altid.
   async function chooseObject(frame: string): Promise<{ chosen: string; objects: ObjectBox[] | null }> {
     const startedAt = Date.now();
     const objects = await detectObjects(frame);
@@ -979,14 +979,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         : objects.length < 2
           ? `Forsiden: ${objects.length} objekt(er) fundet — hele billedet bruges`
           : picked
-            ? `Forsiden: ${objects.length} objekter fundet — "${picked.label}" i rammens midte bruges`
+            ? `Forsiden: ${objects.length} objekter fundet — "${picked.label}" i rammens midte; hele billedet bruges`
             : `Forsiden: ${objects.length} objekter fundet, ingen i rammens midte — hele billedet bruges`,
       barcode: dataRef.current.barcode,
       durationMs: Date.now() - startedAt,
       data: { objects: objects?.map((object) => object.label) ?? null, picked: picked?.label ?? null },
     });
-    if (!picked || leavingRef.current) return { chosen: frame, objects };
-    return { chosen: await cropToObject(frame, picked), objects };
+    return { chosen: frame, objects };
   }
 
   // Et billede, der stadig behandles efter udløseren: trinnets knap viser
@@ -1015,15 +1014,15 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     if (leavingRef.current) return;
     setFlash(null);
     setStepDone(null);
-    setLastDone(justDone[justDone.length - 1] ?? null);
     flashRef.current = false;
     goToNextStep({ ...doneRef.current });
   }
 
   // Forsiden efter udløseren: trinnet er klaret med det samme. Fandt
-  // forlæsningen en eksisterende vare, går flowet til den. Ellers vælges
-  // varen i rammens midte i baggrunden, og uden forlæsning læses teksten af
-  // udløserens billede (dublet-tjek, højst SHUTTER_ANALYSIS_WAIT_MS).
+  // forlæsningen en eksisterende vare, går flowet til den. Ellers logges
+  // varerne i billedet i baggrunden (fotoet beskæres aldrig), og uden
+  // forlæsning læses teksten af udløserens billede (dublet-tjek, højst
+  // SHUTTER_ANALYSIS_WAIT_MS).
   async function shootFront(live: LiveFrame, still: Promise<Still>, pressedAt: number, shot: number) {
     const data = dataRef.current;
     const languages = ocrLanguages();
@@ -1293,7 +1292,6 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     pendingPhotosRef.current = [];
     setProcessing({});
     setDone({});
-    setLastDone(null);
     setCreateFailed(false);
     setLookupError(false);
     setLookupBlockedMessage(null);
@@ -1531,12 +1529,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         )}
 
         {!cameraMessage && !stepDone && !submitting && (
-          <ScanHeading
-            number={stepNumber(step)}
-            title={stepHeadings[step]}
-            done={lastDone && lastDone !== step ? { number: stepNumber(lastDone), title: stepHeadings[lastDone] } : null}
-            doneLabel={lastDone ? t("cameraCreate.stepDone", { step: stepLabels[lastDone] }) : null}
-          />
+          <ScanHeading number={stepNumber(step)} title={stepHeadings[step]} />
         )}
       </div>
 

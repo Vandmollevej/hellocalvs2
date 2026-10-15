@@ -1552,6 +1552,13 @@ model Product {
   offImageReview          OffImageReview?
   offImageReviewedAt      DateTime?
   offImageReviewedById    String?
+  // Beskåret/halveret forsidefoto (docs/DECISIONS.md 2026-10-15): fundet ved
+  // oprettelsen eller af robotten "front-image-check". Grund, billedets sti og
+  // hvornår; frontImageFixedAt = et nyt forsidefoto har erstattet det.
+  frontImageSuspect       String?
+  frontImageSuspectUrl    String?
+  frontImageSuspectAt     DateTime?
+  frontImageFixedAt       DateTime?
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.

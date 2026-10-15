@@ -105,6 +105,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Danske kædemærker kendes altid (bruger 2026-10-15)**: ØGO, Salling, Coop 365,
+  Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
+  (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
+  Mangler et kædemærke, så tilføj det dér.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
@@ -179,7 +183,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Tilføj-kameraet (user rule 2026-10-14)
 
-- Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Tag billede af energi", "4. Tag billede af indholdsfortegnelsen" (`ScanHeading`). Det senest klarede trin står lille, overstreget og med flueben over den aktuelle overskrift.
+- Trinnene er nummererede og store øverst i billedet: "1. Scan stregkode", "2. Tag billede af forsiden", "3. Tag billede af energi", "4. Tag billede af indholdsfortegnelsen" (`ScanHeading`). Overskriften står alene — det klarede trin vises kun kort i `StepDoneOverlay`, aldrig som en blivende overstreget linje (user rule 2026-10-15).
+- Flueben på trin-knapperne og opret-sidens fotobokse (`CaptureCheckOverlay`) og i `StepDoneOverlay` er mørk signaturgrøn (`--hf-color-brand`), aldrig den lysegrønne `--hf-color-accent`, som ikke kan ses på lyse flader (user rule 2026-10-15).
 - Hvert klaret trin vises, før flowet går videre (`StepDoneOverlay`): hvidt blink over hele billedet, trinnet stort i midten, overstreges, stort flueben, og linjen flyver op og bliver lille. Også stregkoden, når varen er ukendt — flowet må aldrig bare springe videre.
 - Stregkoden læses levende af videoen (uændret). **Forside, energi og indhold tages med udløseren nederst i kamerabilledet** (`.hf-shutter`, native `ShutterRow`) — "gammeldags billede", ingen automatisk scanning, intet tryk på selve billedet (user rule 2026-10-14: "Jeg har ikke tillid til den anden metode. Ingen scanning mere.").
 - **Fotoet tages i trykøjeblikket**, og trinnet er klaret med det samme — aldrig et nyt billede efter en analyse (user rule 2026-10-15: "Billedet skal selvfølgelig tages med det samme når man trykker").
@@ -188,8 +193,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Behandling skal kunne ses** (user rule 2026-10-15: "der står ikke nogen steder at billedet behandles"): et billede, der stadig behandles, giver en load-cirkel på trinnets knap og linjen "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver altid sin tekst synligt.
 - "Spring over" til højre for udløseren på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native.
 - Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
+- **Forsidefotoet beskæres ALDRIG efter AI'ens objektboks** (user rule 2026-10-15: "halveret … Det må ikke ske"). Objektgenkendelsen bruges kun til at afvise billeder uden vare og til loggen; varens billede er altid hele rammen, brugeren sigtede med. Vagt: `src/lib/front-photo-never-cropped.test.mjs`. Serveren melder desuden et forsidefoto, der er smallere end 0,45 (kort/lang side) eller under 240 px, som `front_image_suspect` (fejl) i admin → Log (`src/lib/front-photo-guard.ts`). Den natlige robot `front-image-check` finder beskårne forsidebilleder (form + loggen) og sender dem til scan-appens "Skal scannes"; scan-appens nye forsidefoto erstatter dem.
 - Kun brugerens egne fotos klarer et trin. Stregkodefotoet klarer aldrig energi/indhold. "Indhold på energibilledet" giver stadig begge flueben.
-- Fluebenet på trin-boksene (`CaptureCheckOverlay`/`CheckBadge`): lysegrøn signaturfarve (`--hf-color-accent`), ingen baggrund, 48 px.
 - Tag om: tryk på et trin med flueben. Stregkode-knappen starter forfra (alt nulstilles).
 - `ImageCapture.takePhoto` bruges ALDRIG på WebKit/iPhone (`isWebKit`, `src/lib/camera-webkit.ts`): den hænger og gør videoen sort. Fotoet er dér det skarpeste af tre 4K-videobilleder. Se DECISIONS.md 2026-10-14.
 - Sort/stoppet kamera logges i admin → Log og genstartes af sig selv (`useCameraWatchdog`). Nye kamerahændelser får et dansk navn i `src/lib/debug-log-view.ts`.

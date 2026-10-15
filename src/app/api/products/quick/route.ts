@@ -4,6 +4,8 @@ import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { frontPhotoDataUrlProblem } from "@/lib/front-photo-guard";
+import { flagCroppedFront } from "@/lib/front-image-check";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
@@ -146,6 +148,17 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
+    const frontProblem = frontPhotoDataUrlProblem(frontPhoto);
+    if (frontProblem) {
+      void debugLog({
+        category: "scan",
+        event: "front_image_suspect",
+        level: "error",
+        message: `Forsidefotoet er ${frontProblem}`,
+        flowId,
+        barcode,
+      });
+    }
     // Alle fotos gemmes, så aflæsningen kan genoptages, hvis processen
     // genstartes undervejs (docs/DECISIONS.md 2026-10-02).
     const [imageUrl, nutritionPhotoUrl, ingredientsPhotoUrl] = await Promise.all([
@@ -234,6 +247,12 @@ export async function POST(req: Request) {
     await linkBackPhotos(flowId, product.id, sessionUser?.id ?? null).catch((error) =>
       console.error("Could not link back photos", product.id, error),
     );
+
+    if (frontProblem && imageUrl) {
+      await flagCroppedFront(product.id, imageUrl, frontProblem).catch((error) =>
+        console.error("Could not flag cropped front photo", product.id, error),
+      );
+    }
 
     await createQuickEnrichmentJob(product.id, {
       flowId: flowId ?? undefined,

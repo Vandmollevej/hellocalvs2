@@ -29,6 +29,7 @@ const EVENT_LABELS: Record<string, string> = {
   barcode_unknown: "Ukendt stregkode — videre til forsiden",
   barcode_blocked: "Stregkode spærret (dyrefoder)",
   front_objects: "Forside: vare i rammen",
+  front_image_suspect: "Forside: billedet ser beskåret ud",
   front_rejected: "Forside afvist (ingen vare)",
   label_no_text: "Energi/indhold: ingen tekst",
   label_ocr_error: "Tekstlæsning fejlede (telefon)",

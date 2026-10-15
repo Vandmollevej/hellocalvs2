@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { FRONT_CROPPED_CATEGORY } from "@/lib/front-image-check";
 import { assessOffProduct, type OffQualityAssessment, type OffQualityInput } from "@/lib/off-quality";
 import { hasProperCutout } from "@/lib/product-rescan-offer";
 
@@ -98,7 +99,7 @@ function reviewData(assessment: OffQualityAssessment) {
 
 export async function assessOffProducts(): Promise<string> {
   const existing = await prisma.productQualityReview.findMany({
-    select: { productId: true, score: true, rating: true, findings: true, scanRequestedAt: true, scanDoneAt: true },
+    select: { productId: true, score: true, rating: true, findings: true, categories: true, scanRequestedAt: true, scanDoneAt: true },
   });
   const existingById = new Map(existing.map((row) => [row.productId, row]));
   const seen = new Set<string>();
@@ -148,7 +149,8 @@ export async function assessOffProducts(): Promise<string> {
 
   // Varer der ikke længere er Open Food Facts-varer på listen (overtaget som
   // egne, afvist, udgået): en åben "send til scan-appen" lukkes, resten slettes.
-  const stale = existing.filter((row) => !seen.has(row.productId));
+  // Beskårne forsidebilleder (front-image-check) er ikke Open Food Facts-sager og røres ikke.
+  const stale = existing.filter((row) => !seen.has(row.productId) && !row.categories.includes(FRONT_CROPPED_CATEGORY));
   const staleOpen = stale.filter((row) => row.scanRequestedAt && !row.scanDoneAt).map((row) => row.productId);
   const staleClosed = stale.filter((row) => !(row.scanRequestedAt && !row.scanDoneAt)).map((row) => row.productId);
   if (staleOpen.length) {

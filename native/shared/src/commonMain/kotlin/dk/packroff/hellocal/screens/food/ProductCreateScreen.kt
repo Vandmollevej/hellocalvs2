@@ -458,10 +458,9 @@ private fun MediaBox(
                 BoxStatus.Working -> Box(Modifier.fillMaxSize().background(HcColors.Black.copy(alpha = 0.55f)).padding(8.dp), contentAlignment = Alignment.Center) {
                     HcText(workingLabel, HcTypeRoles.Caption, color = HcColors.White, align = TextAlign.Center)
                 }
-                BoxStatus.Done -> Box(Modifier.fillMaxSize().background(HcColors.Black.copy(alpha = 0.35f)), contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(36.dp).clip(CircleShape).background(HcColors.Positive), contentAlignment = Alignment.Center) {
-                        HcIcon("Check", size = 22.dp, color = HcColors.White, stroke = 3f, contentDescription = doneLabel)
-                    }
+                // CaptureCheckOverlay: big check in the dark signature green, no background (user 2026-10-15).
+                BoxStatus.Done -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    HcIcon("Check", size = 48.dp, color = HcColors.Brand, stroke = 3.5f, contentDescription = doneLabel)
                 }
                 BoxStatus.Failed -> Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(HcColors.Black.copy(alpha = 0.6f)).padding(horizontal = 6.dp, vertical = 4.dp)) {
                     HcText(failedLabel, HcTypeRoles.Caption, Modifier.fillMaxWidth(), color = HcColors.White, align = TextAlign.Center)
