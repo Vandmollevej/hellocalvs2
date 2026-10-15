@@ -2,6 +2,10 @@
 
 - Ny robot `label-local` (quality-control-agent) søger forsidefotos lokalt igennem for kendte logoer og mærketekster; `label-scan` spørger kun OpenAI, når intet blev fundet lokalt. Se DECISIONS 2026-10-15. Kvalitetskontrollens forkerte kolonnenavne er rettet.
 - Udestående: følg admin → Robotter efter deploy ("Mærkater: lokal søgning" og "Mærkater: AI-aflæsning" viser antal lokalt/OpenAI).
+## 2026-10-15: Skelet-glimtet gjort tydeligt
+
+- Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
+- Varesiden: mens brandet læses, står en glimtende boks på brandets plads ved cirklen (brand/subbrand skjules), og den grønne linje (størrelse · variant) er en glimtende boks, mens navnet læses.
 
 ## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
 
