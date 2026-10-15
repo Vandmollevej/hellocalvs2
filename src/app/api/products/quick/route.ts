@@ -1,5 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { placeholderProductName } from "@/lib/product-placeholder-name";
 import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
@@ -184,7 +185,7 @@ export async function POST(req: Request) {
       ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
     ]);
     // Ved opfyldning beholdes OFF-navnet, hvis AI'en ikke kan læse forsiden.
-    const fallbackName = refill && existing?.product ? existing.product.name : `Vare ${barcode}`;
+    const fallbackName = refill && existing?.product ? existing.product.name : placeholderProductName(barcode);
     const snapshotsSince = refill ? new Date() : undefined;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 

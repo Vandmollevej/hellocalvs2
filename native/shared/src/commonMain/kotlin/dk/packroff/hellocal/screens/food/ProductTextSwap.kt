@@ -15,6 +15,8 @@ data class ProductTranslationInfo(
     val targetLanguageName: String = "",
     /** The other version of the same fields ("brand" = the brand's name). */
     val alternate: Map<String, String?> = emptyMap(),
+    /** "title" | "ingredients" — where the note sits: above the ingredients when only they are translated. */
+    val placement: String = "title",
 )
 
 private fun ProductDto.text(key: String): String? = when (key) {

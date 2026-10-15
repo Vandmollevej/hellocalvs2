@@ -15,7 +15,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Kolonnerne er originalen.** En vares tekst står på dens originalsprog (`products.language`, ISO 639-1) og overskrives **aldrig** af en oversættelse. Dansk er ikke facit — det er ét af sprogene.
 - **Sproget bestemmes af kilden, aldrig af ordene:** danske ark/butikker/Frida/HelloFresh.dk = `da` (franske ostenavne og "cheese" røres ikke), Open Food Facts = OFF's `lang`, scannede varer = scanningslandet, ellers stregkodens land. **Undtagelse:** ikke-latinske tegn (kinesisk, kyrillisk …) giver skriftens sprog — også på en DK-vare. Ukendt sprog = `""` og oversættes ikke. Regler: `src/lib/product-language.ts`.
 - **Oversættelser** ligger i `product_translations` (én række pr. vare og app-sprog), laves første gang en bruger med sproget ser varen og laves forfra, når varens tekst ændres (`sourceHash`). Brand/subbrand oversættes aldrig, kun translittereres ved ikke-latinske tegn; brandet omdøbes aldrig. `src/lib/product-translations.ts`.
-- **Visning → Oversættelse** (`User.translateForeignText`, slået til som standard): over en oversat vares navn står med lille grå tekst "Oversat til dansk fra kinesisk." + understreget "Vis original"/"Vis oversættelse"; linjen flytter hverken overskrift eller billede. Fra = originalsproget uden linjen.
+- **Visning → Oversættelse** (`User.translateForeignText`, slået til som standard): over en oversat vares navn står med lille grå tekst "Oversat til dansk fra kinesisk." + understreget "Vis original"/"Vis oversættelse"; linjen flytter hverken overskrift eller billede. Fra = originalsproget uden linjen. Er det kun ingredienslisten, oversættelsen ændrer (titel, variant, mængde m.m. er ens), står linjen i stedet over ingredienslisten; ændrer oversættelsen intet, vises ingen linje (bruger 2026-10-15). `translationPlacement` i `src/lib/product-text-swap.ts`.
 - **Importerede kilder oversættes ikke endnu** (bruger 2026-10-15: "Vent med oversættelse af produktark, frida mv."): ark, Frida, butiksimporter, HelloFresh og opskriftssider — og varer uden kilde og uden opretter (ark/admin-import). Kun brugerscannede varer og Open Food Facts/USDA oversættes. Slås til med `TRANSLATE_IMPORTED_SOURCES` i `src/lib/product-language.ts`. Generiske varer (Frida) venter også.
 - **Open Food Facts** gemmes på originalsproget (`language` = OFF's `lang`, `da` når OFF har en dansk titel); der skrives aldrig længere en dansk oversættelse i kolonnerne (bruger 2026-10-15, valg A). Ældre OFF-varer med `nameOriginal` røres ikke.
 - **Lister** (dagbog, favoritter, mest brugte): `localizedProductNames` — kun gemte oversættelser, manglende laves i baggrunden; dagbogens titel skiftes kun i svaret, når `titleSnapshot` stadig er varens originalnavn (snapshottet i databasen røres aldrig).
@@ -32,6 +32,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
+- **Aldrig "Vare <stregkode>" som titel** (2026-10-15): reservenavnet fra hurtig-oprettelsen skal altid erstattes af varetypen — fra forsiden, ellers navngivet ud fra brand/variant/synlig tekst (`src/lib/product-type-name.ts`). Varetypen er aldrig kun brand eller variant.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,
@@ -107,6 +108,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
+  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
+  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
+  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -130,6 +135,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
   Mangler et kædemærke, så tilføj det dér.
+- **AI'en må ikke opfinde brands (bruger 2026-10-15)**: et brandnavn, som
+  Brand-tabellen ikke kender, oprettes kun ud fra et sikkert (logoConfidence
+  ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
+  (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
+  og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden

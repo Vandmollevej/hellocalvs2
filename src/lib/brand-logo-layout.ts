@@ -7,6 +7,11 @@
 //
 // Subbrandet (logo eller navn) står oven over brandet med SUBBRAND_GAP_PX luft
 // og samme regel for venstre kant (brugerens ønske 2026-10-10).
+//
+// Brand- og subbrandnavne i tekst går aldrig ud over sidens kant: de brydes i
+// flere linjer inden for pladsen mellem venstre kant og sidens kant (brugerens
+// regel 2026-10-15). Et navn på flere linjer vokser opad og står derfor
+// længere ude, så venstre kant regnes med den målte højde.
 
 export const PRODUCT_CIRCLE_PX = 180;
 /** Logoets maksimale boks (px) — samme mål som className på varesiden. */
@@ -20,9 +25,27 @@ export const SUBBRAND_GAP_PX = 6;
 const AIR_PX = 8;
 
 /** Højden brandet fylder ved cirklen: logoets rendrede højde, navnets linje eller 0 uden brand. */
-export function brandSlotHeight(brand: { logoUrl?: string | null } | null | undefined, logoRatio: number | null): number {
+export function brandSlotHeight(
+  brand: { logoUrl?: string | null } | null | undefined,
+  logoRatio: number | null,
+  nameHeightPx: number = BRAND_NAME_HEIGHT_PX,
+): number {
   if (!brand) return 0;
-  return brand.logoUrl ? brandLogoRenderedHeight(logoRatio) : BRAND_NAME_HEIGHT_PX;
+  return brand.logoUrl ? brandLogoRenderedHeight(logoRatio) : nameHeightPx;
+}
+
+/** Mindste bredde et navn får, selv på en meget smal skærm. */
+const BRAND_NAME_MIN_WIDTH_PX = 60;
+
+/**
+ * Største bredde (px) for et brand-/subbrandnavn, der starter `leftPx` fra
+ * cirklens venstre kant, når cirklen står midt i en kolonne `columnWidthPx`
+ * bred — så navnet brydes i linjer i stedet for at gå ud over kanten.
+ */
+export function brandNameMaxWidthPx(columnWidthPx: number | null, leftPx: number): number | undefined {
+  if (!columnWidthPx || !Number.isFinite(columnWidthPx)) return undefined;
+  const room = Math.floor(columnWidthPx / 2 + PRODUCT_CIRCLE_PX / 2 - leftPx);
+  return Math.max(BRAND_NAME_MIN_WIDTH_PX, room);
 }
 
 /** Hvor højt subbrandet står over cirklens bund: over brandet med luft, eller i bunden uden brand. */
