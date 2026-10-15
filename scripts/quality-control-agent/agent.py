@@ -26,6 +26,7 @@ import psycopg2
 
 import back_local
 import label_local
+import language_local
 from job_control import run_forever
 import requests
 import torch
@@ -257,6 +258,15 @@ def main():
         target=run_forever,
         args=(DATABASE_URL, "back-photo-local", back_local.run_once),
         kwargs={"interval_minutes": 5},
+        daemon=True,
+    ).start()
+    # Sprogrobotten: retter varens sprog på scannede og Open Food Facts-varer
+    # (language_local.py, docs/DECISIONS.md 2026-10-15). Kører før app-jobbet
+    # "product-translations" (03:15).
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "language-local", language_local.run_once),
+        kwargs={"run_at_time": "02:50"},
         daemon=True,
     ).start()
     # 2-års kvalitetstjek: kun om natten, før app-jobbet "product-recheck" (02:40).

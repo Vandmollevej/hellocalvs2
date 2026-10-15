@@ -199,6 +199,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Varens sprog (docs/DECISIONS.md 2026-10-15): oversættelserne laves på forhånd.
+    key: "product-translations",
+    name: "Varer: oversæt på forhånd",
+    description:
+      "Oversætter scannede varer og Open Food Facts-varer på andre sprog til de app-sprog, brugerne har valgt, så ingen venter, første gang de åbner en udenlandsk vare. Varens egen tekst ændres aldrig; ark, Frida og butiksimporter oversættes ikke endnu. Højst 200 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:15",
+  },
+  {
     key: "search-miss-review",
     name: "Søgninger uden resultat: vurdering",
     description:
@@ -328,6 +339,17 @@ export const JOBS: JobDefinition[] = [
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,
     defaultRunAtTime: null,
+  },
+  {
+    // Sprogrobotten (docs/DECISIONS.md 2026-10-15).
+    key: "language-local",
+    name: "Varer: sprogrobot",
+    description:
+      "Læser teksten på scannede varer og Open Food Facts-varer (navn, variant, ingredienser) med lingua — lokalt på serveren uden OpenAI — og retter varens sprog, når den er sikker (fx en tysk vare scannet i Danmark). Ark, Frida, butiksimporter, varer med ikke-latinske tegn og dansk/norsk/svensk indbyrdes røres ikke. Hver vare tjekkes én gang.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:50",
   },
   {
     // 2-års kvalitetstjek, intern AI først (docs/DECISIONS.md 2026-10-15).

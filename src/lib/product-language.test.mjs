@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   appLocaleOf,
   hasForeignScript,
+  inViewerLanguage,
   isTranslatableSource,
   inferProductLanguage,
   languageCode,
@@ -83,4 +84,17 @@ test("importerede kilder oversættes ikke endnu — scannede og OFF-varer gør",
   assert.equal(isTranslatableSource({ externalSource: null, createdByUserId: "u1" }), true);
   assert.equal(isTranslatableSource({ externalSource: "OPEN_FOOD_FACTS", createdByUserId: null }), true);
   assert.equal(isTranslatableSource({ externalSource: "USDA" }), true);
+});
+
+test("søgning: brugerens sprog, engelsk, ukendt og landets stregkoder", () => {
+  const dk = { locale: "da", region: "DK" };
+  assert.equal(inViewerLanguage({ language: "da" }, dk), true);
+  assert.equal(inViewerLanguage({ language: "en" }, dk), true);
+  assert.equal(inViewerLanguage({ language: null }, dk), true);
+  assert.equal(inViewerLanguage({ language: "" }, dk), true);
+  assert.equal(inViewerLanguage({ language: "de", barcodes: [{ code: "4012345678901" }] }, dk), false);
+  assert.equal(inViewerLanguage({ language: "zh", barcodes: [{ code: "6901234567892" }] }, dk), false);
+  // Kinesisk vare med dansk stregkode (fx importør i DK) vises
+  assert.equal(inViewerLanguage({ language: "zh", barcodes: [{ code: "5701234567890" }] }, dk), true);
+  assert.equal(inViewerLanguage({ language: "de" }, { locale: "de", region: "DE" }), true);
 });

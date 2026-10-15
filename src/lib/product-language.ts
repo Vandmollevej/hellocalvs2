@@ -9,7 +9,7 @@
 // giver skriftens sprog — også på en vare scannet i Danmark.
 // Rene funktioner, så de kan testes med node --test.
 
-import { inferGs1OriginCountryCode } from "./regions.ts";
+import { barcodeMatchesRegion, inferGs1OriginCountryCode } from "./regions.ts";
 import type { Locale } from "@/i18n";
 
 // Appens sprog (src/i18n/index.ts LOCALES) — kopieret, så filen kan testes
@@ -158,4 +158,17 @@ export function languageCode(value: string | null | undefined): string | null {
     if (LANGUAGE_NAME_CODES[token]) return LANGUAGE_NAME_CODES[token];
   }
   return null;
+}
+
+// Søgningen (brugerens regel 2026-10-15): varer på brugerens sprog, engelske
+// varer, varer med ukendt sprog og varer med stregkode fra brugerens land.
+// Varer på andre sprog vises kun, når intet af det giver et resultat — så
+// har brugeren tydeligvis søgt efter noget på et andet sprog.
+export function inViewerLanguage(
+  product: { language: string | null; barcodes?: { code: string }[] },
+  viewer: { locale: Locale; region: string },
+): boolean {
+  const language = languageCode(product.language);
+  if (!language || language === viewer.locale || language === "en") return true;
+  return (product.barcodes ?? []).some((barcode) => barcodeMatchesRegion(barcode.code, viewer.region));
 }
