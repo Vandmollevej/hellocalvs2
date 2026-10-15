@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyProductTexts, productTextsFor, swapProductTexts } from "./product-text-swap.ts";
+import { applyProductTexts, productTextsFor, swapProductTexts, translationPlacement } from "./product-text-swap.ts";
 
 const translated = {
   id: "p1",
@@ -41,4 +41,14 @@ test("brand uden brand på varen og ukendte felter", () => {
     brand: null,
     variant: null,
   });
+});
+
+test("Kun ingredienserne oversat: linjen står over ingredienslisten", () => {
+  const original = { name: "Oat Drink Barista", packageSizeText: "1 L", ingredientsText: "Vatten, havre 10 %" };
+  assert.equal(
+    translationPlacement(original, { name: "oat drink  barista", packageSizeText: "1 L", ingredientsText: "Vand, havre 10 %" }),
+    "ingredients",
+  );
+  assert.equal(translationPlacement(original, { ...original, name: "Havredrik Barista" }), "title");
+  assert.equal(translationPlacement(original, { ...original }), null);
 });

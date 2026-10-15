@@ -9,24 +9,24 @@ import { IconCamera } from "@tabler/icons-react";
 // Trækstregen kan både minimere banneret (træk op / tryk) og trække en omvendt
 // popup ned (træk ned) med et kamerafelt pr. manglende ting. Bruges kun når
 // varen mangler indhold, energi eller produktbillede (src/lib/product-update.ts).
+// Den lukkede stribe er KUN teksten — fotoboksene (og alle andre fotoknapper)
+// står først, når banneret er trukket ned (brugerens regel 2026-10-15).
 const DRAG_THRESHOLD_PX = 16;
 
 type Stage = "collapsed" | "banner" | "panel";
 
-export type UpdateTile = { kind: string; label: string };
+export type UpdateTile = { kind: string; label: string; href?: string };
 
 export function UpdatePointsBanner({
   href,
   text,
   toggleLabel,
   tiles,
-  action,
 }: {
   href: string;
   text: string;
   toggleLabel: string;
   tiles: UpdateTile[];
-  action?: React.ReactNode;
 }) {
   const [stage, setStage] = useState<Stage>("banner");
   const startY = useRef<number | null>(null);
@@ -63,7 +63,6 @@ export function UpdatePointsBanner({
           {text}
         </Link>
       )}
-      {showBanner && action && <div className="px-4 pt-2">{action}</div>}
       <div
         className="grid transition-[grid-template-rows] duration-200 ease-out"
         style={{ gridTemplateRows: showPanel ? "1fr" : "0fr" }}
@@ -73,7 +72,7 @@ export function UpdatePointsBanner({
             {tiles.map((tile) => (
               <Link
                 key={tile.kind}
-                href={href}
+                href={tile.href ?? href}
                 className="flex w-24 flex-col items-center gap-2 text-center"
               >
                 <span className="flex aspect-square w-full items-center justify-center rounded-2xl bg-hf-cream text-hf-black">

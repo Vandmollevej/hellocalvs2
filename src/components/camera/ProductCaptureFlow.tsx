@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { useRouter } from "next/navigation";
-import { IconBolt, IconBoltOff, IconCheck, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBolt, IconBoltOff, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
@@ -278,6 +278,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const labelFailuresRef = useRef(0);
   // Udløserens tryk pr. trin: svar fra et billede, der er taget om, smides væk.
   const shotRef = useRef<Partial<Record<CaptureStep, number>>>({});
+  // Forsidens hele billede i fuld opløsning, hørende til et bestemt skud.
+  const frontFullRef = useRef<{ shot: number; url: string } | null>(null);
   // Trin, hvis billede stadig behandles efter udløseren ("Behandles …"), og
   // arbejdet, oprettelsen venter på.
   const [processing, setProcessing] = useState<Partial<Record<CaptureStep, boolean>>>({});
@@ -904,6 +906,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP);
       captured = pair?.still ?? null;
       if (pair) trackProcessing(step, shot, uploadFullPhoto(step, pair.full));
+    } else if (step === "front") {
+      // Forsiden gemmes i fuld opløsning (brugerens krav 2026-10-15) — samme
+      // kvadrat som søgeren; AI'en får den nedskalerede kopi af samme billede.
+      const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP, PHOTO_CROP);
+      captured = pair?.still ?? null;
+      frontFullRef.current = pair ? { shot, url: pair.full.url } : null;
     } else {
       captured = await captureStill(videoRef.current, PHOTO_CROP);
     }
@@ -1090,6 +1098,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const photo = still.then(async (taken) => {
       if (!current()) return;
       data.frontPhoto = taken.url;
+      const full = frontFullRef.current;
+      data.frontPhotoFull = full?.shot === shot ? full.url : undefined;
       const { chosen, objects } = await chooseObject(taken.url);
       if (!current()) return;
       data.frontPhoto = chosen;
@@ -1408,27 +1418,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         ? t("camera.qualityBlurryBarcode")
         : t("camera.qualityBlurry")
     : null;
-  // Forlæsningens fund (brugerens krav 2026-10-15: "kameraet kan begynde at
-  // opsnappe tekst … allerede inden der blev trykket på knappen").
-  const preReadFound: string[] =
-    step === "front"
-      ? preRead.duplicate !== null
-        ? [preRead.duplicate ? t("cameraCreate.preReadDuplicate", { name: preRead.duplicate }) : t("cameraCreate.preReadDuplicateUnnamed")]
-        : [
-            ...(preRead.brand ? [t("cameraCreate.preReadBrand", { brand: preRead.brand })] : []),
-            ...(preRead.textFound ? [t("cameraCreate.preReadText")] : []),
-          ]
-      : [
-          ...(preRead.nutrition ? [t("cameraCreate.preReadNutrition")] : []),
-          ...(preRead.ingredients ? [t("cameraCreate.preReadIngredients")] : []),
-        ];
-  const preReadNotice = !preReading
-    ? null
-    : preReadFound.length
-      ? preReadFound.join(" · ")
-      : preRead.reads >= 2
-        ? t(step === "front" ? "cameraCreate.preReadNothing" : "cameraCreate.labelNoText")
-        : t("cameraCreate.preReading");
+  // Forlæsningen kører stille i baggrunden — ingen "Læser teksten …" eller
+  // fund-beskeder i billedet (brugerens krav 2026-10-15: "Den skal bare gøre
+  // det uden at du skal skrive noget").
   // Trin, hvis billede stadig behandles efter udløseren.
   const processingSteps = visibleSteps.filter((item) => processing[item]);
   // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
@@ -1495,15 +1487,13 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           flowId={flowId}
         />
 
-        {(viewfinderNotice || preReadNotice) && !cameraMessage && !stepDone && !submitting && (
+        {viewfinderNotice && !cameraMessage && !stepDone && !submitting && (
           <div
             className={`pointer-events-none absolute inset-x-3 flex justify-center ${showShutter ? "bottom-24" : "bottom-3"}`}
             aria-live="polite"
           >
             <p className="hf-type-small hf-type-strong flex items-center gap-1.5 bg-hf-black/60 px-3 py-1.5 text-center text-hf-white rounded-card">
-              {!viewfinderNotice && preReadFound.length > 0 && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-accent" aria-hidden />}
-              {!viewfinderNotice && !preReadFound.length && <HfLoader size={14} className="text-hf-white" />}
-              {viewfinderNotice ?? preReadNotice}
+              {viewfinderNotice}
             </p>
           </div>
         )}
@@ -1634,7 +1624,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           )}
           <p className="hf-type-caption text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
-            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.preReadHint")}</p>
+            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.shutterHint")}</p>
           )}
           {!rescan && Object.values(done).some(Boolean) && (
             <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.retakeHint")}</p>

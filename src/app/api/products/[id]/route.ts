@@ -4,7 +4,7 @@ import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/li
 import { isEstimatedSource } from "@/lib/nutrients";
 import { getSessionUser } from "@/lib/session";
 import {
-  PRODUCT_UPDATE_POINTS,
+  updatePointsFor,
   hasEarnedUpdatePoints,
   productGaps,
   updateKindsFor,
@@ -12,7 +12,7 @@ import {
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
 import { appLocaleOf, needsTranslation } from "@/lib/product-language";
 import { languageName, refreshProductLanguage, translationFor } from "@/lib/product-translations";
-import { applyProductTexts, productTextsFor, type ProductTranslationInfo } from "@/lib/product-text-swap";
+import { applyProductTexts, productTextsFor, translationPlacement, type ProductTranslationInfo } from "@/lib/product-text-swap";
 
 export async function GET(
   _req: Request,
@@ -91,13 +91,16 @@ export async function GET(
           console.error("Product translation failed", error);
           return null;
         });
-        if (texts) {
+        const original = texts ? productTextsFor(product, Object.keys(texts)) : null;
+        const placement = texts && original ? translationPlacement(original, texts) : null;
+        if (texts && original && placement) {
           shown = applyProductTexts(product, texts);
           translation = {
             showing: "translated",
             sourceLanguageName: languageName(language, viewerLocale),
             targetLanguageName: languageName(viewerLocale, viewerLocale) ?? viewerLocale,
-            alternate: productTextsFor(product, Object.keys(texts)),
+            alternate: original,
+            placement,
           };
         }
       }
@@ -147,7 +150,7 @@ export async function GET(
           translation,
           subbrandLogoUrl,
           nutrients,
-          updateOffer: updateKinds.length ? { kinds: updateKinds, points: PRODUCT_UPDATE_POINTS } : null,
+          updateOffer: updateKinds.length ? { kinds: updateKinds, points: updatePointsFor(product) } : null,
           lastAmountGrams: last?.amountGrams ?? null,
           ingredientsUnreadable,
           // Butiksvare uden kalorietal (docs/DECISIONS.md 2026-10-02): 0 er en

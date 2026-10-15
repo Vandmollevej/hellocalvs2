@@ -20,7 +20,6 @@ import Link from "next/link";
 import {
   IconChevronDown,
   IconAlertTriangle,
-  IconCamera,
   IconMessage,
   IconLock,
   IconLockOpen,
@@ -873,28 +872,39 @@ export function AddProductView({
       ? t("addProduct.translatedFrom", { target: translation.targetLanguageName, source: translation.sourceLanguageName })
       : t("addProduct.translatedTo", { target: translation.targetLanguageName });
   }
+  function translationLine(translation: ProductTranslationInfo) {
+    return (
+      <>
+        {translationNote(translation)}{" "}
+        <button type="button" onClick={toggleOriginalText} className="underline">
+          {t(translation.showing === "translated" ? "addProduct.showOriginal" : "addProduct.showTranslation")}
+        </button>
+      </>
+    );
+  }
   const Frame = inSheet ? SheetFrame : ScreenFrame;
   // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
     !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
               href={`/add/${encodeURIComponent(id)}/update`}
-              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+              // "… med et flot nyt billede" kun på Open Food Facts-varer (brugerens regel 2026-10-15).
+              text={t(
+                state.product.externalSource === "OPEN_FOOD_FACTS" ? "productUpdate.bannerPhoto" : "productUpdate.banner",
+                { points: state.product.updateOffer.points },
+              )}
               toggleLabel={t("productUpdate.toggle")}
               tiles={state.product.updateOffer.kinds.map((kind) => ({
                 kind,
                 label: t(UPDATE_TILE_LABELS[kind]),
+                // Kunne AI'en ikke læse indholdet, tager opretteren det om i
+                // kameraet — som fotoboks i den nedtrukne del, aldrig som knap
+                // i den lukkede stribe (brugerens regel 2026-10-15).
+                href:
+                  kind === "INGREDIENTS" && state.product.ingredientsUnreadable
+                    ? `/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`
+                    : undefined,
               }))}
-              action={
-                state.product.ingredientsUnreadable ? (
-                  <Link
-                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                    className="hf-control hf-btn-secondary justify-center gap-2"
-                  >
-                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                  </Link>
-                ) : undefined
-              }
             />
     ) : null;
 
@@ -1114,12 +1124,9 @@ export function AddProductView({
                 <div className="relative flex w-full flex-col items-start">
                 {/* Oversat-linjen ligger over overskriften uden at flytte den
                     eller billedet (docs/DECISIONS.md 2026-10-15). */}
-                {view?.translation && !isPending("name") && (
+                {view?.translation && view.translation.placement !== "ingredients" && !isPending("name") && (
                   <p className="hf-type-caption absolute bottom-full left-0 mb-1 text-text-secondary">
-                    {translationNote(view.translation)}{" "}
-                    <button type="button" onClick={toggleOriginalText} className="underline">
-                      {t(view.translation.showing === "translated" ? "addProduct.showOriginal" : "addProduct.showTranslation")}
-                    </button>
+                    {translationLine(view.translation)}
                   </p>
                 )}
                 {isPending("name") ? (
@@ -1514,6 +1521,11 @@ export function AddProductView({
               {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
                   <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  {/* Kun ingredienserne er oversat: linjen står over listen
+                      i stedet for over titlen (docs/DECISIONS.md 2026-10-15). */}
+                  {view.translation?.placement === "ingredients" && !isPending("ingredients") && (
+                    <p className="hf-type-caption mb-1 text-text-secondary">{translationLine(view.translation)}</p>
+                  )}
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
@@ -1662,15 +1674,15 @@ export function AddProductView({
                   )}
                 </div>
               )}
-              {!!view.barcodes?.length && view.createdByUserId !== profile?.id && (
-                <Link
-                  href={`/profile/report-bug?productId=${id}`}
-                  className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
-                >
-                  <IconMessage size={18} />
-                  {t("addProduct.reportBug")}
-                </Link>
-              )}
+              {/* På alle varer — generiske, uden stregkode og egne
+                  (brugerens regel 2026-10-15). */}
+              <Link
+                href={`/profile/report-bug?productId=${id}`}
+                className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
+              >
+                <IconMessage size={18} />
+                {t("addProduct.reportBug")}
+              </Link>
             </div>
           </>
         )}

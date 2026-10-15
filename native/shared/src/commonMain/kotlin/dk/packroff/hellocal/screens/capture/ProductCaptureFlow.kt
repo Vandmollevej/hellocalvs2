@@ -125,6 +125,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     var qualityCheckProductId by remember { mutableStateOf<String?>(null) }
     var photos by remember { mutableStateOf(mapOf<CaptureStep, String>()) }
     var lastPhoto by remember { mutableStateOf<ByteArray?>(null) }
+    // The whole front photo in full resolution (sent as frontPhotoFull).
+    var frontFull by remember { mutableStateOf<String?>(null) }
     var status by remember { mutableStateOf(CameraStatus.Active) }
     // One id per opened camera flow (web: newScanFlowId): links the back photos to the product.
     val flowId = remember { Uuid.random().toString() }
@@ -200,6 +202,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 put("marketRegion", marketRegion())
                 put("signals", mapOf("appLanguage" to t.locale.code))
                 photos[CaptureStep.Front]?.let { put("frontPhoto", it) }
+                frontFull?.let { put("frontPhotoFull", it) }
                 photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
                 photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
             }
@@ -306,7 +309,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
         val current = step
         val labelStep = current == CaptureStep.Nutrition || current == CaptureStep.Ingredients
-        val take = if (labelStep) CaptureHooks.takeFullPhoto else CaptureHooks.takePhoto
+        // The front is kept in full resolution too (user rule 2026-10-15).
+        val fullStep = labelStep || current == CaptureStep.Front
+        val take = if (fullStep) CaptureHooks.takeFullPhoto else CaptureHooks.takePhoto
         if (take == null) {
             status = CameraStatus.Unavailable
             return
@@ -317,8 +322,10 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 status = CameraStatus.Active
                 // Energy/contents: the whole photo goes uncropped to the night robot,
                 // the create request gets a scaled copy (web: captureStillWithFull).
-                val bytes = if (labelStep) {
-                    uploadBackPhoto(current, taken)
+                // The front: the full photo is stored as the product image, the
+                // AI gets the scaled copy (web: frontPhotoFull).
+                val bytes = if (fullStep) {
+                    if (labelStep) uploadBackPhoto(current, taken) else frontFull = jpegDataUrl(taken)
                     CaptureHooks.scaleForUpload(taken) ?: taken
                 } else {
                     taken
@@ -356,6 +363,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             barcode = null
             qualityCheckProductId = null
             photos = emptyMap()
+            frontFull = null
             lastPhoto = null
             done = emptySet()
             createFailed = false
