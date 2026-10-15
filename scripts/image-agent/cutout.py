@@ -375,6 +375,11 @@ def fetch_pending_jobs(conn):
             SELECT id, "sourceUrl", "cropBox", kind
             FROM image_cutout_jobs
             WHERE status = 'PENDING'
+              -- Originalen søges online, før kamerafotoet fritlægges (brugerens
+              -- regel 2026-10-15, logo-agent product_images.py). Svarer
+              -- søgningen ikke inden for 30 min, fritlægges der alligevel.
+              AND (kind <> 'PRODUCT_FRONT' OR "webSearchedAt" IS NOT NULL
+                   OR "createdAt" < now() - interval '30 minutes')
             ORDER BY "createdAt" ASC
             LIMIT %s
             """,
