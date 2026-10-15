@@ -907,9 +907,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       captured = pair?.still ?? null;
       if (pair) trackProcessing(step, shot, uploadFullPhoto(step, pair.full));
     } else if (step === "front") {
-      // Forsiden gemmes i fuld opløsning (brugerens krav 2026-10-15); AI'en
-      // får den nedskalerede kopi af samme billede.
-      const pair = await captureStillWithFull(videoRef.current, liveCrop(step));
+      // Forsiden gemmes i fuld opløsning (brugerens krav 2026-10-15) — samme
+      // kvadrat som søgeren; AI'en får den nedskalerede kopi af samme billede.
+      const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP, PHOTO_CROP);
       captured = pair?.still ?? null;
       frontFullRef.current = pair ? { shot, url: pair.full.url } : null;
     } else {
