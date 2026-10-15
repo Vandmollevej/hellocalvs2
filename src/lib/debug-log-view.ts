@@ -34,6 +34,7 @@ const EVENT_LABELS: Record<string, string> = {
   product_recheck_decided: "2-års tjek: admin har valgt",
   front_objects: "Forside: vare i rammen",
   front_image_suspect: "Forside: billedet ser beskåret ud",
+  brand_unknown_skipped: "Forside: ukendt brand ikke oprettet",
   front_rejected: "Forside afvist (ingen vare)",
   label_no_text: "Energi/indhold: ingen tekst",
   label_ocr_error: "Tekstlæsning fejlede (telefon)",

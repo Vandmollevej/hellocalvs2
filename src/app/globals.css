@@ -327,11 +327,6 @@ textarea::selection,
    supplere dem uden !important. Ingen side må vælge text-[Npx], text-sm,
    font-semibold o.l. selv — vælg en rolle herunder. */
 @layer components {
-  .hf-heading {
-    font-family: var(--font-hf-heading);
-    font-weight: 700;
-  }
-
   /* 32 px */
   .hf-type-hero {
     margin: 0;
@@ -498,6 +493,13 @@ textarea::selection,
   }
 
   /* Eneste vægt-modifier: fed (700) på en af rollerne ovenfor. */
+  /* Overskrift-vægt: står EFTER typografi-rollerne, så "hf-type-body hf-heading"
+     faktisk bliver fed (før overskrev rollens font-weight: 400 den). */
+  .hf-heading {
+    font-family: var(--font-hf-heading);
+    font-weight: 700;
+  }
+
   .hf-type-strong {
     font-weight: 700;
   }

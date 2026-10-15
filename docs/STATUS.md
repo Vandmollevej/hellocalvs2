@@ -2,6 +2,14 @@
 
 - Verpoorten Original fik titlen "Vare 40157818": forsidens AI gav brand og variant, men intet varenavn, og reservenavnet blev stående. Nu udfylder forsideprompten (front-v6) altid varetypen, og giver den alligevel intet navn, navngives varetypen ud fra brand, variant og synlig tekst (`src/lib/product-type-name.ts`). Eksisterende varer med reservenavnet rettes 90 sek. efter deploy og ved nattens `uncertainty-rerun`; registreringernes snapshots røres ikke. Ikke prøvet mod OpenAI/rigtig database her. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: Lange brand-/subbrandnavne brydes ved produktcirklen
+
+- Varesiden (web + native): brand- og subbrandnavne i tekst brydes i flere linjer i stedet for at gå ud over sidens kant (fx "Barbeque Buddies" over Johnny's). Se REGLER.md.
+
+## 2026-10-15: AI'en kan ikke længere opfinde brands
+
+- Et ukendt brandnavn fra AI'en oprettes kun ud fra et sikkert, helt synligt logo (`newBrandAllowed`); ellers intet brand og `brand_unknown_skipped` i loggen. Forsiden, stregkode-logoet og eksterne billeder. Se DECISIONS/REGLER 2026-10-15.
+
 ## 2026-10-15: Tilføj-kameraets forsidefoto = søgerens kvadrat
 
 - Forsidefotoet blev gemt som hele 9:16-kamerabilledet, mens søgeren kun viste midterkvadratet, så varen så langt væk ud bagefter og fik færre pixels til OCR. Nu er alle fotos præcis det, søgeren viste (kun web; native bruger telefonens kamera). Ikke prøvet på telefon her. Se DECISIONS 2026-10-15.

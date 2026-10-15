@@ -108,6 +108,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
+  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
+  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
+  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -131,6 +135,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
   Mangler et kædemærke, så tilføj det dér.
+- **AI'en må ikke opfinde brands (bruger 2026-10-15)**: et brandnavn, som
+  Brand-tabellen ikke kender, oprettes kun ud fra et sikkert (logoConfidence
+  ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
+  (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
+  og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
@@ -165,6 +174,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - "Overlay"/"popup" = `BottomSheet` (`.hf-bottom-sheet`), se KRAV.md. På mobil (< 1024 px) er den et træk-bart bundark; **på web (≥ 1024 px) er den en lightbox** — centreret, rummelig, X øverst til højre, ingen trækstreg (bruger 2026-10-11, KRAV.md "Popups på web"). Gælder også popups der ellers kommer ind fra oven eller bunden. Kun web; native uændret.
 - Aktiviteten `open_water` hedder "Svømning i åbent vand" — aldrig "Havsvømning" (bruger 2026-10-09). "havsvømning" er kun et søgeord.
 - Visuelle ændringer: læs design.md; størrelse/vægt ændres i moderate trin.
+- **Overskrifterne "Ingredienser" og "Næringsindhold" på varesiden er fede** (bruger 2026-10-15, efterlyst flere gange). `.hf-heading` står i `globals.css` EFTER typografi-rollerne, så `hf-type-body hf-heading` altid bliver fed — flyt den aldrig op foran rollerne igen (så nulstiller rollens `font-weight: 400` den). Native: `bold = true`.
 - **Kolonne-/sektionsoverskrifter i admin** (brugerens regel 2026-10-11): den
   globale overskrift er `.hf-type-section-title` ("──── Tekst ────", design.md
   §4.3) — brug den som `<h2>` over hver kolonne/sektion, aldrig en lille fed
