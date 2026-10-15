@@ -6,6 +6,7 @@ import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
+import { repairPlaceholderNames } from "@/lib/product-type-name";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
@@ -164,6 +165,12 @@ export function startScheduler() {
 
   // Personas: én kørsel pr. ny build (deploy), docs/DECISIONS.md 2026-10-03.
   void requestPersonaRunOnDeploy().catch((error) => console.error("[scheduler] Personas-deploykørsel fejlede", error));
+
+  // Varer med reservenavnet "Vare <stregkode>" navngives straks efter et
+  // deploy, ikke først ved nattens genkørsel (brugerens fejlmelding 2026-10-15).
+  setTimeout(() => {
+    void repairPlaceholderNames().catch((error) => console.error("[scheduler] Reservenavne fejlede", error));
+  }, 90_000);
 
   // Første tjek kort efter opstart, derefter hvert minut.
   setTimeout(tick, 30_000);

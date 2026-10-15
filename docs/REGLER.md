@@ -32,6 +32,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Varer og navngivning
 
+- **Aldrig "Vare <stregkode>" som titel** (2026-10-15): reservenavnet fra hurtig-oprettelsen skal altid erstattes af varetypen — fra forsiden, ellers navngivet ud fra brand/variant/synlig tekst (`src/lib/product-type-name.ts`). Varetypen er aldrig kun brand eller variant.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,
@@ -107,6 +108,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
   (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
+- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
+  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
+  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
+  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -130,6 +135,11 @@ ikke her, er den ikke registreret og skal tilføjes.
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
   Mangler et kædemærke, så tilføj det dér.
+- **AI'en må ikke opfinde brands (bruger 2026-10-15)**: et brandnavn, som
+  Brand-tabellen ikke kender, oprettes kun ud fra et sikkert (logoConfidence
+  ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
+  (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
+  og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden

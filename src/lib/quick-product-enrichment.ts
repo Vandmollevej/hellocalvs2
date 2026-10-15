@@ -12,7 +12,7 @@ import { localIngredients, localNutrition } from "@/lib/local-label";
 import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 import { hasIngredientsHeading } from "@/lib/product-ocr";
 import { createBarcodeLogoCutoutJob, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
-import { matchBrand } from "@/lib/brand-match";
+import { matchBrand, newBrandAllowed } from "@/lib/brand-match";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
@@ -27,6 +27,7 @@ import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
+import { nameProductType } from "@/lib/product-type-name";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -135,8 +136,20 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     // AI'ens brand, men står et kendt brand ordret på forsiden (fx EDEKA ved
     // vareserien Herzstücke), vinder databasens brand, og AI'ens brand bliver
     // subbrand (brugerens krav 2026-10-02).
+    // Et ukendt navn oprettes kun ud fra et sikkert, helt synligt logo
+    // (newBrandAllowed, DAGO 2026-10-15); ellers får varen intet brand.
     const aiBrand = (result.brand ?? result.logoText ?? "").trim();
-    const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? aiBrand).trim();
+    const newBrand = newBrandAllowed(result.logoConfidence, result.logoBox) ? aiBrand : "";
+    const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? newBrand).trim();
+    if (aiBrand && !brandName) {
+      await debugLog({
+        category: "scan",
+        event: "brand_unknown_skipped",
+        level: "warn",
+        message: `Ukendt brand "${aiBrand}" ikke oprettet — logoet var usikkert (${result.logoConfidence}) eller skåret af ved kanten`,
+        productId,
+      });
+    }
     const brand = brandName
       ? await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } })
       : null;
@@ -150,7 +163,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    const productName = rawName;
+    // Intet varenavn på forsiden: varetypen navngives ud fra brand, variant og
+    // synlig tekst, så reservenavnet "Vare <stregkode>" ikke bliver titlen.
+    const typeName = rawName ? null : await nameProductType(result).catch(() => null);
+    const productName = rawName || typeName || "";
     recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
@@ -182,8 +198,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     await debugLog({
       category: "scan",
       event: "enrich_front",
-      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${result.productName?.trim() ? "" : " (intet navn fundet, reservenavn beholdt)"}`,
-      level: result.productName?.trim() ? "info" : "warn",
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${
+        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : " (intet navn fundet, reservenavn beholdt)"
+      }`,
+      level: productName ? "info" : "warn",
       productId,
       durationMs: Date.now() - startedAt,
       data: {
@@ -254,7 +272,8 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     const logoText = result.logoText?.trim() || null;
     const changes: Prisma.ProductUpdateInput = {};
     let brand = product.brand;
-    const brandName = (brandMatch?.name ?? logoText ?? "").trim();
+    const newBrand = logoText && newBrandAllowed(result.logoConfidence, result.logoBox) ? logoText : "";
+    const brandName = (brandMatch?.name ?? newBrand).trim();
     if (!brand && brandName && result.logoConfidence >= 0.5) {
       brand = await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName }, select: { id: true, name: true } });
       changes.brand = { connect: { id: brand.id } };
