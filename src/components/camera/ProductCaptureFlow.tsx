@@ -118,8 +118,7 @@ const GUIDE_DIM: Record<Exclude<CaptureStep, "barcode">, number> = { front: 0.2,
 // Fejlede tekstlæsninger i træk på energi/indhold: hvert femte logges.
 const LABEL_LOG_EVERY = 5;
 // Billedet til den lokale OCR (forlæsningen og udløserens videobillede):
-// energi/indhold beskæres til søgerens kvadrat, forsiden ikke
-// (docs/DECISIONS.md 2026-09-17).
+// beskæres til søgerens kvadrat på alle trin (docs/DECISIONS.md 2026-10-15).
 const LIVE_FRAME_MAX_SIDE = 1600;
 // Forlæsningen (docs/DECISIONS.md 2026-10-15): et billede læses, når videoen
 // har været skarp og stille i to målinger, og der holdes så lang en pause
@@ -155,9 +154,10 @@ function statusFromCameraError(error: unknown): CameraStatus {
 // scanning afgør kun, hvornår det tages, og hvad telefonen selv læste.
 type Frame = { url: string; width: number; height: number };
 
-function liveCrop(step: CaptureStep): StillCrop {
-  return step === "front" ? "none" : "square";
-}
+// Alle fotos er præcis det kvadrat, brugeren så i søgeren (docs/DECISIONS.md
+// 2026-10-15, "forsidefotoet = søgerens kvadrat"). Hele 9:16-rammen fik
+// varen til at se langt væk ud og gav færre pixels til teksten.
+const PHOTO_CROP: StillCrop = "square";
 
 // Den hvide udfyldning, når et trin er klaret: tekstfeltet (energi/indhold)
 // i det læste billedes pixels, eller varens kontur (forside).
@@ -850,7 +850,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   );
   const onPreReadFrame = useCallback((frame: LiveFrame) => preReadFrameRef.current(frame), []);
   const preReading = step !== "barcode" && cameraStatus === "active" && !working && !flash && !stepDone && !submitting && !createFailed;
-  useLiveFrames(videoRef, preReading, PRE_READ_MIN_PROGRESS, liveCrop(step), LIVE_FRAME_MAX_SIDE, canPreRead, onPreReadFrame);
+  useLiveFrames(videoRef, preReading, PRE_READ_MIN_PROGRESS, PHOTO_CROP, LIVE_FRAME_MAX_SIDE, canPreRead, onPreReadFrame);
 
   // Stregkoden holdes ca. 20 cm fra kameraet. Autofokus er standard; er
   // billedet stadig uskarpt, skiftes der mellem fast fokus på 20 cm og
@@ -901,11 +901,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const startedAt = Date.now();
     let captured: Still | null;
     if (step === "nutrition" || step === "ingredients") {
-      const pair = await captureStillWithFull(videoRef.current, liveCrop(step));
+      const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP);
       captured = pair?.still ?? null;
       if (pair) trackProcessing(step, shot, uploadFullPhoto(step, pair.full));
     } else {
-      captured = await captureStill(videoRef.current, liveCrop(step));
+      captured = await captureStill(videoRef.current, PHOTO_CROP);
     }
     const still = captured ?? fallback;
     scanLog(flowId, "photo_captured", {
@@ -1264,7 +1264,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     if (working || step === "barcode" || flash || stepDone || flashRef.current || cameraStatus !== "active") return;
     const current = step;
     const pressedAt = Date.now();
-    const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, liveCrop(current));
+    const live = captureVideoFrame(videoRef.current, LIVE_FRAME_MAX_SIDE, PHOTO_CROP);
     if (!live) {
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${current}"`, barcode: dataRef.current.barcode });
       return;
@@ -1614,7 +1614,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           )}
           <p className="hf-type-caption text-center">{stepHints[step]}</p>
           {step !== "barcode" && (
-            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.preReadHint")}</p>
+            <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.shutterHint")}</p>
           )}
           {!rescan && Object.values(done).some(Boolean) && (
             <p className="hf-type-micro text-text-secondary text-center">{t("cameraCreate.retakeHint")}</p>

@@ -1064,7 +1064,6 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Skapar varan …",
     "sendingPhotos": "Skickar bilderna …",
-    "preReadHint": "Kameran läser texten medan du siktar. Tryck på avtryckaren när varan är skarp.",
     "processingPhotos": "Bearbetar bilder: {steps} …"
   },
   "foods": {

@@ -1064,7 +1064,6 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Creating the product …",
     "sendingPhotos": "Sending the photos …",
-    "preReadHint": "The camera reads the text while you aim. Press the shutter when the product is in focus.",
     "processingPhotos": "Processing photos: {steps} …"
   },
   "foods": {

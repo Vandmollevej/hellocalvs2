@@ -1064,7 +1064,6 @@
     "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet.",
     "creating": "Opretter varen …",
     "sendingPhotos": "Sender billederne …",
-    "preReadHint": "Kameraet læser teksten, mens du sigter. Tryk på udløseren, når varen står skarpt.",
     "processingPhotos": "Behandler billeder: {steps} …"
   },
   "foods": {
