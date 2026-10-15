@@ -2,6 +2,11 @@
 
 - En vare, der har ligget i databasen i over to år, fremstår som ny, når en indlogget kunde scanner den: kameraet tager forside, energi og indhold (web + native), kunden får varens tidligere info med det samme, og fotoene gemmes kun. Det natlige job `product-recheck` (02:40) sammenligner det nye foto med originalen og læser energi/indhold; ændringer går til admin → Nye varer → "2-års tjek" (tælles med på forsidens "Nye varer") med originalen og det nye foto side om side, det nyeste valgt som standard. Billedet fritlægges først efter admins ja, om natten. Nye tal gælder kun registreringer fra og med scanningen; historikken røres ikke. Migration `20261015120000_product_recheck` skal med deployet. Prøvet mod lokal Postgres. Se DECISIONS/REGLER 2026-10-15.
 
+## 2026-10-15: Skelet-glimtet gjort tydeligt
+
+- Skelet-fladerne (fx produktnavnet, mens det læses, og produktcirklen uden billede) var animerede, men glimtet var så bredt og svagt, at de så statiske ud. Glimtet er nu et smallere, lysere bånd (`#FBF9F5`), der løber fra venstre mod højre og ses ca. 80 % af tiden — ca. 55 % stærkere kontrast. Web + native (`HcSkeleton` løb før fra højre mod venstre). Se REGLER 2026-10-15.
+- Varesiden: mens brandet læses, står en glimtende boks på brandets plads ved cirklen (brand/subbrand skjules), og den grønne linje (størrelse · variant) er en glimtende boks, mens navnet læses.
+
 ## 2026-10-15: Ubeskårne bagsidebilleder + natlig engangsanalyse
 
 - Energi/indhold tager nu også hele kamerabilledet (ubeskåret, op til 4096 px) og uploader det under flowet (`POST /api/products/back-photos`, tabel `product_back_photos`). Serveren gemmer det byte for byte (kun metadata fjernet).
