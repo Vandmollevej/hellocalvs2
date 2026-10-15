@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { brandProductName } from "@/lib/product-placeholder-name";
-import { findProductType } from "@/lib/product-type-name";
+import { askProductType, findProductType, nameProductType } from "@/lib/product-type-name";
 import type { ProductFrontAnalysis } from "@/lib/product-analysis-types";
 import { debugLog } from "@/lib/debug-log";
 
@@ -65,18 +65,24 @@ export async function repairPlaceholderNames(now: Date = new Date()): Promise<nu
   return repaired + (await nameBrandOnlyProducts(now));
 }
 
-// Scannede varer, der kun hedder brand + subbrand (fx "Verpoorten Original"),
-// fordi forsiden ikke gav varetypen: spørg én gang "Hvilken produkttype er
-// <brand subbrand variant>?" og omdøb varen, hvis svaret er sikkert
-// (brugerens regel 2026-10-15). Brand + subbrand var kun et nødnavn, så
-// registreringer med præcis det navn får varetypen med.
+// Varer, der kun hedder brand + subbrand (fx "Verpoorten"), fordi forsiden
+// ikke gav varetypen: spørg "Hvilken produkttype er <brand subbrand variant>?"
+// og omdøb varen, hvis svaret er sikkert (brugerens regel 2026-10-15). Brand +
+// subbrand var kun et nødnavn, så registreringer med præcis det navn får
+// varetypen med. Kun et navn, brugeren selv har valgt, røres ikke.
+// Fejler kaldet (netværk, OpenAI), prøves igen næste kvarter; kun et svar
+// ("ved ikke") markerer varen som spurgt. Varer spurgt før RETRY_ASKED_BEFORE
+// spørges én gang til: de blev sprunget over, når forsiden havde et navn eller
+// manglede, eller markeret som spurgt efter en fejl (brugerens fejlmelding
+// 2026-10-15: Verpoorten fik stadig ikke varetypen).
 const BRAND_ONLY_BATCH = 25;
+export const RETRY_ASKED_BEFORE = new Date("2026-10-15T17:30:00Z");
 
 async function nameBrandOnlyProducts(now: Date): Promise<number> {
   const rows = await prisma.$queryRaw<{ id: string }[]>`
     SELECT p.id FROM "products" p
     JOIN "brands" b ON b.id = p."brandId"
-    WHERE p."productTypeAskedAt" IS NULL
+    WHERE (p."productTypeAskedAt" IS NULL OR p."productTypeAskedAt" < ${RETRY_ASKED_BEFORE})
       AND p."externalSource" IS NULL
       AND NOT ('name' = ANY(p."pendingFields"))
       AND (
@@ -88,49 +94,63 @@ async function nameBrandOnlyProducts(now: Date): Promise<number> {
     ORDER BY p."createdAt" DESC
     LIMIT ${BRAND_ONLY_BATCH}
   `;
-  if (!rows.length) return 0;
-  const products = await prisma.product.findMany({
-    where: { id: { in: rows.map((row) => row.id) } },
+  let renamed = 0;
+  for (const row of rows) {
+    if (await nameBrandOnlyProduct(row.id, now).catch(() => false)) renamed += 1;
+  }
+  return renamed;
+}
+
+// Én vare: også brugt af varesiden, så varen får varetypen, når den vises.
+export async function nameBrandOnlyProduct(productId: string, now: Date = new Date()): Promise<boolean> {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
     select: {
       id: true,
       name: true,
       subbrand: true,
       variant: true,
+      packageSizeText: true,
+      language: true,
       brand: { select: { name: true } },
+      filters: { select: { alcoholPercent: true } },
       aiAnalyses: { where: { kind: "FRONT" }, orderBy: { createdAt: "desc" }, take: 1, select: { prediction: true, correction: true } },
     },
   });
-  let renamed = 0;
-  for (const product of products) {
-    const analysis = product.aiAnalyses[0];
-    const front = analysis?.prediction as ProductFrontAnalysis | null | undefined;
-    const chosen = (analysis?.correction as { productName?: string | null } | null)?.productName?.trim();
-    // Kun varer, hvis forside blev læst uden varenavn — en vare, brugeren selv
-    // har navngivet (fx "Coca-Cola"), røres ikke.
-    if (!front || front.productName?.trim() || (chosen && chosen === product.name.trim())) {
-      await prisma.product.update({ where: { id: product.id }, data: { productTypeAskedAt: now } });
-      continue;
-    }
-    const typeName = await findProductType(front, {
+  if (!product) return false;
+  const analysis = product.aiAnalyses[0];
+  const chosen = (analysis?.correction as { productName?: string | null } | null)?.productName?.trim();
+  // Brugeren har selv valgt navnet (fx "Coca-Cola").
+  if (chosen && chosen === product.name.trim()) {
+    await prisma.product.update({ where: { id: product.id }, data: { productTypeAskedAt: now } });
+    return false;
+  }
+  const front = analysis?.prediction as ProductFrontAnalysis | null | undefined;
+  const fromFront = front ? await nameProductType(front).catch(() => null) : null;
+  // Fejl kastes videre: varen markeres ikke som spurgt og prøves igen.
+  const typeName =
+    fromFront ??
+    (await askProductType({
       brand: product.brand?.name,
       subbrand: product.subbrand,
       variant: product.variant,
-    });
-    if (!typeName) {
-      await prisma.product.update({ where: { id: product.id }, data: { productTypeAskedAt: now } });
-      continue;
-    }
-    await prisma.$transaction([
-      prisma.product.update({ where: { id: product.id }, data: { name: typeName, productTypeAskedAt: now } }),
-      prisma.registration.updateMany({ where: { productId: product.id, titleSnapshot: product.name }, data: { titleSnapshot: typeName } }),
-    ]);
-    renamed += 1;
-    await debugLog({
-      category: "scan",
-      event: "product_type_named",
-      message: `"${product.name}" hedder nu "${typeName}" (varetypen spurgt hos OpenAI)`,
-      productId: product.id,
-    });
+      packageSizeText: product.packageSizeText,
+      alcoholPercent: product.filters?.alcoholPercent ?? null,
+      language: product.language,
+    }));
+  if (!typeName) {
+    await prisma.product.update({ where: { id: product.id }, data: { productTypeAskedAt: now } });
+    return false;
   }
-  return renamed;
+  await prisma.$transaction([
+    prisma.product.update({ where: { id: product.id }, data: { name: typeName, productTypeAskedAt: now } }),
+    prisma.registration.updateMany({ where: { productId: product.id, titleSnapshot: product.name }, data: { titleSnapshot: typeName } }),
+  ]);
+  await debugLog({
+    category: "scan",
+    event: "product_type_named",
+    message: `"${product.name}" hedder nu "${typeName}" (varetypen spurgt hos OpenAI)`,
+    productId: product.id,
+  });
+  return true;
 }
