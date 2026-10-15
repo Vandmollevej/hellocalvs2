@@ -249,6 +249,8 @@ services:
       GOOGLE_VISION_CREDENTIALS: ${GOOGLE_VISION_CREDENTIALS:-}
       GOOGLE_VISION_API_KEY: ${GOOGLE_VISION_API_KEY:-}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      # AI-rentegning af logoer uden fritlagt fund online (docs/DECISIONS.md 2026-10-15).
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       LOGO_AGENT_RUN_HOUR: ${LOGO_AGENT_RUN_HOUR:-3}
       LOGO_AGENT_BATCH_SIZE: ${LOGO_AGENT_BATCH_SIZE:-25}
     volumes:

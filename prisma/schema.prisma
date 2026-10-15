@@ -4195,6 +4195,9 @@ model BrandLogoCandidate {
   confidence  Float
   brandInPage Boolean         @default(false)
   transparent Boolean         @default(false)
+  // AI-rentegning af originaludklippet (gpt-image-1), når intet fritlagt logo
+  // fandtes online (docs/DECISIONS.md 2026-10-15). sourceUrl = "openai:<model>".
+  aiGenerated Boolean         @default(false)
   width       Int
   height      Int
   createdAt   DateTime        @default(now())

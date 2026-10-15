@@ -243,6 +243,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
+## Billeder og logoer: originalen online først (user rule 2026-10-15)
+
+Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: kun hvis intet fritlagt logo findes, rentegner AI originaludklippet med prompten "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. Der må med andre ord ikke fortolkes og skabes noget med AI." Admin viser altid originaludklippet ved siden af det hentede/rentegnede logo (`/admin/logos`).
+
 ## Proces
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),
