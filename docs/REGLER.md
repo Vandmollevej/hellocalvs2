@@ -20,7 +20,9 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Open Food Facts** gemmes på originalsproget (`language` = OFF's `lang`, `da` når OFF har en dansk titel); der skrives aldrig længere en dansk oversættelse i kolonnerne (bruger 2026-10-15, valg A). Ældre OFF-varer med `nameOriginal` røres ikke.
 - **Lister** (dagbog, favoritter, mest brugte): `localizedProductNames` — kun gemte oversættelser, manglende laves i baggrunden; dagbogens titel skiftes kun i svaret, når `titleSnapshot` stadig er varens originalnavn (snapshottet i databasen røres aldrig).
 - **Gælder også alt, der bygges fremover:** en ny skærm, liste eller API, der viser varetekst, skal bruge `translationFor` (enkelt vare) eller `localizedProductNames` (lister). Står også i AGENTS.md.
-- Tilbage (trin 3): søgefilteret (kun brugerens sprog + engelsk + landets stregkoder, ingen oversættelse i søgningen), natligt job og Python-sprogrobot.
+- **Søgning** (bruger 2026-10-15): forslagene viser kun varer på brugerens sprog, engelske varer, varer med ukendt sprog og varer med stregkode fra brugerens land. Varer på andre sprog vises kun, når intet af det giver et resultat (så søger brugeren bevidst på et andet sprog). Søgningen oversætter aldrig. `inViewerLanguage` i `src/lib/product-language.ts`, brugt i `GET /api/products`.
+- **Natlig oversættelse** (jobbet `product-translations`, kl. 03:15): oversætter op til 200 varer pr. nat til de app-sprog, brugerne har valgt, så ingen venter. Samme kilderegel som ovenfor.
+- **Sprogrobot** (`language-local` i quality-control-agent, kl. 02:50, lingua, lokalt): tjekker hver scannet vare og Open Food Facts/USDA-vare én gang (`languageCheckedAt`) og retter sproget, når den er sikker (tekst ≥ 25 tegn, sikkerhed ≥ 0,85). Ark/Frida/butikker, ikke-latinske tegn og dansk/norsk/svensk indbyrdes røres aldrig.
 
 ## Varer og navngivning
 

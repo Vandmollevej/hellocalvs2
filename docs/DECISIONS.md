@@ -8,6 +8,14 @@ Brugerens krav: administration af generiske produkter i adminpanelet med manuel 
 - **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
 - **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
 - **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+## 2026-10-15: Varens sprog — trin 3 (søgning, natlig oversættelse, sprogrobot)
+
+Brugerens svar: "Andre sprog skal ikke vises til at starte med i forslagene når man skriver. Kun hvis der IKKE er andre matches, og det må være intenderet at brugeren søger efter noget på et andet sprog, skal det vises." + natlig oversættelse + sprogrobot.
+
+- **Søgning:** `GET /api/products` rangerer først kun kandidater på brugerens sprog, engelsk, ukendt sprog eller med stregkode fra brugerens land (`inViewerLanguage`). Giver det ingen træffere, rangeres alle kandidater — andre sprog er en reserve, aldrig blandet ind. Ingen oversættelse i søgningen.
+- **Natlig oversættelse:** app-jobbet `product-translations` (03:15) oversætter varer uden oversættelse til de app-sprog, brugere med oversættelse slået til har valgt; højst 200 pr. kørsel; kilde-reglen (`isTranslatableSource`) gælder.
+- **Sprogrobot:** `language-local` (quality-control-agent, 02:50, `lingua-language-detector` 2.1.1, lav-præcisionstilstand ~100 MB) retter `language` på scannede og OFF/USDA-varer, når teksten er lang nok og robotten sikker; dansk/norsk/svensk byttes aldrig indbyrdes, skriftsprog røres ikke. Ny kolonne `languageCheckedAt` (migration `20261015160000_product_language_checked`).
+
 ## 2026-10-15: Varens sprog — trin 2 (lister, OFF på originalsprog, importerede venter)
 
 Brugerens svar: "Vent med oversættelse af produktark, frida mv. Resten ja og sørg for at det opdateres når vi designer videre." (resten = trin 2 og valg A for Open Food Facts).

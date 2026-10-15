@@ -249,6 +249,47 @@ export async function localizedProductNames(
   return result;
 }
 
+// --- Natligt job: oversæt på forhånd ---------------------------------------
+
+const NIGHTLY_LIMIT = 200;
+
+// Oversætter varer, der kan oversættes, til de app-sprog, som brugere har
+// valgt (docs/DECISIONS.md 2026-10-15), så ingen venter ved første visning.
+// Kun varer uden gyldig oversættelse; højst 200 kald pr. kørsel.
+export async function translateProductsAhead(): Promise<{ message: string; count: number }> {
+  const localeRows = await prisma.user.groupBy({
+    by: ["appLocale"],
+    where: { translateForeignText: true, forgottenAt: null, closedAt: null },
+  });
+  const locales = [...new Set(localeRows.map((row) => appLocaleOf(row.appLocale)))];
+  let translated = 0;
+  let checked = 0;
+  for (const locale of locales) {
+    if (checked >= NIGHTLY_LIMIT) break;
+    const products = await prisma.product.findMany({
+      where: {
+        discontinued: false,
+        privateOwnerId: null,
+        language: { notIn: ["", locale] },
+        NOT: { pendingFields: { has: "name" } },
+        translations: { none: { locale } },
+      },
+      select: TRANSLATABLE_SELECT,
+      orderBy: { createdAt: "desc" },
+      take: NIGHTLY_LIMIT - checked,
+    });
+    for (const product of products) {
+      if (!isTranslatableSource(product)) continue;
+      checked += 1;
+      if (await translationFor(product, locale).catch(() => null)) translated += 1;
+    }
+  }
+  return {
+    message: `${translated} varer oversat på forhånd (${locales.join(", ") || "ingen sprog"})`,
+    count: translated,
+  };
+}
+
 // Sprognavnet på brugerens sprog ("kinesisk", "Chinese" …).
 export function languageName(code: string | null | undefined, viewer: Locale): string | null {
   const language = languageCode(code);

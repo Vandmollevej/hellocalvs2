@@ -2,6 +2,10 @@
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: Varens sprog — trin 3
+
+- Søgeforslag viser kun varer på brugerens sprog/engelsk/landets stregkoder; andre sprog kun når der ellers intet er. Natligt job `product-translations` oversætter på forhånd; sprogrobotten `language-local` (lingua) retter sproget på scannede/OFF-varer. Migration `20261015160000_product_language_checked`. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Varens sprog — trin 2
 
 - Dagbog, favoritter og mest brugte viser varens navn på brugerens sprog (`localizedProductNames`); Open Food Facts gemmes på originalsproget (valg A, `translate-da.ts` fjernet); importerede kilder (ark, Frida, butikker, HelloFresh) oversættes ikke endnu (`TRANSLATE_IMPORTED_SOURCES`). Regel i AGENTS.md/REGLER, så nye skærme følger med. Trin 3 (søgefilter, natligt job, sprogrobot) står tilbage. Se DECISIONS 2026-10-15.

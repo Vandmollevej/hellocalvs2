@@ -29,7 +29,7 @@ import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
 import { sendDueWeighReminders } from "@/lib/weigh-reminders";
 import { runPulseNightJob } from "@/lib/pulse-candidates";
-import { backfillProductLanguages } from "@/lib/product-translations";
+import { backfillProductLanguages, translateProductsAhead } from "@/lib/product-translations";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -156,6 +156,7 @@ export function startScheduler() {
       "frida-estimates": runFridaEstimates,
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,
+      "product-translations": translateProductsAhead,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

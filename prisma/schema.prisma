@@ -1449,6 +1449,9 @@ model Product {
   // ProductTranslation. null = ukendt endnu (udfyldes af vedligeholdet,
   // src/lib/product-language.ts) — en vare med ukendt sprog oversættes ikke.
   language               String?
+  // Sprogrobotten (scripts/quality-control-agent/language_local.py) har læst
+  // teksten og evt. rettet language. null = ikke tjekket endnu.
+  languageCheckedAt      DateTime?
   translations           ProductTranslation[]
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
