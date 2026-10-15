@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -298,12 +299,31 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
  * tile per missing item (drag down). The closed strip is text only — the photo
  * tiles appear only once it is pulled down (user rule 2026-10-15). Tiles are
  * (label, href); a null href opens [href]. Place it inside a Box over the content.
+ * [scrollOffset] is the page's scroll position: scrolling down folds the banner
+ * to its grip, reaching the top again unfolds it to what it was — unless the
+ * user folded it themselves (user rule 2026-10-15).
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<Pair<String, String?>>) {
+fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<Pair<String, String?>>, scrollOffset: Int = 0) {
     val nav = LocalNavigator.current
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
+    // The stage before scrolling folded it; null when scrolling did not fold it.
+    var restoreTo by remember { mutableStateOf<Int?>(null) }
+    var lastOffset by remember { mutableStateOf(scrollOffset) }
+    val collapseAfterPx = with(LocalDensity.current) { 24.dp.roundToPx() }
+    LaunchedEffect(scrollOffset) {
+        if (scrollOffset > lastOffset && scrollOffset > collapseAfterPx) {
+            if (stage != 0) {
+                restoreTo = stage
+                stage = 0
+            }
+        } else if (scrollOffset <= 0) {
+            restoreTo?.let { stage = it }
+            restoreTo = null
+        }
+        lastOffset = scrollOffset
+    }
     val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
     Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
         if (stage >= 1) {
@@ -338,12 +358,16 @@ fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: L
         }
         Box(
             Modifier.fillMaxWidth().height(20.dp)
-                .clickable { stage = if (stage == 1) 0 else 1 }
+                .clickable {
+                    restoreTo = null
+                    stage = if (stage == 1) 0 else 1
+                }
                 .pointerInput(Unit) {
                     var total = 0f
                     detectVerticalDragGestures(
                         onDragStart = { total = 0f },
                         onDragEnd = {
+                            restoreTo = null
                             if (total >= 16 * density) stage = if (stage == 0) 1 else 2
                             else if (total <= -16 * density) stage = if (stage == 2) 1 else 0
                         },

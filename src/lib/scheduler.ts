@@ -114,6 +114,8 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await backfillMissingProductNutritionFeatures();
   // Varens sprog fra kilden for varer uden (docs/DECISIONS.md 2026-10-15) — 500 pr. tick, ingen AI-kald.
   await backfillProductLanguages().catch((error) => console.error("[scheduler] Varesprog fejlede", error));
+  // Varer, der stadig hedder "Vare <stregkode>", omdøbes (docs/REGLER.md → Aldrig "Vare <stregkode>").
+  await repairPlaceholderNames(now).catch((error) => console.error("[scheduler] Reservenavne fejlede", error));
   // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
   await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
   // Stripe: registrér webhook og synk abonnementer nær fornyelse (docs/DECISIONS.md 2026-09-29).

@@ -33,7 +33,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 ## Varer og navngivning
 
 - **Alkohol** (user rule 2026-10-15): alkoholprocenten (% vol) læses altid og gemmes på varen. En alkoholisk drik uden næringstabel står aldrig med 0 kcal: alkoholens energi regnes præcist (7 kcal/g), resten skønnes ud fra varetypen (`src/lib/alcohol-nutrition.ts`).
-- **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Står varetypen ikke på forsiden, navngives den ud fra brand og synlig tekst (Verpoorten Original → Eierlikör); kan den ikke afgøres, hedder varen brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet.
+- **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Står varetypen ikke på forsiden, navngives den ud fra brand og synlig tekst (Verpoorten Original → Eierlikör); kan den ikke afgøres, hedder varen brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet. Værn: varesidens API viser brand + subbrand, hvis reservenavnet stadig står i databasen (`displayProductName`), og `repairPlaceholderNames` kører hvert kvarter — også på varer, hvis navn har hængt som ventende i over 30 min.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,
@@ -300,6 +300,7 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 
 ## Open Food Facts-varer og forsidefotos i fuld opløsning (user rule 2026-10-15)
 
+- **Opdater-banneret foldes sammen ved scroll (user rule 2026-10-15)**: scrolles varesiden nedad, foldes "Optjen X points …" (også den nedtrukne del) sammen til trækstregen; når siden rammer toppen igen, folder det sig ud til det, det var. Har brugeren selv foldet det sammen, bliver det sådan. Web (`UpdatePointsBanner.tsx`) + native (`AddProductParts.kt`).
 - Banneret med kortet "Forside" vises på alle Open Food Facts-varer (ikke USDA), til nogen har fotograferet varen (`rescannedAt`), og på varer uden billede. På en OFF-vare tilbydes kun forsiden (energi/indhold kun, når de mangler), og den giver 10 points ("Optjen 10 points …"); ellers 20. OFF's billeder er dårlige og lavopløste; brugerens foto afløser dem efter fritlægning og admin-godkendelse. Logik: `hasOffFrontImage` i `src/lib/product-rescan-offer.ts` og `updatePointsFor` i `src/lib/product-update.ts` (brugerens valg 2026-10-15).
 - Forsidefotoet gemmes altid i fuld opløsning (op til 4096 px): kameraets opret-flow (`frontPhotoFull`) og opdater-varen (`fullPhoto`), web og app. AI'en får kun en nedskaleret kopi.
 

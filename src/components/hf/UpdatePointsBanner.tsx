@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { IconCamera } from "@tabler/icons-react";
 
@@ -11,7 +11,12 @@ import { IconCamera } from "@tabler/icons-react";
 // varen mangler indhold, energi eller produktbillede (src/lib/product-update.ts).
 // Den lukkede stribe er KUN teksten — fotoboksene (og alle andre fotoknapper)
 // står først, når banneret er trukket ned (brugerens regel 2026-10-15).
+// Scrolles siden nedad, foldes banneret sammen til stregen; når siden igen
+// rammer toppen, folder det sig ud til det, det var (brugerens regel
+// 2026-10-15). Har brugeren selv foldet det sammen, bliver det sådan.
 const DRAG_THRESHOLD_PX = 16;
+// Så langt nede skal siden være, før banneret foldes sammen.
+const SCROLL_COLLAPSE_PX = 24;
 
 type Stage = "collapsed" | "banner" | "panel";
 
@@ -30,6 +35,37 @@ export function UpdatePointsBanner({
 }) {
   const [stage, setStage] = useState<Stage>("banner");
   const startY = useRef<number | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // Det, banneret var, før scroll foldede det sammen — null, når det ikke er
+  // scroll, der har foldet det sammen.
+  const restoreTo = useRef<Stage | null>(null);
+
+  useEffect(() => {
+    const lastTop = new WeakMap<object, number>();
+    function onScroll(event: Event) {
+      const target = event.target;
+      if (target instanceof Node && rootRef.current?.contains(target)) return;
+      const element = target instanceof Element ? target : null;
+      const top = element ? element.scrollTop : window.scrollY;
+      const key = element ?? window;
+      const previous = lastTop.get(key) ?? 0;
+      lastTop.set(key, top);
+      // Vandrette scroll (karruseller) ændrer ikke scrollTop.
+      if (top === previous) return;
+      if (top > previous && top > SCROLL_COLLAPSE_PX) {
+        setStage((current) => {
+          if (current !== "collapsed") restoreTo.current = current;
+          return "collapsed";
+        });
+      } else if (top <= 0 && restoreTo.current) {
+        const next = restoreTo.current;
+        restoreTo.current = null;
+        setStage(next);
+      }
+    }
+    document.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    return () => document.removeEventListener("scroll", onScroll, { capture: true });
+  }, []);
 
   function onPointerDown(event: React.PointerEvent<HTMLButtonElement>) {
     startY.current = event.clientY;
@@ -41,6 +77,8 @@ export function UpdatePointsBanner({
     startY.current = null;
     if (start === null) return;
     const delta = event.clientY - start;
+    // Brugerens eget valg vinder over scroll.
+    restoreTo.current = null;
     if (delta >= DRAG_THRESHOLD_PX) {
       setStage((current) => (current === "collapsed" ? "banner" : "panel"));
     } else if (delta <= -DRAG_THRESHOLD_PX) {
@@ -54,7 +92,7 @@ export function UpdatePointsBanner({
   const showPanel = stage === "panel";
 
   return (
-    <div className="absolute inset-x-0 top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+    <div ref={rootRef} className="absolute inset-x-0 top-0 z-30 rounded-b-2xl bg-hf-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
       {showBanner && (
         <Link
           href={href}
