@@ -993,7 +993,20 @@ export function AddProductView({
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
                       bund og venstre kant 3/4 inde; uden logo brandnavnet i
                       fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
-                  {view.brand &&
+                  {/* Mens brandet læses, står en glimtende flade på brandets
+                      plads i stedet for brand og subbrand (REGLER 2026-10-15). */}
+                  {isPending("brand") && (
+                    <span
+                      style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
+                      className="pointer-events-none absolute bottom-0 z-10"
+                    >
+                      <ReadingSkeleton label={t("addProduct.reading")}>
+                        <Skeleton type="body" width={88} height={BRAND_NAME_HEIGHT_PX} />
+                      </ReadingSkeleton>
+                    </span>
+                  )}
+                  {!isPending("brand") &&
+                    view.brand &&
                     circleLogo?.kind !== "brand" &&
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -1017,7 +1030,8 @@ export function AddProductView({
                   {/* Subbrandet står oven over brandet efter samme regel:
                       logoet, hvis det findes, ellers navnet i fed grøn tekst
                       (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
-                  {subbrand &&
+                  {!isPending("brand") &&
+                    subbrand &&
                     circleLogo?.kind !== "subbrand" &&
                     (view.subbrandLogoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -1050,8 +1064,13 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-hero text-hf-black"><DecimalText text={productTitle} /></h1>
                 )}
-                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
-                {subtitle ? (
+                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op.
+                    Størrelse og variant læses sammen med navnet. */}
+                {isPending("name") ? (
+                  <ReadingSkeleton label={t("addProduct.reading")}>
+                    <Skeleton type="hero" width={150} height={30} className="my-1" />
+                  </ReadingSkeleton>
+                ) : subtitle ? (
                   <h2 className="hf-type-hero text-hf-green"><DecimalText text={subtitle} /></h2>
                 ) : (
                   <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>

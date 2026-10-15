@@ -177,6 +177,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   lyst glimt (`--hf-color-skeleton-highlight` `#FBF9F5`, ±0,35 boksbredde)
   løber fra venstre mod højre over alle skelet-flader (web `.hf-skeleton`,
   native `HcSkeleton`). Et bredt, svagt bånd blev set som en statisk boks.
+- Alle felter, der loades ind, står som glimtende skelet-bokse på deres egen
+  plads, til de er læst (user rule 2026-10-15) — på varesiden også brandet
+  (og subbrandet) ved cirklen og den grønne linje med størrelse/variant,
+  ikke kun navnet, næringen og ingredienserne. Web + native.
 
 ## Scan-appen: manuel udløser, aldrig automatisk (user rule 2026-10-14)
 

@@ -453,6 +453,7 @@ fun AddProductView(
                                 isFavorite = isFavorite,
                                 favoriteLabel = t.t(if (isFavorite) "search.removeFavorite" else "search.addFavorite"),
                                 onToggleFavorite = ::toggleFavorite,
+                                brandPending = isPending("brand"),
                                 brand = view.brand,
                                 subbrand = displayedSubbrand(view.brand?.name, view.subbrand),
                                 subbrandLogoUrl = view.subbrandLogoUrl,
@@ -462,7 +463,9 @@ fun AddProductView(
                             Column(Modifier.fillMaxWidth()) {
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
                                 else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
-                                HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
+                                // Size and variant are read together with the name.
+                                if (isPending("name")) FoodSkeleton(Modifier.padding(vertical = 4.dp).width(150.dp).height(28.dp))
+                                else HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
                             }
                         }
 
@@ -756,6 +759,7 @@ private fun ProductCircle(
     isFavorite: Boolean,
     favoriteLabel: String,
     onToggleFavorite: () -> Unit,
+    brandPending: Boolean,
     brand: ProductBrand?,
     subbrand: String?,
     subbrandLogoUrl: String?,
@@ -814,7 +818,13 @@ private fun ProductCircle(
                 contentAlignment = Alignment.Center,
             ) { FoodFavoriteIcon(isFavorite, 24.dp, HcColors.White) }
         }
-        if (brand != null && !brandInCircle) {
+        if (brandPending) {
+            // While the brand is read, a shimmering box stands in the brand's place (REGLER 2026-10-15).
+            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_NAME_HEIGHT_DP, 0).dp)) {
+                FoodSkeleton(Modifier.size(88.dp, BRAND_NAME_HEIGHT_DP.dp), RoundedCornerShape(50))
+            }
+        }
+        if (!brandPending && brand != null && !brandInCircle) {
             Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
                 if (!brand.logoUrl.isNullOrEmpty()) {
                     FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name)
@@ -823,7 +833,7 @@ private fun ProductCircle(
                 }
             }
         }
-        if (subbrand != null && !subbrandInCircle) {
+        if (!brandPending && subbrand != null && !subbrandInCircle) {
             // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
             val brandHeight = when {
                 brand == null || brandInCircle -> 0
