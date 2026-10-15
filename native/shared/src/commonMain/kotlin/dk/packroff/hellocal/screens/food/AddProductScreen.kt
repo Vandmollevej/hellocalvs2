@@ -742,6 +742,7 @@ fun AddProductView(
                         t.t(key) to (if (retake) "/camera?mode=product&retake=ingredients&product=${encodeUri(id)}" else null)
                     }
                 },
+                scrollOffset = scrollState.value,
             )
         }
         }
