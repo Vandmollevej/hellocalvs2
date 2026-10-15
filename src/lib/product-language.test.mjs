@@ -98,3 +98,10 @@ test("søgning: brugerens sprog, engelsk, ukendt og landets stregkoder", () => {
   assert.equal(inViewerLanguage({ language: "zh", barcodes: [{ code: "5701234567890" }] }, dk), true);
   assert.equal(inViewerLanguage({ language: "de" }, { locale: "de", region: "DE" }), true);
 });
+
+test("HelloFresh: landet giver sproget, uden land er det dansk", () => {
+  assert.equal(inferProductLanguage({ texts: ["Hähnchen"], externalSource: "HELLOFRESH", market: "DE" }), "de");
+  assert.equal(inferProductLanguage({ texts: ["Chicken"], externalSource: "HELLOFRESH", market: "GB" }), "en");
+  assert.equal(inferProductLanguage({ texts: ["Kylling"], externalSource: "HELLOFRESH", market: "DK" }), "da");
+  assert.equal(inferProductLanguage({ texts: ["Kylling"], externalSource: "HELLOFRESH" }), "da");
+});

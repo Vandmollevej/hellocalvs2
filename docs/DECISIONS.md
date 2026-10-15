@@ -8,6 +8,15 @@ Brugerens krav: administration af generiske produkter i adminpanelet med manuel 
 - **Import**: .xlsx (læses uden eksternt bibliotek, `src/lib/table-file-read.ts`) eller .csv (komma/semikolon). Kolonnenavne som arket; "Frida-navn" er kun reference. Rækker uden FoodID skal have kolonnerne Kilde og Kilde-URL. Forhåndsvisningen viser fejl pr. række (manglende felter, ukendt FoodID, dublet i filen, dublet mod eksisterende); kun gyldige rækker oprettes.
 - **Dublet** = samme Titel (ental), uanset store/små bogstaver, blandt aktive produkter.
 - **Sletning**: bruges produktet i registreringer, slettes det ikke, men skjules fra søgning (`archivedAt`, fanen "Slettede, men brugt", kan gendannes), så registreringerne (snapshots) stadig kan åbnes. Ubrugte slettes helt.
+## 2026-10-15: HelloFresh fra alle lande med land på retten
+
+Brugerens spørgsmål og svar: "har du Hello Fresh fra alle lande med inkl. registrering af landet på retten?" → "Ja, alle lande".
+
+- **Import:** `scripts/hellofresh-import/markets.py` med de 17 lande fra `src/lib/regions.ts` (BE = hollandsk, CH = tysk, CA = engelsk som standard). Danmark hver anden kørsel, de øvrige på skift. Ny kolonne `products.market` (migration `20261015170000_product_market`, eksisterende HelloFresh-retter = DK). `language` sættes af importen; `inferProductLanguage` giver HelloFresh landets sprog.
+- **Id'er:** Danmark uændret (`hf_<recipeId>`); andre lande `hf_<land>_<recipeId>` og externalId `<LAND>:<recipeId>`, ingredienser `hf_ing_<land>_<id>` — HelloFreshs id'er kan gå igen på tværs af lande, og ingrediensnavne er på landets sprog.
+- **Næring:** makroer og ekstra-tal findes med en ordliste pr. sprog (`read_nutrition`, 7 tests); ellers springes retten over. Kunne ikke prøves mod de udenlandske sider herfra (netværket i udviklingsmiljøet når kun hellofresh.dk-koden, ikke siderne) — første kørsel viser i admin → Robotter, hvilke lande der læses.
+- **Visning:** opskriftslisten (`/api/shared-recipes`) og HelloFresh-billedgenkendelsen viser kun brugerens eget lands retter; andre lande kun ved en søgning uden træffere. HelloFresh oversættes ikke endnu.
+
 ## 2026-10-15: Varens sprog — trin 3 (søgning, natlig oversættelse, sprogrobot)
 
 Brugerens svar: "Andre sprog skal ikke vises til at starte med i forslagene når man skriver. Kun hvis der IKKE er andre matches, og det må være intenderet at brugeren søger efter noget på et andet sprog, skal det vises." + natlig oversættelse + sprogrobot.

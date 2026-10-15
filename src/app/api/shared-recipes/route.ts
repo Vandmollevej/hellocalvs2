@@ -241,9 +241,16 @@ export async function GET(req: Request) {
     if (mealKits.length > 0 || includeValdemarsro) {
       const externalSources: ExternalProductSource[] = mealKits.map((key) => mealKitByKey(key).source);
       if (includeValdemarsro) externalSources.push("VALDEMARSRO");
-      const hfProducts = await prisma.product.findMany({
+      // HelloFresh fra alle lande (docs/DECISIONS.md 2026-10-15): kun retter
+      // fra brugerens eget land; andre landes retter kun, når en søgning
+      // ellers intet finder.
+      const ownMarket = user?.region ?? "DK";
+      const findMealKits = (allMarkets: boolean) => prisma.product.findMany({
         where: {
           externalSource: { in: externalSources },
+          ...(allMarkets
+            ? {}
+            : { AND: [{ OR: [{ externalSource: { not: "HELLOFRESH" } }, { market: ownMarket }, { market: null }] }] }),
           discontinued: false,
           // Importrobotterne gemmer 0 kcal + nutritionMissing, når næringen
           // er ukendt (fx Valdemarsro uden Frida-match). Sådanne retter må
@@ -272,6 +279,8 @@ export async function GET(req: Request) {
           createdAt: true,
         },
       });
+      let hfProducts = await findMealKits(false);
+      if (q && hfProducts.length === 0) hfProducts = await findMealKits(true);
       const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const usage = hfProducts.length
         ? await prisma.registration.groupBy({

@@ -2,6 +2,10 @@
 
 - Indstillinger → Import (web, app og webmenu) med tekst, "Kontakt os" (kontaktformularen udfyldt) og knapper til MyFitnessPal og Lifesum; hver knap åbner optage-/uploadsiden for netop den app (`/settings/import/[provider]`). Startguiden slutter med "Har du allerede en konto hos en anden udbyder?" Importér nu / Senere. Se DECISIONS 2026-10-15.
 
+## 2026-10-15: HelloFresh fra alle 17 lande
+
+- Importen henter fra alle HelloFresh-lande og gemmer land (`products.market`) og sprog på hver ret; brugeren ser sit eget lands retter. Migration `20261015170000_product_market`. Ikke prøvet mod de udenlandske HelloFresh-sider (ikke tilgængelige herfra): se admin → Robotter efter første kørsler. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Varens sprog — trin 3
 
 - Søgeforslag viser kun varer på brugerens sprog/engelsk/landets stregkoder; andre sprog kun når der ellers intet er. Natligt job `product-translations` oversætter på forhånd; sprogrobotten `language-local` (lingua) retter sproget på scannede/OFF-varer. Migration `20261015160000_product_language_checked`. Ikke prøvet mod rigtig database her. Se DECISIONS 2026-10-15.
