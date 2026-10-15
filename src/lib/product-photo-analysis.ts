@@ -29,6 +29,7 @@ import { LOCAL_OCR_MODEL, LOCAL_OCR_PROMPT_VERSION } from "@/lib/local-label";
 import { readStoredImageAsDataUrl, saveDataUrlImage } from "@/lib/qc-image-storage";
 import { matchBrand, matchBrandInTexts, type BrandMatch } from "@/lib/brand-match";
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
+import { loadKnownBrands } from "@/lib/known-brands";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
 import { DOUBTFUL_INGREDIENTS_CONFIDENCE, reviewIngredientsText } from "@/lib/ingredient-text-quality";
@@ -86,10 +87,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
   textBrandMatch: BrandMatch | null;
 }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const knownBrands = await prisma.brand.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  const { all: knownBrands, promptNames } = await loadKnownBrands();
 
   const { value: aiValue, model } = await callStructuredVision<ProductFrontAnalysis>({
     photo,
@@ -97,7 +95,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
     schema: FRONT_SCHEMA,
     // Samme prompt som den natlige genkørsel (src/lib/product-ai-tasks.ts).
     system: FRONT_SYSTEM,
-    text: frontText({ barcode, context, knownBrands: knownBrands.slice(0, 750).map((item) => item.name) }),
+    text: frontText({ barcode, context, knownBrands: promptNames }),
   });
 
   const value: ProductFrontAnalysis = {
@@ -167,13 +165,13 @@ export async function analyzeBarcodePhotoLogo({
   if (!row?.imageUrl || !photo) return null;
 
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const knownBrands = await prisma.brand.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  const { all: knownBrands, promptNames } = await loadKnownBrands();
   const { value, model } = await callStructuredVision<BarcodeLogoAnalysis>({
     photo,
     schemaName: "hello_cal_barcode_logo",
     schema: BARCODE_LOGO_SCHEMA,
     system: BARCODE_LOGO_SYSTEM,
-    text: barcodeLogoText({ barcode, context, knownBrands: knownBrands.slice(0, 750).map((item) => item.name) }),
+    text: barcodeLogoText({ barcode, context, knownBrands: promptNames }),
   });
   const result: BarcodeLogoAnalysis = { ...value, logoBox: cleanBox(value.logoBox) };
   const brandMatch = matchBrand(result.logoText, knownBrands);
