@@ -76,7 +76,7 @@
 ## 2026-10-15: Tilføj-kameraet — fotoet i trykøjeblikket, forlæsning, synlig behandling
 
 - Udløseren tager nu fotoet i trykøjeblikket, og trinnet er klaret med det samme. Før blev energi-/indholdsfotoet først taget efter 1–3 s lokal OCR.
-- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende og vises i pillen over udløseren. Udløseren bruger fundene.
+- Forlæsning, mens man sigter: forsidetekst (dublet + kendt mærke), næringstabel og ingrediensliste læses løbende i baggrunden uden tekst på skærmen (brugerens krav 2026-10-15: ingen "Læser teksten …" eller fund-pille). Udløseren bruger fundene.
 - Synlig behandling: load-cirkel på trinnets knap + "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver sin tekst synligt. Overskrifterne hedder "Tag billede af energi/indholdsfortegnelsen".
 - Web `ProductCaptureFlow.tsx`, `HfLoader.tsx`, `product-capture.ts`, `/api/products/recognize-text`. Native kun tekster + dokumentation (ingen levende video). Se DECISIONS/REGLER 2026-10-15.
 ## 2026-10-15: Forsidefotoet blev "halveret" — beskæring efter AI-boks fjernet
