@@ -23,6 +23,7 @@ import {
 import { labelNutrientsFromPrediction, asNumberRecord } from "@/lib/nutrients";
 import { applyAnalysisValues } from "@/lib/uncertainty-corrections";
 import { UNCERTAINTY_TARGET } from "@/lib/uncertainty-thresholds";
+import { repairPlaceholderNames } from "@/lib/product-type-name";
 
 // Natlig AI-genkørsel for admin "Uncertainties" (job "uncertainty-rerun",
 // docs/DECISIONS.md 2026-09-25): kører samme aflæsning igen på de gemte
@@ -184,10 +185,16 @@ export async function rerunUncertainAnalyses(): Promise<{ message: string; count
     }
   }
 
+  // Varer, der stadig hedder "Vare <stregkode>", får varetypen som navn.
+  const renamed = await repairPlaceholderNames().catch((error) => {
+    console.error("[uncertainty-rerun] reservenavne fejlede", error);
+    return 0;
+  });
+
   return {
     message: `${analyses.length} åbne, ${tried} genkørt, ${improved} forbedret, ${resolved} nu over ${Math.round(
       UNCERTAINTY_TARGET * 100,
-    )} %, ${failed} fejl`,
+    )} %, ${failed} fejl${renamed ? `, ${renamed} reservenavne erstattet` : ""}`,
     count: tried,
   };
 }

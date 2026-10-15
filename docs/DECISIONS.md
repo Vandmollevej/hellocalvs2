@@ -5462,3 +5462,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 
 - Brugerens regel: er der ingen grøn tekst (størrelse/variant), og går navnet over to linjer, skrottes den tomme grønne linje, så designet forbliver ens.
 - Uden grøn linje fylder navnet nu mindst to hero-linjer (web `min-h-[80px]`, native `minLines = 2`). Et kort navn står som før med en tom linje under sig; et navn på to linjer får ingen ekstra luft. Med grøn linje er intet ændret.
+
+## 2026-10-15: Aldrig reservenavnet "Vare <stregkode>" som varens titel
+
+- Brugeren så Verpoorten Original med titlen "Vare 40157818" (grøn linje "Original"). Årsag: hurtig-oprettelsen giver varen reservenavnet `Vare <stregkode>`, og forsidens AI returnerede `productName = null` (varetypen "Eierlikör" står ikke stort på flasken, og prompten sagde "gæt ikke"), så reservenavnet blev beholdt.
+- Forsideprompten front-v6: `productName` er varetypen og udfyldes altid, når det kan ses, hvad varen er — også udledt af emballage, brand og synlig tekst. Aldrig kun brand eller variant.
+- Giver forsiden stadig intet navn, navngiver et lille tekstkald (`nameProductType`, ingen ny billedaflæsning) varetypen ud fra brand, subbrand, variant og synlig tekst, på emballagens sprog. Under 60 % sikkerhed beholdes reservenavnet. Der findes ingen lokal metode til at navngive en varetype ud fra et brand, derfor OpenAI direkte (undtagelse fra "intern AI først").
+- Eksisterende varer med reservenavnet (`isPlaceholderProductName`, `src/lib/product-placeholder-name.ts`) navngives fra deres gemte forsideaflæsning: én gang 90 sek. efter opstart (deploy) og hver nat med `uncertainty-rerun`, højst 20 pr. kørsel. Kun varen selv ændres; registreringernes `titleSnapshot` røres ikke.
