@@ -1,3 +1,12 @@
+## 2026-10-15: Billeder hentes som små, cachede udgaver
+
+- Problem: billederne loadede langsomt næsten hver gang. Alle `<img>` hentede originalen (logoer op til 15 MB, 124 af 134 logoer over 800 px; fritlægninger og fotos i fuld opløsning) — også til en 44 px række — over Cloudflare-tunnelen fra Synology. Og cachen var svag: Next serverer public-filer med `max-age=0` (browseren spurgte hver gang), og fallback-routen for billeder lagt op efter opstart havde ingen ETag (fuld download hver time).
+- Løsning: `imageThumb(url, bredde)` (`src/lib/image-thumb.ts`) sender egne billeder gennem Next's indbyggede billedoptimering (`/_next/image`, sharp ligger allerede i imaget): nedskaleret WebP, disk-cache i containeren (højst 1 GB, `images.maximumDiskCacheSize`) og 4 timers browser-cache + ETag. Brugt på varesiden, rækker, opskrifter, statistik og admins billedlister; native via `Api.thumbUrl`/`FoodImage(thumbWidth)`. Data-/blob-URL'er, fremmede URL'er, SVG og GIF vises uændret.
+- Originalerne: `Cache-Control: private, max-age=3600` (next.config) og ETag/304 i fallback-routen (`src/lib/public-volume-file.ts`).
+- Miniaturerne følger adgangsmuren (middleware afgør `/_next/image` ud fra kildestien: anonyme får 404). Next sender dem som `public, max-age=14400` og lader sig ikke overstyre i next.config; Cloudflare cacher ikke URL'er uden filendelse som standard, så det er uændret i forhold til de eksisterende `next/image`-ikoner.
+- Målt lokalt: 14,8 MB-logo → 61 KB (384 px WebP, 0,5 s første gang, derefter 10 ms fra cachen); 5,2 MB-fritlægning → 6 KB i en række. Fallback-routen svarer 304 på uændrede filer.
+- Kendt begrænsning: disk-cachen ligger i containeren og tømmes ved hvert deploy; første visning efter et deploy skalerer billedet igen (browserens cache består). En volumen til `.next/cache/images` er en ændring af udrulningen og er ikke lavet.
+
 ## 2026-10-15: Varetypen spørges direkte, før en vare hedder brand + subbrand
 
 - Giver forsiden ingen varetype (heller ikke ud fra synlig tekst), spørges OpenAI med et lille tekstkald: "Hvilken produkttype er <brand subbrand variant>?" (`askProductType` i `src/lib/product-type-name.ts`, sikkerhed ≥ 0,6, svaret må ikke bare gentage brand/variant). Først når det heller intet giver, hedder varen brand + subbrand.

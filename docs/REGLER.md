@@ -140,6 +140,12 @@ ikke her, er den ikke registreret og skal tilføjes.
   og "Anbefalet" i mørkegrøn øverst til højre — og det er altid det alternativ,
   der vises ved siden af originalen, også selvom det er _3 eller _4.
   Regel i `src/lib/image-quality.ts`.
+- **Vis aldrig originalen i en liste eller cirkel (2026-10-15)**: egne billeder
+  (`/product-images/…`, `/brand-logos/…`, `/hellofresh-images/…`) vises via
+  `imageThumb(url, bredde)` (`src/lib/image-thumb.ts`) — en nedskaleret WebP fra
+  `/_next/image`. Bredde ≈ 3 × visningsstørrelsen (44 px række → 128, cirklen →
+  640). Native: `FoodImage(..., thumbWidth = …)` / `Api.thumbUrl`. Originalen kun,
+  hvor admin skal bedømme selve billedet (sammenligning, fritlægning, dubletter).
 
 ## Søgning
 

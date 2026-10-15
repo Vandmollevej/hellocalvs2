@@ -186,7 +186,7 @@ fun ReportErrorScreen(args: RouteArgs) {
                                 Column(Modifier.weight(1f)) {
                                     HcText(t.t(point.labelKey), HcTypeRoles.Label)
                                     if (point.imageUrl != null) {
-                                        FoodImage(point.imageUrl, Modifier.padding(top = 4.dp).size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop)
+                                        FoodImage(point.imageUrl, Modifier.padding(top = 4.dp).size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop, thumbWidth = 256)
                                     } else if (point.key != "image" || point.imageUrl == null) {
                                         HcText(point.value.ifEmpty { t.t("registrationReportError.missingValue") }, HcTypeRoles.Body, color = HcColors.TextSecondary)
                                     }

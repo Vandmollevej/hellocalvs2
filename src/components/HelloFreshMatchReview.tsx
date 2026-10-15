@@ -1,4 +1,5 @@
 "use client";
+import { imageThumb } from "@/lib/image-thumb";
 
 type MatchedProduct = {
   id: string;
@@ -30,7 +31,7 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
           <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-hf-white/40">
             {product.imageUrl && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+              <img src={imageThumb(product.imageUrl, 128)} alt="" className="h-full w-full object-cover" />
             )}
           </div>
           <div className="min-w-0">

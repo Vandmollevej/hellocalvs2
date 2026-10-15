@@ -95,7 +95,16 @@ function isPublicPath(pathname: string, publicPaths: string[]) {
 const IS_SCAN_APP = process.env.HELLOCAL_APP_MODE === "scan";
 const PUBLIC_SCAN_PATHS = ["/scan/login", "/scan/verify", "/scan/setup"];
 const PUBLIC_SCAN_API_PATHS = ["/api/scan/login", "/api/scan/verify", "/api/scan/setup", "/api/scan/passkey/authenticate"];
-const SCAN_APP_SHARED_PATHS = ["/api/ai", "/api/products/lookup", "/api/health", "/product-images", "/manifest.webmanifest"];
+// /_next/image: miniaturer (src/lib/image-thumb.ts) og next/image-logoet; kilden
+// er altid en lokal fil, som scan-appen i forvejen må hente direkte.
+const SCAN_APP_SHARED_PATHS = [
+  "/api/ai",
+  "/api/products/lookup",
+  "/api/health",
+  "/product-images",
+  "/manifest.webmanifest",
+  "/_next/image",
+];
 
 async function handleScan(req: NextRequest, host: string) {
   const url = req.nextUrl.clone();
