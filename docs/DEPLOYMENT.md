@@ -9,6 +9,7 @@ private hostnames in the repository.
 - GitHub Actions builds the application on a GitHub-hosted runner.
 - Each push to `master` publishes both `latest` and an immutable Git commit SHA
   tag to `ghcr.io/vandmollevej/hellocalvs2`.
+- Deploy jobs share the concurrency group `production-deploy` (`cancel-in-progress: false`): one deploy runs at a time, and only the newest pending master commit waits — an older pending deploy is skipped when a newer one arrives, so production is never rolled back by an out-of-order queue (2026-10-15).
 - After the image build succeeds, the self-hosted deploy job checks out the same
   commit, syncs `compose.production.yaml` plus the locally-built REMA 1000 and
   quality-control and amount-suggestion agent contexts into the server

@@ -5613,3 +5613,8 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Forsideprompten front-v6: `productName` er varetypen og udfyldes altid, når det kan ses, hvad varen er — også udledt af emballage, brand og synlig tekst. Aldrig kun brand eller variant.
 - Giver forsiden stadig intet navn, navngiver et lille tekstkald (`nameProductType`, ingen ny billedaflæsning) varetypen ud fra brand, subbrand, variant og synlig tekst, på emballagens sprog. Under 60 % sikkerhed beholdes reservenavnet. Der findes ingen lokal metode til at navngive en varetype ud fra et brand, derfor OpenAI direkte (undtagelse fra "intern AI først").
 - Eksisterende varer med reservenavnet (`isPlaceholderProductName`, `src/lib/product-placeholder-name.ts`) navngives fra deres gemte forsideaflæsning: én gang 90 sek. efter opstart (deploy) og hver nat med `uncertainty-rerun`, højst 20 pr. kørsel. Kun varen selv ændres; registreringernes `titleSnapshot` røres ikke.
+
+## 2026-10-15: Deploy — kun den nyeste master-version udrulles
+
+- Brugeren spurgte, hvorfor der ikke skete noget. Årsag: alle sessioner fletter til master, hvert push starter et deploy, og deploy-jobbet kører på den ene server (self-hosted) uden kø-regel. Deploys stod i lang kø, blev kørt i tilfældig rækkefølge (fx #439 efter #433) og kunne dermed rulle produktionen tilbage til en ældre version, indtil næste deploy.
+- Brugerens valg: deploy-jobbet i `.github/workflows/build.yml` har nu `concurrency: production-deploy` (`cancel-in-progress: false`): én udrulning ad gangen, og kun den nyeste ventende master-version udrulles; ældre ventende springes over. En igangværende udrulning afbrydes aldrig.
