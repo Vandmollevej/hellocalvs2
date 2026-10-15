@@ -135,7 +135,7 @@ export const JOBS: JobDefinition[] = [
     key: "back-photo-scan",
     name: "Bagsidebilleder: mærkninger og finlæsning",
     description:
-      "Analyserer hvert nyt ubeskåret bagsidebillede fra Tilføj-kameraet én gang: mærkninger og certificeringer, der ikke står på forsiden (gemmes som varens mærkater og udfylder tomme filtre), finlæsning af ingrediensliste, næringsdeklaration og øvrig tekst, og udvidet stavekontrol, hvor forskelle mellem varens ingrediensliste og den finlæste tekst bliver forslag under Stavekontrol. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.",
+      "Analyserer hvert nyt ubeskåret bagsidebillede fra Tilføj-kameraet én gang: mærkninger og certificeringer, der ikke står på forsiden (gemmes som varens mærkater og udfylder tomme filtre), finlæsning af ingredienslisten og udvidet stavekontrol. Bruger den lokale læsning (OCR + mærkesøgning) først; OpenAI læser kun billedet, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; kun ord, den er i tvivl om, vurderes af AI og bliver forslag under Stavekontrol. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.",
     runtime: "app",
     robot: true,
     defaultIntervalMinutes: null,
@@ -313,6 +313,17 @@ export const JOBS: JobDefinition[] = [
     name: "Mærkater: lokal søgning",
     description:
       "Søger forsidefotoet af varer, der venter på mærkat-jobbet, igennem for kendte logoer og mærketekster — lokalt på serveren uden OpenAI. Mærkat-jobbet spørger kun OpenAI, når intet blev fundet her.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    // OCR først for bagsidebillederne (docs/DECISIONS.md 2026-10-15).
+    key: "back-photo-local",
+    name: "Bagsidebilleder: lokal læsning",
+    description:
+      "Læser hvert nyt bagsidebillede lokalt på serveren (tesseract-OCR og mærkesøgning), før nattens analyse. Analysen bruger den lokale læsning og spørger kun OpenAI, når intet mærke blev fundet.",
     runtime: "agent",
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,

@@ -20,6 +20,7 @@ import io
 import json
 import logging
 import os
+import threading
 import time
 
 import cv2
@@ -106,6 +107,9 @@ TEXT_MARKS = [
 _sift = cv2.SIFT_create(nfeatures=4000)
 _matcher = cv2.BFMatcher(cv2.NORM_L2)
 _templates = None
+# label-local og back-photo-local kører i hver sin tråd og deler SIFT-objektet
+# og skabelonerne.
+_lock = threading.RLock()
 _templates_loaded_at = 0.0
 # Nye fritskrabede mærker tages med, når skabelonerne indlæses igen.
 TEMPLATE_RELOAD_SECONDS = 6 * 60 * 60
@@ -388,6 +392,11 @@ def find_text_marks(gray):
 
 
 def scan_photo(image, templates):
+    with _lock:
+        return _scan_photo(image, templates)
+
+
+def _scan_photo(image, templates):
     gray = _to_gray(image, PHOTO_MAX_SIDE)
     labels = {hit["key"]: hit for hit in find_logos(gray, templates)}
     for hit in find_color_logos(_to_bgr(image, PHOTO_MAX_SIDE), gray, templates):
@@ -448,14 +457,27 @@ def save_scan(conn, product_id, url, labels, failed):
     conn.commit()
 
 
-def run_once(conn):
+def get_templates(conn):
+    """Skabelonerne, indlæst igen efter TEMPLATE_RELOAD_SECONDS (også brugt af
+    back_local.py)."""
     global _templates, _templates_loaded_at
-    photos = fetch_pending_photos(conn, LABEL_BATCH_SIZE)
-    if not photos:
-        return "Ingen fotos at søge igennem", 0
+    with _lock:
+        return _get_templates(conn)
+
+
+def _get_templates(conn):
+    global _templates, _templates_loaded_at
     if _templates is None or time.time() - _templates_loaded_at > TEMPLATE_RELOAD_SECONDS:
         _templates = load_templates(conn)
         _templates_loaded_at = time.time()
+    return _templates
+
+
+def run_once(conn):
+    photos = fetch_pending_photos(conn, LABEL_BATCH_SIZE)
+    if not photos:
+        return "Ingen fotos at søge igennem", 0
+    get_templates(conn)
     done = 0
     found = 0
     for product_id, url in photos:

@@ -1,3 +1,7 @@
+## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
+
+- Ny robot `back-photo-local` læser bagsidebillederne lokalt (tesseract + mærkesøgning); nattens `back-photo-scan` spørger kun OpenAI, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; tvivlsomme ord vurderes af AI og bliver forslag. Se DECISIONS 2026-10-15.
+
 ## 2026-10-15: Originalbilleder online før AI-billedarbejde; AI-rentegning af logoer
 
 - Produktbilleder: robotten `product-image-search` (logo-agent) søger hver nyscannet vare online med Google Vision, før kamerafotoet fritlægges; fundene står under Billedforslag ved siden af kamerafoto og udklip.

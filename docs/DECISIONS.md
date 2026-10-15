@@ -5374,6 +5374,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Scanningens fritlagte logo-udsnit (`image-agent/cutout.py`, BRAND_LOGO) sættes ikke længere selv som brandets logo (`LOGO_AUTO_APPLY_FROM_SCAN=false`); "Genkør logo" i admin virker som før.
 
 
+## 2026-10-15: Bagsidebilleder — OCR først, ordbog før AI
+
+- Brugerens regel: OCR først; intern AI før OpenAI; stavekontrol med "Ordbog først, AI ved tvivl".
+- Ny robot `back-photo-local` (quality-control-agent, `scripts/quality-control-agent/back_local.py`, hvert 5. min): hvert bagsidebillede læses lokalt — mærker med samme logo-/tekstsøgning som forsiden og al tekst med tesseract (dan+deu+eng, op til 3000 px, sikkerhed pr. ord). Gemmes i `product_back_photos.localResult` (migration `20261015130000_back_photo_local`).
+- `back-photo-scan` (04:20) bruger den lokale læsning: lokale mærkefund gemmes uden OpenAI; kun uden lokale mærkefund læser OpenAI billedet som før (og så bruges AI'ens tekst). Billeder uden lokal læsning venter højst et døgn.
+- Stavningen (`src/lib/back-photo-spelling.ts`): hvor den gemte liste og læsningen er uenige, afgør ordbogen — kendt gemt ord røres ikke; ukendt gemt ord med kendt, lignende læsning rettes automatisk (`AUTO_FIXED`, kan fortrydes under Stavekontrol); er begge ukendte, vurderer AI ordene i sammenhængen med ét tekstkald (`callStructuredText`) og resultatet bliver forslag (`fine_read_ai`).
+
 ## 2026-10-15: Produktbilleder — originalen søges online før fritlægningen
 
 - Brugerens regel: før noget AI-billedarbejde søges originalbilledet online (det, Google Lens skulle bruges til). Google Lens har ingen API; Google Vision `WEB_DETECTION` er samme teknik og var allerede sat op (servicekontoen `vision-api`, logo-robotten).

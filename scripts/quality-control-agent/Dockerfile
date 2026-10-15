@@ -13,5 +13,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
-COPY agent.py job_control.py label_local.py ./
+COPY agent.py job_control.py label_local.py back_local.py ./
 CMD ["python", "agent.py"]
