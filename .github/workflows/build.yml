@@ -53,6 +53,14 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    # Én udrulning ad gangen, og kun den nyeste master-version venter: en
+    # ventende, ældre udrulning erstattes af den nye (springes over). Før lå
+    # deploys i kø uden orden på den ene server og kunne rulle produktionen
+    # tilbage til en ældre version (brugerens valg 2026-10-15). En igangværende
+    # udrulning afbrydes aldrig.
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
