@@ -95,6 +95,21 @@ export function inferProductLanguage(signals: ProductLanguageSignals): string | 
   return null;
 }
 
+// Hvilke varer oversættes (brugerens beslutning 2026-10-15: "Vent med
+// oversættelse af produktark, frida mv."): importerede kilder (ark, Frida,
+// butiksimporter, opskriftssider) oversættes ikke endnu — kun varer, som
+// brugere har scannet/oprettet, og Open Food Facts/USDA-varer. Sæt
+// TRANSLATE_IMPORTED_SOURCES til true, når de importerede også skal med.
+export const TRANSLATE_IMPORTED_SOURCES = false;
+const LOOKUP_SOURCES = new Set(["OPEN_FOOD_FACTS", "USDA"]);
+
+export function isTranslatableSource(product: { externalSource?: string | null; createdByUserId?: string | null }): boolean {
+  if (TRANSLATE_IMPORTED_SOURCES) return true;
+  if (product.externalSource) return LOOKUP_SOURCES.has(product.externalSource);
+  // Uden kilde: oprettet af en bruger (scanning) — ellers et ark/admin-import.
+  return !!product.createdByUserId;
+}
+
 // Brugerens app-sprog ("da", "en-GB", "nb" …) som en af appens sprogkoder.
 export function appLocaleOf(appLanguage: string | null | undefined): Locale {
   const base = (appLanguage ?? "").toLowerCase().split(/[-_]/)[0];

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { unauthorized } from "@/lib/session";
+import { getSessionUser, unauthorized } from "@/lib/session";
+import { localizedProductNames } from "@/lib/product-translations";
 import { getProfileUser } from "@/lib/family-access";
 import { getRetentionCutoffDate, getUserSubscriptionTier } from "@/lib/subscription";
 import { productImageForViewer } from "@/lib/product-display-image";
@@ -42,6 +43,8 @@ export async function GET() {
       select: {
         id: true,
         name: true,
+        language: true,
+        externalSource: true,
         imageUrl: true,
         pendingImageUrl: true,
         createdByUserId: true,
@@ -50,6 +53,10 @@ export async function GET() {
       },
     });
     const byId = new Map(products.map((product) => [product.id, product]));
+    // Varens navn på brugerens sprog (docs/DECISIONS.md 2026-10-15).
+    const localized = await localizedProductNames(products, await getSessionUser().catch(() => null)).catch(
+      () => new Map<string, { name: string; brandName: string | null }>(),
+    );
 
     return NextResponse.json({
       profileId: user.id,
@@ -59,7 +66,7 @@ export async function GET() {
         .slice(0, MOST_USED_LIMIT)
         .map((product) => ({
           id: product.id,
-          name: product.name,
+          name: localized.get(product.id)?.name ?? product.name,
           imageUrl: productImageForViewer(product, user.id),
           kcalPer100g: product.kcalPer100g,
           brand: product.brand,

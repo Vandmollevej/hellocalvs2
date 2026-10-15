@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   appLocaleOf,
   hasForeignScript,
+  isTranslatableSource,
   inferProductLanguage,
   languageCode,
   needsTranslation,
@@ -72,4 +73,14 @@ test("app-sprog og sprogkoder", () => {
   assert.equal(languageCode("Chinese"), "zh");
   assert.equal(languageCode("Thai"), "th");
   assert.equal(languageCode("ukendt"), null);
+});
+
+test("importerede kilder oversættes ikke endnu — scannede og OFF-varer gør", () => {
+  for (const source of ["FRIDA", "REMA1000", "BILKA", "HELLOFRESH", "VALDEMARSRO"]) {
+    assert.equal(isTranslatableSource({ externalSource: source, createdByUserId: "u1" }), false, source);
+  }
+  assert.equal(isTranslatableSource({ externalSource: null, createdByUserId: null }), false);
+  assert.equal(isTranslatableSource({ externalSource: null, createdByUserId: "u1" }), true);
+  assert.equal(isTranslatableSource({ externalSource: "OPEN_FOOD_FACTS", createdByUserId: null }), true);
+  assert.equal(isTranslatableSource({ externalSource: "USDA" }), true);
 });

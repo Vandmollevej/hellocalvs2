@@ -5,7 +5,9 @@ import { debugLog, errorText } from "@/lib/debug-log";
 import {
   TARGET_LANGUAGE_NAMES,
   hasForeignScript,
+  appLocaleOf,
   inferProductLanguage,
+  isTranslatableSource,
   languageCode,
   needsTranslation,
   scriptLanguage,
@@ -32,6 +34,8 @@ export type TranslatableProduct = {
   ingredientsText: string | null;
   subbrand: string | null;
   brand: { name: string } | null;
+  externalSource: string | null;
+  createdByUserId: string | null;
 };
 
 // Teksten, der skal oversættes: alle udfyldte felter, og navnene kun med
@@ -100,7 +104,7 @@ const failedAt = new Map<string, number>();
 // Varens tekst på brugerens sprog — null, når varen ikke skal oversættes,
 // eller oversættelsen ikke kan laves lige nu (så vises originalen).
 export async function translationFor(product: TranslatableProduct, viewer: Locale): Promise<ProductTexts | null> {
-  if (!needsTranslation(product.language, viewer)) return null;
+  if (!isTranslatableSource(product) || !needsTranslation(product.language, viewer)) return null;
   const texts = sourceTexts(product);
   if (!Object.keys(texts).length) return null;
   const sourceHash = hashTexts(texts);
@@ -180,6 +184,69 @@ function storedTexts(
   const out: ProductTexts = {};
   for (const key of Object.keys(keys)) out[key] = all[key] ?? null;
   return out;
+}
+
+// --- Navne i lister (dagbog, favoritter, mest brugte) ---------------------
+
+const TRANSLATABLE_SELECT = {
+  id: true,
+  language: true,
+  name: true,
+  namePlural: true,
+  productType: true,
+  variant: true,
+  packageSizeText: true,
+  ingredientsText: true,
+  subbrand: true,
+  externalSource: true,
+  createdByUserId: true,
+  brand: { select: { name: true } },
+} as const;
+
+// Laver oversættelsen i baggrunden (lister venter aldrig på OpenAI).
+function translateInBackground(productIds: string[], viewer: Locale) {
+  void (async () => {
+    for (const productId of productIds) {
+      const product = await prisma.product.findUnique({ where: { id: productId }, select: TRANSLATABLE_SELECT });
+      if (product) await translationFor(product, viewer).catch(() => null);
+    }
+  })().catch((error) => console.error("Background product translation failed", error));
+}
+
+export type ListedProduct = {
+  id: string;
+  name: string;
+  language: string | null;
+  externalSource: string | null;
+  createdByUserId: string | null;
+};
+
+export type ProductListViewer = { appLocale: string | null; translateForeignText: boolean } | null;
+
+// Varenavne på brugerens sprog til lister: kun gemte oversættelser (ingen
+// ventetid); mangler en, laves den i baggrunden til næste visning. Returnerer
+// produkt-id → { name, brandName } for de varer, der vises oversat.
+// Brug den overalt, hvor en liste viser varenavne (docs/REGLER.md → Varens sprog).
+export async function localizedProductNames(
+  products: ListedProduct[],
+  viewer: ProductListViewer,
+): Promise<Map<string, { name: string; brandName: string | null }>> {
+  const result = new Map<string, { name: string; brandName: string | null }>();
+  if (!viewer || viewer.translateForeignText === false) return result;
+  const locale = appLocaleOf(viewer.appLocale);
+  const wanted = products.filter((p) => isTranslatableSource(p) && needsTranslation(p.language, locale));
+  if (!wanted.length) return result;
+  const ids = [...new Set(wanted.map((p) => p.id))];
+  const rows = await prisma.productTranslation.findMany({
+    where: { productId: { in: ids }, locale },
+    select: { productId: true, name: true, brandName: true },
+  });
+  for (const row of rows) {
+    if (row.name) result.set(row.productId, { name: row.name, brandName: row.brandName });
+  }
+  const missing = ids.filter((id) => !result.has(id));
+  if (missing.length) translateInBackground(missing.slice(0, 10), locale);
+  return result;
 }
 
 // Sprognavnet på brugerens sprog ("kinesisk", "Chinese" …).
