@@ -31,15 +31,23 @@ const nextConfig: NextConfig = {
       // indhold under samme navn: gem dem i et år og spørg ikke igen. Ikon-
       // mapperne animals/body-measurements er adgangsmur-billeder og undtaget.
       ...[
-        "/icons/:path((?!animals|body-measurements).*)",
+        "/icons/:file",
+        "/icons/add/:path*",
+        "/icons/barcode/:path*",
+        "/icons/minerals/:path*",
+        "/icons/vitamins/:path*",
+        "/icons/water/:path*",
         "/flags/:path*",
         "/integrations/:path*",
         "/payment/:path*",
         "/certifications/:path*",
-        // Filer i roden med fast forstavelse. "/favicon:rest*" er ikke gyldigt
-        // (path-to-regexp kræver præ-/suffiks om en gentaget parameter) og
-        // stoppede hele buildet — derfor ét regex-parameter.
-        "/:file((?:hello-cal-logo|hello-cal-fruit|flag-|apple-icon|favicon)[^/]*)",
+        "/hello-cal-logo.png",
+        "/hello-cal-logo-white.png",
+        "/hello-cal-fruit.png",
+        "/flag-denmark.png",
+        "/icon-apple.png",
+        "/icon-facebook.png",
+        "/icon-google.png",
       ].map((source) => ({
         source,
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],

@@ -4,7 +4,7 @@ Sammenligner rembg og Bria på de samme billeder.
 Køres fra admin → Robotter → "Bria: sammenlign med rembg" → Kør nu (job
 "bria-compare"), eller manuelt: docker compose exec image-agent python compare_engines.py 20
 
-Henter de seneste N afsluttede fritlægningsjobs, kører hele make_cutout med
+Henter N danske Open Food Facts-varer, vi bruger, kører hele make_cutout med
 begge motorer og lægger side-om-side-billeder (original | rembg | bria på
 tern) i /images/compare/ samt en oversigtsside, der kan åbnes på
 https://hellocal.io/product-images/compare/index.html
@@ -45,10 +45,16 @@ def run(engine, source, box, kind):
 
 def run_compare(conn, limit=COMPARE_LIMIT):
     os.makedirs(OUT, exist_ok=True)
+    # Danske Open Food Facts-varer, vi faktisk bruger (godkendte, ikke udgåede,
+    # ikke med afvist billede). Hele OFF-billedet fritlægges, som robotten gør.
     with conn.cursor() as cur:
         cur.execute(
-            'SELECT id, "sourceUrl", "cropBox", kind FROM image_cutout_jobs '
-            "WHERE status = 'DONE' ORDER BY \"processedAt\" DESC LIMIT %s",
+            'SELECT id, "imageUrl", NULL::jsonb, \'PRODUCT_FRONT\' FROM products '
+            "WHERE \"externalSource\" = 'OPEN_FOOD_FACTS' AND status = 'APPROVED' AND discontinued = false "
+            "AND \"imageUrl\" LIKE 'https://%%' "
+            "AND (\"offImageReview\" IS NULL OR \"offImageReview\" = 'APPROVED') "
+            "AND (language = 'da' OR \"originCountryCode\" = 'DK') "
+            "ORDER BY id LIMIT %s",
             (limit,),
         )
         jobs = cur.fetchall()

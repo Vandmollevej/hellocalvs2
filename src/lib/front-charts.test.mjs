@@ -5,8 +5,8 @@ import {
   daysPerBar, groupDays, recommendedRange, cumulative,
 } from "./front-charts.ts";
 
-test("vågne timer rundes ned til venstre og op til højre", () => {
-  assert.deepEqual(awakeHours("06:45", "22:10"), { start: 6, end: 23 });
+test("vågne timer rundes op til venstre og ned til højre", () => {
+  assert.deepEqual(awakeHours("06:45", "22:10"), { start: 7, end: 22 });
   assert.deepEqual(awakeHours("07:00", "00:30"), { start: 7, end: 24 });
   assert.deepEqual(awakeHours(null, null), { start: 7, end: 23 });
 });

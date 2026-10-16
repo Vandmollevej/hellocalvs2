@@ -9,7 +9,6 @@ Besluttet:
 - Uden komplet næringstabel: `nutritionMissing = true` (appen viser "Næringsindhold ukendt"), derefter Fridas tal for varetypen, ellers et AI-skøn ud fra varetypen (`ESTIMATED`, ∼). `kcalEstimated` er aldrig sand ved 0 kcal. En senere aflæst tabel afløser skønnet.
 - Engangsreparation: varer fra de sidste 14 dage uden navn eller med 0 kcal genåbnes én gang (`repairedAt`). Deres registreringer med tomt navn/0 kcal følger med (som ved alkoholrobotten).
 - Råfotoet dækker hele cirklen (`object-cover`, native `ContentScale.Crop`), design.md §6.12 ændret. "∼" i mængdeboksen er nu inline med teksten (var et flex-element uden linjehøjde og svævede).
-- Samtidig rettet: `next.config.ts` fra #475 (`/favicon:rest*`) stoppede `next build` på master; nu ét regex-parameter.
 
 ## 2026-10-16: Faste designbilleder caches i et år
 
@@ -5713,6 +5712,13 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 
 Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.
 
-### 2026-10-16 — Screeningen kører som nat-job på NAS'en (afløser pc-løsningen ovenfor som standard)
+### 2026-10-16 — Screeningen kører kun på brugerens pc (afløser NAS-jobbet)
 
 Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Markeringerne vises under Admin → Kvalitetskontrol → Ufuldstændige billeder (op til 200, nyeste først); "Fjern markering" sætter `reviewedAt` og rører ikke varen.
+
+Brugeren bad om en lokal kørsel på pc'en. Nat-jobbet `image-screen-local` på NAS'en, fanen Ufuldstændige billeder i admin og tabellen `product_image_screenings` er fjernet igen (migration `20261016150000_drop_image_screenings`). Kun `scripts/image-screen` på pc'en er tilbage. Byg aldrig noget til NAS'en, når brugeren har bedt om en lokal kørsel.
+
+## 2026-10-16 — Admin: alle accordions i venstre menu lukket ved login
+
+- Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
+- `AdminShell` starter med et tomt sæt åbne grupper, og den automatiske udfoldning af den aktive sides gruppe ved sideskift er fjernet (den åbnede en gruppe lige efter login). Gruppens overskrift markeres stadig som aktiv. Egne klik huskes i `sessionStorage` og ryddes ved login/logout som før.

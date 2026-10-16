@@ -4,7 +4,7 @@
 export const DEFAULT_WAKE_HOUR = 7;
 export const DEFAULT_BED_HOUR = 23;
 
-/** Vågne timer som hele timer: rund NED til venstre og OP til højre (bruger 2026-10-14). */
+/** Vågne timer som hele timer: rund OP til venstre og NED til højre, så aksen holder sig inden for de vågne timer (bruger 2026-10-14). */
 export function awakeHours(wakeTime: string | null | undefined, bedtime: string | null | undefined) {
   const parse = (value: string | null | undefined) => {
     const match = /^(\d{1,2}):(\d{2})$/.exec(value ?? "");
@@ -14,8 +14,8 @@ export function awakeHours(wakeTime: string | null | undefined, bedtime: string 
   let bed = parse(bedtime) ?? DEFAULT_BED_HOUR;
   // Sengetid efter midnat (fx 00:30) tæller som slutningen af samme dag.
   if (bed <= wake) bed = 24;
-  const start = Math.max(0, Math.floor(wake));
-  const end = Math.min(24, Math.max(start + 1, Math.ceil(bed)));
+  const start = Math.min(23, Math.max(0, Math.ceil(wake)));
+  const end = Math.min(24, Math.max(start + 1, Math.floor(bed)));
   return { start, end };
 }
 
