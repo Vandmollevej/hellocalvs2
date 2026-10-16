@@ -455,7 +455,7 @@ function ServiceCard({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          className="hf-btn-text min-w-0 flex-1"
+          className="hf-btn-text min-w-0 flex-1 justify-start text-left"
         >
           <ServiceLogo service={service} inactive={missingFields(service).length > 0} />
           <span className="min-w-0">
