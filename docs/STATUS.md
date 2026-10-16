@@ -1,3 +1,7 @@
+## 2026-10-16: Screeninger på det globale design
+
+- Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt).
+
 ## 2026-10-16: Energi-trinnet kræver aflæst energi
 
 - Rodårsagen til de tomme varer: OpenAI-kontoen har ingen kredit (429 `insufficient_quota`) — skal fyldes op af brugeren. Energi-trinnet klares nu først, når energien er læst (telefonen, ellers AI mens man venter); ellers tages billedet om. Intet energiskøn på scannede varer. Web + native. Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.

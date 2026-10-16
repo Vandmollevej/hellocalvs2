@@ -3,9 +3,10 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconChevronRight, IconMoon, IconPlus } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActionLink } from "@/components/hf/ActionButton";
+import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { HfLoader } from "@/components/hf/HfLoader";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { ScreeningFillSheet } from "@/components/screenings/ScreeningFillSheet";
@@ -78,9 +79,9 @@ function ScreeningsContent() {
 
         <Link
           href="/profile/screenings/new"
-          className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black"
+          className="hf-type-body hf-type-strong flex items-center gap-2 self-start text-hf-black"
         >
-          <IconPlus size={20} />
+          <IconPlus size={20} aria-hidden="true" />
           {t("screenings.createNew")}
         </Link>
 
@@ -92,53 +93,33 @@ function ScreeningsContent() {
         {failed && <p className="hf-type-body text-text-secondary">{t("screenings.loadError")}</p>}
 
         {screenings && (
-          <div className="hf-card overflow-hidden !p-0">
+          <AccordionCard>
             {/* Søvn er en fast række (kan ikke slettes): "Oplevelse af søvn" til/fra
                 (bruger 2026-10-16, flyttet fra Visning). Søvnmønsteret ligger på Profil. */}
-            <Link
+            <ChevronRow
               href="/settings/display/sleep-quality"
-              className="flex items-center gap-3 border-b border-hf-tan-dark px-4 py-3"
-            >
-              <span
-                className={`size-2.5 shrink-0 rounded-full ${sleepActive ? "bg-hf-green" : "bg-hf-tan-dark"}`}
-                aria-hidden="true"
-              />
-              <IconMoon size={20} />
-              <span className={`hf-type-body flex-1 ${sleepActive ? "text-hf-black" : "text-text-secondary"}`}>
-                {t("screenings.sleep")}
-              </span>
-              <span className={`hf-type-small ${sleepActive ? "text-hf-green-dark" : "text-text-secondary"}`}>
-                {sleepActive ? t("screenings.statusActive") : t("screenings.statusInactive")}
-              </span>
-              <IconChevronRight size={18} />
-            </Link>
+              icon={<StatusDot active={sleepActive} />}
+              label={t("screenings.sleep")}
+              value={<StatusText active={sleepActive} />}
+              divider={screenings.length > 0}
+            />
             {screenings.map((screening, index) => (
-              <div key={screening.id} className={index < screenings.length - 1 ? "border-b border-hf-tan-dark" : ""}>
-                <ScreeningSwipeRow
-                  active={screening.active}
-                  onToggleActive={() => toggleActive(screening)}
-                  onDelete={() => setPendingDelete(screening)}
-                >
-                  <Link
-                    href={`/profile/screenings/${screening.id}`}
-                    className="flex items-center gap-3 px-4 py-3"
-                  >
-                    <span
-                      className={`size-2.5 shrink-0 rounded-full ${screening.active ? "bg-hf-green" : "bg-hf-tan-dark"}`}
-                      aria-hidden="true"
-                    />
-                    <span className={`hf-type-body flex-1 ${screening.active ? "text-hf-black" : "text-text-secondary"}`}>
-                      {screening.name}
-                    </span>
-                    <span className={`hf-type-small ${screening.active ? "text-hf-green-dark" : "text-text-secondary"}`}>
-                      {screening.active ? t("screenings.statusActive") : t("screenings.statusInactive")}
-                    </span>
-                    <IconChevronRight size={18} />
-                  </Link>
-                </ScreeningSwipeRow>
-              </div>
+              <ScreeningSwipeRow
+                key={screening.id}
+                active={screening.active}
+                onToggleActive={() => toggleActive(screening)}
+                onDelete={() => setPendingDelete(screening)}
+              >
+                <ChevronRow
+                  href={`/profile/screenings/${screening.id}`}
+                  icon={<StatusDot active={screening.active} />}
+                  label={screening.name}
+                  value={<StatusText active={screening.active} />}
+                  divider={index < screenings.length - 1}
+                />
+              </ScreeningSwipeRow>
             ))}
-          </div>
+          </AccordionCard>
         )}
 
         <ActionLink variant="secondary" href="/profile/screenings/reports">
@@ -164,6 +145,19 @@ function ScreeningsContent() {
         </BottomSheet>
       )}
     </HfScreen>
+  );
+}
+
+function StatusDot({ active }: { active: boolean }) {
+  return <span className={`hf-status-dot${active ? " is-active" : ""}`} aria-hidden="true" />;
+}
+
+function StatusText({ active }: { active: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <span className={`hf-type-small ${active ? "text-hf-green-dark" : "text-text-secondary"}`}>
+      {active ? t("screenings.statusActive") : t("screenings.statusInactive")}
+    </span>
   );
 }
 

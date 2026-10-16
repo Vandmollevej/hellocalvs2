@@ -39,6 +39,8 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureSlider
+import dk.packroff.hellocal.ui.HcAccordionCard
+import dk.packroff.hellocal.ui.HcChevronRow
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
@@ -233,6 +235,22 @@ private fun ScreeningQuestionnaire(screening: Screening, onDone: () -> Unit) {
 // ---------------------------------------------------------------------------
 // /profile/screenings
 
+/** .hf-status-dot — green when active, beige otherwise. */
+@Composable
+private fun ScreeningStatusDot(active: Boolean) {
+    Box(Modifier.size(10.dp).clip(CircleShape).background(if (active) HcColors.Brand else HcColors.Nav))
+}
+
+@Composable
+private fun ScreeningStatusText(active: Boolean) {
+    val t = LocalTranslator.current
+    HcText(
+        if (active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
+        HcTypeRoles.Small,
+        color = if (active) HcColors.GreenDark else HcColors.TextSecondary,
+    )
+}
+
 @Composable
 fun ScreeningsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -269,24 +287,17 @@ fun ScreeningsScreen(args: RouteArgs) {
                 list == null && !failed -> HcLoader()
                 list == null -> ProfileCenteredText(t.t("screenings.loadError"))
                 else -> {
-                    HcCard(Modifier.fillMaxWidth()) {
+                    HcAccordionCard {
                         // Sleep is a fixed row (cannot be deleted): "Oplevelse af søvn" on/off,
                         // moved here from Visning (user 2026-10-16). The sleep pattern is on Profil.
-                        Row(
-                            Modifier.fillMaxWidth().clickable { nav.push("/settings/display/sleep-quality") }.padding(vertical = 12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Box(Modifier.size(10.dp).clip(CircleShape).background(if (sleepActive) HcColors.Green else HcColors.TanDark))
-                            HcIcon("Moon", size = 20.dp, color = HcColors.Black)
-                            HcText(t.t("screenings.sleep"), HcTypeRoles.Body, Modifier.weight(1f), color = if (sleepActive) HcColors.Black else HcColors.TextSecondary)
-                            HcText(
-                                if (sleepActive) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
-                                HcTypeRoles.Small,
-                                color = if (sleepActive) HcColors.GreenDark else HcColors.TextSecondary,
-                            )
-                        }
-                        list.forEach { screening ->
+                        HcChevronRow(
+                            label = t.t("screenings.sleep"),
+                            onClick = { nav.push("/settings/display/sleep-quality") },
+                            divider = list.isNotEmpty(),
+                            iconContent = { ScreeningStatusDot(sleepActive) },
+                            value = { ScreeningStatusText(sleepActive) },
+                        )
+                        list.forEachIndexed { index, screening ->
                             ProfileSwipeActions(
                                 firstLabel = if (screening.active) t.t("screenings.deactivate") else t.t("screenings.activate"),
                                 onFirst = {
@@ -296,17 +307,13 @@ fun ScreeningsScreen(args: RouteArgs) {
                                 secondLabel = t.t("screenings.delete"),
                                 onSecond = { pendingDelete = screening },
                             ) {
-                                Row(
-                                    Modifier.fillMaxWidth().background(HcColors.Cream).clickable { nav.push("/profile/screenings/${screening.id}") }.padding(vertical = 12.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Box(Modifier.size(10.dp).clip(CircleShape).background(if (screening.active) HcColors.Green else HcColors.TanDark))
-                                    HcText(screening.name, HcTypeRoles.Body, Modifier.weight(1f), color = if (screening.active) HcColors.Black else HcColors.TextSecondary)
-                                    HcText(
-                                        if (screening.active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
-                                        HcTypeRoles.Small,
-                                        color = if (screening.active) HcColors.GreenDark else HcColors.TextSecondary,
+                                Box(Modifier.fillMaxWidth().background(HcColors.Tan)) {
+                                    HcChevronRow(
+                                        label = screening.name,
+                                        onClick = { nav.push("/profile/screenings/${screening.id}") },
+                                        divider = index < list.size - 1,
+                                        iconContent = { ScreeningStatusDot(screening.active) },
+                                        value = { ScreeningStatusText(screening.active) },
                                     )
                                 }
                             }
