@@ -3880,35 +3880,5 @@
       "365": "Last year",
       "all": "All time"
     }
-  },
-  "frontCharts": {
-    "aria": "Dagens grafer",
-    "pulse": "Puls",
-    "noPulse": "Ingen pulsdata endnu",
-    "intake": "Kalorier",
-    "planVsActual": "Anbefalet mod indtag",
-    "goalDays": "Målsætning · dage",
-    "goalWeeks": "Målsætning · uger",
-    "actionOpen": "Se forslag til at holde dagens mål",
-    "actionLead": "For at kunne holde dig inden for dagens mål anbefaler vi at du forbrænder",
-    "burnBig": "{kcal} kcal",
-    "orSplit": "eller reducerer kalorieindtag med {reduce} kcal og forbrænder {burn} kcal",
-    "sheetTitle": "Hold dagens mål",
-    "walkTitle": "Gåtur",
-    "walkIntro": "For at forbrænde {kcal} kcal kan du gå:",
-    "walk": {
-      "easy": "Rolig gåtur (let): ca. {minutes} min.",
-      "brisk": "Rask gåtur (moderat): ca. {minutes} min.",
-      "fast": "Hurtig gang (høj intensitet): ca. {minutes} min."
-    },
-    "eatTitle": "Spis mindre",
-    "eatIntro": "Hold indtaget under ca. {limit} kcal resten af dagen — eller skær {reduce} kcal fra.",
-    "food": {
-      "veg": "Grøntsagssuppe eller store salater: mætter meget, få kalorier",
-      "protein": "Magre proteiner (kylling, fisk, skyr, æg): mætter længe",
-      "soup": "Bouillon og klare supper som mellemmåltid",
-      "fruit": "Frugt og rå grøntsager frem for snacks"
-    },
-    "helloFresh": "Se Hello Fresh-retter med færrest kalorier"
   }
 }

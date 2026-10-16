@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { AppHomeGate } from "@/components/AppHomeGate";
 import { TopBar } from "@/components/TopBar";
-import { FrontCharts } from "@/components/frontcharts/FrontCharts";
 import { Hero } from "@/components/Hero";
 import { HomeWaves } from "@/components/HomeWaves";
 import { DailyList } from "@/components/DailyList";
@@ -30,8 +29,6 @@ export default async function Home() {
   return (
     <AppHomeGate serverView={serverView}>
       <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-        {/* Grafer, hero og liste ruller sammen; bundmenuen bliver stående. */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {/* Bølge-baggrunden er fjernet (bruger 2026-10-05); kun puls-linjen
             bag topbar og hero er tilbage. */}
         <div className="relative flex-none">
@@ -39,10 +36,7 @@ export default async function Home() {
           <div className="relative">
             <TopBar />
           </div>
-          <div className="relative mt-2">
-            <FrontCharts />
-          </div>
-          <div className="relative mt-4">
+          <div className="relative mt-8">
             <Hero />
           </div>
         </div>
@@ -52,9 +46,8 @@ export default async function Home() {
             i stedet ved hero-bunden (StatsWheel), så de stadig drejer ind bag
             listen og ikke ned over skillestregen (bruger 2026-09-29).
             Tilføj-knappens vifte (z-30) ligger stadig øverst. */}
-        <div className="relative z-10 min-h-[26rem] flex-1 overflow-hidden pt-2">
+        <div className="relative z-10 min-h-0 flex-1 overflow-hidden pt-2">
           <DailyList />
-        </div>
         </div>
 
         <BottomNav />
