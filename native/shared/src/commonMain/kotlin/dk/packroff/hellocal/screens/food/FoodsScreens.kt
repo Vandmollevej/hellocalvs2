@@ -42,6 +42,7 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodDivider
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
