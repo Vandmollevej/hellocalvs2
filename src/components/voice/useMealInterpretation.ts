@@ -77,6 +77,7 @@ export function useMealInterpretation({
   listening,
   spoken,
   language,
+  voiceSession,
 }: {
   /** Det sagte (søgefeltets tekst). */
   text: string;
@@ -84,6 +85,8 @@ export function useMealInterpretation({
   /** Falsk, når teksten er skrevet i hånden — så tolkes intet. */
   spoken: boolean;
   language: () => MealInputLanguageCode;
+  /** Mikrofonens session, så tolkningen vises i Analyse → Søgning → Tale. */
+  voiceSession?: () => string | null;
 }) {
   // Dagens gemte varer huskes, når man går væk og tilbage (som på Tale-siden).
   const [items, setItems] = useState<VoiceItem[]>(() => loadPersistedItems());
@@ -94,11 +97,13 @@ export function useMealInterpretation({
   const batchRef = useRef(0);
   const requestIdRef = useRef(0);
   const languageRef = useRef(language);
+  const voiceSessionRef = useRef(voiceSession);
   const wasListeningRef = useRef(false);
 
   useEffect(() => {
     languageRef.current = language;
-  }, [language]);
+    voiceSessionRef.current = voiceSession;
+  }, [language, voiceSession]);
 
   useEffect(() => {
     itemsRef.current = items;
@@ -138,7 +143,11 @@ export function useMealInterpretation({
           const response = await fetch("/api/ai/interpret-meal", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ transcript, language: languageRef.current() }),
+            body: JSON.stringify({
+              transcript,
+              language: languageRef.current(),
+              voiceSession: voiceSessionRef.current?.() ?? undefined,
+            }),
           });
           const data = (await response.json()) as { items?: InterpretedItem[]; message?: string };
           if (!response.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");

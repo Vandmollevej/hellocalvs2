@@ -17,11 +17,15 @@ import {
 } from "@/lib/admin-search-analytics";
 import { StatsFilters } from "@/components/admin/stats/StatsFilters";
 import { ReviewMissesButton } from "@/components/admin/stats/ReviewMissesButton";
+import { VoiceSessions } from "@/components/admin/stats/VoiceSessions";
+import { loadVoiceSessions } from "@/lib/voice-search-log";
 
 // Admin → Analyse → Søgning (docs/DECISIONS.md 2026-10-10): alle søgninger med
 // land og periode, raffinerede søgninger (søgte videre uden at klikke) og
 // søgninger uden resultat, hvor stavefejl og meningsløse søgninger kan
 // filtreres fra, så kun rene fejl står tilbage. Tal fra src/lib/admin-search-analytics.ts.
+// "Tale" viser mikrofonens søgninger trin for trin med begrundelsen bag
+// forslagene (src/lib/voice-search-log.ts, docs/DECISIONS.md 2026-10-16).
 
 export const dynamic = "force-dynamic";
 
@@ -109,7 +113,9 @@ export default async function SearchAnalyticsPage({
   const [kpis, byCountry, rows] = await Promise.all([
     loadSearchKpis(scope),
     loadSearchCountries(scope),
-    view.tab === "refined"
+    view.tab === "voice"
+      ? loadVoiceSessions(scope).then((list) => ({ kind: "voice" as const, list }))
+      : view.tab === "refined"
       ? loadRefinements(scope, view.sort).then((list) => ({ kind: "refined" as const, list }))
       : view.tab === "misses"
         ? loadMisses(scope, view.sort, view.miss).then((list) => ({ kind: "misses" as const, list }))
@@ -164,14 +170,18 @@ export default async function SearchAnalyticsPage({
             </Link>
           ))}
         </nav>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="hf-type-caption">Sortér:</span>
-          {SEARCH_SORTS.filter((s) => !(view.tab === "misses" && s.id === "misses")).map((sort) => (
-            <Link key={sort.id} href={href({ sort: sort.id })} className={btn(view.sort === sort.id)}>
-              {sort.label}
-            </Link>
-          ))}
-        </div>
+        {rows.kind !== "voice" && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="hf-type-caption">Sortér:</span>
+            {SEARCH_SORTS.filter((s) => !(view.tab === "misses" && s.id === "misses")).map((sort) => (
+              <Link key={sort.id} href={href({ sort: sort.id })} className={btn(view.sort === sort.id)}>
+                {sort.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {rows.kind === "voice" && <VoiceSessions sessions={rows.list} />}
 
         {rows.kind === "all" && (
           <Table

@@ -8,6 +8,7 @@ export const SEARCH_TABS = [
   { id: "all", label: "Alle søgninger" },
   { id: "refined", label: "Raffinerede søgninger" },
   { id: "misses", label: "Uden resultat" },
+  { id: "voice", label: "Tale" },
 ] as const;
 export type SearchTab = (typeof SEARCH_TABS)[number]["id"];
 

@@ -88,6 +88,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // ---------------------------------------------------------------------------
 // /foods — Madvarer (src/app/foods/page.tsx + src/lib/foods-snapshot.ts).
@@ -114,6 +116,7 @@ private object FoodsSearchCache {
 }
 
 /** Native port of src/app/foods/page.tsx. */
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun FoodsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
@@ -128,6 +131,9 @@ fun FoodsScreen(args: RouteArgs) {
     var micUnsupported by remember { mutableStateOf(false) }
     var micError by remember { mutableStateOf<String?>(null) }
     var micSession by remember { mutableStateOf<Job?>(null) }
+    // Søgninger fra mikrofonen logges under én session i Analyse → Søgning → Tale, så længe søgefeltet står med det sagte.
+    var voiceSessionId by remember { mutableStateOf<String?>(null) }
+    var voiceText by remember { mutableStateOf<String?>(null) }
     // Tale-sidens funktion, uændret (DECISIONS 2026-10-16): det sagte tolkes af AI'en til forslag med
     // mængde, løbende mens man taler og en sidste gang, når mikrofonen stopper. Forslag fra tidligere
     // optagelser bliver stående; intet gemmes uden Tilføj; dagens tilføjede varer huskes.
@@ -192,6 +198,8 @@ fun FoodsScreen(args: RouteArgs) {
         newRecording()
         micError = null
         micListening = true
+        voiceSessionId = Uuid.random().toString()
+        voiceText = null
         val tag = MealInputLanguages.speechLangFor(lang.language, lang.region)
         var job: Job? = null
         job = scope.launch {
@@ -200,12 +208,13 @@ fun FoodsScreen(args: RouteArgs) {
                     if (micSession == job) {
                         micSpoken = true
                         query = partial.trim()
+                        voiceText = query
                     }
                 }
                 if (micSession != job) return@launch
                 micSession = null
                 micListening = false
-                (result ?: query).trim().takeIf { it.isNotEmpty() }?.let { query = it }
+                (result ?: query).trim().takeIf { it.isNotEmpty() }?.let { query = it; voiceText = it }
                 micFinished++
             } catch (e: CapturePermissionDenied) {
                 if (micSession != job) return@launch
@@ -248,7 +257,7 @@ fun FoodsScreen(args: RouteArgs) {
         try {
             val data = ApiJson.decodeFromJsonElement(
                 InterpretedResponse.serializer(),
-                Api.post("/api/ai/interpret-meal", mapOf("transcript" to transcript, "language" to lang.language)),
+                Api.post("/api/ai/interpret-meal", listOfNotNull("transcript" to transcript, "language" to lang.language, voiceSessionId?.let { "voiceSession" to it }).toMap()),
             )
             if (seq != interpretSeq) return@LaunchedEffect
             val interpreted = data.items.mapIndexed { index, item -> VoiceItem("pending-$batch-$seq-$index", item, saved = false, batch = batch) }
@@ -328,7 +337,8 @@ fun FoodsScreen(args: RouteArgs) {
         delay(SEARCH_DEBOUNCE_MS)
         try {
             val hour = FoodTime.local(FoodTime.now()).hour
-            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(q)}&hour=$hour&take=20${if (exact) "&exact=1" else ""}"))
+            val voice = voiceSessionId?.takeIf { voiceText == q }?.let { "&voice=${encodeUri(it)}" } ?: ""
+            val data = ApiJson.decodeFromJsonElement(ProductListResponse.serializer(), Api.get("/api/products?q=${encodeUri(q)}&hour=$hour&take=20${if (exact) "&exact=1" else ""}$voice"))
             val products = data.products
             correction = SearchCorrection.of(data)
             if (!exact) FoodsSearchCache.entries[cacheKey] = (FoodTime.now().toEpochMilliseconds() + SEARCH_CACHE_TTL_MS) to products

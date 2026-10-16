@@ -126,9 +126,16 @@ function MadvarerContent() {
   // spoken: søgefeltets tekst kom fra mikrofonen — så tolkes hele sætningen
   // også til forslag ("to skiver franskbrød med smør og marmelade").
   const [spoken, setSpoken] = useState(false);
+  // Mikrofonens søgninger vises under Analyse → Søgning → Tale, én session pr.
+  // optagelse — kun så længe søgefeltet står med det sagte.
+  const voiceSessionRef = useRef<string | null>(null);
+  const voiceTextRef = useRef<string | null>(null);
+  const readVoiceSession = useCallback(() => voiceSessionRef.current, []);
   const speech = useLiveSpeech(
     useCallback((text: string) => {
       setSpoken(true);
+      voiceSessionRef.current ??= crypto.randomUUID();
+      voiceTextRef.current = text.trim();
       setQuery(text);
     }, [])
   );
@@ -143,15 +150,22 @@ function MadvarerContent() {
   function speechLang() {
     return speechLangFor(currentMealLanguage(), regionRef.current);
   }
-  const startMic = speech.start;
+  const startMic = startSpeech;
   useEffect(() => {
     if (autoStartMic) startMic(speechLang());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
   }, []);
   const isListening = speech.phase === "listening";
-  const meal = useMealInterpretation({ text: query, listening: isListening, spoken, language: currentMealLanguage });
+  const meal = useMealInterpretation({
+    text: query,
+    listening: isListening,
+    spoken,
+    language: currentMealLanguage,
+    voiceSession: readVoiceSession,
+  });
   function startSpeech(lang: string) {
     meal.newRecording();
+    voiceSessionRef.current = null;
     speech.start(lang);
   }
 
@@ -277,8 +291,12 @@ function MadvarerContent() {
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
+        const voice =
+          voiceSessionRef.current && voiceTextRef.current === q
+            ? `&voice=${encodeURIComponent(voiceSessionRef.current)}`
+            : "";
         const response = await fetch(
-          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}`,
+          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}${voice}`,
           { signal: controller.signal }
         );
         if (!response.ok) throw new Error("search failed");
