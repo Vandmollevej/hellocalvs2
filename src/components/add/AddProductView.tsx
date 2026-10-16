@@ -33,7 +33,7 @@ import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
-import { HfSlider } from "@/components/hf/HfSlider";
+import { DragNumberStrip } from "@/components/hf/DragNumberStrip";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
 import {
@@ -1276,7 +1276,23 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="page-title" width={96} />
                     </ReadingSkeleton>
-                  ) : hasServingUnit && amountUnit === "personer" ? (
+                  ) : (
+                  <DragNumberStrip
+                    value={amount}
+                    step={step}
+                    min={step}
+                    onChange={setAmount}
+                    format={(value) =>
+                      String(
+                        hasServingUnit && amountUnit === "personer"
+                          ? Math.round(value / (servingSizeGrams as number))
+                          : liquid
+                            ? liquidValue(value, liquid, liquidPrimary)
+                            : toDisplayAmount(value, displayUnit),
+                      )
+                    }
+                  >
+                  {hasServingUnit && amountUnit === "personer" ? (
                     <p className="hf-type-page-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
@@ -1317,6 +1333,8 @@ export function AddProductView({
                       <span>&nbsp;{displayUnit}{!hasServingUnit && displayUnit === "g" && servingSizeGrams === amount ? t("addProduct.perPiece") : ""}</span>
                     </label>
                   )}
+                  </DragNumberStrip>
+                  )}
                   <p className="hf-type-body text-text-secondary flex justify-center">
                     {isPending("nutrition") ? (
                       <ReadingSkeleton label={t("addProduct.reading")}>
@@ -1340,14 +1358,6 @@ export function AddProductView({
                   +
                 </button>
               </div>
-              <HfSlider
-                value={Math.min(Math.max(amount, 0), Math.max(1000, amount))}
-                min={0}
-                max={Math.max(1000, Math.ceil(amount / 100) * 100)}
-                step={step}
-                onChange={(next) => setAmount(Math.max(0, next))}
-                aria-label={displayUnit}
-              />
 
               <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">

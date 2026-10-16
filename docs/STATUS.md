@@ -1,3 +1,7 @@
+## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
+- Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
+- Master byggede ikke efter #475 (`:rest*` uden "/" i `next.config.ts`) — rettet til `:rest(.*)`. Desuden lint-fejl og manglende side i `page-tree.ts` efter #478 rettet.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.

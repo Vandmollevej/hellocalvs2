@@ -63,7 +63,7 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
-import dk.packroff.hellocal.ui.FieldSlider
+import dk.packroff.hellocal.ui.DragNumberStrip
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.localizedDecimals
@@ -555,6 +555,17 @@ fun AddProductView(
                             onTyped = { value ->
                                 setAmount(maxOf(0.0, if (liquid != null) liquidBaseFromValue(value, liquid, liquidGrams) else fromDisplayAmount(value, displayUnit)))
                             },
+                            amount = amount,
+                            step = step,
+                            formatAmount = { value ->
+                                when {
+                                    hasServingUnit && amountUnit == "personer" && servingSizeGrams != null && servingSizeGrams > 0 ->
+                                        jsRound(value / servingSizeGrams).toString()
+                                    liquid != null -> jsNumberText(liquidValue(value, liquid, liquidGrams))
+                                    else -> jsNumberText(toDisplayAmount(value, displayUnit))
+                                }
+                            },
+                            onDragAmount = ::setAmount,
                         )
 
                         Column(Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -991,6 +1002,11 @@ private fun AmountStepper(
     onSwap: (() -> Unit)? = null,
     // Skøn (fx Frida-skøn, DECISIONS 2026-10-10): ∼ foran kalorietallet.
     kcalEstimated: Boolean = false,
+    // Det store tal trækkes til siderne (DragNumberStrip); i basisenheden.
+    amount: Double = 0.0,
+    step: Double = 10.0,
+    formatAmount: (Double) -> String = { jsNumberText(it) },
+    onDragAmount: (Double) -> Unit = {},
 ) {
     Column {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
@@ -1015,8 +1031,9 @@ private fun AmountStepper(
                 Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if (isLoading) FoodSkeleton(Modifier.width(96.dp).height(28.dp))
+                else DragNumberStrip(amount, step, step, formatAmount, onDragAmount, Modifier.fillMaxWidth()) {
                 when {
-                    isLoading -> FoodSkeleton(Modifier.width(96.dp).height(28.dp))
                     servingMode -> HcText(servingText, HcTypeRoles.PageTitle, color = HcColors.Black)
                     else -> {
                         var text by remember(displayAmount) { mutableStateOf(jsNumberText(displayAmount)) }
@@ -1037,6 +1054,7 @@ private fun AmountStepper(
                         }
                     }
                 }
+                }
                 if (nutritionPending) FoodSkeleton(Modifier.padding(vertical = 2.dp).width(64.dp).height(14.dp))
                 else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     if (kcalEstimated) FoodUncertaintyTilde(small = true)
@@ -1047,13 +1065,6 @@ private fun AmountStepper(
             GlyphButton("+", onPlus)
         }
     }
-    FieldSlider(
-        text = jsNumberText(displayAmount),
-        min = 0.0,
-        max = maxOf(1000.0, kotlin.math.ceil(displayAmount / 100.0) * 100.0),
-        onChange = { next -> next.replace(",", ".").toDoubleOrNull()?.let(onTyped) },
-        step = 10.0,
-    )
     }
 }
 
