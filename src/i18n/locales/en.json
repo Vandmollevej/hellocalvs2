@@ -2983,6 +2983,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Save as favorite",
+    "removeFavorite": "Remove favorite",
+    "favoriteSaved": "Saved",
     "favorite": "Favorite",
     "reportErrorAria": "Found a mistake?",
     "reportError": "Error",

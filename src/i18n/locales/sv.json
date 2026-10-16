@@ -2983,6 +2983,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Spara som favorit",
+    "removeFavorite": "Ta bort favorit",
+    "favoriteSaved": "Sparad",
     "favorite": "Favorit",
     "reportErrorAria": "Har du hittat ett fel?",
     "reportError": "Fel",
