@@ -352,6 +352,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Screening af Lidl/Aldi-billeder (docs/DECISIONS.md 2026-10-16).
+    key: "image-screen-local",
+    name: "Billeder: ufuldstændige produkter",
+    description:
+      "Screener billederne på danske og tyske Open Food Facts-varer fra Lidl og Aldi lokalt på serveren for afskårne produkter, hænder over billedet og åbne eller halvt fyldte varer. Markerer kun; ændrer aldrig varer eller billeder.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:20",
+  },
+  {
     // OCR først for bagsidebillederne (docs/DECISIONS.md 2026-10-15).
     key: "back-photo-local",
     name: "Bagsidebilleder: lokal læsning",
