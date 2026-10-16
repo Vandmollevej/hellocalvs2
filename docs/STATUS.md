@@ -1,3 +1,8 @@
+## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
+- Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
+
+## 2026-10-16: Forsidens grafer i infoboksens plads
+
 ## 2026-10-16: Nye scannede varer står aldrig tomme
 
 - Fejler OpenAI-aflæsningen af forside/energi, prøves den igen (straks og efter 10 min), med reservemodel; navn og brand udledes imens af telefonens tekst ("LETMÆLK" → Letmælk); ukendt energi vises som ukendt og får Frida-/varetype-skøn i stedet for "∼ 0"; råfotoet fylder hele cirklen (web + native). Varer fra de sidste 14 dage uden navn/med 0 kcal repareres én gang. Ikke prøvet mod OpenAI/rigtig database eller telefon herfra — produktionens log viser den præcise OpenAI-fejl. Se DECISIONS 2026-10-16.
