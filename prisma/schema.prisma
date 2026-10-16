@@ -5684,9 +5684,13 @@ model ApiUsageMonth {
 // Månedsbudget og pris pr. kald, rettet af admin. Beløb i tjenestens valuta.
 model ApiBudget {
   serviceId     String   @id
-  monthlyBudget Float?
-  unitPrice     Float?
-  updatedAt     DateTime @updatedAt
+  monthlyBudget  Float?
+  unitPrice      Float?
+  /// Varsel, når månedens forbrug når dette beløb.
+  alertAt        Float?
+  /// Kun OpenAI: varsel, når kreditsaldoen kommer under dette beløb.
+  balanceAlertAt Float?
+  updatedAt      DateTime @updatedAt
 
   @@map("api_budgets")
 }

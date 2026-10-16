@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { ensureSecretsLoaded } from "@/lib/api-keys/store";
-import { getOpenAiUsage, type OpenAiUsage } from "@/lib/openai-usage";
+import { LOW_BALANCE_USD, getOpenAiUsage, type OpenAiUsage } from "@/lib/openai-usage";
 import { monthKey } from "@/lib/api-usage-record";
-import type { UsageState } from "@/lib/api-usage-format";
+import { formatMoney, type UsageState } from "@/lib/api-usage-format";
 
 // Admin → API-forbrug (docs/DECISIONS.md 2026-10-16): status, månedens
 // forbrug og budget for hver tjeneste, der koster penge. OpenAI læses live
@@ -126,6 +126,12 @@ export type ServiceOverview = {
   spent: number | null;
   spentNote: string | null;
   budget: number | null;
+  /** Varselsgrænse: advar, når månedens forbrug når beløbet. */
+  alertAt: number | null;
+  /** Kun OpenAI: advar, når kreditsaldoen er under beløbet. */
+  balanceAlertAt: number | null;
+  /** Forbruget har nået varselsgrænsen. */
+  alertReached: boolean;
   unitPrice: number | null;
   defaultUnitPrice: number | null;
   /** Andel af budgettet brugt (0–1+), null uden budget eller forbrug. */
@@ -150,28 +156,37 @@ function isConfigured(service: PaidService) {
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
-function budgetState(use: number | null): { state: ServiceState; text: string } | null {
-  if (use === null) return null;
-  if (use >= 1) return { state: "fail", text: "Budgettet er brugt op" };
-  if (use >= BUDGET_WARN) return { state: "warn", text: `${Math.round(use * 100)} % af budgettet er brugt` };
+function budgetState(
+  use: number | null,
+  alertReached: boolean,
+  alertAt: number | null,
+  currency: "USD" | "DKK",
+): { state: ServiceState; text: string } | null {
+  if (use !== null && use >= 1) return { state: "fail", text: "Budgettet er brugt op" };
+  if (alertReached && alertAt !== null) {
+    return { state: "warn", text: `Forbruget har nået din varselsgrænse på ${formatMoney(alertAt, currency)}` };
+  }
+  if (use !== null && use >= BUDGET_WARN) return { state: "warn", text: `${Math.round(use * 100)} % af budgettet er brugt` };
   return null;
 }
 
 export async function getApiUsageOverview(now = new Date(), forceStatus = false): Promise<ApiUsageOverview> {
   await ensureSecretsLoaded();
   const month = monthKey(now);
-  const [usageRows, budgetRows, openai] = await Promise.all([
+  const budgetRows = await prisma.apiBudget.findMany();
+  const budgets = new Map(budgetRows.map((r) => [r.serviceId, r]));
+  const lowBalanceAt = budgets.get("openai")?.balanceAlertAt ?? LOW_BALANCE_USD;
+  const [usageRows, openai] = await Promise.all([
     prisma.apiUsageMonth.findMany({ where: { month } }),
-    prisma.apiBudget.findMany(),
-    getOpenAiUsage(now, forceStatus),
+    getOpenAiUsage(now, forceStatus, lowBalanceAt),
   ]);
   const usage = new Map(usageRows.map((r) => [r.serviceId, r]));
-  const budgets = new Map(budgetRows.map((r) => [r.serviceId, r]));
 
   const services = PAID_SERVICES.map((service): ServiceOverview => {
     const configured = isConfigured(service);
     const budgetRow = budgets.get(service.id);
     const budget = budgetRow?.monthlyBudget ?? null;
+    const alertAt = budgetRow?.alertAt ?? null;
     const unitPrice = service.defaultUnitPrice === null ? null : (budgetRow?.unitPrice ?? service.defaultUnitPrice);
     const row = usage.get(service.id);
     const base = {
@@ -181,6 +196,8 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
       currency: service.currency,
       configured,
       budget,
+      alertAt,
+      balanceAlertAt: service.id === "openai" ? lowBalanceAt : null,
       unitPrice,
       defaultUnitPrice: service.defaultUnitPrice,
       priceNote: service.priceNote,
@@ -198,10 +215,12 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
         state = "warn";
         stateText = "Lav kreditsaldo — fyld op hos OpenAI";
       }
-      const overBudget = state === "ok" ? budgetState(use) : null;
+      const alertReached = alertAt !== null && spent !== null && spent >= alertAt;
+      const overBudget = state === "ok" ? budgetState(use, alertReached, alertAt, service.currency) : null;
       if (overBudget) ({ state, text: stateText } = overBudget);
       return {
         ...base,
+        alertReached,
         state,
         stateText,
         calls: null,
@@ -230,21 +249,30 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
       state = "ok";
       stateText = "Seneste kald lykkedes.";
     }
-    const overBudget = state === "ok" || state === "idle" ? budgetState(use) : null;
+    const alertReached = alertAt !== null && spent !== null && spent >= alertAt;
+    const overBudget = state === "ok" || state === "idle" ? budgetState(use, alertReached, alertAt, service.currency) : null;
     if (overBudget) ({ state, text: stateText } = overBudget);
-    return { ...base, state, stateText, calls, errors: row?.errors ?? 0, spent, spentNote: null, budgetUse: use };
+    return { ...base, state, stateText, alertReached, calls, errors: row?.errors ?? 0, spent, spentNote: null, budgetUse: use };
   });
 
   return { checkedAt: now.toISOString(), month, services, openai };
 }
 
-export async function saveBudget(serviceId: string, monthlyBudget: number | null, unitPrice: number | null) {
+export type BudgetInput = {
+  monthlyBudget: number | null;
+  unitPrice: number | null;
+  alertAt: number | null;
+  balanceAlertAt: number | null;
+};
+
+export async function saveBudget(serviceId: string, input: BudgetInput) {
   const service = PAID_SERVICES.find((s) => s.id === serviceId);
   if (!service) throw new Error("Ukendt tjeneste");
-  const price = service.defaultUnitPrice === null ? null : unitPrice;
-  await prisma.apiBudget.upsert({
-    where: { serviceId },
-    create: { serviceId, monthlyBudget, unitPrice: price },
-    update: { monthlyBudget, unitPrice: price },
-  });
+  const data = {
+    monthlyBudget: input.monthlyBudget,
+    unitPrice: service.defaultUnitPrice === null ? null : input.unitPrice,
+    alertAt: input.alertAt,
+    balanceAlertAt: service.id === "openai" ? input.balanceAlertAt : null,
+  };
+  await prisma.apiBudget.upsert({ where: { serviceId }, create: { serviceId, ...data }, update: data });
 }

@@ -1,3 +1,7 @@
+## 2026-10-16: Beløbsgrænse for varsler (admin → API-forbrug)
+
+- Brugerens ønske: selv bestemme, hvornår der advares. Hver tjeneste har nu "Advar mig, når månedens forbrug når …" (`api_budgets.alertAt`), og OpenAI har også "Advar mig, når kreditsaldoen er under …" (`balanceAlertAt`, standard 5 $). Beløbsgrænsen giver advarsel på kortet og én mail pr. måned; 80 %/100 % af budgettet varsles stadig. Migration `20261016180000_api_alert_amount`.
+
 ## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
 
 - Brugerens ønske: se budget og status for alle API'er, der koster penge, hver for sig og samlet på admin-forsiden, og få varsler på mail (til/fra + modtagerliste).

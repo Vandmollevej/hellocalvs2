@@ -23,6 +23,8 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
   const [editing, setEditing] = useState(false);
   const [budget, setBudget] = useState(service.budget?.toString() ?? "");
   const [price, setPrice] = useState(service.unitPrice?.toString() ?? "");
+  const [alertAt, setAlertAt] = useState(service.alertAt?.toString() ?? "");
+  const [balanceAlertAt, setBalanceAlertAt] = useState(service.balanceAlertAt?.toString() ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +36,7 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
       const res = await fetch("/api/admin/api-usage/budget", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ serviceId: service.id, monthlyBudget: budget, unitPrice: price }),
+        body: JSON.stringify({ serviceId: service.id, monthlyBudget: budget, unitPrice: price, alertAt, balanceAlertAt }),
       });
       const data = (await res.json().catch(() => ({}))) as ApiUsageOverview & { message?: string };
       if (!res.ok) throw new Error(data.message ?? "Kunne ikke gemme");
@@ -70,6 +72,17 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
         </p>
       </div>
       <BudgetBar service={service} />
+      {(service.alertAt !== null || service.balanceAlertAt !== null) && (
+        <p className={`hf-type-small ${service.alertReached ? "text-hf-warning" : "text-text-muted"}`}>
+          Varsel ved:{" "}
+          {[
+            service.alertAt !== null ? `forbrug på ${formatMoney(service.alertAt, service.currency)}` : null,
+            service.balanceAlertAt !== null ? `saldo under ${formatMoney(service.balanceAlertAt, service.currency)}` : null,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+        </p>
+      )}
       <p className="hf-type-small text-text-secondary">{service.stateText}</p>
       <p className="hf-type-small text-text-muted">
         {service.spentNote ??
@@ -84,6 +97,16 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
             <span className="hf-type-caption">Månedsbudget ({service.currency})</span>
             <input className="hf-input" inputMode="decimal" placeholder="Tomt = intet budget" value={budget} onChange={(e) => setBudget(e.target.value)} />
           </label>
+          <label className="flex flex-col gap-1">
+            <span className="hf-type-caption">Advar mig, når månedens forbrug når ({service.currency})</span>
+            <input className="hf-input" inputMode="decimal" placeholder="Tomt = intet beløbsvarsel" value={alertAt} onChange={(e) => setAlertAt(e.target.value)} />
+          </label>
+          {service.id === "openai" && (
+            <label className="flex flex-col gap-1">
+              <span className="hf-type-caption">Advar mig, når kreditsaldoen er under ({service.currency})</span>
+              <input className="hf-input" inputMode="decimal" placeholder="5" value={balanceAlertAt} onChange={(e) => setBalanceAlertAt(e.target.value)} />
+            </label>
+          )}
           {!live && (
             <label className="flex flex-col gap-1">
               <span className="hf-type-caption">Pris pr. kald ({service.currency})</span>
@@ -104,7 +127,7 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
       ) : (
         <div className="flex flex-wrap gap-3">
           <button type="button" onClick={() => setEditing(true)} className="hf-btn-text text-hf-green-dark">
-            Ret budget
+            Ret budget og varsler
           </button>
           <a href={service.billingUrl} target="_blank" rel="noreferrer" className="hf-type-small self-center text-text-muted underline">
             Fakturering hos udbyderen
@@ -152,7 +175,7 @@ export function ApiUsageDashboard({ initial }: { initial: ApiUsageOverview }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {data.services.map((service) => (
-          <ServiceTile key={`${service.id}:${service.budget}:${service.unitPrice}`} service={service} onSaved={setData} />
+          <ServiceTile key={`${service.id}:${service.budget}:${service.unitPrice}:${service.alertAt}:${service.balanceAlertAt}`} service={service} onSaved={setData} />
         ))}
       </div>
     </div>

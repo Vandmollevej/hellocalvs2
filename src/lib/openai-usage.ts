@@ -152,7 +152,11 @@ export async function saveBalance(usd: number, adminId: string, now = new Date()
   await saveSecret("OPENAI_CREDIT_BALANCE_AT", now.toISOString(), adminId);
 }
 
-export async function getOpenAiUsage(now = new Date(), forceStatus = false): Promise<OpenAiUsage> {
+export async function getOpenAiUsage(
+  now = new Date(),
+  forceStatus = false,
+  lowBalanceUsd = LOW_BALANCE_USD,
+): Promise<OpenAiUsage> {
   await ensureSecretsLoaded();
   const balance = readBalance();
   const todayStart = utcDayStart(now);
@@ -213,7 +217,7 @@ export async function getOpenAiUsage(now = new Date(), forceStatus = false): Pro
           enteredAt: balance.at.toISOString(),
           spentSinceUsd: spentSince,
           remainingUsd: remaining,
-          low: status.state === "quota" || (remaining !== null && remaining < LOW_BALANCE_USD),
+          low: status.state === "quota" || (remaining !== null && remaining < lowBalanceUsd),
         }
       : { configured: false },
   };
