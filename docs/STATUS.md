@@ -1,3 +1,8 @@
+## 2026-10-16: Forsidens grafer i infoboksens plads
+
+- Graferne fra 2026-10-14 (puls, kalorier, anbefalet mod indtag, målsætning og teksten "For at kunne holde dig inden for dagens mål …" nederst) står nu uden baggrund i præcis den plads, infoboksen havde, modsat tal-hjulet (`FrontCharts` i `Hero`). Resten af forsiden (topbar, tal-hjul, puls-linje, dagens liste, ingen rulning) er som før graferne. Graferne deler infoboksens højde ligeligt.
+- Vågne timer: rundet OP til venstre og NED til højre, som brugeren skrev. Web + native (`HomeFrontCharts` i hero-boksen). Native er ikke kompileret lokalt — CI afgør.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.
