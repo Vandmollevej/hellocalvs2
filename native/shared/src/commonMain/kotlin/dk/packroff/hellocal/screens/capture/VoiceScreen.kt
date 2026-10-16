@@ -148,6 +148,19 @@ internal fun PingRing() {
     Box(Modifier.size(96.dp).scale(0.8f + progress * 0.4f).alpha(0.2f * (1f - progress)).clip(CircleShape).background(HcColors.Green))
 }
 
+/** 28 green bars under the mic while listening (src/components/voice/LiveWaveform.tsx; the web reads the mic level, natively an idle wave). */
+@Composable
+internal fun LiveWaveform() {
+    val transition = rememberInfiniteTransition()
+    val time by transition.animateFloat(0f, (2 * PI).toFloat(), infiniteRepeatable(tween(2100, easing = LinearEasing), RepeatMode.Restart))
+    Row(Modifier.padding(top = 16.dp).widthIn(max = 280.dp).fillMaxWidth().height(32.dp), horizontalArrangement = Arrangement.spacedBy(3.dp), verticalAlignment = Alignment.Bottom) {
+        repeat(28) { i ->
+            val level = (0.25f + 0.2f * sin(time * 3 + i * 0.6f)).coerceIn(0.06f, 1f)
+            Box(Modifier.weight(1f).fillMaxHeight(level).clip(RoundedCornerShape(50)).background(HcColors.Green))
+        }
+    }
+}
+
 /** StandMicrophone (voice page SVG, 64×64). */
 internal val standMicrophone: ImageVector by lazy {
     ImageVector.Builder(name = "StandMicrophone", defaultWidth = 56.dp, defaultHeight = 56.dp, viewportWidth = 64f, viewportHeight = 64f).apply {

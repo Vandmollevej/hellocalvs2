@@ -1,3 +1,11 @@
+## 2026-10-16: Madvarer — favoritter øverst, lydbølge, kamera i søgefeltet
+
+Brugerens krav: favoritter vises øverst; lydbølgen fra Tale-siden må ikke fjernes; søgefeltet vokser i højden, når teksten ikke kan stå på én linje; "Scan nyt produkt"-knappen nederst erstattes af et kamera i søgefeltets venstre side, der åbner billedfunktionen (`/camera?mode=product`).
+
+- `GET /api/products/most-used` sender alle profilens favoritter først (nyeste bogmærke først) og derefter op til 10 mest brugte, der ikke er favoritter. Web og native sorterer også favoritter først lokalt, så et nyt bogmærke rykker op med det samme.
+- Lydbølgen (`src/components/voice/LiveWaveform.tsx`, 28 grønne pinde efter mikrofonens niveau) vises under mikrofonen, mens der lyttes; native viser den samme bølge (`LiveWaveform` i `VoiceScreen.kt`).
+- Søgefeltet er en `textarea` med `.hf-search--grow` (mindst kontrolhøjden); linjeskift fjernes, Enter lukker tastaturet. Forstørrelsesglasset står nu i højre side.
+
 ## 2026-10-16: Faste designbilleder caches i et år
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.

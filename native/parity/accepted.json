@@ -626,7 +626,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "e9ceb8ea6e13f6d4",
+    "src/app/foods/page.tsx": "e3c12bb1fea5983e",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -645,7 +645,6 @@
     "src/components/family/ProfileSwitcher.tsx": "25b2d318dea9674a",
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
     "src/components/hf/AccordionCard.tsx": "8cab6c407d964400",
-    "src/components/hf/ActionButton.tsx": "c70a6e85a68ad4fe",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",
@@ -655,6 +654,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
+    "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
     "src/components/voice/MealLanguagePicker.tsx": "dc30d29d196ec53a",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
