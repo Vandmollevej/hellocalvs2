@@ -39,6 +39,14 @@ Afgrænsning og næste skridt pr. opgave:
 Brugeren har godkendt commits, push og fortsættelse af opgaverne.
 
 
+## G-PC-BILLEDSCREENING — Lidl/Aldi-billeder på brugerens pc (2026-10-16)
+
+Ejer: lokal Claude på brugerens pc. Status: Ikke startet. Skal køres lokalt på pc'en, aldrig på NAS'en (brugerens regel 2026-10-16).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| pc-screen | Screen billederne på danske og tyske Open Food Facts-varer fra Lidl og Aldi for A) afskåret produkt, B) hænder/fingre ind over, C) åben eller halvfuld vare | Ikke startet | `git pull origin master`, gå til `scripts/image-screen`, sæt `DATABASE_URL` (læseadgang) og `IMAGE_BASE_URL` eller `IMAGES_DIR` i miljøet (aldrig i en fil), kør først `python screen.py --limit 200 --no-clip`, kig i `out/ufuldstaendige-billeder.csv`, justér tærsklerne øverst i `screen.py`, og kør derefter `run-night.ps1` til natten. Rapporten er kun en CSV; ingen varer ændres. Sæt rækken til Færdig, når den er kørt |
+
 ## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
 
 Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
