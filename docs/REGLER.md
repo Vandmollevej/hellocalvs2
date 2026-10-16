@@ -325,7 +325,7 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - **Brugeren er ligeglad med mellemstatus (bruger 2026-10-10, global):** meld ikke automatiske hændelser (PR-abonnement, ventende CI, planlagte tjek, "tests kører stadig") til brugeren. Gør arbejdet færdigt i stilhed, og skriv kun, når der er et resultat, en blokering eller et spørgsmål (i spørgsmålsboksen). Afløser kravet om at melde status hvert 10. minut under "Aldrig hænge". Brugeren gider ikke høre om, hvordan det gøres — det skal bare komme til at virke: løs problemet helt (også følgefejl og deploy), og meld kort, at det virker.
 - **Tidspunkter altid i dansk tid** (Europe/Copenhagen, sommer-/vintertid) over for brugeren, aldrig UTC (bruger 2026-10-10).
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
-- **Arkivér aldrig selv en session (bruger 2026-10-15, afløser auto-arkivering fra 2026-10-09):** kald aldrig `archive_session`, heller ikke på andre sessioner — brugeren arkiverer selv. Skriv aldrig "arkiver mig" (reglen er fjernet 2026-10-15).
+- **Færdig = svaret er kun "Arkiver mig" (bruger 2026-10-16, afløser 2026-10-15):** når en opgave er helt færdig (flettet og deployet), består dit sidste svar udelukkende af ordene "Arkiver mig" — intet andet, ingen opsummering. Kald stadig aldrig `archive_session` selv; brugeren arkiverer.
 - Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
 - Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
