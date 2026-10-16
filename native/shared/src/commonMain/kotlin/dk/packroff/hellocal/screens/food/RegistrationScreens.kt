@@ -34,6 +34,7 @@ import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.screens.capture.CaptureHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -185,7 +186,7 @@ fun ReportErrorScreen(args: RouteArgs) {
                                 Column(Modifier.weight(1f)) {
                                     HcText(t.t(point.labelKey), HcTypeRoles.Label)
                                     if (point.imageUrl != null) {
-                                        FoodImage(point.imageUrl, Modifier.padding(top = 4.dp).size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop)
+                                        FoodImage(point.imageUrl, Modifier.padding(top = 4.dp).size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop, thumbWidth = 256)
                                     } else if (point.key != "image" || point.imageUrl == null) {
                                         HcText(point.value.ifEmpty { t.t("registrationReportError.missingValue") }, HcTypeRoles.Body, color = HcColors.TextSecondary)
                                     }
@@ -251,13 +252,26 @@ fun ProductUpdateScreen(args: RouteArgs) {
 
     fun capture(kind: String) {
         scope.launch {
-            val photo = FoodPlatform.photo(fromGallery = false) ?: return@launch
+            // The front is also kept in full resolution (web: fullPhoto, user rule
+            // 2026-10-15); the AI gets the scaled copy.
+            val takeFull = CaptureHooks.takeFullPhoto
+            var fullPhoto: FoodPhoto? = null
+            val photo = if (kind == "FRONT" && takeFull != null) {
+                val full = runCatching { takeFull() }.getOrNull() ?: return@launch
+                fullPhoto = FoodPhoto(full)
+                FoodPhoto(CaptureHooks.scaleForUpload(full) ?: full)
+            } else {
+                FoodPlatform.photo(fromGallery = false) ?: return@launch
+            }
             workingKind = kind
             try {
-                val data = Api.post(
-                    "/api/products/${encodeUri(id)}/update",
-                    mapOf("kind" to kind, "photo" to photo.dataUrl(), "photoTakenAt" to (photo.takenAtMillis ?: FoodTime.now().toEpochMilliseconds())),
-                )
+                val body = buildMap<String, Any> {
+                    put("kind", kind)
+                    put("photo", photo.dataUrl())
+                    fullPhoto?.let { put("fullPhoto", it.dataUrl()) }
+                    put("photoTakenAt", photo.takenAtMillis ?: FoodTime.now().toEpochMilliseconds())
+                }
+                val data = Api.post("/api/products/${encodeUri(id)}/update", body)
                 outcomes = outcomes + (kind to if (data.bool("accepted") == true) "done" else "unreadable")
                 data.num("pointsAwarded")?.let { if (it > 0) earned += it.toInt() }
             } catch (_: Exception) {

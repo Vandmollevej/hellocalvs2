@@ -76,6 +76,7 @@ import dk.packroff.hellocal.screens.profile.ProfileSwitchList
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
+import dk.packroff.hellocal.ui.HcRemoteImage
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.LocalCompactLandscape
@@ -515,6 +516,8 @@ private suspend fun AwaitPointerEventScope.trackBarDrag(
 @Composable
 private fun NavIcon(item: NavItem, color: Color, size: Dp = ICON_SIZE) {
     when (item.icon) {
+        // Hjem: the logo's lime in colour (not tinted), a little larger than the other icons.
+        "Home" -> HcRemoteImage("/hello-cal-fruit.png", Modifier.size(size + 8.dp))
         "trend" -> TrendIcon(color, size.value.roundToInt())
         "favorite" -> FoodFavoriteIcon(false, size, color)
         "photoFrame" -> ProfileIcon(ProfileVectorIcon.PhotoFrame, size, color, stroke = 1.6f)

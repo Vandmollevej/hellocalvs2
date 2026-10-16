@@ -29,6 +29,20 @@ object CaptureHooks {
     val takePhoto: (suspend () -> ByteArray?)?
         get() = if (Device.available) takePhotoCall else null
 
+    /**
+     * The whole, uncropped camera photo up to [FULL_PHOTO_EDGE] (web: captureStillWithFull,
+     * docs/DECISIONS.md 2026-10-15) — the back-side photo the night robot reads once.
+     */
+    val takeFullPhoto: (suspend () -> ByteArray?)?
+        get() = if (Device.available) takeFullPhotoCall else null
+    private val takeFullPhotoCall: suspend () -> ByteArray? = { Device.takePhoto(FULL_PHOTO_EDGE, FULL_PHOTO_QUALITY) }
+    const val FULL_PHOTO_EDGE = 4096
+    const val FULL_PHOTO_QUALITY = 0.9
+
+    /** Scales a photo down for the create request (Device.scaleImage); null when not possible. */
+    suspend fun scaleForUpload(photo: ByteArray): ByteArray? =
+        runCatching { Device.scaleImage(photo, Device.PHOTO_MAX_EDGE, Device.PHOTO_MAX_EDGE, Device.PHOTO_QUALITY) }.getOrNull()
+
     /** Opens the barcode scanner; returns the EAN/UPC digits, or null when cancelled. */
     val scanBarcode: (suspend () -> String?)?
         get() = if (Device.available) scanBarcodeCall else null

@@ -205,7 +205,12 @@ export default async function AdminDashboardPage() {
           note={counts.support.overdue > 0 ? `${counts.support.overdue} over 24 timer` : null}
           alert={counts.support.overdue > 0}
         />
-        <StatCard href="/admin/products" label="Nye varer" value={counts.pendingProducts} />
+        <StatCard
+          href={counts.pendingProducts === 0 && counts.rechecks > 0 ? "/admin/products?tab=recheck" : "/admin/products"}
+          label="Nye varer"
+          value={counts.pendingProducts + counts.rechecks}
+          note={counts.rechecks > 0 ? `${counts.rechecks} 2-års tjek` : null}
+        />
         <StatCard
           href="/admin/uncertainties"
           label="Usikkerheder"

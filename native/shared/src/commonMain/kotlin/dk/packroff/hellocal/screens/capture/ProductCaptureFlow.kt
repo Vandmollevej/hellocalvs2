@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
@@ -33,9 +39,18 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.icons.HcIcon
+import io.ktor.client.request.header
+import io.ktor.http.HttpMethod
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -51,6 +66,12 @@ private enum class CaptureStep(val key: String, val icon: String) {
 /** Valid market regions (src/lib/regions.ts isRegionCode) fall back to DK like buildBarcodeContext. */
 private val REGION_CODE = Regex("^[A-Z]{2}$")
 
+/** The scan flow's id header (src/lib/scan-debug-log.ts SCAN_FLOW_HEADER). */
+private const val SCAN_FLOW_HEADER = "x-scan-flow"
+
+/** Creation waits at most this long for back photos still uploading (web: PENDING_PHOTOS_WAIT_MS). */
+private const val PENDING_PHOTOS_WAIT_MS = 10_000L
+
 /**
  * Native port of src/components/camera/ProductCaptureFlow.tsx (Tilføj → kamera,
  * docs/DECISIONS.md 2026-09-27): four step buttons — barcode, front, energy,
@@ -60,7 +81,25 @@ private val REGION_CODE = Regex("^[A-Z]{2}$")
  * screen goes to /add/[id]. The web's live in-browser OCR/object detection has
  * no native counterpart yet, so the photos are sent without local OCR and the
  * server reads them with OpenAI (its documented fallback).
+ *
+ * 2026-10-14 (user): steps are numbered ("1. Scan stregkode"), each completed
+ * step is shown with the StepDoneOverlay (white flash, strike-through, big
+ * check, line flies up) before the next step, the barcode and energy/contents
+ * fields are small with the rest of the picture dark, and the front keeps the
+ * big frame.
+ *
+ * 2026-10-15 (user): the web reads the text in the live video while the user
+ * aims (front text + known brand, nutrition table, ingredients list), shows
+ * the finds in the viewfinder, and the shutter takes the photo at the moment
+ * of the press. The native photo steps already take the photo on the press
+ * through CaptureHooks.takePhoto (no live video to pre-read from), and the
+ * headings follow the web texts ("3. Tag billede af energi"). The working
+ * overlay shows its label visibly, like the web's PhotoWorkingOverlay now does.
+ * The energy/contents steps take the whole camera photo (4096 px) and upload
+ * it uncropped to /api/products/back-photos under the flow's id; the create
+ * request gets a scaled copy. The night robot reads each back photo once.
  */
+@OptIn(ExperimentalUuidApi::class)
 @Composable
 internal fun ProductCaptureFlow(returnSuffix: String) {
     val t = LocalTranslator.current
@@ -68,15 +107,32 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(CaptureStep.Barcode) }
     var done by remember { mutableStateOf(setOf<CaptureStep>()) }
+    // The step(s) just completed (StepDoneOverlay) and the most recently
+    // completed one (the small struck-through line above the heading).
+    var stepDone by remember { mutableStateOf<List<CaptureStep>?>(null) }
     var working by remember { mutableStateOf(false) }
     var createFailed by remember { mutableStateOf(false) }
+    // The product is being created: "Opretter varen …" over the last photo (web 2026-10-14).
+    var submitting by remember { mutableStateOf(false) }
     var lookupError by remember { mutableStateOf(false) }
     var lookupBlockedMessage by remember { mutableStateOf<String?>(null) }
     var region by remember { mutableStateOf("DK") }
     var barcode by remember { mutableStateOf<String?>(null) }
+    // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15, web: qualityCheckProductIdRef):
+    // a known product over two years old appears as new — the photos are taken
+    // as for a new product and stored for the night's check; the customer then
+    // gets the product with its previous info.
+    var qualityCheckProductId by remember { mutableStateOf<String?>(null) }
     var photos by remember { mutableStateOf(mapOf<CaptureStep, String>()) }
     var lastPhoto by remember { mutableStateOf<ByteArray?>(null) }
+    // The whole front photo in full resolution (sent as frontPhotoFull).
+    var frontFull by remember { mutableStateOf<String?>(null) }
     var status by remember { mutableStateOf(CameraStatus.Active) }
+    // One id per opened camera flow (web: newScanFlowId): links the back photos to the product.
+    val flowId = remember { Uuid.random().toString() }
+    // Back photos still uploading; the step shows a spinner and creation waits for them.
+    var uploading by remember { mutableStateOf(setOf<CaptureStep>()) }
+    val uploads = remember { mutableListOf<Job>() }
 
     // The user's region is the primary language signal (docs/DECISIONS.md 2026-09-12).
     LaunchedEffect(Unit) {
@@ -87,22 +143,80 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
 
     fun marketRegion() = region.uppercase().takeIf { REGION_CODE.matches(it) } ?: "DK"
 
-    suspend fun createProduct() {
+    // The server may have created the product even though its answer never
+    // arrived (timeout): if the barcode now exists, that is the product.
+    suspend fun findCreatedProduct(code: String): String? = runCatching {
+        Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+    }.getOrNull()
+
+    // The whole, uncropped photo for the night robot (web: uploadFullPhoto).
+    fun uploadBackPhoto(stepItem: CaptureStep, bytes: ByteArray) {
+        uploading = uploading + stepItem
+        uploads += scope.launch {
+            try {
+                Api.send(
+                    HttpMethod.Post,
+                    "/api/products/back-photos",
+                    mapOf("photo" to jpegDataUrl(bytes), "step" to stepItem.key),
+                ) { header(SCAN_FLOW_HEADER, flowId) }
+            } catch (_: Exception) {
+                // The product is created anyway; only the night analysis misses this photo.
+            } finally {
+                uploading = uploading - stepItem
+            }
+        }
+    }
+
+    // Stores the photos for the 2-year check (POST /api/products/[id]/quality-check).
+    // A failed upload never stops the customer from getting the product.
+    suspend fun submitQualityCheck(productId: String) {
         working = true
+        submitting = true
+        runCatching {
+            Api.post(
+                "/api/products/${Location.encode(productId)}/quality-check",
+                buildMap<String, Any> {
+                    put("marketRegion", marketRegion())
+                    put("signals", mapOf("appLanguage" to t.locale.code))
+                    photos[CaptureStep.Front]?.let { put("frontPhoto", it) }
+                    photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
+                    photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
+                },
+            )
+        }
+        nav.push("/add/$productId$returnSuffix")
+    }
+
+    suspend fun createProduct() {
+        qualityCheckProductId?.let {
+            submitQualityCheck(it)
+            return
+        }
+        working = true
+        submitting = true
         createFailed = false
+        withTimeoutOrNull(PENDING_PHOTOS_WAIT_MS) { uploads.toList().joinAll() }
         try {
             val body = buildMap<String, Any> {
                 barcode?.let { put("barcode", it) }
                 put("marketRegion", marketRegion())
                 put("signals", mapOf("appLanguage" to t.locale.code))
                 photos[CaptureStep.Front]?.let { put("frontPhoto", it) }
+                frontFull?.let { put("frontPhotoFull", it) }
                 photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
                 photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
             }
-            val id = Api.post("/api/products/quick", body).jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+            val id = Api.send(HttpMethod.Post, "/api/products/quick", body) { header(SCAN_FLOW_HEADER, flowId) }
+                .jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
                 ?: throw IllegalStateException("no id")
             nav.push("/add/$id$returnSuffix")
         } catch (e: Exception) {
+            val createdId = barcode?.let { findCreatedProduct(it) }
+            if (createdId != null) {
+                nav.push("/add/$createdId$returnSuffix")
+                return
+            }
+            submitting = false
             working = false
             createFailed = true
         }
@@ -118,6 +232,14 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         scope.launch { createProduct() }
     }
 
+    // "Step done" stays on screen for STEP_DONE_MS, and only then the flow goes on.
+    suspend fun showDoneThenContinue(justDone: List<CaptureStep>, completed: Set<CaptureStep>) {
+        stepDone = justDone
+        delay(STEP_DONE_MS)
+        stepDone = null
+        goToNextStep(completed)
+    }
+
     suspend fun lookupBarcode(code: String) {
         lookupError = false
         lookupBlockedMessage = null
@@ -125,6 +247,16 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         try {
             val data = Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject
             val id = data["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+            if (id != null && data["qualityCheck"]?.jsonPrimitive?.contentOrNull == "true") {
+                // Over two years old: go on to the photos like an unknown barcode.
+                qualityCheckProductId = id
+                barcode = code
+                val completed = done + CaptureStep.Barcode
+                done = completed
+                working = false
+                showDoneThenContinue(listOf(CaptureStep.Barcode), completed)
+                return
+            }
             if (id != null) {
                 nav.push("/add/$id$returnSuffix")
                 return
@@ -137,10 +269,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     lookupBlockedMessage = body?.get("message")?.jsonPrimitive?.contentOrNull ?: "Dyrefoder kan ikke oprettes i Hello Cal."
                 }
                 e.status == 404 -> {
-                    // Unknown product: keep the barcode and go on to the front.
+                    // Unknown product: keep the barcode, show step 1 as done and go on to the front.
                     barcode = code
-                    done = done + CaptureStep.Barcode
-                    step = CaptureStep.Front
+                    val completed = done + CaptureStep.Barcode
+                    done = completed
+                    working = false
+                    showDoneThenContinue(listOf(CaptureStep.Barcode), completed)
                 }
                 else -> lookupError = true
             }
@@ -152,7 +286,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     }
 
     fun capture() {
-        if (working) return
+        if (working || stepDone != null) return
         if (step == CaptureStep.Barcode) {
             if (CaptureStep.Barcode in done) return
             val scan = CaptureHooks.scanBarcode
@@ -173,21 +307,34 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             }
             return
         }
-        val take = CaptureHooks.takePhoto
+        val current = step
+        val labelStep = current == CaptureStep.Nutrition || current == CaptureStep.Ingredients
+        // The front is kept in full resolution too (user rule 2026-10-15).
+        val fullStep = labelStep || current == CaptureStep.Front
+        val take = if (fullStep) CaptureHooks.takeFullPhoto else CaptureHooks.takePhoto
         if (take == null) {
             status = CameraStatus.Unavailable
             return
         }
-        val current = step
         scope.launch {
             try {
-                val bytes = take() ?: return@launch
+                val taken = take() ?: return@launch
                 status = CameraStatus.Active
+                // Energy/contents: the whole photo goes uncropped to the night robot,
+                // the create request gets a scaled copy (web: captureStillWithFull).
+                // The front: the full photo is stored as the product image, the
+                // AI gets the scaled copy (web: frontPhotoFull).
+                val bytes = if (fullStep) {
+                    if (labelStep) uploadBackPhoto(current, taken) else frontFull = jpegDataUrl(taken)
+                    CaptureHooks.scaleForUpload(taken) ?: taken
+                } else {
+                    taken
+                }
                 lastPhoto = bytes
                 photos = photos + (current to jpegDataUrl(bytes))
                 val completed = done + current
                 done = completed
-                goToNextStep(completed)
+                showDoneThenContinue(listOf(current), completed)
             } catch (e: CapturePermissionDenied) {
                 status = CameraStatus.Denied
             } catch (e: Exception) {
@@ -196,11 +343,33 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
+    // "Skip" at the bottom of the viewfinder on the ingredients step (user
+    // 2026-10-14, web: skipIngredients): products without an ingredients list
+    // (water, sugar, fruit …) could otherwise never get past step 4. The step
+    // is marked done without a photo; the server gets no ingredients photo.
+    fun skipIngredients() {
+        if (working || stepDone != null || step != CaptureStep.Ingredients) return
+        photos = photos - CaptureStep.Ingredients
+        goToNextStep(done + CaptureStep.Ingredients)
+    }
+
+    // A step with a check mark can be redone by tapping it (user 2026-10-14).
+    // The barcode starts over: a new barcode is another product.
     fun selectStep(next: CaptureStep) {
-        if (working || next == step) return
+        if (working || stepDone != null || next == step) return
         // Without a barcode no other step can be read (language/region follow it).
         if (next != CaptureStep.Barcode && CaptureStep.Barcode !in done) return
-        if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) return
+        if (next == CaptureStep.Barcode && CaptureStep.Barcode in done) {
+            barcode = null
+            qualityCheckProductId = null
+            photos = emptyMap()
+            frontFull = null
+            lastPhoto = null
+            done = emptySet()
+            createFailed = false
+            lookupError = false
+            lookupBlockedMessage = null
+        }
         step = next
     }
 
@@ -223,36 +392,45 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         CaptureStep.Ingredients to t.t("cameraCreate.hintIngredients"),
     )
     val message = cameraMessage(status, t)
+    // Numbered like the web ("1. Scan stregkode").
+    fun numbered(item: CaptureStep) = "${item.ordinal + 1}. ${stepHeadings.getValue(item)}"
+    val celebrating = stepDone
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        // No "take photo" button on the web: tapping the camera area takes it.
-        CameraViewport(onClick = { capture() }) {
+        // Barcode: tapping the viewport scans. Photo steps: the shutter at the
+        // bottom of the viewport takes the photo (user 2026-10-14, "gammeldags billede").
+        CameraViewport(onClick = if (step == CaptureStep.Barcode) ({ capture() }) else null) {
             if (step != CaptureStep.Barcode) CapturedPhoto(lastPhoto, t.t("camera.photoAlt"))
-            if (step == CaptureStep.Barcode) {
-                Box(Modifier.align(Alignment.Center), contentAlignment = Alignment.Center) {
-                    HcIcon("Barcode", size = 96.dp, color = HcColors.White.copy(alpha = 0.8f), stroke = 1.2f)
+            if (celebrating == null && !working) {
+                when (step) {
+                    CaptureStep.Barcode -> BarcodeGuide()
+                    CaptureStep.Front -> SquareGuide(0.04f)
+                    CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.20f, dim = 0.65f, topInset = 0.24f)
                 }
-            } else if (!working) {
-                SquareGuide(0.04f)
             }
-            if (working) PhotoWorkingOverlay(t.t("cameraCreate.analyzingDefault"))
-            if (message != null) {
-                CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
-            } else {
-                HcText(
-                    stepHeadings.getValue(step),
-                    HcTypeRoles.Body,
-                    Modifier.align(Alignment.BottomCenter).padding(16.dp),
-                    bold = true,
-                    color = HcColors.White,
-                    align = TextAlign.Center,
+            if (working) PhotoWorkingOverlay(t.t(if (submitting) "cameraCreate.creating" else "cameraCreate.analyzingDefault"))
+            if (step != CaptureStep.Barcode && message == null && celebrating == null && !working && !createFailed) {
+                ShutterRow(
+                    shutterLabel = t.t("cameraCreate.shutter"),
+                    onShutter = { capture() },
+                    skipLabel = t.t("cameraCreate.skipIngredients").takeIf { step == CaptureStep.Ingredients },
+                    onSkip = { skipIngredients() },
                 )
+            }
+            if (submitting) {
+                CameraMessageOverlay(t.t("cameraCreate.creating"))
+            } else if (message != null) {
+                CameraMessageOverlay(message, onClick = if (status == CameraStatus.Denied || status == CameraStatus.Error) ({ status = CameraStatus.Active }) else null)
+            } else if (celebrating != null) {
+                StepDoneOverlay(celebrating.map { numbered(it) })
+            } else {
+                ScanHeading(numbered(step))
             }
         }
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             CaptureStep.entries.forEach { item ->
-                val disabled = working || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done) || (item == CaptureStep.Barcode && CaptureStep.Barcode in done)
+                val disabled = working || stepDone != null || (item != CaptureStep.Barcode && CaptureStep.Barcode !in done)
                 val shape = RoundedCornerShape(HcDimens.RadiusCard)
                 val enabled = !(disabled && item != step)
                 Box(
@@ -266,7 +444,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                         HcIcon(item.icon, size = 20.dp, stroke = 1.8f, color = HcColors.Black)
                         HcText(stepLabels.getValue(item), HcTypeRoles.Micro, color = HcColors.Black, maxLines = 1)
                     }
-                    if (item in done) CheckBadge(24.dp)
+                    if (item in done) CheckBadge(48.dp)
+                    if (item in uploading) {
+                        Box(Modifier.matchParentSize().padding(6.dp), contentAlignment = Alignment.TopEnd) {
+                            HcLoader(Modifier.size(16.dp))
+                        }
+                    }
                 }
             }
         }
@@ -277,9 +460,49 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 HcButton(t.t("cameraCreate.retry"), onClick = { scope.launch { createProduct() } })
             }
         } else {
+            if (uploading.isNotEmpty()) {
+                HcText(
+                    t.t("cameraCreate.processingPhotos", mapOf("steps" to CaptureStep.entries.filter { it in uploading }.joinToString(", ") { stepLabels.getValue(it) })),
+                    HcTypeRoles.Small,
+                    Modifier.fillMaxWidth(),
+                    bold = true,
+                    align = TextAlign.Center,
+                )
+            }
             HcText(stepHints.getValue(step), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (step != CaptureStep.Barcode) {
-                HcText(t.t("camera.autoCaptureHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+                HcText(t.t("cameraCreate.shutterHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
+            if (done.isNotEmpty()) {
+                HcText(t.t("cameraCreate.retakeHint"), HcTypeRoles.Micro, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
+            }
+        }
+    }
+}
+
+/**
+ * Web: .hf-shutter (72 dp white ring with a white disc) centred at the bottom
+ * of the viewfinder, and on the ingredients step the "Spring over" pill
+ * (bg-hf-black/60, white, 44 dp) to its right.
+ */
+@Composable
+private fun BoxScope.ShutterRow(shutterLabel: String, onShutter: () -> Unit, skipLabel: String?, onSkip: () -> Unit) {
+    Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp)) {
+        Box(
+            Modifier.align(Alignment.Center).size(72.dp).clip(CircleShape).background(HcColors.Black.copy(alpha = 0.25f))
+                .border(4.dp, HcColors.White, CircleShape).clickable(onClick = onShutter).semantics { contentDescription = shutterLabel },
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(Modifier.size(56.dp).clip(CircleShape).background(HcColors.White))
+        }
+        if (skipLabel != null) {
+            val shape = RoundedCornerShape(HcDimens.RadiusCard)
+            Box(
+                Modifier.align(Alignment.CenterEnd).height(44.dp).wrapContentWidth().clip(shape)
+                    .background(HcColors.Black.copy(alpha = 0.6f), shape).clickable(onClick = onSkip).padding(horizontal = 20.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                HcText(skipLabel, HcTypeRoles.Small, color = HcColors.White, bold = true, maxLines = 1)
             }
         }
     }

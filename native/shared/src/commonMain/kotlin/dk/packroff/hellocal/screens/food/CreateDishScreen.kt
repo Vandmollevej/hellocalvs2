@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.FoodSheetDots
 import androidx.compose.ui.input.pointer.pointerInput
@@ -312,7 +313,9 @@ fun CreateDishScreen(args: RouteArgs) {
                     t.t("createDish.modeScan") to "scan",
                     t.t("createDish.modeManual") to "none",
                 ),
-            ) { target -> importMode = target != "none"; sheet = target; started = true }
+                centered = true,
+                onPick = { target -> importMode = target != "none"; sheet = target; started = true },
+            )
         }
         if (sheet == "paste") PasteTextSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
         if (sheet == "scan") ScanSheet(onClose = { sheet = "none" }, onResult = ::applyImport)
@@ -380,6 +383,13 @@ fun CreateDishScreen(args: RouteArgs) {
                     }
                 }
             }
+            FieldSlider(
+                text = (details.durationMinutes ?: 0).toString(),
+                min = 0.0,
+                max = 480.0,
+                onChange = { next -> updateDetails(details.copy(durationMinutes = next.toIntOrNull()?.takeIf { it > 0 })) },
+                step = 5.0,
+            )
           } else if (current == "ingredients") {
 
             importNote?.let { note ->
@@ -429,7 +439,7 @@ fun CreateDishScreen(args: RouteArgs) {
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     ) {
-                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
+                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp), thumbWidth = 128) }
                                         HcText(localizedDecimals(product.name), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
                                     }
                                     if (index < shown.lastIndex) FoodDivider()
@@ -448,7 +458,7 @@ fun CreateDishScreen(args: RouteArgs) {
                     FoodListCard(radius = 16.dp) {
                         ingredients.forEachIndexed { index, ingredient ->
                             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                Box(Modifier.size(36.dp)) { if (ingredient.imageUrl != null) FoodImage(ingredient.imageUrl, Modifier.size(36.dp)) }
+                                Box(Modifier.size(36.dp)) { if (ingredient.imageUrl != null) FoodImage(ingredient.imageUrl, Modifier.size(36.dp), thumbWidth = 128) }
                                 Column(Modifier.weight(1f)) {
                                     HcText(ingredient.name, HcTypeRoles.Body, color = HcColors.Black, bold = true)
                                     HcText(
@@ -809,17 +819,21 @@ private fun RecipeCategoriesSheet(dishId: String, initialTags: List<String>, onC
     }
 }
 
-/** Web: StartOptionTiles in create-dish/page.tsx — horizontal tiles like the Add menu; icon slot left empty. */
+/** Web: StartOptionTiles in create-dish/page.tsx — three square tiles, label below the tile; icon slot left empty. */
 @Composable
-private fun StartOptionTiles(options: List<Pair<String, String>>, onPick: (String) -> Unit) {
-    HcAccordionCard {
-        Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+private fun StartOptionTiles(options: List<Pair<String, String>>, centered: Boolean = false, onPick: (String) -> Unit) {
+    Box(
+        if (centered) Modifier.fillMaxWidth().heightIn(min = 480.dp) else Modifier.fillMaxWidth(),
+        contentAlignment = if (centered) Alignment.Center else Alignment.TopCenter,
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
             options.forEach { (label, target) ->
                 Column(
-                    Modifier.weight(1f).clip(RoundedCornerShape(16.dp)).clickable { onPick(target) }.padding(8.dp),
+                    Modifier.weight(1f).clickable { onPick(target) },
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    Spacer(Modifier.size(96.dp))
+                    Box(Modifier.fillMaxWidth().aspectRatio(1f).clip(RoundedCornerShape(16.dp)).background(HcColors.Tan))
                     HcText(label, HcTypeRoles.Body, color = HcColors.Black, align = TextAlign.Center)
                 }
             }

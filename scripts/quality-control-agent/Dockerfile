@@ -2,6 +2,7 @@ FROM python:3.12-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+       tesseract-ocr tesseract-ocr-dan tesseract-ocr-deu \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -12,5 +13,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir torch==2.4.1 --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
-COPY agent.py job_control.py ./
+COPY agent.py job_control.py label_local.py back_local.py language_local.py image_screen_local.py agent_images.py ./
 CMD ["python", "agent.py"]

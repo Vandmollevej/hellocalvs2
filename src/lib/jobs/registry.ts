@@ -15,6 +15,8 @@ export type JobDefinition = {
   robot?: boolean;
   defaultIntervalMinutes: number | null;
   defaultRunAtTime: string | null;
+  /** Falsk = rækken oprettes slået fra (fx robotter, der kun kører lokalt på brugerens pc). Standard: slået til. */
+  defaultEnabled?: boolean;
 };
 
 /** Robot = egen container (runtime "agent") eller et app-job, der er markeret som robot. */
@@ -56,7 +58,7 @@ export const JOBS: JobDefinition[] = [
     key: "label-scan",
     name: "Mærkater: AI-aflæsning",
     description:
-      "Finder mærkater på vareforsiden (laktosefri, Haltungsform, QMilch, Øko, Nøglehul, MSC …) for varer, der ikke er scannet for mærkater endnu. Mærkerne fritskrabes af billedrobotten, og sikre fund udfylder tomme filtre på varen.",
+      "Finder mærkater på vareforsiden (laktosefri, Haltungsform, QMilch, Øko, Nøglehul, MSC …) for varer, der ikke er scannet for mærkater endnu. Bruger den lokale mærkesøgning først; OpenAI læser kun forsiden, når intet blev fundet lokalt. Mærkerne fritskrabes af billedrobotten, og sikre fund udfylder filtre på varen.",
     runtime: "app",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "04:00",
@@ -118,6 +120,52 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:30",
   },
   {
+    // Stavekontrol (docs/DECISIONS.md 2026-10-14): rapporten og forslagene
+    // ligger under admin → Stavekontrol.
+    key: "spelling-check",
+    name: "Stavekontrol: ingredienslister",
+    description:
+      "Læser alle nye og ændrede danske ingredienslister for stave- og OCR-fejl (\"SOIASAUCE\", \"krydderler\", \"£202\", næringstabel læst med ind). Ordbogen er grundlisten, katalogets egne ord og admins afgørelser. Sikre fejl rettes i varen (kan fortrydes); usikre bliver forslag under Stavekontrol, hvor admin godkender, afviser eller skriver sin egen rettelse.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:15",
+  },
+  {
+    // Ubeskårne bagsidebilleder (docs/DECISIONS.md 2026-10-15): hvert billede
+    // analyseres præcis én gang og indgår aldrig i senere kørsler.
+    key: "back-photo-scan",
+    name: "Bagsidebilleder: mærkninger og finlæsning",
+    description:
+      "Analyserer hvert nyt ubeskåret bagsidebillede fra Tilføj-kameraet én gang: mærkninger og certificeringer, der ikke står på forsiden (gemmes som varens mærkater og udfylder tomme filtre), finlæsning af ingredienslisten og udvidet stavekontrol. Bruger den lokale læsning (OCR + mærkesøgning) først; OpenAI læser kun billedet, når intet mærke blev fundet lokalt. Ordbogen retter sikre stavefejl; kun ord, den er i tvivl om, vurderes af AI og bliver forslag under Stavekontrol. Billeder fra flows, der aldrig blev til en vare, slettes efter to døgn.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:20",
+  },
+  {
+    // Beskårne forsidebilleder (docs/DECISIONS.md 2026-10-15).
+    key: "front-image-check",
+    name: "Forsidebilleder: beskåret/halveret",
+    description:
+      "Måler alle forsidefotos fra kameraet og finder dem, der er beskåret (smallere end 0,45 eller under 240 px), samt varer, hvis foto blev skåret til AI'ens objektboks ved oprettelsen (loggen). Varen sendes til scan-appens \"Skal scannes\", og et nyt forsidefoto fra scan-appen erstatter det beskårne billede. Sagen lukkes, når billedet er skiftet.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:50",
+  },
+  {
+    // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): kun om natten.
+    key: "product-recheck",
+    name: "Varer over to år: kvalitetstjek",
+    description:
+      "Vurderer de nye fotos, kunder har taget af varer, der har ligget i databasen i over to år: AI'en sammenligner det nye forsidefoto med originalen (ny grafik, eller er det nye foto bedre?) og læser energi og indhold. Uændrede varer lukkes; ændringer går til admin → Nye varer → 2-års tjek. Billeder, admin har valgt, fritlægges og sættes på varen samme nat.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:40",
+  },
+  {
     // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): grundlaget for
     // listen under admin → Scan-invites → Open Food Facts-kontrol.
     key: "off-quality",
@@ -150,6 +198,28 @@ export const JOBS: JobDefinition[] = [
     runtime: "app",
     robot: true,
     defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    // Varens sprog (docs/DECISIONS.md 2026-10-15): oversættelserne laves på forhånd.
+    key: "product-translations",
+    name: "Varer: oversæt på forhånd",
+    description:
+      "Oversætter scannede varer og Open Food Facts-varer på andre sprog til de app-sprog, brugerne har valgt, så ingen venter, første gang de åbner en udenlandsk vare. Varens egen tekst ændres aldrig; ark, Frida og butiksimporter oversættes ikke endnu. Højst 200 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:15",
+  },
+  {
+    // Brugerens fejlmelding 2026-10-15: scannede drikke må ikke stå med 0 kcal, til nogen scanner igen.
+    key: "alcohol-nutrition",
+    name: "Varer: alkoholnæring",
+    description:
+      "Tjekker scannede varer med 0 kcal én gang: alkoholprocenten tages fra den gemte forsideaflæsning, ellers spørges AI ud fra varetype og brand. Er varen en alkoholisk drik, skønnes kalorier, kulhydrat, protein og fedt efter typen (vises med ~), og registreringer med 0 kcal får tallene. Højst 200 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 15,
     defaultRunAtTime: null,
   },
   {
@@ -223,6 +293,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Sammenligning af fritlægningsmotorer (docs/BRIA.md): kun "Kør nu".
+    key: "bria-compare",
+    name: "Bria: sammenlign med rembg",
+    description:
+      "Kører de 20 seneste fritlagte billeder gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
+    runtime: "agent",
+    container: "image-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: null,
+  },
+  {
     key: "logo-agent",
     name: "Logo-robot",
     description: "Finder logoer til brands uden logo via Google Vision; usikre fund lægges under Logoer.",
@@ -230,6 +311,17 @@ export const JOBS: JobDefinition[] = [
     container: "logo-agent",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "03:00",
+  },
+  {
+    // Brugerens regel 2026-10-15: originalen søges online før AI-billedarbejde.
+    key: "product-image-search",
+    name: "Produktbilleder: Google-søgning",
+    description:
+      "Søger originalbilledet af hver nyscannet vare online med Google Vision, før kamerafotoet fritlægges. Fundene vises under Billedforslag ved siden af kamerafotoet og udklippet.",
+    runtime: "agent",
+    container: "logo-agent",
+    defaultIntervalMinutes: 0,
+    defaultRunAtTime: null,
   },
   {
     key: "image-agent",
@@ -251,6 +343,61 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Intern AI først for mærkat-jobbet (docs/DECISIONS.md 2026-10-15).
+    key: "label-local",
+    name: "Mærkater: lokal søgning",
+    description:
+      "Søger forsidefotoet af varer, der venter på mærkat-jobbet, igennem for kendte logoer og mærketekster — lokalt på serveren uden OpenAI. Mærkat-jobbet spørger kun OpenAI, når intet blev fundet her.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    // Screening af Lidl/Aldi-billeder (docs/DECISIONS.md 2026-10-16).
+    key: "image-screen-local",
+    name: "Billeder: ufuldstændige produkter",
+    description:
+      "Screener billederne på danske og tyske Open Food Facts-varer fra Lidl og Aldi lokalt på serveren for afskårne produkter, hænder over billedet og åbne eller halvt fyldte varer. Markerer kun; ændrer aldrig varer eller billeder.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:20",
+  },
+  {
+    // OCR først for bagsidebillederne (docs/DECISIONS.md 2026-10-15).
+    key: "back-photo-local",
+    name: "Bagsidebilleder: lokal læsning",
+    description:
+      "Læser hvert nyt bagsidebillede lokalt på serveren (tesseract-OCR og mærkesøgning), før nattens analyse. Analysen bruger den lokale læsning og spørger kun OpenAI, når intet mærke blev fundet.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: 5,
+    defaultRunAtTime: null,
+  },
+  {
+    // Sprogrobotten (docs/DECISIONS.md 2026-10-15).
+    key: "language-local",
+    name: "Varer: sprogrobot",
+    description:
+      "Læser teksten på scannede varer og Open Food Facts-varer (navn, variant, ingredienser) med lingua — lokalt på serveren uden OpenAI — og retter varens sprog, når den er sikker (fx en tysk vare scannet i Danmark). Ark, Frida, butiksimporter, varer med ikke-latinske tegn og dansk/norsk/svensk indbyrdes røres ikke. Hver vare tjekkes én gang.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:50",
+  },
+  {
+    // 2-års kvalitetstjek, intern AI først (docs/DECISIONS.md 2026-10-15).
+    key: "recheck-local",
+    name: "Varer over to år: lokal billedsammenligning",
+    description:
+      "Sammenligner kundens nye forsidefoto af varer over to år med varens nuværende billede — lokalt på serveren (DINOv2, farve, struktur) uden OpenAI. Kvalitetstjekket kl. 02:40 spørger kun OpenAI, når sammenligningen er i tvivl.",
+    runtime: "agent",
+    container: "quality-control-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:15",
+  },
+  {
     key: "rema1000-import",
     name: "REMA 1000-import",
     description: "Importerer REMA 1000's sortiment med næringsdata fra den medfølgende datafil. Kører første gang automatisk, derefter kun efter plan eller \"Kør nu\".",
@@ -258,6 +405,19 @@ export const JOBS: JobDefinition[] = [
     container: "rema1000-agent",
     defaultIntervalMinutes: null,
     defaultRunAtTime: null,
+  },
+  {
+    // Brugerens krav 2026-10-16: kører lokalt på hans pc om natten
+    // (scripts/lidl-aldi-enrich, docs/LIDL-ALDI-ENRICH.md); står her, men er slået fra.
+    key: "lidl-aldi-enrich",
+    name: "Lidl/Aldi: flere varedetaljer (lokal pc)",
+    description:
+      "Slår hentede Lidl- og Aldi-varer (dansk/tysk) op i Open Food Facts på stregkode, derefter titel, og kun ved 0 resultater i Google Vision. Nye fakta samles i et Excel-ark ved siden af vores titel. Kører lokalt på brugerens pc om natten, ikke på serveren — slået fra her.",
+    runtime: "agent",
+    container: "brugerens pc (lokal)",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:00",
+    defaultEnabled: false,
   },
 ];
 

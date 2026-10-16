@@ -197,6 +197,7 @@ export const PAGE_TREE: PageArea[] = [
             path: "/profile/screenings",
             label: "Screeninger",
             children: [
+              { path: "/settings/display/sleep-quality", label: "Søvn: oplevelse af søvn", note: "Til/fra for det daglige søvnspørgsmål; række i Screeninger" },
               { path: "/profile/screenings/new", label: "Opret ny screening" },
               { path: "/profile/screenings/[id]", label: "Redigér screening" },
               {
@@ -282,7 +283,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Integrationer",
             children: [
               { path: "/settings/integrations/[app]", label: "Integration" },
-              { path: "/settings/import", label: "Flyt fra MyFitnessPal / Lifesum" },
+              {
+                path: "/settings/import",
+                label: "Import",
+                children: [{ path: "/settings/import/[provider]", label: "Import fra MyFitnessPal / Lifesum" }],
+              },
             ],
           },
           {
@@ -313,10 +318,11 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/settings/display/front-page", label: "Visning: forside" },
               { path: "/settings/display/limits", label: "Visning: grænser" },
               { path: "/settings/display/uncertainty", label: "Visning: usikkerhed" },
+              { path: "/settings/display/translation", label: "Visning: oversættelse" },
               { path: "/settings/display/calendar-view", label: "Visning: kalender" },
-              { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
               { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },
               { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
+              { path: "/settings/display/pregnancy", label: "Visning: graviditet og amning", note: "EFSA-tillæg til energibehovet; intet kalorieunderskud" },
               { path: "/settings/display/body-measurements", label: "Visning: kropsmål", note: "Hvilke kropsmål Kropsmål-siden viser" },
               { path: "/settings/display/priority", label: "Visning: prioritering", note: "Rækkefølgen af mærker/blokke på produktcirklen" },
             ],
@@ -473,6 +479,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Usikkerheder",
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
+          {
+            path: "/admin/spelling",
+            label: "Stavekontrol",
+            note: "Nattens stavekontrol-robot: rettelser og forslag til ingredienslister — godkend, afvis eller skriv egen rettelse",
+          },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
           { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },
           { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },
@@ -483,6 +494,7 @@ export const PAGE_TREE: PageArea[] = [
             note: "Sender videre til Varer",
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
+              { path: "/admin/product-database/generics", label: "Generiske produkter" },
               { path: "/admin/product-database/brands", label: "Brands" },
               { path: "/admin/product-database/labels", label: "Labels" },
               {

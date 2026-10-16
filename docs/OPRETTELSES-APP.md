@@ -223,6 +223,11 @@ lortet". Bygget i denne omgang:
 - **Butik**: udledes af koordinaterne via Google Places, hvis
   `GOOGLE_PLACES_API_KEY` er sat; ellers "ukendt butik".
 
+**Manuel udløser (2026-10-14):** alle fotos i appen (hyldebillede og de fire
+bokse) tages med telefonens eget kamera (`capture="environment"`), aldrig
+automatisk — så en Bluetooth-udløser virker. Vagt: `src/lib/scan-app-manual-capture.test.mjs`;
+regel i `REGLER.md`.
+
 **Open Food Facts-kontrol (2026-10-11):** admin → Scan-invites-gruppen har siden
 `/admin/scan-invites/off-kvalitet`, hvor Open Food Facts-varer vurderes pr.
 kategori og kan sendes til appen som "ikke scannet". I appen vises de med

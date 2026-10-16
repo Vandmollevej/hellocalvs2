@@ -226,6 +226,11 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Set GOOGLE_API_KEY in .env.production}
       GOOGLE_CSE_ID: ${GOOGLE_CSE_ID:?Set GOOGLE_CSE_ID in .env.production}
       POLL_INTERVAL_SECONDS: ${IMAGE_AGENT_POLL_INTERVAL_SECONDS:-300}
+      # Fritlægningsmotor: rembg (standard) eller bria (kræver BRIA_API_TOKEN).
+      CUTOUT_ENGINE: ${CUTOUT_ENGINE:-rembg}
+      BRIA_API_TOKEN: ${BRIA_API_TOKEN:-}
+      # Til at læse Bria-nøglen gemt i admin (app_secrets), som appen gør.
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
     volumes:
       - ./data/product-images:/images
     depends_on:
@@ -249,6 +254,8 @@ services:
       GOOGLE_VISION_CREDENTIALS: ${GOOGLE_VISION_CREDENTIALS:-}
       GOOGLE_VISION_API_KEY: ${GOOGLE_VISION_API_KEY:-}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      # AI-rentegning af logoer uden fritlagt fund online (docs/DECISIONS.md 2026-10-15).
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       LOGO_AGENT_RUN_HOUR: ${LOGO_AGENT_RUN_HOUR:-3}
       LOGO_AGENT_BATCH_SIZE: ${LOGO_AGENT_BATCH_SIZE:-25}
     volumes:
@@ -445,6 +452,53 @@ services:
     networks:
       - backend
       - edge
+
+  # Natlig database-backup (docs/DECISIONS.md 2026-10-14): pg_dump af hellocal
+  # og umami til ./backups hver nat kl. 01:00 UTC (02-03 dansk tid) og én gang
+  # ved opstart. Filer med "-nightly-" ældre end 30 dage slettes automatisk
+  # (rullende 30 dage); manuelle dumps i samme mappe røres ikke.
+  db-backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+      PGDATABASE: ${POSTGRES_DB:?Set POSTGRES_DB in .env.production}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -u
+        backup() {
+          d=$$(date +%Y%m%d-%H%M%S)
+          for db in "$$PGDATABASE" umami; do
+            f="/backups/$$db-nightly-$$d.dump"
+            if pg_dump -Fc -d "$$db" -f "$$f.tmp"; then
+              mv "$$f.tmp" "$$f"
+              echo "backup ok: $$f"
+            else
+              rm -f "$$f.tmp"
+              echo "backup FAILED: $$db"
+            fi
+          done
+          find /backups -name '*-nightly-*.dump' -mtime +30 -delete
+        }
+        backup
+        while true; do
+          h=$$(date +%H | sed 's/^0*//')
+          m=$$(date +%M | sed 's/^0*//')
+          diff=$$(( (60 - $${h:-0} * 60 - $${m:-0} + 1440) % 1440 ))
+          [ "$$diff" -eq 0 ] && diff=1440
+          sleep $$((diff * 60))
+          backup
+        done
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
 
   # Umami-analyse (docs/DECISIONS.md 2026-09-27 "Umami-analyse"): selv-hostet,
   # cookiefri besøgsstatistik vist i admin → Analyse. Egen database "umami" i

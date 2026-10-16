@@ -5,7 +5,14 @@
 export type Certification = "organic" | "keyhole" | "fairtrade" | "msc";
 
 const PATTERNS: { id: Certification; pattern: RegExp }[] = [
-  { id: "organic", pattern: /\b(?:økologisk[e]?|øko|oeko|organic|bio)\b\.?/giu },
+  // Økologisk på flere sprog: dansk økologisk/øko, tysk bio/öko, engelsk organic,
+  // svensk ekologisk, hollandsk biologisch, fransk biologique, italiensk/spansk
+  // biologico/ecológico, polsk ekologiczny, finsk luomu.
+  {
+    id: "organic",
+    pattern:
+      /\b(?:økologisk[e]?|ökologisch(?:e|er)?|ekologisk(?:a|t)?|ekologiczn[aey]|biologisch[e]?|biologiques?|biol[oó]gic[oaie]|biologiche|ecol[oó]gic[oa]|org[aá]nic[oa]|organic|luomu|øko|öko|oeko|eko|bio)\b\.?/giu,
+  },
   { id: "keyhole", pattern: /\bnøglehul(?:smærket)?\b/giu },
   { id: "fairtrade", pattern: /\bfair\s?trade\b/giu },
   { id: "msc", pattern: /\bmsc(?:-mærket)?\b/giu },

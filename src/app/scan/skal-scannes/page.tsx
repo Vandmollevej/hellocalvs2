@@ -4,6 +4,7 @@ import { ScanScreen } from "@/components/scan/ScanScreen";
 import { requireScanWorker } from "@/lib/scan/require-worker";
 import { listOpenScanRequests } from "@/lib/scan/review-requests";
 import { DecimalText } from "@/components/DecimalText";
+import { imageThumb } from "@/lib/image-thumb";
 
 // "Skal scannes" (docs/DECISIONS.md 2026-10-11): Open Food Facts-varer, som
 // admin har sendt hertil, fordi de ikke lever op til kvaliteten. De findes i
@@ -30,7 +31,7 @@ export default async function ScanSkalScannesPage() {
               <li key={item.productId} className="flex gap-3 bg-hf-card p-3 rounded-card">
                 {item.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.imageUrl} alt="" className="h-16 w-16 flex-none rounded object-contain" />
+                  <img src={imageThumb(item.imageUrl, 128)} alt="" className="h-16 w-16 flex-none rounded object-contain" />
                 ) : (
                   <div className="h-16 w-16 flex-none rounded bg-hf-tan" aria-hidden />
                 )}

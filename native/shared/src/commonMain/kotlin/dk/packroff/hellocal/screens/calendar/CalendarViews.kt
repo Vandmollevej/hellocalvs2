@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -326,48 +327,33 @@ internal fun DayRow(
                 color = if (current) HcColors.Black else if (future) HcColors.Black else HcColors.Inactive,
             )
         }
+        DayMarks(hasGoal, weighIns, date)
         if (future) {
-            Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
-                WeighInMark(weighIns)
-                PulseHeartMark(date)
-            }
             HcIcon("ChevronRight", size = 19.dp, color = HcColors.Black)
         } else {
-            if (met && !tooLow) HcIcon("Check", size = 16.dp, stroke = 3f, color = HcColors.Green)
-            Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                HcText(
-                    when {
-                        !logged -> "–"
-                        tooLow -> t.t("calendar.intakeTooLow")
-                        met -> t.t("calendar.goalMet")
-                        else -> t.t("calendar.goalMissed")
-                    },
-                    HcTypeRoles.Body,
-                    bold = tooLow,
-                    color = if (tooLow) HcColors.Warning else if (logged) HcColors.Black else HcColors.Inactive,
-                )
-                if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
-                WeighInMark(weighIns)
-                PulseHeartMark(date)
-            }
-            Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 HcText(
                     if (!logged) "–" else "${if (over) "÷" else "+"}$diff kcal",
                     HcTypeRoles.Body,
                     bold = true,
-                    color = when {
-                        !logged -> HcColors.Inactive
-                        tooLow -> HcColors.Warning
-                        over -> HcColors.RedDark
-                        else -> HcColors.Green
-                    },
+                    color = if (logged && met && !tooLow) HcColors.Green else HcColors.Inactive,
                     maxLines = 1,
                 )
                 HcIcon("ChevronRight", size = 19.dp, color = HcColors.Black)
             }
         }
+    }
+}
+
+/** Fixed slots for goal, weight and pulse so the icons line up down the rows. */
+@Composable
+private fun RowScope.DayMarks(hasGoal: Boolean, weighIns: List<CalWeighIn>, date: LocalDate) {
+    Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) {
+            if (hasGoal) CalendarPartyPopperIcon(18.dp, HcColors.Black)
+        }
+        Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) { WeighInMark(weighIns) }
+        Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) { PulseHeartMark(date) }
     }
 }
 

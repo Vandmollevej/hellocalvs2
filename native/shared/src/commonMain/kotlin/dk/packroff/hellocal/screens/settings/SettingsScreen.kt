@@ -122,15 +122,18 @@ fun SettingsScreen(args: RouteArgs) {
         add(SettingsSearchItem("Adjustments", t.t("settings.setupTitle"), { nav.push("/profile/settings") }))
         add(SettingsSearchItem("Refresh", t.t("settings.learnTheApp"), { startOnboarding() }))
         add(SettingsSearchItem("PlugConnected", t.t("settings.integrations"), { nav.push("/settings/integrations") }))
+        add(SettingsSearchItem("FileImport", t.t("settings.import"), { nav.push("/settings/import") }))
         add(SettingsSearchItem("Bell", t.t("settings.notifications"), { nav.push("/profile/notifications") }))
         add(SettingsSearchItem("Home2", t.t("settings.frontPage"), { nav.push("/settings/display/front-page") }))
         add(SettingsSearchItem("Eye", t.t("settings.resultsDisplay"), { nav.push("/profile/settings/results") }))
         add(SettingsSearchItem("AlertTriangle", t.t("settings.recommendedLimits"), { nav.push("/settings/display/limits") }))
         add(SettingsSearchItem("Adjustments", t.t("displaySettings.uncertainty"), { nav.push("/settings/display/uncertainty") }))
+        add(SettingsSearchItem("Language", t.t("settings.translation"), { nav.push("/settings/display/translation") }))
         add(SettingsSearchItem("CalendarWeek", t.t("settings.calendarView"), { nav.push("/settings/display/calendar-view") }))
         add(SettingsSearchItem("Moon", t.t("settings.sleepQuality"), { nav.push("/settings/display/sleep-quality") }))
         add(SettingsSearchItem("Bulb", t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }))
         if (isFemale) add(SettingsSearchItem("CalendarHeart", t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }))
+        if (isFemale) add(SettingsSearchItem("BabyCarriage", t.t("settings.pregnancy"), { nav.push("/settings/display/pregnancy") }))
         add(SettingsSearchItem("Help", t.t("settings.helpCenter"), { openHelp() }))
         add(SettingsSearchItem("Bug", t.t("profile.row.reportBug"), { nav.push("/profile/report-bug") }))
         add(SettingsSearchItem("Lifebuoy", t.t("settings.contactSupport"), { nav.push("/settings/support") }))
@@ -186,7 +189,9 @@ fun SettingsScreen(args: RouteArgs) {
                 }
 
                 SettingsAccordionCard {
-                    SettingsChevronRow(t.t("settings.integrations"), { nav.push("/settings/integrations") }, icon = "PlugConnected", divider = false)
+                    SettingsChevronRow(t.t("settings.integrations"), { nav.push("/settings/integrations") }, icon = "PlugConnected")
+                    // Import: move data from MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-15).
+                    SettingsChevronRow(t.t("settings.import"), { nav.push("/settings/import") }, icon = "FileImport", divider = false)
                 }
 
                 // Beskeder ligger på Profil (ejerens valg 2026-10-03).
@@ -235,11 +240,13 @@ internal fun SettingsDisplayRows(isFemale: Boolean, includeResults: Boolean = tr
         if (includeResults) SettingsChevronRow(t.t("settings.resultsDisplay"), { nav.push("/profile/settings/results") }, icon = "Eye")
         SettingsChevronRow(t.t("settings.recommendedLimits"), { nav.push("/settings/display/limits") }, icon = "AlertTriangle")
         SettingsChevronRow(t.t("displaySettings.uncertainty"), { nav.push("/settings/display/uncertainty") }, iconContent = { SettingsTildeRowIcon() })
+        SettingsChevronRow(t.t("settings.translation"), { nav.push("/settings/display/translation") }, icon = "Language")
         SettingsChevronRow(t.t("settings.calendarView"), { nav.push("/settings/display/calendar-view") }, icon = "CalendarWeek")
-        SettingsChevronRow(t.t("settings.sleepQuality"), { nav.push("/settings/display/sleep-quality") }, icon = "Moon")
         SettingsChevronRow(t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }, icon = "Bulb", divider = isFemale)
         if (isFemale) {
-            SettingsChevronRow(t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }, icon = "CalendarHeart", divider = false)
+            SettingsChevronRow(t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }, icon = "CalendarHeart")
+            // Graviditet og amning: kun for kvinder (user rule 2026-10-14).
+            SettingsChevronRow(t.t("settings.pregnancy"), { nav.push("/settings/display/pregnancy") }, icon = "BabyCarriage", divider = false)
         }
     }
 }

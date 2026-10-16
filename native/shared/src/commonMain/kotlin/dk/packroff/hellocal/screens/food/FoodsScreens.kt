@@ -55,6 +55,16 @@ import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcTextField
 import dk.packroff.hellocal.ui.FoodPillField
 import dk.packroff.hellocal.ui.icons.HcIcon
+import dk.packroff.hellocal.screens.capture.CaptureHooks
+import dk.packroff.hellocal.screens.capture.CapturePermissionDenied
+import dk.packroff.hellocal.screens.capture.MealLanguagePicker
+import dk.packroff.hellocal.screens.capture.MealInputLanguages
+import dk.packroff.hellocal.screens.capture.PingRing
+import dk.packroff.hellocal.screens.capture.rememberMealInputLanguage
+import dk.packroff.hellocal.screens.capture.standMicrophone
+import kotlinx.coroutines.Job
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.ColorFilter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -92,6 +102,12 @@ fun FoodsScreen(args: RouteArgs) {
     val prefill = listOfNotNull(args.opt("time")?.let { "time=${encodeUri(it)}" }, args.opt("date")?.let { "date=${encodeUri(it)}" })
         .joinToString("&").let { if (it.isEmpty()) "" else "?$it" }
     var query by remember { mutableStateOf("") }
+    // Mikrofonen (tidligere Tale-siden): det sagte skrives løbende i søgefeltet, så listen søges og raffineres, mens man taler.
+    val lang = rememberMealInputLanguage()
+    var micListening by remember { mutableStateOf(false) }
+    var micUnsupported by remember { mutableStateOf(false) }
+    var micError by remember { mutableStateOf<String?>(null) }
+    var micSession by remember { mutableStateOf<Job?>(null) }
     var searchResults by remember { mutableStateOf<List<ProductListItem>>(emptyList()) }
     var loadedSnapshot by remember { mutableStateOf<FoodsSnapshot?>(null) }
     var loadFailed by remember { mutableStateOf(false) }
@@ -121,6 +137,48 @@ fun FoodsScreen(args: RouteArgs) {
             loadFailed = true
         }
     }
+
+    fun startMic() {
+        val record = CaptureHooks.recordSpeech
+        if (record == null) {
+            micUnsupported = true
+            return
+        }
+        micSession?.cancel()
+        CaptureHooks.stopSpeech()
+        micError = null
+        micListening = true
+        val tag = MealInputLanguages.speechLangFor(lang.language, lang.region)
+        var job: Job? = null
+        job = scope.launch {
+            try {
+                val result = record(tag) { partial -> if (micSession == job) query = partial.trim() }
+                if (micSession != job) return@launch
+                micSession = null
+                micListening = false
+                (result ?: query).trim().takeIf { it.isNotEmpty() }?.let { query = it }
+            } catch (e: CapturePermissionDenied) {
+                if (micSession != job) return@launch
+                micSession = null
+                micListening = false
+                micError = t.t("voice.error.micDenied")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (micSession != job) return@launch
+                micSession = null
+                micListening = false
+                micError = t.t("voice.error.recognitionInterrupted")
+            }
+        }
+        micSession = job
+    }
+
+    fun stopMic() {
+        if (micSession == null) return
+        CaptureHooks.stopSpeech()
+    }
+    LaunchedEffect(Unit) { if (args.opt("mic") == "1") startMic() }
 
     var correction by remember { mutableStateOf(SearchCorrection()) }
     var exactQuery by remember { mutableStateOf<String?>(null) }
@@ -168,9 +226,46 @@ fun FoodsScreen(args: RouteArgs) {
         scope.launch { runCatching { Api.post("/api/products/search-event", mapOf("productId" to productId, "localHour" to hour)) } }
     }
 
-    HcScreen(t.t("foods.title"), icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = LIST_PAGE_PADDING) {
+    HcScreen(
+        t.t("foods.title"),
+        icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) },
+        leading = {
+            MealLanguagePicker(lang.language, lang.region) { code ->
+                if (code != lang.language) {
+                    lang.set(code)
+                    if (micListening) startMic()
+                }
+            }
+        },
+        contentPadding = LIST_PAGE_PADDING,
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            FoodSearchField(query, { query = it }, t.t("foods.searchPlaceholder"))
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    Modifier.size(96.dp).clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (micListening) PingRing()
+                    Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
+                        Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                    }
+                }
+                HcText(
+                    when {
+                        micListening -> t.t("voice.listeningStatus")
+                        micUnsupported -> t.t("voice.unsupported")
+                        else -> t.t("voice.tapToTalk")
+                    },
+                    HcTypeRoles.Small,
+                    Modifier.padding(top = 8.dp),
+                    bold = true,
+                    color = HcColors.Green,
+                )
+                micError?.let {
+                    HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
+                }
+            }
+            FoodSearchField(query, { if (micListening) stopMic(); query = it }, t.t("foods.searchPlaceholder"))
             if (!isSearching && ready && favorites.isNotEmpty()) {
                 HcText(t.t("foods.mostUsed").uppercase(), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
             }
@@ -311,7 +406,7 @@ fun DrinksScreen(args: RouteArgs) {
                     row.forEach { drink ->
                         HcCard(Modifier.weight(1f), onClick = { nav.push("/drinks/${drink.id}$suffix") }) {
                             Box(Modifier.size(96.dp).clip(CircleShape).background(HcColors.Cream).align(Alignment.CenterHorizontally), contentAlignment = Alignment.Center) {
-                                if (drink.imageUrl != null) FoodImage(drink.imageUrl, Modifier.size(96.dp), ContentScale.Crop)
+                                if (drink.imageUrl != null) FoodImage(drink.imageUrl, Modifier.size(96.dp), ContentScale.Crop, thumbWidth = 384)
                                 else HcIcon("GlassCocktail", size = 36.dp, color = HcColors.Black, stroke = 1.5f)
                             }
                             HcText(drink.name, HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.Black, bold = true, align = TextAlign.Center)
@@ -378,7 +473,7 @@ fun DrinkDetailScreen(args: RouteArgs) {
             if (d != null) {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
-                        if (d.imageUrl != null) FoodImage(d.imageUrl, Modifier.size(180.dp), ContentScale.Crop, contentDescription = d.name)
+                        if (d.imageUrl != null) FoodImage(d.imageUrl, Modifier.size(180.dp), ContentScale.Crop, contentDescription = d.name, thumbWidth = 640)
                         else HcIcon("GlassCocktail", size = 72.dp, color = HcColors.Black, stroke = 1.25f)
                     }
                 }

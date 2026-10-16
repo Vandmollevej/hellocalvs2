@@ -251,6 +251,34 @@ async function estimateProducts(frida: { rows: FridaRow[]; groups: FridaTypeGrou
   return { filled, reverted, unmatched, review: [...reviews.values()].reduce((sum, r) => sum + r.count, 0), reviewGroups: reviews.size };
 }
 
+// Straks-skøn for én vare (varesiden åbnet før natrobotten er kørt). Samme
+// match og samme udfyldning som robotten; tvivlstilfælde overlades til
+// robotten, så admin-køen kun skrives ét sted. Frida-listen caches 10 min.
+let fridaCache: { loadedAt: number; value: Awaited<ReturnType<typeof loadFrida>> } | null = null;
+
+export async function applyFridaEstimateTo(productId: string): Promise<boolean> {
+  const product = await prisma.product.findFirst({
+    where: {
+      id: productId,
+      nutritionMissing: true,
+      privateOwnerId: null,
+      discontinued: false,
+      OR: [{ externalSource: null }, { externalSource: { notIn: ["FRIDA", ...IMPORTED_DISH_SOURCES] } }],
+    },
+    select: productSelect,
+  });
+  if (!product) return false;
+  if (!fridaCache || Date.now() - fridaCache.loadedAt > 10 * 60 * 1000) {
+    fridaCache = { loadedAt: Date.now(), value: await loadFrida() };
+  }
+  const { rows, groups } = fridaCache.value;
+  const match = matchFridaEstimate(product, groups, await loadAdminChoices());
+  const ref = match.kind === "match" ? rows.find((r) => r.id === match.reference.id) : undefined;
+  if (!ref) return false;
+  await prisma.product.update({ where: { id: product.id }, data: fridaUpdate(product, ref) });
+  return true;
+}
+
 async function saveReviews(reviews: Map<string, PendingReview>) {
   const now = new Date();
   for (const [reviewKey, review] of reviews) {

@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.ProfileCircleTone
 import dk.packroff.hellocal.ui.ProfileCircle
 import androidx.compose.foundation.background
@@ -177,7 +178,9 @@ internal fun FamilyProfileFields(form: FamilyProfileInput, onChange: (FamilyProf
             }
         }
         HcTextField(form.heightCm, { onChange(form.copy(heightCm = it)) }, label = t.t("family.add.heightCm"), keyboardType = KeyboardType.Decimal, standard = true)
+        FieldSlider(form.heightCm, 40.0, 230.0, { onChange(form.copy(heightCm = it)) })
         HcTextField(form.weightKg, { onChange(form.copy(weightKg = it)) }, label = t.t("family.add.weightKg"), keyboardType = KeyboardType.Decimal, standard = true)
+        FieldSlider(form.weightKg, 2.0, 250.0, { onChange(form.copy(weightKg = it)) }, step = 0.5)
     }
     if (picking) {
         CaptureDatePickerSheet(

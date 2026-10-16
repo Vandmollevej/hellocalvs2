@@ -384,6 +384,9 @@ Ejer: cloud-session `claude/scan-flow-rettelser` (2026-10-02) — arkiveres; næ
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Ingen Tag billede-knap, større ramme, scan-rytme, h1/h2 uden gentagelser, brand fra DB, logo 70 %, 10 %-udklip, næringsdetaljer altid, tomme udklip afvises | Færdig (kode, draft-PR #162, master flettet ind 2026-10-03) | Næste session: flet master ind igen ved konflikt, sæt PR #162 til ready og merge efter brugerens OK. Brugerens test på telefon. Log-analyse af de to scanninger (mælk + flødeboller) kræver eksport fra admin → Log (cloud-sessionen når ikke produktions-DB'en). Fjern hjerte-logoet manuelt i admin → Logoer |
+| scan-trin-2026-10-14 | Nummererede trin + "trinnet er klaret"-visning (blink/overstregning/flueben), mindre søgefelt med mørkt overlay, auto-valg af varen i rammen, stregkodefotoet klarer ikke energi/indhold, kamera-vagthund + logning af sort kamera, lærreder genbruges; forsidebilleder uden vare afvises, "Kan ikke læse teksten", tag om / forfra; native porteret (PR #404) | Flettet som e44c1e9, deploy #721 grøn (2026-10-14 17:27 dansk tid) | Brugerens test på iPhone. Bliver kameraet stadig sort: admin → Log → Scanninger, se `camera_black`/`camera_muted`/`page_hidden` på flowet (tilstand af spor/video logges nu). Native ikke kompileret lokalt — CI "native" |
+| scan-udloser-2026-10-14 | Udløserknap nederst i kamerabilledet på forside/energi/indhold (ingen automatisk scanning), "Spring over" til højre på trin 4, flueben lysegrønt/uden baggrund/48 px, `ImageCapture.takePhoto` fra på WebKit (sort kamera på iPhone); web + native | Færdig (kode; PR #409 flettes af sessionen) | Brugerens test på iPhone: kameraet må ikke blive sort efter energi; udløser på trin 2–4; "Spring over" på trin 4 → varen oprettes uden ingrediensliste |
+| scan-forlaesning-2026-10-15 | Fotoet i trykøjeblikket, forlæsning af tekst/mærke/næring/ingredienser mens man sigter, synlig behandling (load-cirkel + "Behandler billeder"), nye overskrifter; ubeskårne bagsidebilleder + natlig engangsanalyse (`back-photo-scan`: mærkninger, finlæsning, udvidet stavekontrol); web + native | Færdig (kode; PR fra branch `claude/scan-forlaesning` flettes af sessionen) | Brugerens test på iPhone: forlæsningen kører stille (ingen "Læser teksten …"/fund-pille — brugerens krav 2026-10-15), udløseren reagerer straks, "Behandler billeder" forsvinder igen |
 
 ## G-INT2 — Flere integrationer (Garmin, WHOOP, Huawei, via-mærker, Health Connect-modul)
 Filer: `src/lib/integrations/**`, `src/lib/integrations.ts`, `src/app/settings/integrations/**`, `src/app/api/integrations/**`, `src/lib/api-keys/*`, `native/android/healthconnect/**`.
@@ -542,7 +545,7 @@ Ejer: ledig (2026-10-10)
 
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
-| **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+| **PRODUKTTYPE-GENNEMGANG (2026-10-11, udført 2026-10-16)** | Regel-lint (20 regler), dyremad slettet, Quantity/Pack Count/MHD/lande rettet, produkttype/brand/subbrand/co-brand/variation/flag udtrukket for DRK, Årstiderne, Wolt, dm, EDEKA, REWE (7.628 rækker læst af agent + uafhængig kontrollør, ændringer skrevet med gul baggrund, 45 ikke-mad-rækker slettet) | Skrevet i arkene — afventer Peters gennemsyn | Peter gennemgår de gule celler. Rester: `Produkter/Backup/produkttype_udtraek_aendringer_2026-10-16.csv` (før/efter pr. felt, sikkerhed + note; kig på sikkerhed «low»). Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md` afsnit «Opdatering 2026-10-16». Genkør: `scripts/produkttype-forslag/pipeline-2026-10-16/` |
 
 | forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |
 
@@ -557,3 +560,10 @@ Ejer: Codex, chat CSS-gennemgang (2026-10-12). Filer: klasse-refaktorering i src
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | admin-visuel | Visuel kontrol af indre adminsider efter CSS-refaktoreringen | I gang | Adminadgang bekræftet 2026-10-12 efter brugerens melding. Root kontrollerer live; agent laver source/CSS-review. Fundne rester: native kontroller uden rolleklasse og tre faste grafstyles; opfølgning i codex/admin-css-slutkontrol-20261012. Browseren har timeouts på billedtunge sider, som ikke markeres visuelt godkendt uden screenshot. |
+
+## G-LIDL-ALDI — Lidl/Aldi-berigelse (lokalt script)
+Filer: `scripts/lidl-aldi-enrich/**`, `docs/LIDL-ALDI-ENRICH.md`, `src/lib/jobs/registry.ts` (ny `defaultEnabled`), `src/lib/jobs/runner.ts`, `src/app/api/admin/cron-jobs/[key]/route.ts`.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| lidl-aldi-enrich | Natligt lokalt script: Open Food Facts (stregkode, titel), Vision kun ved 0 resultater, ark med nye fakta | Venter på bruger | Brugeren kopierer `config.example.json`, kører `--inspect`/`--limit 20`, derefter `install-task.ps1` |

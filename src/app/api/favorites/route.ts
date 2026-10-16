@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { unauthorized } from "@/lib/session";
+import { getSessionUser, unauthorized } from "@/lib/session";
+import { localizedProductNames } from "@/lib/product-translations";
 import { getProfileUser } from "@/lib/family-access";
 
 // Favorites (fejl #31/#33/#36 i Fejlretninger/FEJLLISTE.md): en bruger kan
@@ -19,10 +20,19 @@ export async function GET() {
       include: { product: true },
     });
 
+    // Varens navn på brugerens sprog (docs/DECISIONS.md 2026-10-15).
+    const viewer = await getSessionUser().catch(() => null);
+    const localized = await localizedProductNames(
+      favorites.flatMap((favorite) => (favorite.product ? [favorite.product] : [])),
+      viewer,
+    ).catch(() => new Map<string, { name: string; brandName: string | null }>());
     return NextResponse.json({
       favorites: favorites
         .filter((favorite) => favorite.product)
-        .map((favorite) => ({ id: favorite.id, product: favorite.product })),
+        .map((favorite) => ({
+          id: favorite.id,
+          product: { ...favorite.product!, name: localized.get(favorite.product!.id)?.name ?? favorite.product!.name },
+        })),
     });
   } catch (error) {
     console.error("Favorite list failed", error);

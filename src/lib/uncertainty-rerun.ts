@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
+import { loadKnownBrands } from "@/lib/known-brands";
 import { callStructuredVision } from "@/lib/product-ai";
 import {
   FRONT_PROMPT_VERSION,
@@ -22,6 +23,7 @@ import {
 import { labelNutrientsFromPrediction, asNumberRecord } from "@/lib/nutrients";
 import { applyAnalysisValues } from "@/lib/uncertainty-corrections";
 import { UNCERTAINTY_TARGET } from "@/lib/uncertainty-thresholds";
+import { repairPlaceholderNames } from "@/lib/product-placeholder-repair";
 
 // Natlig AI-genkørsel for admin "Uncertainties" (job "uncertainty-rerun",
 // docs/DECISIONS.md 2026-09-25): kører samme aflæsning igen på de gemte
@@ -106,9 +108,7 @@ export async function rerunUncertainAnalyses(): Promise<{ message: string; count
       let promptVersion: string;
       let model: string;
       if (analysis.kind === "FRONT") {
-        knownBrands ??= (await prisma.brand.findMany({ select: { name: true }, orderBy: { name: "asc" }, take: 750 })).map(
-          (b) => b.name,
-        );
+        knownBrands ??= (await loadKnownBrands()).promptNames;
         const result = await callStructuredVision<Record<string, unknown>>({
           photo,
           schemaName: "hello_cal_product_front",
@@ -185,10 +185,16 @@ export async function rerunUncertainAnalyses(): Promise<{ message: string; count
     }
   }
 
+  // Varer, der stadig hedder "Vare <stregkode>", får varetypen som navn.
+  const renamed = await repairPlaceholderNames().catch((error) => {
+    console.error("[uncertainty-rerun] reservenavne fejlede", error);
+    return 0;
+  });
+
   return {
     message: `${analyses.length} åbne, ${tried} genkørt, ${improved} forbedret, ${resolved} nu over ${Math.round(
       UNCERTAINTY_TARGET * 100,
-    )} %, ${failed} fejl`,
+    )} %, ${failed} fejl${renamed ? `, ${renamed} reservenavne erstattet` : ""}`,
     count: tried,
   };
 }

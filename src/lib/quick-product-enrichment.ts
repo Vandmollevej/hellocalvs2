@@ -9,9 +9,10 @@ import {
   recordLocalAnalysis,
 } from "@/lib/product-photo-analysis";
 import { localIngredients, localNutrition } from "@/lib/local-label";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 import { hasIngredientsHeading } from "@/lib/product-ocr";
 import { createBarcodeLogoCutoutJob, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
-import { matchBrand } from "@/lib/brand-match";
+import { matchBrand, newBrandAllowed } from "@/lib/brand-match";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
@@ -24,6 +25,12 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
+import { cleanLanguageSignals } from "@/lib/barcode-context";
+import { refreshProductLanguage } from "@/lib/product-translations";
+import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
+import { askProductType, findProductType } from "@/lib/product-type-name";
+import { parseAlcoholPercent } from "@/lib/alcohol-label";
+import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -132,8 +139,20 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     // AI'ens brand, men står et kendt brand ordret på forsiden (fx EDEKA ved
     // vareserien Herzstücke), vinder databasens brand, og AI'ens brand bliver
     // subbrand (brugerens krav 2026-10-02).
+    // Et ukendt navn oprettes kun ud fra et sikkert, helt synligt logo
+    // (newBrandAllowed, DAGO 2026-10-15); ellers får varen intet brand.
     const aiBrand = (result.brand ?? result.logoText ?? "").trim();
-    const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? aiBrand).trim();
+    const newBrand = newBrandAllowed(result.logoConfidence, result.logoBox) ? aiBrand : "";
+    const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? newBrand).trim();
+    if (aiBrand && !brandName) {
+      await debugLog({
+        category: "scan",
+        event: "brand_unknown_skipped",
+        level: "warn",
+        message: `Ukendt brand "${aiBrand}" ikke oprettet — logoet var usikkert (${result.logoConfidence}) eller skåret af ved kanten`,
+        productId,
+      });
+    }
     const brand = brandName
       ? await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } })
       : null;
@@ -147,13 +166,29 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     const variant = result.variant?.trim() ?? "";
     const packageSizeText = result.packageSizeText?.trim() ?? "";
     const rawName = result.productName?.trim() ?? "";
-    const productName = rawName;
-    recognized = Boolean(productName || result.logoText?.trim() || result.productBox);
+    // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
+    // ud fra brand, variant og synlig tekst (fx Eierlikör), ellers spørges
+    // "Hvilken produkttype er <brand subbrand variant>?"; ellers det hidtidige
+    // navn, ellers brand + subbrand. Aldrig "Vare <stregkode>" og aldrig
+    // varianten (brugerens regel 2026-10-15).
+    const typeName = rawName
+      ? null
+      : await findProductType(result, {
+          brand: brand?.name,
+          subbrand,
+          variant,
+          packageSizeText,
+          alcoholPercent: result.alcoholPercent,
+          language: result.language,
+        });
+    const productName = rawName || typeName || "";
+    recognized = Boolean(rawName || result.logoText?.trim() || result.productBox);
+    const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
         ? composeProductName({ productType: productName, variant })
         : normalizeProductName(productName)
-      : input.fallbackName;
+      : fallbackName || brandProductName(brand?.name, subbrand);
     const product = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -162,10 +197,16 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
         subbrand: subbrand ?? undefined,
         variant: variant || undefined,
         packageSizeText: packageSizeText || undefined,
+        // Varetypen er spurgt om — vedligeholdet spørger ikke igen.
+        productTypeAskedAt: rawName ? undefined : new Date(),
       },
       select: { id: true, name: true, createdAt: true },
     });
-    await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    if (product.name) await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    await recordAlcoholPercent(
+      productId,
+      result.alcoholPercent ?? parseAlcoholPercent([...(result.visibleText ?? []), ...(result.claims ?? [])].join(" ")),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
     // Mærkningslogoerne (Ø-mærket, Nøglehullet …) vises på varesiden.
     const certifications = await addCertificationFilters(productId, result.certifications ?? []).catch((error) => {
       console.error("Could not save certifications", productId, error);
@@ -179,8 +220,10 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     await debugLog({
       category: "scan",
       event: "enrich_front",
-      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${result.productName?.trim() ? "" : " (intet navn fundet, reservenavn beholdt)"}`,
-      level: result.productName?.trim() ? "info" : "warn",
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name || "(intet navn)"}${
+        rawName ? "" : typeName ? " (varetypen navngivet ud fra forsiden)" : name ? " (intet varenavn — brand + subbrand)" : " (intet varenavn og intet brand)"
+      }`,
+      level: name ? "info" : "warn",
       productId,
       durationMs: Date.now() - startedAt,
       data: {
@@ -244,14 +287,15 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
     const { result, brandMatch, imageUrl } = read;
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: { name: true, variant: true, brand: { select: { id: true, name: true } } },
+      select: { name: true, variant: true, subbrand: true, brand: { select: { id: true, name: true } } },
     });
     if (!product) return;
 
     const logoText = result.logoText?.trim() || null;
     const changes: Prisma.ProductUpdateInput = {};
     let brand = product.brand;
-    const brandName = (brandMatch?.name ?? logoText ?? "").trim();
+    const newBrand = logoText && newBrandAllowed(result.logoConfidence, result.logoBox) ? logoText : "";
+    const brandName = (brandMatch?.name ?? newBrand).trim();
     if (!brand && brandName && result.logoConfidence >= 0.5) {
       brand = await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName }, select: { id: true, name: true } });
       changes.brand = { connect: { id: brand.id } };
@@ -259,10 +303,25 @@ async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
 
     // Varianten står kun i sit eget felt (grøn linje) — aldrig i navnet
     // (brugerens regel 2026-10-02). Stod den allerede i navnet, fjernes den.
+    // Forsiden gav hverken varenavn eller brand: varen hedder varetypen eller
+    // brand + subbrand, når stregkode-fotoet gav brandet (brugerens regel 2026-10-15).
+    const nameless = !product.name.trim() || isPlaceholderProductName(product.name);
+    const brandOnlyName = nameless || product.name === brandProductName(product.brand?.name, product.subbrand);
+    // Først spørges, hvilken produkttype brand + subbrand + variant er.
+    if (nameless && brand) {
+      const typeName = await askProductType({
+        brand: brand.name,
+        subbrand: product.subbrand,
+        variant: product.variant || result.variant,
+      }).catch(() => null);
+      changes.name = typeName ?? brandProductName(brand.name, product.subbrand);
+      changes.productTypeAskedAt = new Date();
+    }
+
     const variant = result.variant?.trim() ?? "";
     if (!product.variant && variant && result.variantConfidence >= 0.5) {
       changes.variant = variant;
-      if (product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
+      if (!brandOnlyName && product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
         changes.name = composeProductName({ productType: product.name, variant });
       }
     }
@@ -331,6 +390,23 @@ type Read<T> = { analysisId: string; result: T } | null;
 // at afgøre, om varen kan overtages som vores egen (src/lib/product-rescan.ts).
 export type LabelReadOutcome = { nutritionComplete: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
 
+// Kvalitetskontrollens rettelser og tvivl i admin → Log (tvivl sætter også
+// aflæsningen på Usikkerheder → Indhold, src/lib/product-photo-analysis.ts).
+async function logIngredientsReview(productId: string, result: IngredientsAnalysis, source: string) {
+  const review = result.textReview;
+  if (!review || (!review.fixes.length && !review.doubts.length)) return;
+  await debugLog({
+    category: "scan",
+    event: "ingredients_text_review",
+    level: review.doubts.length ? "warn" : "info",
+    message: review.doubts.length
+      ? `Ingredienslisten (${source}) ser fejllæst ud: ${review.doubts.join("; ")} — sendt til Usikkerheder`
+      : `Ingredienslisten (${source}) rettet automatisk: ${review.fixes.join("; ")}`,
+    productId,
+    data: { source, fixes: review.fixes, doubts: review.doubts, ingredientsText: result.ingredientsText.slice(0, 500) },
+  });
+}
+
 export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelReadOutcome> {
   const { productId } = input;
   const base = { barcode: input.barcode, marketRegion: input.marketRegion, signals: input.signals };
@@ -342,7 +418,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const ingredientsConfidence = input.ingredientsPhoto ? input.ingredientsOcrConfidence : input.nutritionOcrConfidence;
 
   const localN = localNutrition(nutritionText, input.nutritionOcrConfidence ?? 0);
-  const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0);
+  const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0, await loadSpellingDictionary());
 
   let nutrition: Read<NutritionAnalysis> = null;
   let ingredients: Read<IngredientsAnalysis> = null;
@@ -457,11 +533,18 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       }
     }
 
+    // Alkoholprocenten står også, når der ingen næringstabel er (spiritus).
+    await recordAlcoholPercent(
+      productId,
+      nutrition?.result.alcoholPercent ?? parseAlcoholPercent(`${nutritionText}\n${ingredientsText}`),
+    ).catch((error) => console.error("Could not save alcohol percent", productId, error));
+
     if (ingredients) {
       await prisma.aiProductAnalysis.update({ where: { id: ingredients.analysisId }, data: { productId } });
       if (ingredients.result.ingredientsText) {
         await prisma.product.update({ where: { id: productId }, data: { ingredientsText: ingredients.result.ingredientsText } });
       }
+      await logIngredientsReview(productId, ingredients.result, ingredientsFromAi ? "AI" : "telefonens aflæsning");
     }
   } catch (error) {
     console.error("Quick product label could not be saved", productId, error);
@@ -516,6 +599,17 @@ export async function enrichQuickProduct(
     parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
     parts.label ? enrichLabel(input) : Promise.resolve(),
   ]);
+  // Alkoholisk drik uden næringstabel: energien skønnes ud fra % vol og
+  // varetypen, i stedet for at stå med 0 kcal (docs/DECISIONS.md 2026-10-15).
+  if (!input.existingProduct && (await estimateAlcoholNutrition(input.productId))) {
+    await refreshRegistrationSnapshots(input.productId, input).catch(() => {});
+  }
+  // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
+  // skriftens sprog, når forsiden har fx kinesiske tegn. Teksten røres ikke.
+  await refreshProductLanguage(
+    input.productId,
+    cleanLanguageSignals(input.signals).locationCountry ?? input.marketRegion,
+  ).catch((error) => console.error("Could not set product language", input.productId, error));
   await syncProductNutritionFeaturesSafely(input.productId);
 
   const product = await prisma.product
@@ -600,6 +694,7 @@ export async function retryIngredients(input: {
       storedImageUrl: input.photoUrl,
     });
     await prisma.aiProductAnalysis.update({ where: { id: read.analysisId }, data: { productId } });
+    await logIngredientsReview(productId, read.result, "AI, nyt forsøg");
     const text = read.result.ingredientsText?.trim() ?? "";
     if (text) {
       // Kun hvis feltet stadig er tomt — en admin eller brugeren kan have

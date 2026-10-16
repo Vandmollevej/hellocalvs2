@@ -58,6 +58,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
       key,
       intervalMinutes: job.defaultIntervalMinutes,
       runAtTime: job.defaultRunAtTime,
+      enabled: job.defaultEnabled ?? true,
       ...data,
     },
     update: data,

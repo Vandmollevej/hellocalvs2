@@ -25,6 +25,16 @@ test("usikre fund og dubletter ignoreres", () => {
   assert.equal(patch.organic, "EU-økologi");
 });
 
+test("EU-bladet lægges til Ø-mærket i økologi-feltet, ikke i certifikater", () => {
+  const patch = labelsToFilterPatch(
+    [label("organic-eu", "EU-økologi", "ORGANIC"), label("organic-dk", "Ø-mærket", "ORGANIC")],
+    { organic: "Økologisk", certifications: [] },
+  );
+  // Mærkets eget navn; Ø-mærket står der allerede (samme logo).
+  assert.equal(patch.organic, "Økologisk, EU-økologi");
+  assert.equal(patch.certifications, undefined);
+});
+
 test("oprindelsesmærke giver land", () => {
   const patch = labelsToFilterPatch([label("dk-origin", "Dansk oprindelse", "ORIGIN")], null);
   assert.equal(patch.countryOfOrigin, "Danmark");

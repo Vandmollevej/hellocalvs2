@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
+import dk.packroff.hellocal.screens.settings.settingsBool
+import dk.packroff.hellocal.screens.settings.settingsLoadProfile
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -104,7 +106,9 @@ fun ScreeningInput(
                 placeholder = "${range.min}–${range.max}$suffix",
                 keyboardType = KeyboardType.Number,
                 standard = true,
-            )
+            ).also {
+                if (!readOnly) CaptureSlider(value = current, min = range.min, max = range.max, step = range.step, onChange = { onChange(it) })
+            }
             else -> Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
@@ -243,6 +247,12 @@ fun ScreeningsScreen(args: RouteArgs) {
         try { screenings = ScreeningApi.load(t) } catch (e: Exception) { failed = true }
     }
 
+    // The Sleep row shows whether "Oplevelse af søvn" is switched on (default: on).
+    var sleepActive by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        runCatching { settingsLoadProfile() }.getOrNull()?.let { sleepActive = it.settingsBool("sleepQualityPromptEnabled") != false }
+    }
+
     HcScreen(title = t.t("screenings.title"), contentPadding = ProfilePagePadding) {
         ProfilePage {
             HcText(t.t("screenings.intro"), HcTypeRoles.Body, color = HcColors.TextSecondary)
@@ -260,16 +270,21 @@ fun ScreeningsScreen(args: RouteArgs) {
                 list == null -> ProfileCenteredText(t.t("screenings.loadError"))
                 else -> {
                     HcCard(Modifier.fillMaxWidth()) {
-                        // Sleep is a fixed row that points at the sleep pattern.
+                        // Sleep is a fixed row (cannot be deleted): "Oplevelse af søvn" on/off,
+                        // moved here from Visning (user 2026-10-16). The sleep pattern is on Profil.
                         Row(
-                            Modifier.fillMaxWidth().clickable { nav.push("/profile/sleep") }.padding(vertical = 12.dp),
+                            Modifier.fillMaxWidth().clickable { nav.push("/settings/display/sleep-quality") }.padding(vertical = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Box(Modifier.size(10.dp).clip(CircleShape).background(HcColors.Green))
+                            Box(Modifier.size(10.dp).clip(CircleShape).background(if (sleepActive) HcColors.Green else HcColors.TanDark))
                             HcIcon("Moon", size = 20.dp, color = HcColors.Black)
-                            HcText(t.t("screenings.sleep"), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black)
-                            HcText(t.t("screenings.statusActive"), HcTypeRoles.Small, color = HcColors.GreenDark)
+                            HcText(t.t("screenings.sleep"), HcTypeRoles.Body, Modifier.weight(1f), color = if (sleepActive) HcColors.Black else HcColors.TextSecondary)
+                            HcText(
+                                if (sleepActive) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
+                                HcTypeRoles.Small,
+                                color = if (sleepActive) HcColors.GreenDark else HcColors.TextSecondary,
+                            )
                         }
                         list.forEach { screening ->
                             ProfileSwipeActions(

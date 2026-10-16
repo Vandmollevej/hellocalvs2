@@ -1,8 +1,10 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconMicrophone, IconPlayerStopFilled } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -16,6 +18,7 @@ import {
 import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { addChartsToLayout, BODY_MEASUREMENT_CHART_KEYS } from "@/lib/stat-charts";
 import { cmToIn, formatLength, inToCm, lengthUnitLabel, useUnits, type HeightUnit } from "@/lib/units";
+import { useBodyMeasurementVoice } from "@/components/body-measurements/useBodyMeasurementVoice";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -90,7 +93,7 @@ function InlineMeasurementInput({
 }
 
 export default function BodyMeasurementsPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const { height: lengthUnit } = useUnits();
   const [entries, setEntries] = useState<BodyMeasurementEntry[]>([]);
@@ -154,8 +157,7 @@ export default function BodyMeasurementsPage() {
     load();
   }, []);
 
-  async function commitField(field: MeasurementField) {
-    const raw = values[field];
+  async function commitField(field: MeasurementField, raw: string = values[field]) {
     const typed = raw.trim() === "" ? null : Number(raw.replace(",", "."));
     if (typed !== null && (!typed || typed <= 0)) return;
     // Indtastet i den valgte enhed, gemmes altid i cm.
@@ -189,6 +191,26 @@ export default function BodyMeasurementsPage() {
     }
   }
 
+  // Stemmeguiden udfylder kun kropsmål-felterne: tallet skrives i feltet og
+  // gemmes præcis som en indtastning (brugerkrav 2026-10-14).
+  const voice = useBodyMeasurementVoice({
+    locale,
+    t,
+    onSave: (field, value) => {
+      const raw = String(value);
+      setValues((current) => ({ ...current, [field]: raw }));
+      void commitField(field as MeasurementField, raw);
+    },
+  });
+  const visibleFields = BODY_MEASUREMENT_FIELDS.filter(({ field }) => isBodyMeasurementVisible(visibility, field));
+
+  // Det aktuelle mål rulles frem, så brugeren kan se tegningen og feltet.
+  useEffect(() => {
+    if (voice.currentField) {
+      document.getElementById(`body-measurement-${voice.currentField}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [voice.currentField]);
+
   async function remove(id: string) {
     setEntries((current) => current.filter((entry) => entry.id !== id));
     if (todaysEntryId.current === id) todaysEntryId.current = null;
@@ -198,6 +220,52 @@ export default function BodyMeasurementsPage() {
   return (
     <HfScreen title={t("bodyMeasurements.title")}>
       <div className="hf-page">
+        {voice.supported && (
+          <div className="hf-card flex flex-col gap-2" aria-live="polite">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  voice.active
+                    ? voice.stop()
+                    : void voice.start({
+                        fields: visibleFields.map(({ field }) => field),
+                        isFilled: (field) => values[field as MeasurementField].trim() !== "",
+                        unit: lengthUnit === "in" ? "in" : "cm",
+                      })
+                }
+                aria-label={voice.active ? t("bodyMeasurements.voice.stop") : t("bodyMeasurements.voice.start")}
+                className="relative flex h-14 w-14 shrink-0 items-center justify-center"
+              >
+                {voice.phase === "listening" && (
+                  <span className="absolute inset-0 animate-ping rounded-full bg-hf-green opacity-20 motion-reduce:animate-none" />
+                )}
+                <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-hf-black text-hf-white">
+                  {voice.active ? <IconPlayerStopFilled size={22} /> : <IconMicrophone size={28} stroke={1.8} />}
+                </span>
+              </button>
+              <span className="flex min-w-0 flex-col">
+                <span className="hf-type-body hf-type-strong text-hf-black">
+                  {voice.phase === "listening"
+                    ? t("bodyMeasurements.voice.listening")
+                    : voice.phase === "speaking"
+                      ? t("bodyMeasurements.voice.speaking")
+                      : t("bodyMeasurements.voice.start")}
+                </span>
+                <span className="hf-type-small text-text-secondary">
+                  {voice.active && voice.spoken ? voice.spoken : t("bodyMeasurements.voice.startHint")}
+                </span>
+              </span>
+            </div>
+            {voice.active && voice.heard && (
+              <p className="hf-type-small hf-type-strong text-hf-black">
+                {t("bodyMeasurements.voice.youSaid", { text: voice.heard })}
+              </p>
+            )}
+            {voice.error && <p className="hf-type-small text-hf-red-dark">{voice.error}</p>}
+          </div>
+        )}
+
         <div className="hf-card hf-card--brand">
           <p className="hf-type-small">{t("bodyMeasurements.intro")}</p>
         </div>
@@ -211,8 +279,12 @@ export default function BodyMeasurementsPage() {
         {/* Ét kort pr. mål i Statistik-kortenes stil: tegning til venstre i fast
             bredde (så titlerne flugter), titel og felt på samme linje til højre. */}
         <div className="flex flex-col gap-3">
-          {BODY_MEASUREMENT_FIELDS.filter(({ field }) => isBodyMeasurementVisible(visibility, field)).map(({ field, labelKey, image }) => (
-            <label key={field} className="items-center text-left hf-card--row hf-card--form hf-card">
+          {visibleFields.map(({ field, labelKey, image }) => (
+            <label
+              key={field}
+              id={`body-measurement-${field}`}
+              className={`items-center text-left hf-card--row hf-card--form hf-card ${voice.currentField === field ? "ring-2 ring-hf-green" : ""}`}
+            >
               <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
                 {image && sex && (
                   <Image
@@ -224,7 +296,8 @@ export default function BodyMeasurementsPage() {
                   />
                 )}
               </span>
-              <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
+              <span className="flex min-w-0 items-center justify-between gap-3">
                 <span className="hf-type-body hf-type-strong text-hf-black">{t(labelKey)}</span>
                 <span className="flex shrink-0 items-baseline gap-2">
                   <InlineMeasurementInput
@@ -235,6 +308,16 @@ export default function BodyMeasurementsPage() {
                   />
                   <span className="hf-type-body text-text-secondary shrink-0">{lengthUnitLabel(lengthUnit)}</span>
                 </span>
+              </span>
+              <FieldSlider
+                value={values[field]}
+                min={lengthUnit === "in" ? 4 : 10}
+                max={lengthUnit === "in" ? 100 : 250}
+                step={0.5}
+                onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}
+                onCommit={() => commitField(field)}
+                aria-label={t(labelKey)}
+              />
               </span>
             </label>
           ))}

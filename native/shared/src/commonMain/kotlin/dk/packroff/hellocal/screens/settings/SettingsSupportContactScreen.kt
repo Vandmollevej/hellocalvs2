@@ -60,8 +60,10 @@ fun SettingsSupportContactScreen(args: RouteArgs) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
-    var category by remember { mutableStateOf("OTHER") }
-    var subject by remember { mutableStateOf("") }
+    // Other screens can open the form with category and subject filled in
+    // (e.g. Import → "Kontakt os": ?category=DATA&subject=...).
+    var category by remember { mutableStateOf(args.opt("category")?.takeIf { it in SettingsSupportRequestCategories } ?: "OTHER") }
+    var subject by remember { mutableStateOf(args.opt("subject")?.take(SETTINGS_SUPPORT_SUBJECT_MAX) ?: "") }
     var message by remember { mutableStateOf("") }
     var images by remember { mutableStateOf<List<String>>(emptyList()) }
     var sending by remember { mutableStateOf(false) }

@@ -23,6 +23,9 @@ export type CaptureData = {
   // fastfrosset ved scanningen (src/lib/language-signals.ts).
   languageSignals?: LanguageSignals;
   frontPhoto?: string;
+  // Hele forsidebilledet i fuld opløsning — gemmes som varens billede
+  // (brugerens krav 2026-10-15); frontPhoto er kopien til AI'en.
+  frontPhotoFull?: string;
   nutritionPhoto?: string;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
@@ -43,34 +46,56 @@ async function ocr(photo: string, languages: string[], tableLayout = false) {
   try {
     const result = await extractTextPrioritized(photo, languages, undefined, { tableLayout });
     const text = usableOcrText(result);
-    return { text, confidence: text ? result.confidence : 0 };
+    return { text, confidence: text ? result.confidence : 0, ocrFailed: false };
   } catch {
-    return { text: "", confidence: 0 };
+    return { text: "", confidence: 0, ocrFailed: true };
   }
 }
 
-// Forsiden: lokal OCR bruges kun til dublet-tjek mod databasen. Returnerer
-// id'et på en eksisterende vare, hvis teksten matcher en (plus OCR-tallene
-// til admin "Log").
+// Forsiden: lokal OCR bruges til dublet-tjek mod databasen og til at finde et
+// kendt mærke i teksten. Returnerer id/navn på en eksisterende vare, hvis
+// teksten matcher en (plus OCR-tallene til admin "Log"). `preRead`: kaldet fra
+// forlæsningen, mens brugeren sigter (serveren logger da kun fund).
+export type FrontRead = {
+  duplicateId: string | null;
+  duplicateName: string | null;
+  brand: string | null;
+  textLength: number;
+  confidence: number;
+  lookupFailed: boolean;
+  ocrFailed: boolean;
+};
+
 export async function readFrontPhoto(
   photo: string,
   languages: string[],
   flowId?: string,
-): Promise<{ duplicateId: string | null; textLength: number; confidence: number; lookupFailed: boolean }> {
-  const { text, confidence } = await ocr(photo, languages);
-  const stats = { textLength: text.length, confidence };
-  if (!text) return { duplicateId: null, lookupFailed: false, ...stats };
+  options: { preRead?: boolean } = {},
+): Promise<FrontRead> {
+  const { text, confidence, ocrFailed } = await ocr(photo, languages);
+  const stats = { textLength: text.length, confidence, ocrFailed, duplicateId: null, duplicateName: null, brand: null };
+  if (!text) return { ...stats, lookupFailed: false };
   try {
     const response = await fetch("/api/products/recognize-text", {
       method: "POST",
       headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, preRead: options.preRead === true }),
     });
-    if (!response.ok) return { duplicateId: null, lookupFailed: true, ...stats };
-    const data = (await response.json()) as { product: { id: string } | null };
-    return { duplicateId: data.product?.id ?? null, lookupFailed: false, ...stats };
+    if (!response.ok) return { ...stats, lookupFailed: true };
+    const data = (await response.json()) as {
+      product: { id: string; name?: string; brand?: { name?: string } | null } | null;
+      brand?: { name: string } | null;
+    };
+    const product = data.product;
+    return {
+      ...stats,
+      lookupFailed: false,
+      duplicateId: product?.id ?? null,
+      duplicateName: product ? `${product.brand?.name ?? ""} ${product.name ?? ""}`.trim() || null : null,
+      brand: data.brand?.name ?? null,
+    };
   } catch {
-    return { duplicateId: null, lookupFailed: true, ...stats };
+    return { ...stats, lookupFailed: true };
   }
 }
 
@@ -82,6 +107,8 @@ export type LabelRead = {
   regions: LabelRegions;
   nutrition: ParsedNutrition | null;
   ingredientsText: string | null;
+  // Den lokale tekstlæsning kastede en fejl (ikke blot "ingen tekst").
+  ocrFailed?: boolean;
 };
 
 // Næring + ingredienser på ét foto. "Ingredienser" (på regionernes sprog)
@@ -99,7 +126,7 @@ async function readLabel(photo: string, languages: string[], tableLayout: boolea
       ingredientsText: text ? findIngredientsSection(text) : null,
     };
   } catch {
-    return { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null };
+    return { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null, ocrFailed: true };
   }
 }
 
@@ -151,9 +178,37 @@ export async function saveBarcodePhoto(
   }
 }
 
+// Energi-/indholdstrinnets hele, ubeskårne kamerabillede (docs/DECISIONS.md
+// 2026-10-15) uploades under flowet og kobles til varen ved oprettelsen;
+// nattens robot analyserer det én gang (mærkninger, finlæsning, stavekontrol).
+export const BACK_PHOTO_TIMEOUT_MS = 60_000;
+
+export async function uploadBackPhoto(
+  photo: { url: string; width: number; height: number },
+  step: "nutrition" | "ingredients",
+  flowId: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/products/back-photos", {
+      method: "POST",
+      signal: AbortSignal.timeout(BACK_PHOTO_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
+      body: JSON.stringify({ photo: photo.url, step, width: photo.width, height: photo.height }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+// Uden tidsgrænse stod en hængende upload som et sort, låst kamera, mens
+// serveren allerede havde oprettet varen (bruger 2026-10-14).
+export const CREATE_TIMEOUT_MS = 60_000;
+
 export async function createQuickProduct(data: CaptureData, marketRegion: string): Promise<string> {
   const response = await fetch("/api/products/quick", {
     method: "POST",
+    signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
     headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       barcode: data.barcode,
@@ -161,6 +216,7 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
       signals: data.languageSignals,
       barcodeAnalysisId: data.barcodeAnalysisId,
       frontPhoto: data.frontPhoto,
+      frontPhotoFull: data.frontPhotoFull,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,
       nutritionOcrConfidence: data.nutritionOcrConfidence,
@@ -176,13 +232,29 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
   return body.product.id;
 }
 
+// Fejlede eller udløb oprettelsen, kan serveren alligevel have oprettet
+// varen (svaret gik tabt): findes stregkoden nu, er det varen.
+export async function findCreatedProduct(barcode: string, flowId?: string): Promise<string | null> {
+  try {
+    const response = await fetch(`/api/products/lookup/${encodeURIComponent(barcode)}`, {
+      signal: AbortSignal.timeout(15_000),
+      headers: scanFlowHeaders(flowId),
+    });
+    if (!response.ok) return null;
+    const body = (await response.json()) as { product?: { id?: string } };
+    return body.product?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // "Scan varen igen" (docs/DECISIONS.md 2026-10-02): samme fotos som "opret
 // straks", men til en eksisterende vare (POST /api/products/[id]/rescan).
 export async function submitProductRescan(productId: string, data: CaptureData, marketRegion: string): Promise<void> {
   // Uden tidsgrænse kan en hængende upload stå som sort kamera for evigt.
   const response = await fetch(`/api/products/${encodeURIComponent(productId)}/rescan`, {
     method: "POST",
-    signal: AbortSignal.timeout(60_000),
+    signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
     headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       marketRegion,
@@ -197,4 +269,32 @@ export async function submitProductRescan(productId: string, data: CaptureData, 
     }),
   });
   if (!response.ok) throw new Error(`Rescan failed (${response.status})`);
+}
+
+// 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): varen er kendt, men over
+// to år gammel. Fotoene gemmes til nattens vurdering
+// (POST /api/products/[id]/quality-check); kunden går videre til varen med
+// dens tidligere info, uanset svaret.
+export async function submitProductQualityCheck(productId: string, data: CaptureData, marketRegion: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/products/${encodeURIComponent(productId)}/quality-check`, {
+      method: "POST",
+      signal: AbortSignal.timeout(CREATE_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
+      body: JSON.stringify({
+        marketRegion,
+        signals: data.languageSignals,
+        frontPhoto: data.frontPhoto,
+        nutritionPhoto: data.nutritionPhoto,
+        nutritionOcrText: data.nutritionOcrText,
+        nutritionOcrConfidence: data.nutritionOcrConfidence,
+        ingredientsPhoto: data.ingredientsOnNutritionPhoto ? undefined : data.ingredientsPhoto,
+        ingredientsOcrText: data.ingredientsOcrText,
+        ingredientsOcrConfidence: data.ingredientsOcrConfidence,
+      }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }

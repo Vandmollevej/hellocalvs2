@@ -470,6 +470,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/product-database/generics",
+      "web": "src/app/admin/product-database/generics/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Adminside; admin har ingen native skærme."
+    },
+    {
       "route": "/admin/product-database/image-upload",
       "web": "src/app/admin/product-database/image-upload/page.tsx",
       "status": "web-only",
@@ -546,6 +553,13 @@
     {
       "route": "/admin/quality-control/activities",
       "web": "src/app/admin/quality-control/activities/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/quality-control/incomplete-images",
+      "web": "src/app/admin/quality-control/incomplete-images/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."
@@ -644,6 +658,13 @@
     {
       "route": "/admin/shortcuts",
       "web": "src/app/admin/shortcuts/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/spelling",
+      "web": "src/app/admin/spelling/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."
@@ -1535,6 +1556,15 @@
       ]
     },
     {
+      "route": "/settings/display/pregnancy",
+      "web": "src/app/settings/display/pregnancy/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt",
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/PregnancyFields.kt"
+      ]
+    },
+    {
       "route": "/settings/display/priority",
       "web": "src/app/settings/display/priority/page.tsx",
       "status": "pending",
@@ -1551,6 +1581,14 @@
     {
       "route": "/settings/display/tips",
       "web": "src/app/settings/display/tips/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
+      ]
+    },
+    {
+      "route": "/settings/display/translation",
+      "web": "src/app/settings/display/translation/page.tsx",
       "status": "ported",
       "native": [
         "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsDisplayScreens.kt"
@@ -1602,6 +1640,14 @@
       "status": "ported",
       "native": [
         "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsImportScreen.kt"
+      ]
+    },
+    {
+      "route": "/settings/import/[provider]",
+      "web": "src/app/settings/import/[provider]/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/settings/SettingsImportProviderScreen.kt"
       ]
     },
     {

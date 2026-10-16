@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { analyzeFrontPhoto } from "@/lib/product-photo-analysis";
 import { createFrontCutoutJobs, discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { debugLog, errorText } from "@/lib/debug-log";
+import { newBrandAllowed } from "@/lib/brand-match";
 
 // Natlig robot "external-image-ai" (docs/DECISIONS.md 2026-10-02). Når en
 // Open Food Facts-/USDA-vare vises første gang, tilbydes brugeren 10 points for at
@@ -64,7 +65,8 @@ export async function analyzeDeclinedExternalImages(): Promise<string> {
 
       const changes: Prisma.ProductUpdateInput = { externalImageAnalyzedAt: new Date() };
       let brand = product.brand;
-      const brandName = (brandMatch?.name ?? result.brand ?? result.logoText ?? "").trim();
+      const aiBrand = newBrandAllowed(result.logoConfidence, result.logoBox) ? (result.brand ?? result.logoText ?? "") : "";
+      const brandName = (brandMatch?.name ?? aiBrand).trim();
       if (!brand && brandName) {
         brand = await prisma.brand.upsert({
           where: { name: brandName },

@@ -8,6 +8,7 @@ import { t } from "@/lib/admin-i18n";
 import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
 import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
 import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
+import { imageThumb } from "@/lib/image-thumb";
 
 type BaseRow = {
   id: string;
@@ -34,7 +35,7 @@ function IssueThumbnail({ imageUrl, confidence }: { imageUrl: string | null; con
     <div className="relative h-10 w-10 shrink-0">
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="" loading="lazy" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
+        <img src={imageThumb(imageUrl, 96)} alt="" loading="lazy" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
       ) : (
         <div className="hf-surface h-10 w-10 bg-hf-tan-dark" />
       )}

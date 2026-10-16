@@ -6,17 +6,20 @@ import {
   BRAND_NAME_HEIGHT_PX,
   brandLogoLeftPx,
   brandLogoRenderedHeight,
+  brandNameMaxWidthPx,
   brandSlotHeight,
+  circleLogoFor,
+  circleLogoSize,
   subbrandBottomPx,
 } from "@/lib/brand-logo-layout";
 import { displayedSubbrand } from "@/lib/subbrand-names";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useElementSize } from "@/lib/use-element-size";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconChevronDown,
   IconAlertTriangle,
-  IconCamera,
   IconMessage,
   IconLock,
   IconLockOpen,
@@ -30,6 +33,7 @@ import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
+import { HfSlider } from "@/components/hf/HfSlider";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
 import {
@@ -48,6 +52,7 @@ import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
 import { MicronutrientInfoModal } from "@/components/hf/MicronutrientInfoModal";
 import { MICRONUTRIENT_INFO_BY_KEY } from "@/lib/micronutrient-info";
+import { swapProductTexts, type ProductTranslationInfo } from "@/lib/product-text-swap";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DecimalText } from "@/components/DecimalText";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
@@ -73,6 +78,10 @@ import { Skeleton } from "@/components/hf/Skeleton";
 import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
+import { imageThumb } from "@/lib/image-thumb";
+import { CIRCLE_DIAMETER } from "@/lib/product-circle-layout";
+import { UpdateCameraPanel } from "@/components/hf/UpdateCameraPanel";
+import { useDesktopViewport } from "@/lib/use-desktop-viewport";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -98,6 +107,14 @@ const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "phot
   NUTRITION: "photoAward.photoTypeNutrition",
   INGREDIENTS: "photoAward.photoTypeIngredients",
 };
+
+// Brugerens "Vis original"/"Vis oversættelse"-valg lagt på en nyhentet vare.
+function withTextChoice(product: Product, choice: ProductTranslationInfo["showing"] | null): Product {
+  const translation = product.translation;
+  if (!translation || !choice || choice === translation.showing) return product;
+  const swapped = swapProductTexts(product, translation);
+  return { ...swapped.product, translation: swapped.translation };
+}
 
 function currentTimeString() {
   const now = new Date();
@@ -203,6 +220,9 @@ type Product = {
   // Mindst én værdi kommer fra Frida → Fridas kildeangivelse nederst i det
   // udfoldede næringsfelt (DECISIONS 2026-10-10).
   fridaSource?: boolean;
+  // Oversat fra varens originalsprog (docs/DECISIONS.md
+  // 2026-10-15): den anden version til "Vis original"/"Vis oversættelse".
+  translation?: ProductTranslationInfo | null;
 };
 
 type ProfileUser = {
@@ -358,10 +378,19 @@ export function AddProductView({
   // med 10 % overskud: stående varer rager 10 % op over cirklen, liggende
   // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
   const [imageLandscape, setImageLandscape] = useState(false);
+  const [compositeWidth, setCompositeWidth] = useState<number | null>(null);
+  const [compositeFailed, setCompositeFailed] = useState<string | null>(null);
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
   const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
+  // Brand- og subbrandnavne brydes i linjer inden for sidens kant; deres
+  // målte højde flytter dem ud fra cirklen (src/lib/brand-logo-layout.ts).
+  const [circleColumnRef, circleColumnSize] = useElementSize<HTMLDivElement>();
+  const [brandNameRef, brandNameSize] = useElementSize<HTMLParagraphElement>();
+  const [subbrandNameRef, subbrandNameSize] = useElementSize<HTMLParagraphElement>();
+  // Logoet, der står stort i cirklen uden produktbillede (samme fil).
+  const [circleLogoRatio, setCircleLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
@@ -370,6 +399,9 @@ export function AddProductView({
   // til udgangspunktet (profilens autoExpandUncertainty).
   const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
+  // Hjemmesiden (desktop-skallen) tager ikke billeder — kun webappen på
+  // telefonen; opdater-banneret er et kamerabanner (brugerens regel 2026-10-15).
+  const desktop = useDesktopViewport();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
   // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): åbne Awards
@@ -388,6 +420,9 @@ export function AddProductView({
   const [isProductEditingUnlocked, setIsProductEditingUnlocked] = useState(false);
   const [macroOverrideSnapshot, setMacroOverrideSnapshot] = useState<typeof macroOverride>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
+  // "Vis original"/"Vis oversættelse": brugerens valg på siden, så polling
+  // ikke skifter tilbage (null = som serveren sender det).
+  const textChoiceRef = useRef<ProductTranslationInfo["showing"] | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -455,6 +490,22 @@ export function AddProductView({
     openedAt - new Date(state.product.createdAt).getTime() < CUTOUT_WAIT_MS;
   const shouldPoll = pendingFields.length > 0 || awaitingCutout;
 
+  // Efter et foto i opdater-banneret: varen hentes igen (banneret forsvinder,
+  // når intet mangler længere).
+  const reloadProduct = useCallback(() => {
+    fetch(`/api/products/${id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.product) return;
+        setState((current) =>
+          current.status === "loaded"
+            ? { status: "loaded", product: applyRegistrationSnapshot(withTextChoice({ ...data.product }, textChoiceRef.current), registration) }
+            : current,
+        );
+      })
+      .catch(() => {});
+  }, [id, registration]);
+
   useEffect(() => {
     if (!shouldPoll) return;
     const timer = setTimeout(() => {
@@ -464,7 +515,7 @@ export function AddProductView({
           if (!data?.product) return;
           setState((current) =>
             current.status === "loaded"
-              ? { status: "loaded", product: applyRegistrationSnapshot({ ...data.product }, registration) }
+              ? { status: "loaded", product: applyRegistrationSnapshot(withTextChoice({ ...data.product }, textChoiceRef.current), registration) }
               : current,
           );
         })
@@ -472,6 +523,15 @@ export function AddProductView({
     }, PENDING_POLL_MS);
     return () => clearTimeout(timer);
   }, [shouldPoll, state, id, registration]);
+
+  function toggleOriginalText() {
+    setState((current) => {
+      if (current.status !== "loaded" || !current.product.translation) return current;
+      const swapped = swapProductTexts(current.product, current.product.translation);
+      textChoiceRef.current = swapped.translation.showing;
+      return { status: "loaded", product: { ...swapped.product, translation: swapped.translation } };
+    });
+  }
 
   async function handleToggleFavorite() {
     if (favoritePending) return;
@@ -804,36 +864,77 @@ export function AddProductView({
     return [...badges.filter((b) => !ORGANIC_KINDS.has(b.kind)), ...badges.filter((b) => ORGANIC_KINDS.has(b.kind))];
   })();
   const isCutoutImage = Boolean(displayImageUrl && displayImageUrl.includes("/cutouts/"));
+  // Cirklen er bagt ind i billedet, når det er hentet (ellers CSS-cirklen).
+  const bakedCircle = isCutoutImage && compositeWidth !== null && compositeFailed !== displayImageUrl;
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
   // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
   const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
-  const subbrandBottom = subbrandBottomPx(brandSlotHeight(view?.brand, brandLogoRatio));
+  // Uden produktbillede (og ikke mens billedet hentes/fritlægges) står et logo
+  // stort i cirklen: subbrandets, hvis det har et, ellers brandets
+  // (docs/DECISIONS.md 2026-10-14). Det logo står så ikke også ved cirklen.
+  const circleLogo =
+    view && !displayImageUrl && !shouldPoll && !isLoading
+      ? circleLogoFor({ brand: view.brand, subbrand, subbrandLogoUrl: view.subbrandLogoUrl })
+      : null;
+  const subbrandBottom = subbrandBottomPx(
+    brandSlotHeight(
+      circleLogo?.kind === "brand" ? null : view?.brand,
+      brandLogoRatio,
+      brandNameSize?.height || BRAND_NAME_HEIGHT_PX,
+    ),
+  );
+  const columnWidth = circleColumnSize?.width ?? null;
+  const brandNameLeft = brandLogoLeftPx(brandNameSize?.height || BRAND_NAME_HEIGHT_PX);
+  const subbrandNameLeft = brandLogoLeftPx(subbrandNameSize?.height || BRAND_NAME_HEIGHT_PX, subbrandBottom);
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
+  function translationNote(translation: ProductTranslationInfo) {
+    if (translation.showing === "original") {
+      return translation.sourceLanguageName
+        ? t("addProduct.originalLanguage", { source: translation.sourceLanguageName })
+        : t("addProduct.originalText");
+    }
+    return translation.sourceLanguageName
+      ? t("addProduct.translatedFrom", { target: translation.targetLanguageName, source: translation.sourceLanguageName })
+      : t("addProduct.translatedTo", { target: translation.targetLanguageName });
+  }
+  function translationLine(translation: ProductTranslationInfo) {
+    return (
+      <>
+        {translationNote(translation)}{" "}
+        <button type="button" onClick={toggleOriginalText} className="underline">
+          {t(translation.showing === "translated" ? "addProduct.showOriginal" : "addProduct.showTranslation")}
+        </button>
+      </>
+    );
+  }
   const Frame = inSheet ? SheetFrame : ScreenFrame;
   // Opdater-banneret ligger som lag oven på siden og skubber den aldrig.
   const updateBanner =
-    !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
+    !desktop && !isLoading && !forDish && !isEditing && !!id && state.status === "loaded" && state.product.updateOffer ? (
             <UpdatePointsBanner
-              href={`/add/${encodeURIComponent(id)}/update`}
-              text={t("productUpdate.banner", { points: state.product.updateOffer.points })}
+              // "… med et flot nyt billede" kun på Open Food Facts-varer (brugerens regel 2026-10-15).
+              text={t(
+                state.product.externalSource === "OPEN_FOOD_FACTS" ? "productUpdate.bannerPhoto" : "productUpdate.banner",
+                { points: state.product.updateOffer.points },
+              )}
               toggleLabel={t("productUpdate.toggle")}
-              tiles={state.product.updateOffer.kinds.map((kind) => ({
-                kind,
-                label: t(UPDATE_TILE_LABELS[kind]),
-              }))}
-              action={
-                state.product.ingredientsUnreadable ? (
-                  <Link
-                    href={`/camera?mode=product&retake=ingredients&product=${encodeURIComponent(id)}`}
-                    className="hf-control hf-btn-secondary justify-center gap-2"
-                  >
-                    <IconCamera size={19} /> {t("addProduct.retakeIngredients")}
-                  </Link>
-                ) : undefined
-              }
+              panel={(open) => (
+                <UpdateCameraPanel
+                  productId={id}
+                  active={open}
+                  onUpdated={reloadProduct}
+                  tiles={state.product.updateOffer!.kinds.map((kind) => ({
+                    kind,
+                    label: t(UPDATE_TILE_LABELS[kind]),
+                    // Kunne AI'en ikke læse indholdet, tager opretteren det om
+                    // i dropdownens kamera (brugerens regel 2026-10-15).
+                    retake: kind === "INGREDIENTS" && !!state.product.ingredientsUnreadable,
+                  }))}
+                />
+              )}
             />
     ) : null;
 
@@ -912,17 +1013,17 @@ export function AddProductView({
                   og 62 px under appbaren (16 + 46), 33 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
                   mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
-              <div className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
+              <div ref={circleColumnRef} className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
                 <ProductCircleBadges topBadges={topBadges} certificates={circleCertificates} />
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
-                  <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
+                  <div className={`flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full ${bakedCircle ? "" : "bg-hf-tan"}`}>
                     {displayImageUrl && !isCutoutImage ? (
                       // Det rå forsidefoto (før fritskrabningen): hele varen
                       // skal kunne ses, så det tilpasses inde i cirklen —
                       // aldrig zoomet ind (design.md §6.12).
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={displayImageUrl}
+                        src={imageThumb(displayImageUrl, 640)}
                         alt=""
                         className="block h-full w-full max-h-full max-w-full object-contain p-3"
                       />
@@ -932,23 +1033,54 @@ export function AddProductView({
                       <div aria-hidden="true" className="h-full w-full" />
                     )}
                   </div>
-                  {displayImageUrl && isCutoutImage && (
-                    // Fritskrabet vare: 110 % af cirklen, stående med bunden i
-                    // cirklens bund (toppen 10 % over), liggende fra venstre
-                    // kant (10 % ud over højre). Hele varen er altid synlig.
+                  {displayImageUrl && isCutoutImage && compositeFailed !== displayImageUrl && (
+                    // Fritskrabet vare med cirklen bagt ind i selve billedet
+                    // (kun hjemmesiden, bruger 2026-10-16): cirklen er altid
+                    // 180 px, varen 110 % af den, stående med bunden i cirklens
+                    // bund, liggende fra venstre kant. Billedet er større end
+                    // cirklen, så cirklen aldrig skrumper. Se
+                    // src/lib/product-circle-layout.ts.
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={displayImageUrl}
-                      src={displayImageUrl}
+                      src={`/product-circle?src=${encodeURIComponent(displayImageUrl)}`}
                       alt=""
-                      onLoad={(event) =>
-                        setImageLandscape(event.currentTarget.naturalWidth > event.currentTarget.naturalHeight)
-                      }
+                      onLoad={(event) => {
+                        const { naturalWidth, naturalHeight } = event.currentTarget;
+                        setImageLandscape(naturalWidth > naturalHeight);
+                        setCompositeWidth((naturalWidth * 180) / CIRCLE_DIAMETER);
+                      }}
+                      onError={() => setCompositeFailed(displayImageUrl)}
+                      style={compositeWidth ? { width: compositeWidth } : { opacity: 0 }}
                       className={
                         imageLandscape
-                          ? "pointer-events-none absolute left-0 top-1/2 z-[5] w-[198px] max-w-none -translate-y-1/2 object-contain"
-                          : "pointer-events-none absolute bottom-0 left-1/2 z-[5] h-[198px] max-h-none -translate-x-1/2 object-contain"
+                          ? "pointer-events-none absolute left-0 top-1/2 z-[5] h-auto max-w-none -translate-y-1/2"
+                          : "pointer-events-none absolute bottom-0 left-1/2 z-[5] h-auto max-w-none -translate-x-1/2"
                       }
+                    />
+                  )}
+                  {displayImageUrl && isCutoutImage && compositeFailed === displayImageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageThumb(displayImageUrl, 640)}
+                      alt=""
+                      className="pointer-events-none absolute bottom-0 left-1/2 z-[5] h-[198px] max-h-none -translate-x-1/2 object-contain"
+                    />
+                  )}
+                  {circleLogo && (
+                    // Uden produktbillede: logoet stort midt i cirklen. Det må
+                    // rage uden for cirklen i højden ELLER bredden, aldrig
+                    // beskæres (DECISIONS 2026-10-14, src/lib/brand-logo-layout.ts).
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={circleLogo.url}
+                      src={imageThumb(circleLogo.url, 640)}
+                      alt={circleLogo.name}
+                      onLoad={(event) =>
+                        setCircleLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                      }
+                      style={circleLogoSize(circleLogoRatio)}
+                      className="pointer-events-none absolute left-1/2 top-1/2 z-[5] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
                     />
                   )}
                   {!isLoading && !view.isGenericIngredient && (
@@ -964,11 +1096,25 @@ export function AddProductView({
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
                       bund og venstre kant 3/4 inde; uden logo brandnavnet i
                       fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
-                  {view.brand &&
+                  {/* Mens brandet læses, står en glimtende flade på brandets
+                      plads i stedet for brand og subbrand (REGLER 2026-10-15). */}
+                  {isPending("brand") && (
+                    <span
+                      style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
+                      className="pointer-events-none absolute bottom-0 z-10"
+                    >
+                      <ReadingSkeleton label={t("addProduct.reading")}>
+                        <Skeleton type="body" width={88} height={BRAND_NAME_HEIGHT_PX} />
+                      </ReadingSkeleton>
+                    </span>
+                  )}
+                  {!isPending("brand") &&
+                    view.brand &&
+                    circleLogo?.kind !== "brand" &&
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={view.brand.logoUrl}
+                        src={imageThumb(view.brand.logoUrl, 384)}
                         alt={view.brand.name}
                         onLoad={(event) =>
                           setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
@@ -978,20 +1124,24 @@ export function AddProductView({
                       />
                     ) : (
                       <p
-                        style={{ left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX) }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 whitespace-nowrap text-hf-green"
+                        ref={brandNameRef}
+                        style={{ left: brandNameLeft, maxWidth: brandNameMaxWidthPx(columnWidth, brandNameLeft) }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 w-max text-hf-green"
                       >
                         {view.brand.name}
                       </p>
                     ))}
                   {/* Subbrandet står oven over brandet efter samme regel:
                       logoet, hvis det findes, ellers navnet i fed grøn tekst
-                      (DECISIONS 2026-10-10). Uden brand står det i bunden. */}
-                  {subbrand &&
+                      (DECISIONS 2026-10-10). Uden brand står det i bunden.
+                      Navne brydes i linjer i stedet for at gå ud over kanten. */}
+                  {!isPending("brand") &&
+                    subbrand &&
+                    circleLogo?.kind !== "subbrand" &&
                     (view.subbrandLogoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={view.subbrandLogoUrl}
+                        src={imageThumb(view.subbrandLogoUrl, 384)}
                         alt={subbrand}
                         onLoad={(event) =>
                           setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
@@ -1004,27 +1154,46 @@ export function AddProductView({
                       />
                     ) : (
                       <p
-                        style={{ bottom: subbrandBottom, left: brandLogoLeftPx(BRAND_NAME_HEIGHT_PX, subbrandBottom) }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 whitespace-nowrap text-hf-green"
+                        ref={subbrandNameRef}
+                        style={{
+                          bottom: subbrandBottom,
+                          left: subbrandNameLeft,
+                          maxWidth: brandNameMaxWidthPx(columnWidth, subbrandNameLeft),
+                        }}
+                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 w-max text-hf-green"
                       >
                         {subbrand}
                       </p>
                     ))}
                 </div>
-                <div className="flex w-full flex-col items-start">
+                <div className="relative flex w-full flex-col items-start">
+                {/* Oversat-linjen ligger over overskriften uden at flytte den
+                    eller billedet (docs/DECISIONS.md 2026-10-15). */}
+                {view?.translation && view.translation.placement !== "ingredients" && !isPending("name") && (
+                  <p className="hf-type-caption absolute bottom-full left-0 mb-1 text-text-secondary">
+                    {translationLine(view.translation)}
+                  </p>
+                )}
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-hero text-hf-black"><DecimalText text={productTitle} /></h1>
+                  // Uden grøn linje fylder navnet mindst to hero-linjer (2 × 40 px):
+                  // et kort navn beholder den tomme linje, et navn over to
+                  // linjer får ingen ekstra luft (docs/DECISIONS.md 2026-10-15).
+                  <h1 className={`hf-type-hero text-hf-black${subtitle ? "" : " min-h-[80px]"}`}>
+                    <DecimalText text={productTitle} />
+                  </h1>
                 )}
-                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
-                {subtitle ? (
+                {/* Størrelse og variant læses sammen med navnet. */}
+                {isPending("name") ? (
+                  <ReadingSkeleton label={t("addProduct.reading")}>
+                    <Skeleton type="hero" width={150} height={30} className="my-1" />
+                  </ReadingSkeleton>
+                ) : subtitle ? (
                   <h2 className="hf-type-hero text-hf-green"><DecimalText text={subtitle} /></h2>
-                ) : (
-                  <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
-                )}
+                ) : null}
                 </div>
               </div>
 
@@ -1171,6 +1340,14 @@ export function AddProductView({
                   +
                 </button>
               </div>
+              <HfSlider
+                value={Math.min(Math.max(amount, 0), Math.max(1000, amount))}
+                min={0}
+                max={Math.max(1000, Math.ceil(amount / 100) * 100)}
+                step={step}
+                onChange={(next) => setAmount(Math.max(0, next))}
+                aria-label={displayUnit}
+              />
 
               <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">
@@ -1397,6 +1574,11 @@ export function AddProductView({
               {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
                   <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  {/* Kun ingredienserne er oversat: linjen står over listen
+                      i stedet for over titlen (docs/DECISIONS.md 2026-10-15). */}
+                  {view.translation?.placement === "ingredients" && !isPending("ingredients") && (
+                    <p className="hf-type-caption mb-1 text-text-secondary">{translationLine(view.translation)}</p>
+                  )}
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
@@ -1545,15 +1727,15 @@ export function AddProductView({
                   )}
                 </div>
               )}
-              {!!view.barcodes?.length && view.createdByUserId !== profile?.id && (
-                <Link
-                  href={`/profile/report-bug?productId=${id}`}
-                  className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
-                >
-                  <IconMessage size={18} />
-                  {t("addProduct.reportBug")}
-                </Link>
-              )}
+              {/* På alle varer — generiske, uden stregkode og egne
+                  (brugerens regel 2026-10-15). */}
+              <Link
+                href={`/profile/report-bug?productId=${id}`}
+                className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
+              >
+                <IconMessage size={18} />
+                {t("addProduct.reportBug")}
+              </Link>
             </div>
           </>
         )}

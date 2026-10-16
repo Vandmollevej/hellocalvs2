@@ -14,6 +14,16 @@ function parseCategories(body: Record<string, unknown>): BugReportCategory[] {
   );
 }
 
+// Produktsidens id kan være et Product eller en GenericIngredient (egen
+// tabel). Knappen vises på alle varer (brugerens regel 2026-10-15), så
+// rapporten knyttes til den tabel, id'et findes i.
+async function reportTarget(id: string): Promise<{ productId: string } | { genericIngredientId: string } | null> {
+  const product = await prisma.product.findUnique({ where: { id }, select: { id: true } });
+  if (product) return { productId: id };
+  const ingredient = await prisma.genericIngredient.findUnique({ where: { id }, select: { id: true } });
+  return ingredient ? { genericIngredientId: id } : null;
+}
+
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendelse,
 // se src/lib/bug-report-approval.ts. Kræver en rigtig session — en
 // fejlrapport uden kendt afsender giver ingen mening (og ingen at kreditere
@@ -35,10 +45,13 @@ export async function GET(req: Request) {
     return NextResponse.json({ message: "productId mangler" }, { status: 400 });
   }
 
-  const bugReport = await prisma.bugReport.findFirst({
-    where: { userId: user.id, productId, status: "PENDING" },
-    orderBy: { createdAt: "desc" },
-  });
+  const target = await reportTarget(productId);
+  const bugReport = target
+    ? await prisma.bugReport.findFirst({
+        where: { userId: user.id, ...target, status: "PENDING" },
+        orderBy: { createdAt: "desc" },
+      })
+    : null;
 
   return NextResponse.json({ bugReport });
 }
@@ -78,9 +91,10 @@ export async function POST(req: Request) {
     );
   }
 
-  if (productId) {
+  const target = productId ? await reportTarget(productId) : null;
+  if (target) {
     const pending = await prisma.bugReport.findFirst({
-      where: { userId: user.id, productId, status: "PENDING" },
+      where: { userId: user.id, ...target, status: "PENDING" },
       orderBy: { createdAt: "desc" },
     });
     if (pending) {
@@ -99,7 +113,7 @@ export async function POST(req: Request) {
       sections: sections ?? Prisma.DbNull,
       sectionPhotos: sectionPhotos ?? Prisma.DbNull,
       screenshotUrl,
-      productId,
+      ...target,
     },
   });
 
