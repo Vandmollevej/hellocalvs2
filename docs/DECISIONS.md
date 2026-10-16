@@ -1,3 +1,9 @@
+## 2026-10-16: Admin → OpenAI-forbrug
+
+- Brugerens ønske: se live, hvad OpenAI koster, og om kreditten er ved at slippe op. Løber den tør, svarer OpenAI 429 `insufficient_quota` på alle kald; appen virker ellers, men al AI-aflæsning, stemme/foto-måltider, chatbot, oversættelser og AI-robotter fejler, indtil der fyldes op (anbefaling: Auto recharge under Billing).
+- `src/lib/openai-usage.ts`: status = ét minimalt Responses-kald (gpt-4o-mini, 16 tokens, `store: false`, cachet 60 s) — det er den eneste måde at se, om kreditten er brugt op. Forbrug = `GET /v1/organization/costs` (dagsbuckets, `group_by=line_item`) med `OPENAI_ADMIN_KEY` (valgfri; den almindelige nøgle må ikke læse forbrug).
+- OpenAI har intet offentligt API til kreditsaldoen. Admin skriver saldoen fra Billing ind; den gemmes krypteret som `OPENAI_CREDIT_BALANCE_USD`/`_AT` (app_secrets), og forbruget fra døgnet efter (UTC) trækkes fra. Under 5 $ eller `insufficient_quota` vises advarsel.
+
 ## 2026-10-16: Faste designbilleder caches i et år
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.

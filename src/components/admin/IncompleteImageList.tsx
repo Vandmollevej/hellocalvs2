@@ -50,7 +50,7 @@ export function IncompleteImageList({ rows, locale }: { rows: IncompleteImageRow
           </div>
           <button
             type="button"
-            className="hf-type-body rounded-lg border border-hf-tan-dark px-3 py-2 disabled:opacity-50"
+            className="hf-btn-secondary hf-btn--inline"
             disabled={busy === row.productId}
             onClick={() => dismiss(row.productId)}
           >
