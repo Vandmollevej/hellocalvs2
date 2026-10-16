@@ -5678,3 +5678,7 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 ## 2026-10-16 — Screening af ufuldstændige produktbilleder (Lidl/Aldi, da/de, OFF)
 
 Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.
+
+### 2026-10-16 — Screeningen kører som nat-job på NAS'en (afløser pc-løsningen ovenfor som standard)
+
+Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Gennemgangsside i admin er ikke bygget endnu; flagene kan læses i tabellen.

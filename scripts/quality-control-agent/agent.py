@@ -26,6 +26,7 @@ import psycopg2
 
 import back_local
 import label_local
+import image_screen_local
 import language_local
 from job_control import run_forever
 import requests
@@ -274,6 +275,14 @@ def main():
         target=run_forever,
         args=(DATABASE_URL, "recheck-local", run_rechecks),
         kwargs={"run_at_time": "02:15"},
+        daemon=True,
+    ).start()
+    # Natlig screening af Lidl/Aldi-billeder for afskårne/hænder/åbne varer
+    # (image_screen_local.py, docs/DECISIONS.md 2026-10-16).
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "image-screen-local", image_screen_local.run_once),
+        kwargs={"run_at_time": "03:20"},
         daemon=True,
     ).start()
     # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);

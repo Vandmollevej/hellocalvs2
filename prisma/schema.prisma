@@ -1464,6 +1464,7 @@ model Product {
   // HelloFresh fra alle lande (scripts/hellofresh-import/markets.py). null = ukendt.
   market                 String?
   translations           ProductTranslation[]
+  imageScreening         ProductImageScreening?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
@@ -5664,4 +5665,24 @@ model ProductTranslation {
 
   @@unique([productId, locale])
   @@map("product_translations")
+}
+
+// Screening af produktbilleder for ufuldstændige billeder (afskåret, hænder, åben/halvfuld vare;
+// quality-control-agent image_screen_local.py, docs/DECISIONS.md 2026-10-16). Kun markering.
+model ProductImageScreening {
+  productId       String    @id
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl        String
+  // CROPPED | HAND | OPEN
+  flags           String[]  @default([])
+  cropScore       Float?
+  cropSide        String?
+  skinBorderScore Float?
+  skinTotalScore  Float?
+  openScore       Float?
+  error           String?
+  screenedAt      DateTime  @default(now())
+  reviewedAt      DateTime?
+
+  @@map("product_image_screenings")
 }
