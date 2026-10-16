@@ -1,3 +1,9 @@
+## 2026-10-16: Lidl/Aldi-varer berigelse kører lokalt på brugerens pc
+
+- Brugerens krav: Google Vision kun for varer, der giver 0 resultater ved tekstopslag; start med alle hentede Lidl- og Aldi-varer på dansk og tysk; flere detaljer end vi har samles i et ark (vores titel + nye fakta ved siden af); scriptet kører lokalt om natten, trækkes ned af pc'en selv, og står under Robotter på serveren men slået fra.
+- Valg: Google har ingen officiel tekstsøgning på nettet (Custom Search lukker 1. januar 2027), så tekstopslag går mod Open Food Facts (stregkode, derefter titel), og Vision (`WEB_DETECTION`) bruges kun ved 0 resultater. Se `docs/LIDL-ALDI-ENRICH.md`.
+- Jobbet har ny `defaultEnabled: false` i `src/lib/jobs/registry.ts`; rækken oprettes slået fra.
+
 ## 2026-10-15: Billeder hentes som små, cachede udgaver
 
 - Problem: billederne loadede langsomt næsten hver gang. Alle `<img>` hentede originalen (logoer op til 15 MB, 124 af 134 logoer over 800 px; fritlægninger og fotos i fuld opløsning) — også til en 44 px række — over Cloudflare-tunnelen fra Synology. Og cachen var svag: Next serverer public-filer med `max-age=0` (browseren spurgte hver gang), og fallback-routen for billeder lagt op efter opstart havde ingen ETag (fuld download hver time).

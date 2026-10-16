@@ -15,6 +15,8 @@ export type JobDefinition = {
   robot?: boolean;
   defaultIntervalMinutes: number | null;
   defaultRunAtTime: string | null;
+  /** Falsk = rækken oprettes slået fra (fx robotter, der kun kører lokalt på brugerens pc). Standard: slået til. */
+  defaultEnabled?: boolean;
 };
 
 /** Robot = egen container (runtime "agent") eller et app-job, der er markeret som robot. */
@@ -381,6 +383,19 @@ export const JOBS: JobDefinition[] = [
     container: "rema1000-agent",
     defaultIntervalMinutes: null,
     defaultRunAtTime: null,
+  },
+  {
+    // Brugerens krav 2026-10-16: kører lokalt på hans pc om natten
+    // (scripts/lidl-aldi-enrich, docs/LIDL-ALDI-ENRICH.md); står her, men er slået fra.
+    key: "lidl-aldi-enrich",
+    name: "Lidl/Aldi: flere varedetaljer (lokal pc)",
+    description:
+      "Slår hentede Lidl- og Aldi-varer (dansk/tysk) op i Open Food Facts på stregkode, derefter titel, og kun ved 0 resultater i Google Vision. Nye fakta samles i et Excel-ark ved siden af vores titel. Kører lokalt på brugerens pc om natten, ikke på serveren — slået fra her.",
+    runtime: "agent",
+    container: "brugerens pc (lokal)",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "02:00",
+    defaultEnabled: false,
   },
 ];
 
