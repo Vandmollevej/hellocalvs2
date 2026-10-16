@@ -1,3 +1,10 @@
+## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
+
+- Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale-siden flettet ind i Madvarer
+
+- Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
+
 ## 2026-10-14: Forsidens grafer erstatter infoboksen
 
 - Den hvide infoboks er fjernet. Øverst vises fire grafer uden baggrund (`src/components/frontcharts/`): puls (pindediagram), kalorieindtag (pinde + anbefalet energifordeling som glat kurve), anbefalet mod faktisk indtag (grå statisk mod blå) og målsætningens tidslinje (pind pr. dag/uge, bredt anbefalet min–maks-bånd, grå målstreg). Kun vågne timer (sengetid/opvågning fra Søvn; ellers 07–23), rundet ned til venstre og op til højre.
@@ -7,6 +14,7 @@
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
 - Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu; admin-gennemgangsside mangler. Se DECISIONS 2026-10-16.
+
 
 ## 2026-10-16: Frida-skøn straks på varesiden
 

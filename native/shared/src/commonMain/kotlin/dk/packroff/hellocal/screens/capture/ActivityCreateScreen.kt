@@ -42,6 +42,7 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.HcAccordionCard
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.HcChevronRow
@@ -369,6 +370,8 @@ fun ActivityCreateScreen(args: RouteArgs) {
                             GlyphButton("+", { step(1) })
                         }
                     }
+                    FieldSlider(hours, 0.0, 23.0, { hours = it })
+                    FieldSlider(mins, 0.0, 59.0, { mins = it })
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HcText(t.t("activity.intensity"), HcTypeRoles.Small, color = HcColors.TextSecondary)
@@ -391,6 +394,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         HcText(t.t("activity.distanceKm"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                         CaptureFilledField(distanceKm, { distanceKm = it }, keyboardType = KeyboardType.Decimal)
+                        FieldSlider(distanceKm, 0.0, 100.0, { distanceKm = it }, step = 0.1)
                     }
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -401,6 +405,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
                         { kcal = it.filter(Char::isDigit) },
                         keyboardType = KeyboardType.Number,
                     )
+                    FieldSlider(if (kcal.isNotEmpty()) kcal else if (estKcal > 0) estKcal.toString() else "", 0.0, 3000.0, { kcal = it }, step = 10.0)
                 }
                 HcError(error)
                 HcButton(t.t("activity.save"), onClick = ::save, enabled = !saving)

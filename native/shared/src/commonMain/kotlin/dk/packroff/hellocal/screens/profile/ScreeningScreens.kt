@@ -106,7 +106,9 @@ fun ScreeningInput(
                 placeholder = "${range.min}–${range.max}$suffix",
                 keyboardType = KeyboardType.Number,
                 standard = true,
-            )
+            ).also {
+                if (!readOnly) CaptureSlider(value = current, min = range.min, max = range.max, step = range.step, onChange = { onChange(it) })
+            }
             else -> Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),

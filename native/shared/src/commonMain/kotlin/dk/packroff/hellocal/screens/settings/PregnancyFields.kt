@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcTextField
 import dk.packroff.hellocal.ui.ProfileChoiceChip
@@ -106,6 +107,15 @@ fun PregnancyFields(value: PregnancyValue, question: String, onChange: (Map<Stri
                     keyboardType = KeyboardType.Number,
                     standard = true,
                 )
+                FieldSlider(
+                    text = weekText,
+                    min = PregnancyRules.MIN_PREGNANCY_WEEK.toDouble(),
+                    max = PregnancyRules.MAX_PREGNANCY_WEEK.toDouble(),
+                    onChange = {
+                        weekText = it
+                        onChange(mapOf("pregnancyWeek" to parseWeeks(it, PregnancyRules.MIN_PREGNANCY_WEEK, PregnancyRules.MAX_PREGNANCY_WEEK)))
+                    },
+                )
                 if (trimester != null) {
                     HcText("${t.t("pregnancy.trimester", "trimester" to trimester)} · ${t.t("pregnancy.extraKcal", "kcal" to extraKcal)}", HcTypeRoles.Small, color = HcColors.Black)
                 }
@@ -124,6 +134,15 @@ fun PregnancyFields(value: PregnancyValue, question: String, onChange: (Map<Stri
                     placeholder = t.t("pregnancy.breastfeedingWeeksPlaceholder"),
                     keyboardType = KeyboardType.Number,
                     standard = true,
+                )
+                FieldSlider(
+                    text = bfText,
+                    min = 0.0,
+                    max = PregnancyRules.MAX_BREASTFEEDING_WEEKS.toDouble(),
+                    onChange = {
+                        bfText = it
+                        onChange(mapOf("breastfeedingWeeks" to parseWeeks(it, 0, PregnancyRules.MAX_BREASTFEEDING_WEEKS)))
+                    },
                 )
                 HcText(t.t("pregnancy.extraKcal", "kcal" to extraKcal), HcTypeRoles.Small, color = HcColors.Black)
                 HcText(t.t("pregnancy.breastfeedingHint"), HcTypeRoles.Small, color = HcColors.TextSecondary)

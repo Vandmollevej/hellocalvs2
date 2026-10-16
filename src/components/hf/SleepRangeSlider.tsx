@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { sliderHaptic } from "@/lib/haptics";
 
 const MINUTES_PER_DAY = 24 * 60;
 
@@ -59,8 +60,14 @@ export function SleepRangeSlider({
     return Math.min(MINUTES_PER_DAY - 1, Math.round((ratio * MINUTES_PER_DAY) / 15) * 15);
   }
 
+  const lastHapticRef = useRef<Record<Handle, number | null>>({ wake: null, bedtime: null });
+
   function updateHandle(handle: Handle, clientX: number) {
     const value = minutesFromClientX(clientX);
+    if (lastHapticRef.current[handle] !== value) {
+      lastHapticRef.current[handle] = value;
+      sliderHaptic();
+    }
     if (handle === "wake") onChangeWake(value);
     else onChangeBedtime(value);
   }
