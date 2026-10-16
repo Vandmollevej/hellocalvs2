@@ -113,7 +113,7 @@ internal fun rememberMealInputLanguage(): MealInputLanguageState {
     return state
 }
 
-/** src/components/voice/MealLanguagePicker.tsx — the flag in the header's left corner + a language sheet. */
+/** src/components/voice/MealLanguagePicker.tsx — the flag (left of the mic on /foods, header corner on /chat) + a language sheet. */
 @Composable
 internal fun MealLanguagePicker(language: String, region: String?, onChange: (String) -> Unit) {
     val t = LocalTranslator.current
