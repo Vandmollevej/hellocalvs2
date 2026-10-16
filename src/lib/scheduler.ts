@@ -123,8 +123,6 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await runStripeTick(now).catch((error) => console.error("[scheduler] Stripe fejlede", error));
   // Lukkede konti anonymiseres efter 3 måneder (docs/DECISIONS.md 2026-10-03).
   await anonymizeExpiredClosedAccounts(now).catch((error) => console.error("[scheduler] Lukkede konti fejlede", error));
-  // Integrationer: hent og send data efter brugerens til/fra-valg (docs/DECISIONS.md 2026-09-26).
-  await syncAllIntegrations().catch((error) => console.error("[scheduler] Integrationer fejlede", error));
   // Partnerrapporter på fast interval (docs/DECISIONS.md 2026-09-29).
   await sendDueReports(now).catch((error) => console.error("[scheduler] Partnerrapporter fejlede", error));
 }
@@ -144,6 +142,9 @@ export function startScheduler() {
         await pruneOldJobRuns().catch((error) => console.error("[scheduler] oprydning i kørselslog fejlede", error));
         return null;
       },
+      // Integrationer: hent og send data efter brugerens til/fra-valg (docs/DECISIONS.md 2026-09-26).
+      // Eget job (2026-10-16), så et langsomt eller fejlende vedligehold ikke stopper hentningen.
+      "integration-sync": syncAllIntegrations,
       "uncertainty-rerun": rerunUncertainAnalyses,
       "label-scan": scanProductLabels,
       "pet-food-scan": scanProductsForPetFood,

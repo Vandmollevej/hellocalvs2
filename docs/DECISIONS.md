@@ -5706,6 +5706,10 @@ Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:
 
 Brugeren bad om en lokal kørsel på pc'en. Nat-jobbet `image-screen-local` på NAS'en, fanen Ufuldstændige billeder i admin og tabellen `product_image_screenings` er fjernet igen (migration `20261016150000_drop_image_screenings`). Kun `scripts/image-screen` på pc'en er tilbage. Byg aldrig noget til NAS'en, når brugeren har bedt om en lokal kørsel.
 
+## 2026-10-16: Integrationshentning som eget job + ved åbning; én synk-popup
+
+Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook) var i realtid, og fik to forskellige "ikke synkroniseret"-popups efter hinanden. Beslutning: (1) baggrundshentningen af cloud-integrationer er sit eget job `integration-sync` (15 min., 2 min. tidsgrænse pr. integration) i stedet for et trin i Vedligehold; (2) `POST /api/integrations/app-open` henter alle forbundne cloud-integrationer (normal 15-min.-grænse), så data er friske, når appen åbnes; (3) `StaleSyncPrompt` (layout) genbruger vægt-popuppens bundark (`StaleSyncSheet`) og ignorerer integrationer, der læser vægt — dem ejer `WeighInPrompts`.
+
 ## 2026-10-16 — Admin: alle accordions i venstre menu lukket ved login
 
 - Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
