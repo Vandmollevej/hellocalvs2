@@ -5,6 +5,10 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale finder varen
+
+- "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).
+
 ## 2026-10-16: Tale-siden flettet ind i Madvarer
 
 - Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
