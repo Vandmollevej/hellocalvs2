@@ -1,3 +1,7 @@
+## 2026-10-16: Lokal genlæsning af gemte billeder
+
+- Nye varer uden navn eller med 0 kcal rettes nu af serverens egen tekstlæsning af de gemte billeder — også mens OpenAI-kreditten er tom (fx Änglamark-letmælken). Ikke prøvet mod rigtig database herfra; afhænger af, at tesseract kan læse tabellen. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Originalbilleder af alle trin
 
 - Stregkode, forside, energi og indhold: hver optagelse gemmes ubeskåret (op til 4096 px) og kobles til varen (web; native alle undtagen stregkoden). Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.

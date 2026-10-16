@@ -32,6 +32,7 @@ import { askProductType, findProductType } from "@/lib/product-type-name";
 import { parseAlcoholPercent } from "@/lib/alcohol-label";
 import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 import { productTypeFromText, readFrontText } from "@/lib/front-text-name";
+import { energyReadOk } from "@/lib/energy-read";
 import { MACRO_SOURCE_KEYS } from "@/lib/nutrients";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
@@ -168,6 +169,70 @@ async function applyFrontTextFallback(input: QuickEnrichmentInput) {
     productId,
     data: { brand: brand?.name ?? null, productType, name: product.name },
   });
+}
+
+// Lokal genlæsning (brugerens krav 2026-10-16: "hvorfor kan du ikke behandle
+// billederne igen?"): serverens egen tekstlæsning (tesseract på de gemte
+// originalbilleder, quality-control-agent back_local.py) retter en ny vare
+// uden navn — også når OpenAI ikke kan svare.
+export async function applyFrontTextFromServerOcr(productId: string, text: string): Promise<boolean> {
+  const before = await prisma.product.findUnique({ where: { id: productId }, select: { name: true } });
+  if (!before || (before.name.trim() && !isPlaceholderProductName(before.name))) return false;
+  await applyFrontTextFallback({ productId, barcode: "", marketRegion: "DK", frontPhoto: "", nutritionPhoto: "", fallbackName: "", frontOcrText: text });
+  const after = await prisma.product.findUnique({ where: { id: productId }, select: { name: true } });
+  return Boolean(after?.name.trim());
+}
+
+// Samme for energien: næringstabellen læst lokalt af serveren fra det gemte
+// energibillede. Kun en komplet aflæsning pr. 100 g/ml bruges (energyReadOk) —
+// aldrig et skøn. Returnerer true, når energien blev gemt.
+export async function applyServerNutritionOcr(input: {
+  productId: string;
+  barcode: string;
+  marketRegion: string;
+  signals?: unknown;
+  text: string;
+  confidence: number;
+  imageUrl: string;
+}): Promise<boolean> {
+  const read = localNutrition(input.text, input.confidence);
+  if (!read || !energyReadOk(read)) return false;
+  const product = await prisma.product.findUnique({ where: { id: input.productId }, select: { kcalPer100g: true } });
+  if (!product || product.kcalPer100g > 0) return false;
+  const { analysisId } = await recordLocalAnalysis({
+    kind: "NUTRITION",
+    photo: "",
+    barcode: input.barcode,
+    marketRegion: input.marketRegion,
+    signals: input.signals,
+    prediction: read,
+    storedImageUrl: input.imageUrl,
+  });
+  await prisma.aiProductAnalysis.update({ where: { id: analysisId }, data: { productId: input.productId } });
+  await prisma.product.update({
+    where: { id: input.productId },
+    data: {
+      kcalPer100g: read.kcalPer100g!,
+      proteinPer100g: read.proteinPer100g!,
+      carbsPer100g: read.carbsPer100g!,
+      fatPer100g: read.fatPer100g!,
+      ...(typeof read.saturatedFatPer100g === "number" && read.saturatedFatPer100g >= 0
+        ? { saturatedFatPer100g: read.saturatedFatPer100g }
+        : {}),
+    },
+  });
+  await recordNutrientSources(input.productId, analysisId);
+  await setNutritionKnown(input.productId, true);
+  await refreshRegistrationSnapshots(input.productId).catch(() => {});
+  await syncProductNutritionFeaturesSafely(input.productId);
+  await debugLog({
+    category: "scan",
+    event: "local_reread",
+    message: `Energi læst lokalt af serveren fra det gemte billede: ${read.kcalPer100g} kcal/100`,
+    productId: input.productId,
+    data: { kcal: read.kcalPer100g, protein: read.proteinPer100g, carbs: read.carbsPer100g, fat: read.fatPer100g, confidence: input.confidence },
+  });
+  return true;
 }
 
 // Returnerer, om forsidefotoet blev genkendt som en vare (navn, logo eller
