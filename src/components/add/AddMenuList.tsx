@@ -36,7 +36,7 @@ const TILES = [
   { key: "scan", href: "/camera?mode=product", icon: "/icons/add/scan.webp" },
   { key: "platePhoto", href: "/camera?mode=meal", icon: "/icons/add/plate-photo.webp" },
   { key: "dish", href: "/create-dish", icon: "/icons/add/dish.webp" },
-  { key: "voice", href: "/voice", icon: "/icons/add/voice.webp" },
+  { key: "voice", href: "/foods?mic=1", icon: "/icons/add/voice.webp" },
   { key: "weight", href: "/weight/create", icon: "/icons/add/weight.webp" },
   { key: "drink", href: "/water/create", icon: "/icons/add/drink.webp" },
   { key: "body", href: "/profile/body-measurements", icon: "/icons/add/body.webp" },
