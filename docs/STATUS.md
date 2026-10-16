@@ -1,3 +1,7 @@
+## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
+
+- Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Frida-skøn straks på varesiden
 
 - Varer uden energimærkning får Fridas tal, så snart varesiden åbnes (ikke først om natten). Se DECISIONS 2026-10-16. Ikke typetjekket/kørt lokalt (node_modules mangler).

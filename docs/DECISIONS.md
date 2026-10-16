@@ -5674,3 +5674,7 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 - Rækken er fjernet fra Visning (`/settings`, `/settings/display`, native `SettingsDisplayRows`, webbens sidebjælke). Settings-søgningen finder den stadig.
 - Screeninger-siden (`/profile/screenings`, web + native `ScreeningsScreen`): den faste Søvn-række åbner nu `/settings/display/sleep-quality` (adressen er uændret, så "Slå fra" i søvnspørgsmålet virker som før) og viser Aktiv/Inaktiv efter `User.sleepQualityPromptEnabled` — som de øvrige screeninger. Før pegede rækken på søvnmønsteret (DECISIONS 2026-10-09); søvnmønsteret ligger fortsat under Profil → Søvnmønster.
 - Webbens sidebjælke: Screeninger er en gruppe med Screeninger og Søvn.
+
+## 2026-10-16: Cirklen bagt ind i fritskrabede varebilleder (kun hjemmesiden)
+
+- Alle billeder på en hjemmeside kan hentes, så varesidens fritskrabede billede hentes nu som ét billede med cirklen bagt ind (`/product-circle?src=…`, `src/lib/product-circle-layout.ts` + `product-circle-composite.ts`, sharp, WebP, cachet). Cirklen er altid 540 px i billedet (vist som 180 px) og bliver aldrig mindre: stående vare = 110 % af cirklen med bunden i cirklens bund; liggende = fra venstre kant, 10 % ud over højre; lærredet vokser, så varen aldrig beskæres. Fejler hentningen, vises den gamle CSS-cirkel + billede. Native er uændret (bruger-regel 2026-10-16: kun hjemmesiden).
