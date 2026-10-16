@@ -36,6 +36,8 @@ import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.settings.PregnancyFields
+import dk.packroff.hellocal.screens.settings.PregnancyValue
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcBottomSheet
@@ -63,7 +65,7 @@ import kotlinx.serialization.json.jsonPrimitive
 // — the start guide in a bottom sheet. On Profil it is opened by "Lær appen at
 // kende" (forceVisible). Closing by dragging/scrim counts as "Påmind mig senere".
 
-private val ALL_STEPS = listOf("units", "sleep-pattern", "shift-work", "daily-log-preference", "calendar-view", "activity", "health-import")
+private val ALL_STEPS = listOf("units", "sleep-pattern", "shift-work", "daily-log-preference", "calendar-view", "pregnancy", "activity", "health-import", "migration-import")
 private val ACTIVITY_PAGES = listOf("intro", "work", "walkStand", "transport", "steps", "training", "intensity", "result", "goal")
 private val WORK_TYPES = listOf("SITTING", "MOSTLY_SITTING", "MIXED", "MOSTLY_STANDING", "PHYSICAL")
 private val WALK_STAND_HOURS = listOf("UNDER_1", "H1_2", "H2_4", "H4_6", "OVER_6")
@@ -79,6 +81,14 @@ private const val CALENDAR_VIEW_KEY = "hellocal.kalender.defaultView"
 
 /** src/lib/terms-hints.ts ONBOARDING_TERMS */
 private val ONBOARDING_TERMS = mapOf(
+    "pregnancy" to ProfileTermsHint(
+        "ansvar",
+        listOf(
+            "Svaret om graviditet og amning bruges kun til at lægge det officielle tillæg (EFSA) oven på dit energibehov og til aldrig at foreslå et kalorieunderskud. Det hører til din egen konto og deles ikke med andre.",
+            "Du kan altid rette det under Indstillinger → Visning → Graviditet og amning.",
+            "Hello Cal er et værktøj, ikke en læge. Følg altid rådene fra jordemoder, læge eller sundhedsplejerske — tallene her er vejledende.",
+        ),
+    ),
     "sleep-pattern" to ProfileTermsHint(
         "hvad-er-hello-cal",
         listOf(
@@ -125,6 +135,13 @@ private val ONBOARDING_TERMS = mapOf(
             "Data fra andre apps kan være forkerte, forsinkede eller mangle, og Hello Cal kan ikke stå inde for dem. Den anden app har sine egne vilkår.",
         ),
     ),
+    "migration-import" to ProfileTermsHint(
+        "integrationer",
+        listOf(
+            "Importerer du fra en anden app, aflæses din skærmoptagelse eller dine skærmbilleder én gang. Billederne gemmes ikke — kun de rækker, du vælger at importere.",
+            "Tallene kommer fra den anden app og kan være forkerte eller mangle. Du ser rækkerne igennem, før de lægges ind, og kan altid rette eller slette dem bagefter.",
+        ),
+    ),
 )
 
 /** src/lib/pal-model.ts ActivityAnswers ("Ved ikke" = null). */
@@ -161,10 +178,12 @@ private data class ActivityAnswers(
     )
 }
 
-private fun visibleSteps(hasRegularSleep: Boolean?, shiftWork: Boolean?): List<String> = ALL_STEPS.filter { step ->
+private fun visibleSteps(hasRegularSleep: Boolean?, shiftWork: Boolean?, sex: String?): List<String> = ALL_STEPS.filter { step ->
     when (step) {
         "shift-work" -> hasRegularSleep == false
         "daily-log-preference" -> hasRegularSleep == false && shiftWork == true
+        // Pregnancy/breastfeeding is asked before the energy need, so the allowance is in the calculation. Women only.
+        "pregnancy" -> sex == "FEMALE"
         else -> true
     }
 }
@@ -192,6 +211,8 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
     var suggestedLevel by remember { mutableStateOf<String?>(null) }
     var goalUser by remember { mutableStateOf<EnergyGoalUser?>(null) }
     var exitReason by remember { mutableStateOf("remind") }
+    var sex by remember { mutableStateOf<String?>(null) }
+    var pregnancy by remember { mutableStateOf(PregnancyValue()) }
 
     LaunchedEffect(forceVisible) {
         val obj = runCatching { (Api.get("/api/profile") as JsonObject)["user"] as? JsonObject }.getOrNull() ?: return@LaunchedEffect
@@ -200,6 +221,12 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
         Units.setRegion(user.region)
         units = Units.current()
         goalUser = EnergyGoalUser.from(user)
+        sex = user.sex
+        pregnancy = PregnancyValue(
+            status = obj["pregnancyStatus"]?.jsonPrimitive?.contentOrNull,
+            week = obj["pregnancyWeek"]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()?.toInt(),
+            breastfeedingWeeks = obj["breastfeedingWeeks"]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()?.toInt(),
+        )
         shiftWork = if (user.shiftWorkEnabled) true else null
         dailyLogPreference = obj["dailyLogPreference"]?.jsonPrimitive?.contentOrNull
         canDismissPermanently = obj["onboardingRemindLaterAt"]?.jsonPrimitive?.contentOrNull != null
@@ -210,7 +237,7 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
 
     if (!visible) return
 
-    val steps = visibleSteps(hasRegularSleep, shiftWork)
+    val steps = visibleSteps(hasRegularSleep, shiftWork, sex)
     val currentStep = steps.getOrNull(stepIndex)
     val totalSteps = steps.size
 
@@ -360,6 +387,17 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
                             }
                         }
                     }
+                    "pregnancy" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        PregnancyFields(pregnancy, t.t("onboarding.pregnancyQuestion")) { patch ->
+                            pregnancy = pregnancy.copy(
+                                status = if ("pregnancyStatus" in patch) patch["pregnancyStatus"] as String? else pregnancy.status,
+                                week = if ("pregnancyWeek" in patch) patch["pregnancyWeek"] as Int? else pregnancy.week,
+                                breastfeedingWeeks = if ("breastfeedingWeeks" in patch) patch["breastfeedingWeeks"] as Int? else pregnancy.breastfeedingWeeks,
+                            )
+                            save(patch)
+                        }
+                        HcText(t.t("onboarding.pregnancyHint"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                    }
                     "activity" -> ActivityStep(
                         page = activityPage,
                         answers = activityAnswers,
@@ -384,6 +422,18 @@ fun ProfileOnboardingWizard(forceVisible: Boolean = false, onClose: (() -> Unit)
                             save(mapOf("healthImportRequested" to true))
                             if (isLastStep) close("complete") else goNext()
                         }, kind = HcButtonKind.Secondary)
+                    }
+                    "migration-import" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Heading(t.t("onboarding.migrationImportQuestion"))
+                        HcText(t.t("onboarding.migrationImportHint"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                        // Importér nu: the guide completes and Import opens.
+                        HcButton(t.t("onboarding.importNow"), onClick = {
+                            close("complete")
+                            nav.push("/settings/import")
+                        }, kind = HcButtonKind.Secondary)
+                        HcButton(t.t("onboarding.importLater"), onClick = {
+                            if (isLastStep) close("complete") else goNext()
+                        }, kind = HcButtonKind.Text)
                     }
                 }
             }

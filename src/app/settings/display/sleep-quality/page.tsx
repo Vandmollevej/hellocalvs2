@@ -7,9 +7,10 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
-// Settings → Visning → Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): on by
-// default. When on, the first app opening each day asks for a 1–5 rating of
-// last night's sleep (src/components/SleepQualityGate.tsx).
+// Profil → Screeninger → Søvn → Oplevelse af søvn (docs/DECISIONS.md 2026-09-26,
+// flyttet fra Visning 2026-10-16; adressen er uændret): on by default. When on,
+// the first app opening each day asks for a 1–5 rating of last night's sleep
+// (src/components/SleepQualityGate.tsx).
 export default function SleepQualityDisplaySettingsPage() {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);

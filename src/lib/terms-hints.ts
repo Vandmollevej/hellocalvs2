@@ -43,9 +43,17 @@ export function termsParagraphs(text: string) {
 }
 
 // Startguidens trin (samme id'er som i OnboardingWizard).
-export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "activity" | "health-import";
+export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "pregnancy" | "activity" | "health-import" | "migration-import";
 
 export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
+  pregnancy: {
+    anchor: "ansvar",
+    paragraphs: [
+      "Svaret om graviditet og amning bruges kun til at lægge det officielle tillæg (EFSA) oven på dit energibehov og til aldrig at foreslå et kalorieunderskud. Det hører til din egen konto og deles ikke med andre.",
+      "Du kan altid rette det under Indstillinger → Visning → Graviditet og amning.",
+      "Hello Cal er et værktøj, ikke en læge. Følg altid rådene fra jordemoder, læge eller sundhedsplejerske — tallene her er vejledende.",
+    ],
+  },
   "sleep-pattern": {
     anchor: "hvad-er-hello-cal",
     paragraphs: [
@@ -90,6 +98,13 @@ export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
       "Henter du data fra Apple Sundhed, Health Connect eller et ur, henter Hello Cal kun de datatyper, du selv slår til.",
       "Du kan slå hver datatype fra og afbryde forbindelsen når som helst under Indstillinger → Integrationer. Når du afbryder, henter vi ikke flere data.",
       "Data fra andre apps kan være forkerte, forsinkede eller mangle, og Hello Cal kan ikke stå inde for dem. Den anden app har sine egne vilkår.",
+    ],
+  },
+  "migration-import": {
+    anchor: "integrationer",
+    paragraphs: [
+      "Importerer du fra en anden app, aflæses din skærmoptagelse eller dine skærmbilleder én gang. Billederne gemmes ikke — kun de rækker, du vælger at importere.",
+      "Tallene kommer fra den anden app og kan være forkerte eller mangle. Du ser rækkerne igennem, før de lægges ind, og kan altid rette eller slette dem bagefter.",
     ],
   },
 };

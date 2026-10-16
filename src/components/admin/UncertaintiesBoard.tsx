@@ -12,6 +12,7 @@ import type {
 } from "@/lib/uncertainties";
 import { ListModeToggle, ListPager, LoadMoreSentinel, useListMode } from "@/components/admin/ListMode";
 import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24/25): fem faner, én række
 // pr. produkt, sortering efter usikkerhed (standard, højeste først),
@@ -273,7 +274,7 @@ export function UncertaintiesBoard({
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-hf-tan">
                 {row.thumbnailUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={row.thumbnailUrl} alt="" loading="lazy" className="h-full w-full object-contain" />
+                  <img src={imageThumb(row.thumbnailUrl, 128)} alt="" loading="lazy" className="h-full w-full object-contain" />
                 )}
               </div>
               <div className="min-w-0 flex-1">

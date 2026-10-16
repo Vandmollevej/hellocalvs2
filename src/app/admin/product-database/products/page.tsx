@@ -369,6 +369,12 @@ export default async function AdminProductDatabasePage({
             </Link>
           </div>
           <Link
+            href="/admin/product-database/generics"
+            className="hf-type-body hf-control inline-flex items-center rounded-md border border-hf-tan-dark bg-hf-white px-4 text-hf-black"
+          >
+            Generiske produkter
+          </Link>
+          <Link
             href="/admin/product-database/images"
             className="hf-type-body hf-control inline-flex items-center rounded-md bg-hf-green-dark px-4 text-hf-white"
           >

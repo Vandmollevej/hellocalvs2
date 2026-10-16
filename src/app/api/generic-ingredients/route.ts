@@ -27,8 +27,10 @@ export async function GET(req: Request) {
   try {
     const synonyms = q ? await getSynonymExpansions(numberQuery.term) : [];
     const found = await prisma.genericIngredient.findMany({
+      // Slettede, men brugte produkter (admin, docs/DECISIONS.md 2026-10-15) skjules.
       where: q
         ? {
+            archivedAt: null,
             OR: [
               { name: { contains: numberQuery.term, mode: "insensitive" } },
               { nameSingular: { contains: numberQuery.term, mode: "insensitive" } },
@@ -37,7 +39,7 @@ export async function GET(req: Request) {
               ...decimalVariants(numberQuery.term).map((v) => ({ name: { contains: v, mode: "insensitive" as const } })),
             ],
           }
-        : {},
+        : { archivedAt: null },
       include: { regionSearchStats: true, regionHourStats: true },
       take: q ? Math.max(take * 4, 60) : take,
       orderBy: { createdAt: "desc" },

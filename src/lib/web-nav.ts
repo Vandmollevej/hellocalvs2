@@ -12,16 +12,19 @@ import {
   IconBulb,
   IconCalendar,
   IconCalendarHeart,
+  IconBabyCarriage,
   IconCalendarWeek,
   IconChartLine,
   IconClipboardHeart,
   IconCreditCard,
   IconEye,
+  IconFileImport,
   IconFileText,
   IconHelp,
   IconHeartbeat,
   IconHistory,
   IconHome2,
+  IconLanguage,
   IconLifebuoy,
   IconMail,
   IconMessageCircle,
@@ -62,7 +65,7 @@ import { TrendIcon } from "@/components/BottomNav";
 // fil ikke dækker — føj det til menuen her (eller til undtagelserne i testen
 // med en begrundelse).
 export type WebNavCondition =
-  // Kun for kvindelig profil (Menstruationscyklus).
+  // Kun for kvindelig profil (Menstruationscyklus, Graviditet og amning).
   | "female"
   // Har familieabonnement eller er med i en familie (Familie).
   | "family"
@@ -133,7 +136,18 @@ export const WEB_PROFILE: WebNavItem[] = [
   { key: "kropsmaal", href: "/profile/body-measurements", labelKey: "profile.row.bodyMeasurements", icon: IconWaistMeasure },
   { key: "soevnmoenster", href: "/profile/sleep", labelKey: "profile.row.sleep", icon: IconMoon },
   { key: "cardio", href: "/profile/cardio", labelKey: "profile.row.cardio", icon: IconHeartbeat },
-  { key: "screeninger", href: "/profile/screenings", labelKey: "profile.row.screenings", icon: IconClipboardHeart },
+  {
+    key: "screeninger",
+    href: "/profile/screenings",
+    labelKey: "profile.row.screenings",
+    icon: IconClipboardHeart,
+    // "Oplevelse af søvn" (til/fra) ligger under Screeninger → Søvn, ikke under
+    // Visning (bruger 2026-10-16). Siden bevarer sin adresse.
+    children: [
+      { key: "screeninger-alle", href: "/profile/screenings", labelKey: "profile.row.screenings", icon: IconClipboardHeart },
+      { key: "screeninger-soevn", href: "/settings/display/sleep-quality", labelKey: "screenings.sleep", icon: IconMoon },
+    ],
+  },
   { key: "viden", href: "/viden-om", labelKey: "profile.row.knowledge", icon: IconBook },
   { key: "hello-doc", href: "/settings/hello-doc", labelKey: "settings.helloDoc", icon: IconStethoscope },
 ];
@@ -151,6 +165,7 @@ export const WEB_SETTINGS: WebNavItem[] = [
   // Starter "Lær appen at kende" forfra (samme handling som i appens indstillinger).
   { key: "kontoopsaetning", href: "/settings?guide=1", labelKey: "settings.learnTheApp", icon: IconRefresh, action: true },
   { key: "integrationer", href: "/settings/integrations", labelKey: "web.integrations", icon: IconPlugConnected },
+  { key: "import", href: "/settings/import", labelKey: "settings.import", icon: IconFileImport },
   { key: "kommunikation", href: "/profile/notifications", labelKey: "settings.notifications", icon: IconBell },
   {
     key: "visning",
@@ -164,10 +179,11 @@ export const WEB_SETTINGS: WebNavItem[] = [
       { key: "kropsmaal-visning", href: "/settings/display/body-measurements", labelKey: "settings.bodyMeasurementsDisplay", icon: IconRuler },
       { key: "graenser", href: "/settings/display/limits", labelKey: "settings.recommendedLimits", icon: IconAlertTriangle },
       { key: "usikkerhed", href: "/settings/display/uncertainty", labelKey: "displaySettings.uncertainty", icon: IconTilde },
+      { key: "oversaettelse", href: "/settings/display/translation", labelKey: "settings.translation", icon: IconLanguage },
       { key: "kalendervisning", href: "/settings/display/calendar-view", labelKey: "settings.calendarView", icon: IconCalendarWeek },
-      { key: "soevn", href: "/settings/display/sleep-quality", labelKey: "settings.sleepQuality", icon: IconMoon },
       { key: "tips", href: "/settings/display/tips", labelKey: "settings.tipsTitle", icon: IconBulb },
       { key: "cyklus", href: "/settings/display/menstrual-cycle", labelKey: "settings.menstrualCycle", icon: IconCalendarHeart, requires: "female" },
+      { key: "graviditet", href: "/settings/display/pregnancy", labelKey: "settings.pregnancy", icon: IconBabyCarriage, requires: "female" },
     ],
   },
   // Appens nederste kort: hjælpecenter, fejlrapport og de juridiske sider.

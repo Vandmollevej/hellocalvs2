@@ -41,6 +41,9 @@ jobs:
         with:
           context: .
           push: true
+          # Next.js' versionsvagt (deploymentId): gammel kode i en åben fane genindlæses.
+          build-args: |
+            NEXT_DEPLOYMENT_ID=${{ github.sha }}
           tags: |
             ghcr.io/vandmollevej/hellocalvs2:latest
             ghcr.io/vandmollevej/hellocalvs2:${{ github.sha }}
@@ -50,12 +53,41 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    # Én udrulning ad gangen, og kun den nyeste master-version venter: en
+    # ventende, ældre udrulning erstattes af den nye (springes over). Før lå
+    # deploys i kø uden orden på den ene server og kunne rulle produktionen
+    # tilbage til en ældre version (brugerens valg 2026-10-15). En igangværende
+    # udrulning afbrydes aldrig.
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Kører serveren allerede en nyere commit, udrulles denne ikke — ellers
+      # rulles produktionen tilbage, når udrulningerne kommer i uorden.
+      # Kan det ikke afgøres, udrulles som hidtil.
+      - name: Skip stale release
+        id: guard
+        run: |
+          set -uo pipefail
+          current="$(grep -E '^HELLOCAL_TAG=' /deploy/.env.production 2>/dev/null | tail -n1 | cut -d= -f2- || true)"
+          stale=false
+          deepen=""
+          [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ] && deepen="--unshallow"
+          if [ -n "$current" ] && [ "$current" != "$GITHUB_SHA" ] \
+            && git fetch --quiet --no-tags --filter=blob:none $deepen origin master \
+            && git cat-file -e "${current}^{commit}" \
+            && git merge-base --is-ancestor "$GITHUB_SHA" "$current"; then
+            stale=true
+            echo "Serveren kører allerede ${current}, som er nyere end ${GITHUB_SHA}: udrulningen springes over."
+          fi
+          echo "stale=${stale}" >> "$GITHUB_OUTPUT"
+
       - name: Sync deployment definition
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cp compose.production.yaml /deploy/compose.production.yaml
@@ -84,6 +116,7 @@ jobs:
           mkdir -p /deploy/secrets
 
       - name: Ensure scan-app secrets
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
@@ -105,6 +138,7 @@ jobs:
           done
 
       - name: Select release and pull images
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
@@ -117,6 +151,7 @@ jobs:
 
       # Vagt-robotten startes før migreringer og app, så den kører, selv om de fejler.
       - name: Build and start uptime agent
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
@@ -125,6 +160,7 @@ jobs:
       # Søgemotoren startes før appen, så den nye app kan bruge den med det samme.
       # En fejl her stopper ikke deployet: appen søger så i databasen.
       - name: Start search engine
+        if: steps.guard.outputs.stale != 'true'
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -133,26 +169,31 @@ jobs:
 
       # Migreringerne prøves først på en kopi af produktionens skema (scripts/deploy/test-migrations.sh).
       - name: Test database migrations on a schema copy
+        if: steps.guard.outputs.stale != 'true'
         run: bash scripts/deploy/test-migrations.sh
 
       # Udrulning uden nedetid: ny app-container startes ved siden af den gamle og skiftes ind, når den er sund
       # (scripts/deploy/rollout-app.sh, docs/DEPLOYMENT.md "Udrulning uden nedetid").
       - name: Deploy database migrations and app
+        if: steps.guard.outputs.stale != 'true'
         run: bash scripts/deploy/rollout-app.sh
 
       - name: Build and start catalog agents
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent valdemarsro-agent retnemt-agent betterfeast-agent rema1000-agent store-products-agent
 
       - name: Build and start quality-control agent
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build quality-control-agent
 
       - name: Build and start logo agent
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
@@ -161,7 +202,7 @@ jobs:
       # Kører også når et tidligere agent-trin fejler - mængde-robotten
       # afhænger kun af db + migrate (compose depends_on), ikke af de andre.
       - name: Build and start amount-suggestion agent
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.guard.outputs.stale != 'true' }}
         run: |
           set -euo pipefail
           cd /deploy
@@ -169,7 +210,18 @@ jobs:
       # Umami-analyse (admin → Analyse). Sidst, så en Umami-fejl ikke
       # forhindrer app eller agenter i at starte.
       - name: Start Umami analytics
+        if: steps.guard.outputs.stale != 'true'
         run: |
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d umami-db-init umami
+
+      # Natlig database-backup (30 dages rotation, docs/DECISIONS.md 2026-10-14).
+      - name: Start nightly database backup
+        if: steps.guard.outputs.stale != 'true'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          cd /deploy
+          mkdir -p /deploy/backups
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --no-deps db-backup

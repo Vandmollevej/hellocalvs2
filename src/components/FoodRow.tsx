@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { DecimalText } from "@/components/DecimalText";
+import { imageThumb } from "@/lib/image-thumb";
 
 /**
  * Global row for a single food/product entry — used by the front-page
@@ -30,7 +31,7 @@ export function FoodRow({
         {!thumbnail && image && (
           // Multiply blends the photos' white backdrop into the tan tile (HelloFresh-style).
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-contain object-center p-1 mix-blend-multiply" />
+          <img src={imageThumb(image, 128)} alt="" className="h-full w-full object-contain object-center p-1 mix-blend-multiply" />
         )}
       </div>
       <div className="min-w-0 flex-1">

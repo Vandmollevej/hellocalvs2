@@ -190,7 +190,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
     setCapture(frame);
     stopCamera();
     // Flere objekter i billedet: grønne cirkler, brugeren vælger.
-    const objects = await detectObjects(frame);
+    const objects = (await detectObjects(frame)) ?? [];
     if (captureId !== captureIdRef.current) return;
     if (objects.length < 2) setPhoto(frame);
     else setPickObjects(objects);

@@ -111,7 +111,7 @@
   /* Skelet-loading (design.md §6.14). Varigheden skal matche
      SKELETON_SHIMMER_MS i src/components/hf/Skeleton.tsx. */
   --hf-color-skeleton: #e2dacb;
-  --hf-color-skeleton-highlight: #f2eee6;
+  --hf-color-skeleton-highlight: #fbf9f5;
   --hf-skeleton-duration: 1400ms;
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -327,11 +327,6 @@ textarea::selection,
    supplere dem uden !important. Ingen side må vælge text-[Npx], text-sm,
    font-semibold o.l. selv — vælg en rolle herunder. */
 @layer components {
-  .hf-heading {
-    font-family: var(--font-hf-heading);
-    font-weight: 700;
-  }
-
   /* 32 px */
   .hf-type-hero {
     margin: 0;
@@ -498,6 +493,13 @@ textarea::selection,
   }
 
   /* Eneste vægt-modifier: fed (700) på en af rollerne ovenfor. */
+  /* Overskrift-vægt: står EFTER typografi-rollerne, så "hf-type-body hf-heading"
+     faktisk bliver fed (før overskrev rollens font-weight: 400 den). */
+  .hf-heading {
+    font-family: var(--font-hf-heading);
+    font-weight: 700;
+  }
+
   .hf-type-strong {
     font-weight: 700;
   }
@@ -2176,17 +2178,145 @@ textarea.hf-input {
   animation: hf-scan-fill 1.4s ease-in-out forwards;
 }
 
-/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay. */
+/* Trin-overskriften øverst i kamerabilledet står i det mørke overlay
+   (nummereret og stor, brugerens krav 2026-10-14; ScanHeading). */
 .hf-scan-heading {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  padding: 14px 16px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 16px 32px;
   text-align: center;
   color: var(--hf-color-white, #ffffff);
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.7);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0));
   pointer-events: none;
+}
+
+.hf-scan-heading__title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  text-wrap: balance;
+  animation: hf-scan-heading-in 350ms ease-out both;
+}
+
+@keyframes hf-scan-heading-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Et trin er klaret (StepDoneOverlay, brugerens krav 2026-10-14): hvidt
+   blink over hele billedet, trinnet stort i midten, overstreges, stort
+   flueben, og linjen flyver op og bliver lille. Varighed i alt =
+   STEP_DONE_MS (1,6 s) i ProductCaptureFlow. */
+@keyframes hf-step-flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hf-step-check {
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hf-step-fly {
+  to {
+    top: 14px;
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.hf-step-done__flash {
+  position: absolute;
+  inset: 0;
+  background: var(--hf-color-white, #ffffff);
+  animation: hf-step-flash 380ms ease-out forwards;
+}
+
+.hf-step-done__card {
+  position: absolute;
+  inset-inline: 12px;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(-50%);
+  transform-origin: top center;
+  animation: hf-step-fly 400ms ease-in 1150ms forwards;
+}
+
+.hf-step-done__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hf-step-done__title {
+  font-family: var(--font-hf-heading);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+  color: var(--hf-color-white, #ffffff);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.75);
+  text-wrap: balance;
+  text-decoration-line: none;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--hf-color-white, #ffffff);
+}
+
+/* Overstregningen følger hver linje (StepDoneOverlay sætter klassen efter blinket). */
+.hf-step-done__title--struck {
+  text-decoration-line: line-through;
+}
+
+.hf-step-done__check {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background: var(--hf-color-brand);
+  color: var(--hf-color-white, #ffffff);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
+  transform: scale(0);
+  animation: hf-step-check 260ms cubic-bezier(0.2, 1.4, 0.5, 1) 460ms forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-step-done__flash {
+    display: none;
+  }
+
+  .hf-step-done__card,
+  .hf-scan-heading__title {
+    animation: none;
+  }
+
+  .hf-step-done__check {
+    animation: none;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2382,7 +2512,10 @@ textarea.hf-input {
    står i samme fase (fælles ur via --hf-skeleton-delay, sat af
    src/components/hf/Skeleton.tsx), så ens bokse i en række glimter ens.
    Gradienten er relativ til boksens egen bredde: forskellige boksetyper ser
-   forskellige ud, samme type ser ens ud. Farver/varighed står i :root øverst. */
+   forskellige ud, samme type ser ens ud. Farver/varighed står i :root øverst.
+   Glimtet er et smalt, lyst bånd (±0,35 boksbredde), der løber fra venstre
+   til højre og er synligt ca. 80 % af tiden — et bredt, svagt bånd blev
+   opfattet som en statisk flade (brugerfeedback 2026-10-15). */
 @keyframes hf-skeleton-shimmer {
   from {
     background-position: 100% 0;
@@ -2415,9 +2548,9 @@ textarea.hf-input {
   background-image: linear-gradient(
     90deg,
     var(--hf-color-skeleton) 0%,
-    var(--hf-color-skeleton) 30%,
+    var(--hf-color-skeleton) 38%,
     var(--hf-color-skeleton-highlight) 50%,
-    var(--hf-color-skeleton) 70%,
+    var(--hf-color-skeleton) 62%,
     var(--hf-color-skeleton) 100%
   );
   background-size: 300% 100%;
@@ -3180,6 +3313,21 @@ textarea.hf-input {
     @apply absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center;
   }
 
+  /* Udløseren nederst i kamerabilledet (Tilføj-kameraet, 2026-10-14): hvid
+     ring med hvid skive, 72 px, som telefonens egen kamera-app. */
+  .hf-shutter {
+    @apply flex h-[72px] w-[72px] items-center justify-center rounded-full;
+    border: 4px solid var(--hf-color-white);
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .hf-shutter__inner {
+    @apply block h-[56px] w-[56px] rounded-full bg-hf-white;
+    transition: transform 120ms ease;
+  }
+  .hf-shutter:active .hf-shutter__inner {
+    transform: scale(0.88);
+  }
+
   .hf-day-picker-button {
     @apply flex size-10 items-center justify-center rounded-full disabled:opacity-25;
   }
@@ -3336,7 +3484,8 @@ textarea.hf-input {
 }
 
 @layer components {
-  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.28); }
+  /* Resten af billedet mørkt, så søgefeltet er det eneste, der ses (bruger 2026-10-14). */
+  .hf-barcode-guide { box-shadow: 0 0 0 999px rgb(0 0 0 / 0.55); }
   .hf-chart-label { fill: #6b7280; }
   .hf-chart-grid { stroke: #d1d5db; }
   .hf-chart-frame { stroke: #000; }

@@ -130,6 +130,8 @@ data class ProductDto(
     val keywords: JsonElement? = null,
     val dietaryTags: JsonElement? = null,
     val lastAmountGrams: Double? = null,
+    // Translated from another language than the app's (docs/DECISIONS.md 2026-10-15).
+    val translation: ProductTranslationInfo? = null,
 ) {
     /** Product.nutritionExtra as numbers (HelloFresh extras, per servingSizeGrams). */
     fun extraNumber(key: String): Double? =

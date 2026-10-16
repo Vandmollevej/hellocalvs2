@@ -48,6 +48,10 @@ val BODY_MEASUREMENT_FIELDS = listOf(
     BodyField("hipCm", "bodyMeasurements.hip", "bodyMeasurements.names.hip", null),
     BodyField("upperArmCm", "bodyMeasurements.upperArm", "bodyMeasurements.names.upperArm", "arm"),
     BodyField("thighCm", "bodyMeasurements.thigh", "bodyMeasurements.names.thigh", "leg"),
+    // Bagdel, læg og ankel have no approved drawing yet (src/lib/body-measurements.ts).
+    BodyField("buttockCm", "bodyMeasurements.buttock", "bodyMeasurements.names.buttock", null),
+    BodyField("calfCm", "bodyMeasurements.calf", "bodyMeasurements.names.calf", null),
+    BodyField("ankleCm", "bodyMeasurements.ankle", "bodyMeasurements.names.ankle", null),
 )
 
 /** COMPOSITION_GOAL_FIELDS and NUTRITION_GOAL_FIELDS: field, unit, name key. */

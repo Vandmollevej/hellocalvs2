@@ -10,6 +10,7 @@ import {
   type ReportPoint,
   type ReportPointKey,
 } from "@/lib/registration-report-points";
+import { imageThumb } from "@/lib/image-thumb";
 
 type Registration = { id: string; productId: string | null; titleSnapshot: string };
 
@@ -132,7 +133,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         <p className="hf-type-label">{t(point.labelKey)}</p>
                         {point.imageUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={point.imageUrl} alt="" className="mt-1 h-16 w-16 object-cover rounded-card" />
+                          <img src={imageThumb(point.imageUrl, 128)} alt="" className="mt-1 h-16 w-16 object-cover rounded-card" />
                         ) : (
                           <p className="hf-type-body text-text-secondary break-words">
                             {point.value || t("registrationReportError.missingValue")}

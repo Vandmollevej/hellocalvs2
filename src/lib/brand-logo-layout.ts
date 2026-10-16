@@ -7,6 +7,11 @@
 //
 // Subbrandet (logo eller navn) står oven over brandet med SUBBRAND_GAP_PX luft
 // og samme regel for venstre kant (brugerens ønske 2026-10-10).
+//
+// Brand- og subbrandnavne i tekst går aldrig ud over sidens kant: de brydes i
+// flere linjer inden for pladsen mellem venstre kant og sidens kant (brugerens
+// regel 2026-10-15). Et navn på flere linjer vokser opad og står derfor
+// længere ude, så venstre kant regnes med den målte højde.
 
 export const PRODUCT_CIRCLE_PX = 180;
 /** Logoets maksimale boks (px) — samme mål som className på varesiden. */
@@ -20,9 +25,27 @@ export const SUBBRAND_GAP_PX = 6;
 const AIR_PX = 8;
 
 /** Højden brandet fylder ved cirklen: logoets rendrede højde, navnets linje eller 0 uden brand. */
-export function brandSlotHeight(brand: { logoUrl?: string | null } | null | undefined, logoRatio: number | null): number {
+export function brandSlotHeight(
+  brand: { logoUrl?: string | null } | null | undefined,
+  logoRatio: number | null,
+  nameHeightPx: number = BRAND_NAME_HEIGHT_PX,
+): number {
   if (!brand) return 0;
-  return brand.logoUrl ? brandLogoRenderedHeight(logoRatio) : BRAND_NAME_HEIGHT_PX;
+  return brand.logoUrl ? brandLogoRenderedHeight(logoRatio) : nameHeightPx;
+}
+
+/** Mindste bredde et navn får, selv på en meget smal skærm. */
+const BRAND_NAME_MIN_WIDTH_PX = 60;
+
+/**
+ * Største bredde (px) for et brand-/subbrandnavn, der starter `leftPx` fra
+ * cirklens venstre kant, når cirklen står midt i en kolonne `columnWidthPx`
+ * bred — så navnet brydes i linjer i stedet for at gå ud over kanten.
+ */
+export function brandNameMaxWidthPx(columnWidthPx: number | null, leftPx: number): number | undefined {
+  if (!columnWidthPx || !Number.isFinite(columnWidthPx)) return undefined;
+  const room = Math.floor(columnWidthPx / 2 + PRODUCT_CIRCLE_PX / 2 - leftPx);
+  return Math.max(BRAND_NAME_MIN_WIDTH_PX, room);
 }
 
 /** Hvor højt subbrandet står over cirklens bund: over brandet med luft, eller i bunden uden brand. */
@@ -49,4 +72,40 @@ export function brandLogoLeftPx(heightPx: number, bottomPx = 0): number {
   const dy = Math.min(Math.abs(nearest - radius), radius);
   const edgeX = radius + Math.sqrt(radius * radius - dy * dy);
   return Math.round(edgeX + AIR_PX);
+}
+
+// Uden produktbillede står et logo stort midt i cirklen (brugerens regel
+// 2026-10-14): har varen et subbrand med logo, er det subbrandets logo og
+// brandet bliver stående dér, hvor det plejer; ellers brandets eget logo.
+// Logoet må rage uden for cirklen, men højst i den ene retning: den lange side
+// får CIRCLE_LOGO_LONG_PX (≈ 120 % af cirklen), den korte holder sig inde i
+// cirklen (CIRCLE_LOGO_SHORT_PX). Et næsten kvadratisk logo rager slet ikke ud.
+
+/** Den lange side af et logo i cirklen (px) — må være større end cirklen. */
+export const CIRCLE_LOGO_LONG_PX = 216;
+/** Den korte side af et logo i cirklen (px) — holder sig inde i cirklen. */
+export const CIRCLE_LOGO_SHORT_PX = 150;
+
+export type CircleLogo = { kind: "brand" | "subbrand"; url: string; name: string };
+
+/** Logoet, der står stort i cirklen, når varen ikke har et produktbillede — ellers null. */
+export function circleLogoFor(input: {
+  brand: { name: string; logoUrl?: string | null } | null | undefined;
+  subbrand: string | null;
+  subbrandLogoUrl: string | null | undefined;
+}): CircleLogo | null {
+  if (input.subbrand && input.subbrandLogoUrl) {
+    return { kind: "subbrand", url: input.subbrandLogoUrl, name: input.subbrand };
+  }
+  if (input.brand?.logoUrl) return { kind: "brand", url: input.brand.logoUrl, name: input.brand.name };
+  return null;
+}
+
+/** Mål (px) for et logo med forholdet bredde/højde i cirklen: liggende rager ud i bredden, stående i højden. */
+export function circleLogoSize(ratio: number | null): { width: number; height: number } {
+  const r = ratio && Number.isFinite(ratio) && ratio > 0 ? ratio : 1;
+  const maxWidth = r >= 1 ? CIRCLE_LOGO_LONG_PX : CIRCLE_LOGO_SHORT_PX;
+  const maxHeight = r >= 1 ? CIRCLE_LOGO_SHORT_PX : CIRCLE_LOGO_LONG_PX;
+  const width = Math.min(maxWidth, maxHeight * r);
+  return { width: Math.round(width), height: Math.round(width / r) };
 }

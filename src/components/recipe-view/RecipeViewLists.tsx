@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { IconCamera, IconToolsKitchen2, IconX } from "@tabler/icons-react";
 import { fileToDownscaledDataUrl } from "@/lib/image-downscale";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Indholdet i de foldbare sektioner på en opskrift i HelloFresh-stil.
 
@@ -16,7 +17,7 @@ export function RecipeIngredientList({ items }: { items: RecipeIngredientItem[] 
           {item.imageUrl ? (
             <div className="rv-ingredient-image">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={item.imageUrl} alt="" />
+              <img src={imageThumb(item.imageUrl, 128)} alt="" />
             </div>
           ) : (
             <div className="rv-ingredient-image rv-ingredient-placeholder">
@@ -90,7 +91,7 @@ export function RecipeCookbookPhotos({
           {photos.map((photo) => (
             <div key={photo.id} className="rv-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo.image} alt="" />
+              <img src={imageThumb(photo.image, 640)} alt="" />
               <button
                 type="button"
                 className="rv-photo-remove rv-no-print"

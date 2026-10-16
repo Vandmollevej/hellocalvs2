@@ -648,6 +648,20 @@ lodret hvid/gennemsigtig linje (`.hf-scan-line`, `globals.css`) der animerer
 frem og tilbage over billedet, plus en statuslabel nederst. Vises mens et
 billede analyseres automatisk (OCR/lokalt match/AI-fallback).
 
+**`ScanHeading` + `StepDoneOverlay`** (`src/components/camera/`, tilføjet
+2026-10-14 efter brugerens test) — Tilføj-kameraets trin-overskrift øverst i
+det mørke overlay: nummereret og stor (`.hf-scan-heading__title`, 24/30 fed,
+hvid med tekstskygge), med det senest klarede trin lille (13 px), overstreget
+og med et 18 px grønt flueben (`--hf-color-positive`) lige over. Når et trin
+er klaret (`.hf-step-done`, 1,6 s): hele kamerabilledet blinker hvidt (380 ms),
+trinnet står 28 px fed midt i billedet, en 3 px hvid streg vokser hen over
+det (300 ms), et 56 px grønt flueben popper ind til højre, og linjen flyver op
+mod toppen, skrumper til 50 % og fader ud, hvorefter den nye overskrift toner
+ind (`hf-scan-heading-in`). Reduceret bevægelse: intet blink, ingen flyvning.
+Søgefeltet er lille med 55 % mørkt udenom på stregkode (56 % bred, 2,2:1,
+`.hf-barcode-guide`) og energi/indhold (68 % kvadrat); forsiden beholder hele
+rammen (92 %, 20 % mørkt).
+
 **Produkt-medie-grid (`CreateProductMediaGrid`)** — statisk 2×2-grid under
 produkt-masterdata på opret-siden: 1 stregkode, 2 næringsindhold,
 3 indholdsfortegnelse, 4 produktbilleder (selv underopdelt i 1 hovedbillede +
@@ -802,8 +816,10 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
 
 Mens en side henter data, må der aldrig stå en "Henter…"-tekst. Siden tegner
 i stedet indholdets form som flader i `--hf-color-skeleton` (`#E2DACB`),
-og en lys gradient (`--hf-color-skeleton-highlight`, `#F2EEE6`) løber
-konstant hen over dem (1400 ms, lineær).
+og et smalt, lyst glimt (`--hf-color-skeleton-highlight`, `#FBF9F5`,
+±0,35 boksbredde) løber konstant fra venstre mod højre hen over dem
+(1400 ms, lineær). Glimtet skal være tydeligt — et bredt, svagt bånd ses
+som en statisk flade.
 
 - Alle skeletter på skærmen står i samme fase (fælles ur). Gradienten er
   relativ til boksens egen bredde, så ens bokse i en række glimter ens, mens

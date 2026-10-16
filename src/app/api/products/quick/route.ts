@@ -4,11 +4,16 @@ import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { isIncompleteExternalProduct } from "@/lib/openFoodFacts";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { frontPhotoDataUrlProblem } from "@/lib/front-photo-guard";
+import { flagCroppedFront } from "@/lib/front-image-check";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { createQuickEnrichmentJob, runQuickEnrichment } from "@/lib/quick-enrichment-jobs";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
+import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
+import { linkBackPhotos } from "@/lib/product-back-photos";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -33,11 +38,21 @@ export async function POST(req: Request) {
   const barcode = typeof body?.barcode === "string" ? body.barcode.replace(/\D/g, "") : "";
   const marketRegion = typeof body?.marketRegion === "string" ? body.marketRegion : "DK";
   const frontPhoto = body?.frontPhoto;
+  // Hele forsidebilledet i fuld opløsning (brugerens krav 2026-10-15): gemmes
+  // som varens billede; `frontPhoto` er kopien til AI'en.
+  const frontPhotoFull = isPhoto(body?.frontPhotoFull) ? body.frontPhotoFull : undefined;
   const nutritionPhoto = body?.nutritionPhoto;
   const ingredientsPhoto = isPhoto(body?.ingredientsPhoto) ? body.ingredientsPhoto : undefined;
   const nutritionOcrText = typeof body?.nutritionOcrText === "string" ? body.nutritionOcrText.slice(0, 8000) : "";
   const ingredientsOcrText = typeof body?.ingredientsOcrText === "string" ? body.ingredientsOcrText.slice(0, 8000) : "";
-  const localIngredients = typeof body?.localIngredientsText === "string" ? body.localIngredientsText.trim() : "";
+  // Telefonens egen liste gemmes kun, hvis den består kvalitetskontrollen
+  // (src/lib/ingredient-text-quality.ts) — ellers venter feltet på AI'en.
+  const localReview = reviewIngredientsText(
+    typeof body?.localIngredientsText === "string" ? body.localIngredientsText : "",
+    null,
+    await loadSpellingDictionary(),
+  );
+  const localIngredients = localReview.doubts.length ? "" : localReview.text;
   const barcodeAnalysisId = typeof body?.barcodeAnalysisId === "string" ? body.barcodeAnalysisId : null;
   // Sprogsignaler og OCR-sikkerhed (brugerens valg 2026-09-27). Signalerne
   // valideres i buildBarcodeContext; sikkerheden afgør, om telefonens egen
@@ -136,10 +151,22 @@ export async function POST(req: Request) {
     }
 
     const sessionUser = await getSessionUser();
+    const storedFront = frontPhotoFull ?? frontPhoto;
+    const frontProblem = frontPhotoDataUrlProblem(storedFront);
+    if (frontProblem) {
+      void debugLog({
+        category: "scan",
+        event: "front_image_suspect",
+        level: "error",
+        message: `Forsidefotoet er ${frontProblem}`,
+        flowId,
+        barcode,
+      });
+    }
     // Alle fotos gemmes, så aflæsningen kan genoptages, hvis processen
     // genstartes undervejs (docs/DECISIONS.md 2026-10-02).
     const [imageUrl, nutritionPhotoUrl, ingredientsPhotoUrl] = await Promise.all([
-      saveDataUrlImage(frontPhoto)
+      saveDataUrlImage(storedFront)
         .catch((error) => {
           // Før blev fejlen sløret, og varen endte uden billede uden spor i loggen.
           void debugLog({
@@ -157,7 +184,9 @@ export async function POST(req: Request) {
       ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
     ]);
     // Ved opfyldning beholdes OFF-navnet, hvis AI'en ikke kan læse forsiden.
-    const fallbackName = refill && existing?.product ? existing.product.name : `Vare ${barcode}`;
+    // En ny vare har intet navn, til forsiden er læst (varesiden viser imens en
+    // skeleton) — aldrig "Vare <stregkode>" (brugerens regel 2026-10-15).
+    const fallbackName = refill && existing?.product ? existing.product.name : "";
     const snapshotsSince = refill ? new Date() : undefined;
     const pendingFields: PendingField[] = ["name", "brand", "nutrition", "ingredients"];
 
@@ -202,7 +231,7 @@ export async function POST(req: Request) {
     void debugLog({
       category: "scan",
       event: "product_create",
-      message: `${refill ? "Tynd Open Food Facts-vare fyldes op fra fotoene" : `Vare oprettet som "${fallbackName}"`} — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
+      message: `${refill ? "Tynd Open Food Facts-vare fyldes op fra fotoene" : "Vare oprettet uden navn"} — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
       flowId,
       userId: sessionUser?.id,
       barcode,
@@ -220,7 +249,19 @@ export async function POST(req: Request) {
       },
     });
 
+    // Flowets ubeskårne bagsidebilleder hører til varen (docs/DECISIONS.md 2026-10-15).
+    await linkBackPhotos(flowId, product.id, sessionUser?.id ?? null).catch((error) =>
+      console.error("Could not link back photos", product.id, error),
+    );
+
+    if (frontProblem && imageUrl) {
+      await flagCroppedFront(product.id, imageUrl, frontProblem).catch((error) =>
+        console.error("Could not flag cropped front photo", product.id, error),
+      );
+    }
+
     await createQuickEnrichmentJob(product.id, {
+      flowId: flowId ?? undefined,
       barcode,
       marketRegion,
       signals,

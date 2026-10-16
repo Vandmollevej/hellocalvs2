@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { ExternalProductSource, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
+import { appLocaleOf, inViewerLanguage } from "@/lib/product-language";
 import { getSessionUser } from "@/lib/session";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
 import { deriveIsVerified, rankProducts, textSimilarity } from "@/lib/product-search-ranking";
@@ -318,7 +319,16 @@ async function searchProducts({
     // score er relativ (en stavefejl kan give 0,08), så den lægges i 0,55-1:
     // altid over minimumsmatchet, men en svag træffer under et præcist navn.
     const engineScores = engine ? new Map(engine.hits.map((hit) => [hit.id, 0.55 + 0.45 * hit.score])) : undefined;
-    const ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms, engineScores);
+    // Sproget (docs/DECISIONS.md 2026-10-15): først kun varer på brugerens
+    // sprog, engelske, ukendte og med stregkode fra brugerens land. Varer på
+    // andre sprog kun, når det ikke giver noget — så søger brugeren bevidst
+    // på et andet sprog. Søgningen oversætter aldrig.
+    const viewerLanguage = { locale: appLocaleOf(sessionUser?.appLocale), region: user.region };
+    const ownLanguage = rankable.filter((product) => inViewerLanguage(product, viewerLanguage));
+    let ranked = rankProducts(ownLanguage, q, user.region, localHour, take, weights, synonyms, engineScores);
+    if (ranked.length === 0 && ownLanguage.length < rankable.length) {
+      ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms, engineScores);
+    }
     products = ranked.map((entry) => entry.product);
     // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
     if (products.length === 0 && q.length >= 3) {

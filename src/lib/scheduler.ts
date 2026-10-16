@@ -6,11 +6,17 @@ import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { pruneOldJobRuns } from "@/lib/jobs/runs";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
+import { repairPlaceholderNames } from "@/lib/product-placeholder-repair";
+import { backfillAlcoholNutrition } from "@/lib/alcohol-nutrition";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
+import { checkFrontImages } from "@/lib/front-image-check";
+import { runProductRechecks } from "@/lib/product-recheck";
+import { runSpellingCheck } from "@/lib/spelling-robot";
+import { runBackPhotoScan } from "@/lib/product-back-photos";
 import { assessOffProducts } from "@/lib/off-quality-job";
 import { runFridaEstimates } from "@/lib/frida-estimates";
 import { syncProductIndex } from "@/lib/search-engine/product-index";
@@ -25,6 +31,7 @@ import { requestPersonaRunOnDeploy, runPersonaJob } from "@/lib/personas";
 import { anonymizeExpiredClosedAccounts } from "@/lib/account-closure";
 import { sendDueWeighReminders } from "@/lib/weigh-reminders";
 import { runPulseNightJob } from "@/lib/pulse-candidates";
+import { backfillProductLanguages, translateProductsAhead } from "@/lib/product-translations";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -106,6 +113,10 @@ export async function runSchedulerTick(now: Date = new Date()) {
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu
   // (docs/DECISIONS.md 2026-09-23) — 500 pr. tick, ingen OCR/AI-kald.
   await backfillMissingProductNutritionFeatures();
+  // Varens sprog fra kilden for varer uden (docs/DECISIONS.md 2026-10-15) — 500 pr. tick, ingen AI-kald.
+  await backfillProductLanguages().catch((error) => console.error("[scheduler] Varesprog fejlede", error));
+  // Varer, der stadig hedder "Vare <stregkode>", omdøbes (docs/REGLER.md → Aldrig "Vare <stregkode>").
+  await repairPlaceholderNames(now).catch((error) => console.error("[scheduler] Reservenavne fejlede", error));
   // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
   await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
   // Stripe: registrér webhook og synk abonnementer nær fornyelse (docs/DECISIONS.md 2026-09-29).
@@ -141,10 +152,16 @@ export function startScheduler() {
       "external-image-ai": analyzeDeclinedExternalImages,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
+      "front-image-check": checkFrontImages,
+      "product-recheck": runProductRechecks,
       "off-quality": assessOffProducts,
+      "spelling-check": runSpellingCheck,
+      "back-photo-scan": runBackPhotoScan,
       "frida-estimates": runFridaEstimates,
       "search-index": syncProductIndex,
       "search-miss-review": reviewSearchMisses,
+      "product-translations": translateProductsAhead,
+      "alcohol-nutrition": backfillAlcoholNutrition,
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
@@ -152,6 +169,12 @@ export function startScheduler() {
 
   // Personas: én kørsel pr. ny build (deploy), docs/DECISIONS.md 2026-10-03.
   void requestPersonaRunOnDeploy().catch((error) => console.error("[scheduler] Personas-deploykørsel fejlede", error));
+
+  // Varer med reservenavnet "Vare <stregkode>" navngives straks efter et
+  // deploy, ikke først ved nattens genkørsel (brugerens fejlmelding 2026-10-15).
+  setTimeout(() => {
+    void repairPlaceholderNames().catch((error) => console.error("[scheduler] Reservenavne fejlede", error));
+  }, 90_000);
 
   // Første tjek kort efter opstart, derefter hvert minut.
   setTimeout(tick, 30_000);

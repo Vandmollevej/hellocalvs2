@@ -1,6 +1,8 @@
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { findIngredientsSection, parseNutritionDetailed, parseNutritionText } from "@/lib/product-ocr";
 import { parseWholeGrain } from "@/lib/whole-grain";
+import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
+import type { SpellingDictionary } from "@/lib/spelling-engine";
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 
 // "Lokal først, ChatGPT kun ved tvivl" (brugerens valg 2026-09-27). Serveren
@@ -41,14 +43,24 @@ export function localNutrition(ocrText: string, ocrConfidence: number): Nutritio
   return nutrition;
 }
 
-export function localIngredients(ocrText: string, ocrConfidence: number): IngredientsAnalysis | null {
+export function localIngredients(
+  ocrText: string,
+  ocrConfidence: number,
+  dictionary?: SpellingDictionary,
+): IngredientsAnalysis | null {
   if (!ocrText || ocrConfidence < LOCAL_INGREDIENTS_MIN_OCR_CONFIDENCE) return null;
-  const section = findIngredientsSection(ocrText);
-  if (!section) return null;
+  const found = findIngredientsSection(ocrText);
+  if (!found) return null;
+  // Tegn på fejllæsning ("£202", tegnstøj): AI læser billedet i stedet
+  // (brugerens test 2026-10-14). Sikre rettelser (soja, E-nummer) laves her.
+  const review = reviewIngredientsText(found, null, dictionary);
+  if (review.doubts.length || !review.text) return null;
+  const section = review.text;
   const wholeGrain = parseWholeGrain({ ingredientsText: section });
   return {
-    rawText: section,
+    rawText: found,
     ingredientsText: section,
+    textReview: { fixes: review.fixes, doubts: [] },
     allergens: [],
     language: null,
     confidence: Math.min(1, Math.max(0, ocrConfidence / 100)),

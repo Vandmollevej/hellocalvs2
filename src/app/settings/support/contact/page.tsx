@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SupportScreenshotPicker } from "@/components/SupportScreenshotPicker";
@@ -12,10 +13,33 @@ import { SUPPORT_REQUEST_CATEGORIES, type SupportRequestCategoryKey } from "@/li
 // "Kontakt os" (docs/DECISIONS.md 2026-09-23): internal support request, not
 // mailto:. Works without any data permission; if the user has an active
 // Support permission, the server links it to the request.
+// Andre sider kan åbne formularen med emne og kategori udfyldt
+// (fx Import → "Kontakt os": ?category=DATA&subject=...).
 export default function SupportContactPage() {
+  return (
+    <Suspense fallback={null}>
+      <SupportContactFromQuery />
+    </Suspense>
+  );
+}
+
+function SupportContactFromQuery() {
+  const params = useSearchParams();
+  const presetCategory = params.get("category");
+  const category = SUPPORT_REQUEST_CATEGORIES.find((key) => key === presetCategory) ?? "OTHER";
+  return <SupportContactForm initialCategory={category} initialSubject={(params.get("subject") ?? "").slice(0, 200)} />;
+}
+
+function SupportContactForm({
+  initialCategory,
+  initialSubject,
+}: {
+  initialCategory: SupportRequestCategoryKey;
+  initialSubject: string;
+}) {
   const { t } = useTranslation();
-  const [category, setCategory] = useState<SupportRequestCategoryKey>("OTHER");
-  const [subject, setSubject] = useState("");
+  const [category, setCategory] = useState<SupportRequestCategoryKey>(initialCategory);
+  const [subject, setSubject] = useState(initialSubject);
   const [message, setMessage] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [sending, setSending] = useState(false);

@@ -15,6 +15,7 @@ import {
   type SourceRegistration,
 } from "@/lib/food-classification";
 import { Skeleton } from "@/components/hf/Skeleton";
+import { imageThumb } from "@/lib/image-thumb";
 
 const TOP_COUNT = 5;
 
@@ -24,7 +25,7 @@ function SinnerTile({ item, metric }: { item: SourceItem; metric: SourceMetric }
       <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-hf-cream">
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.imageUrl} alt={item.title} className="h-full w-full object-contain object-center" />
+          <img src={imageThumb(item.imageUrl, 128)} alt={item.title} className="h-full w-full object-contain object-center" />
         ) : (
           <IconToolsKitchen2 size={20} aria-label={item.title} />
         )}

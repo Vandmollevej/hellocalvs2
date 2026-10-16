@@ -1,3 +1,5 @@
+import { imageThumb } from "@/lib/image-thumb";
+
 // "Generiske billeder": generiske varer (produkttype) med billede og tekst, vist som
 // listen på produktsiden (miniature + navn). Kun visning; billeder lægges op i feltet ovenfor.
 
@@ -16,7 +18,7 @@ export function GenericImageList({ rows }: { rows: GenericImageRow[] }) {
               <div className="hf-surface flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden">
                 {row.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={row.imageUrl} alt="" loading="lazy" className="h-full w-full object-contain p-0.5" />
+                  <img src={imageThumb(row.imageUrl, 128)} alt="" loading="lazy" className="h-full w-full object-contain p-0.5" />
                 ) : (
                   <span className="hf-type-micro text-text-muted">Intet</span>
                 )}
