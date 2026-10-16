@@ -10,18 +10,28 @@ function amount(value: unknown) {
   return Number.isFinite(n) && n >= 0 && n <= 10_000_000 ? n : Number.NaN;
 }
 
-// Månedsbudget og pris pr. kald for én tjeneste (tom = intet budget / standardpris).
+// Månedsbudget, pris pr. kald og varselsgrænser for én tjeneste (tom = ingen / standard).
 export async function PUT(req: Request) {
   const admin = await requireFullAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  const body = (await req.json().catch(() => ({}))) as { serviceId?: string; monthlyBudget?: unknown; unitPrice?: unknown };
-  const budget = amount(body.monthlyBudget);
-  const price = amount(body.unitPrice);
-  if (Number.isNaN(budget) || Number.isNaN(price)) {
+  const body = (await req.json().catch(() => ({}))) as {
+    serviceId?: string;
+    monthlyBudget?: unknown;
+    unitPrice?: unknown;
+    alertAt?: unknown;
+    balanceAlertAt?: unknown;
+  };
+  const input = {
+    monthlyBudget: amount(body.monthlyBudget),
+    unitPrice: amount(body.unitPrice),
+    alertAt: amount(body.alertAt),
+    balanceAlertAt: amount(body.balanceAlertAt),
+  };
+  if (Object.values(input).some((v) => Number.isNaN(v))) {
     return NextResponse.json({ message: "Skriv beløbene som tal." }, { status: 400 });
   }
   try {
-    await saveBudget(String(body.serviceId ?? ""), budget, price);
+    await saveBudget(String(body.serviceId ?? ""), input);
   } catch (error) {
     return NextResponse.json({ message: error instanceof Error ? error.message : "Kunne ikke gemme" }, { status: 400 });
   }

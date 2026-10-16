@@ -1,3 +1,7 @@
+## 2026-10-16: Beløbsgrænse for API-varsler
+
+- Under "Ret budget og varsler" på hvert kort i admin → API-forbrug: beløbet, hvor du vil advares om forbruget, og for OpenAI saldoen, du vil advares under. **Migration `20261016180000_api_alert_amount` skal med deployet.** Prøvet mod lokal Postgres (varsel sendes én gang). Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
 
 - `/admin/openai` er blevet til `/admin/api-usage` ("API-forbrug", Alt+Shift+3): ét kort pr. betalt tjeneste — OpenAI, Google Places, Google Vision (logo-robotten), Google Custom Search (billedrobotten), Bria, Passio, SMS og Mailjet — med status, månedens forbrug og budget (rettes på kortet). OpenAI-detaljerne og kreditsaldoen står som før nedenunder.
