@@ -14,6 +14,10 @@ Kører hver nat. For brands uden logo:
    om brandnavnet står på siden/linket.
 4. >= 90 % OG brandnavnet på siden/linket -> gemmes automatisk som brandets
    logo. Ellers vises kandidater >= 50 % i admin "Logoer" til manuelt valg.
+5. Intet fritlagt logo fundet online -> OpenAI (gpt-image-1) rentegner
+   originaludklippet med brugerens prompt (REDRAW_PROMPT): 100 % tro mod
+   originalen, højere opløsning, fritlagt. Vises i admin ved siden af
+   originalen og vælges altid manuelt (docs/DECISIONS.md 2026-10-15).
 
 Ikke-valgte kandidater (fil + række) slettes 7 dage efter afgørelsen.
 Bruger Google Vision API — ikke Custom Search, som er lukket for nye kunder og
@@ -60,6 +64,15 @@ AUTO_ACCEPT = float(os.environ.get("LOGO_AGENT_AUTO_ACCEPT", "0.90"))
 MIN_CONFIDENCE = float(os.environ.get("LOGO_AGENT_MIN_CONFIDENCE", "0.50"))
 RETENTION_DAYS = int(os.environ.get("LOGO_AGENT_RETENTION_DAYS", "7"))
 RUN_ON_START = os.environ.get("LOGO_AGENT_RUN_ON_START", "false").lower() == "true"
+# AI-rentegning (docs/DECISIONS.md 2026-10-15): kun når intet fritlagt logo
+# findes online. Brugerens prompt, ordret — AI'en må ikke fortolke logoet.
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+REDRAW_MODEL = os.environ.get("LOGO_AGENT_REDRAW_MODEL", "gpt-image-1")
+REDRAW_PROMPT = (
+    "Logoet skal være en rentegning og ikke en genskabelse af noget lignende. "
+    "Det skal være 100% tro mod originalen, blot i højere opløsning og fritlagt. "
+    "Der må med andre ord ikke fortolkes og skabes noget med AI."
+)
 
 VISION_URL = "https://vision.googleapis.com/v1/images:annotate"
 LOGO_DIR = os.path.join(IMAGES_DIR, "brand-logos")
@@ -78,6 +91,12 @@ def new_id():
 def normalize(text):
     text = unicodedata.normalize("NFKD", text or "").encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "", text)
+
+
+def normalize_words(text):
+    """Som normalize, men bevarer ordgrænser (mellemrum)."""
+    text = unicodedata.normalize("NFKD", text or "").encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", text).strip()
 
 
 def public_to_path(public_url):
@@ -199,7 +218,9 @@ def visual_similarity(a, b):
 
     pa, pb = prep(a), prep(b)
     distance = (imagehash.phash(pa) - imagehash.phash(pb)) + (imagehash.dhash(pa) - imagehash.dhash(pb))
-    return max(0.0, 1.0 - distance / 64.0)
+    # imagehash regner med numpy; psycopg2 sender np.float64 som "np.float64(0.9)"
+    # (numpy 2) og INSERT fejler med 'schema "np" does not exist'. Altid ren float.
+    return float(max(0.0, 1.0 - float(distance) / 64.0))
 
 
 # --- trin 1: isolér logoet ---------------------------------------------------
@@ -336,9 +357,42 @@ def score_candidates(brand_name, logo_name, crop, candidates):
             confidence += 0.03
         if min(candidate["image"].size) >= 400:
             confidence += 0.02
-        candidate["confidence"] = min(1.0, confidence)
+        candidate["confidence"] = float(min(1.0, confidence))
     downloaded.sort(key=lambda c: (c["confidence"], c["image"].size[0] * c["image"].size[1]), reverse=True)
     return downloaded
+
+
+# --- AI-rentegning -----------------------------------------------------------
+
+def ai_redraw(crop):
+    """Rentegner originaludklippet med OpenAI (gpt-image-1) i højere opløsning og
+    fritlagt. Kun når intet fritlagt logo blev fundet online. Returnerer et
+    PIL-billede eller None (ingen nøgle, fejl)."""
+    if not OPENAI_API_KEY:
+        log.info("ingen OPENAI_API_KEY — ingen AI-rentegning")
+        return None
+    response = requests.post(
+        "https://api.openai.com/v1/images/edits",
+        headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
+        files={"image": ("original.png", to_png_bytes(crop.convert("RGB")), "image/png")},
+        data={
+            "model": REDRAW_MODEL,
+            "prompt": REDRAW_PROMPT,
+            "background": "transparent",
+            "output_format": "png",
+            "quality": "high",
+            "input_fidelity": "high",
+            "size": "auto",
+        },
+        timeout=180,
+    )
+    response.raise_for_status()
+    data = response.json().get("data") or []
+    if not data or not data[0].get("b64_json"):
+        return None
+    image = Image.open(io.BytesIO(base64.b64decode(data[0]["b64_json"])))
+    image.load()
+    return trim_transparent(image.convert("RGBA"))
 
 
 # --- gem -----------------------------------------------------------------------
@@ -375,13 +429,21 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
     scored = [c for c in score_candidates(brand_name, logo_name, crop, web_candidates(crop)) if c["confidence"] >= MIN_CONFIDENCE]
     best = scored[0] if scored else None
     auto = bool(best and best["confidence"] >= AUTO_ACCEPT and best["brandInPage"])
-    status = "AUTO_ACCEPTED" if auto else ("PENDING_REVIEW" if scored else "NO_CANDIDATES")
+    # Intet fritlagt logo online → AI rentegner originaludklippet (vælges altid
+    # i admin, aldrig automatisk).
+    redrawn = None
+    if not auto and not any(c["transparent"] for c in scored):
+        try:
+            redrawn = ai_redraw(crop)
+        except Exception as exc:  # noqa: BLE001 - rentegningen må ikke stoppe robotten
+            log.warning("AI-rentegning fejlede for %s: %s", brand_name, exc)
+    status = "AUTO_ACCEPTED" if auto else ("PENDING_REVIEW" if scored or redrawn else "NO_CANDIDATES")
 
     with conn.cursor() as cur:
         cur.execute(
             """INSERT INTO brand_logo_searches (id, "brandId", "sourceProductId", "originalUrl", status, "bestConfidence", "createdAt", "resolvedAt")
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-            (search_id, brand_id, product_id, original_url, status, best["confidence"] if best else None, now,
+            (search_id, brand_id, product_id, original_url, status, float(best["confidence"]) if best else None, now,
              now if status != "PENDING_REVIEW" else None),
         )
         for index, candidate in enumerate(scored):
@@ -393,8 +455,16 @@ def process_brand(conn, brand_id, brand_name, product_id, image_url):
                    (id, "searchId", "imageUrl", "sourceUrl", "pageUrl", "pageTitle", confidence, "brandInPage", transparent, width, height, "createdAt")
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (candidate_id, search_id, url, candidate["url"], candidate.get("pageUrl"), (candidate.get("pageTitle") or "")[:300] or None,
-                 candidate["confidence"], candidate["brandInPage"], candidate["transparent"],
-                 candidate["image"].size[0], candidate["image"].size[1], now),
+                 float(candidate["confidence"]), bool(candidate["brandInPage"]), bool(candidate["transparent"]),
+                 int(candidate["image"].size[0]), int(candidate["image"].size[1]), now),
+            )
+        if redrawn is not None:
+            url = save_png(redrawn, f"{brand_id}/{search_id}/ai.png")
+            cur.execute(
+                """INSERT INTO brand_logo_candidates
+                   (id, "searchId", "imageUrl", "sourceUrl", confidence, transparent, "aiGenerated", width, height, "createdAt")
+                   VALUES (%s, %s, %s, %s, 0, true, true, %s, %s, %s)""",
+                (new_id(), search_id, url, f"openai:{REDRAW_MODEL}", int(redrawn.size[0]), int(redrawn.size[1]), now),
             )
         if auto:
             logo_url = save_png(best["image"], f"{brand_id}.png")
@@ -468,6 +538,18 @@ def main():
     # Planen styres fra admin "Robotter"/"Cron-jobs" (job_control.py);
     # LOGO_AGENT_RUN_HOUR er kun standard-tidspunktet, når rækken oprettes.
     log.info("logo-robot startet; standard hver nat kl. %02d:00 (%s)", RUN_HOUR, TIMEZONE)
+    # Originale produktbilleder online før fritlægningen (product_images.py,
+    # docs/DECISIONS.md 2026-10-15) — løbende, så fritlægningen ikke venter.
+    import threading
+
+    import product_images
+
+    threading.Thread(
+        target=run_forever,
+        args=(DATABASE_URL, "product-image-search", product_images.run_once),
+        kwargs={"interval_minutes": 0},
+        daemon=True,
+    ).start()
     run_forever(DATABASE_URL, "logo-agent", run_once, run_at_time=f"{RUN_HOUR:02d}:00", run_on_start=RUN_ON_START)
 
 

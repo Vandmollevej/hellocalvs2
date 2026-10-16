@@ -9,6 +9,7 @@ private hostnames in the repository.
 - GitHub Actions builds the application on a GitHub-hosted runner.
 - Each push to `master` publishes both `latest` and an immutable Git commit SHA
   tag to `ghcr.io/vandmollevej/hellocalvs2`.
+- Deploy jobs share the concurrency group `production-deploy` (`cancel-in-progress: false`): one deploy runs at a time, and only the newest pending master commit waits — an older pending deploy is skipped when a newer one arrives, so production is never rolled back by an out-of-order queue (2026-10-15).
 - After the image build succeeds, the self-hosted deploy job checks out the same
   commit, syncs `compose.production.yaml` plus the locally-built REMA 1000 and
   quality-control and amount-suggestion agent contexts into the server
@@ -291,6 +292,10 @@ Confirm that the dump exists and is non-empty. Backups must also be copied to a
 second storage location; a file beside the live database is not sufficient as
 the only backup.
 
+### Natlig database-backup
+
+Tjenesten `db-backup` i `compose.production.yaml` tager hver nat (kl. 01:00 UTC) og ved opstart en `pg_dump -Fc` af `hellocal` og `umami` til `backups/*-nightly-<tid>.dump` og sletter nightly-filer ældre end 30 dage. Se loggen med `sudo docker logs hellocal-v2-db-backup-1`. Backuppen ligger på samme NAS som databasen, så kopiér den jævnligt til et andet sted (fx pc'ens D:-disk).
+
 ### Fuld container-backup
 
 `scripts/backup/backup-all-containers.sh` kopieres af deployet til
@@ -442,6 +447,15 @@ explicitly approved.
 2. Læg `STRIPE_SECRET_KEY` (sk_live_… / sk_test_…) i admin → API-nøgler → Betaling → Stripe og tryk "Test".
 3. Deploy med migrationen `20260929150000_stripe_payments`. Serveren registrerer selv webhooken `https://<APP_BASE_URL>/api/payments/stripe/webhook` inden for 15 min. (eller sæt `STRIPE_WEBHOOK_SECRET` fra dashboardet).
 4. `APP_BASE_URL` skal være den offentlige https-adresse (bruges til retur- og webhook-adresser).
+
+## Ingen tilbagerulning: "Skip stale release" (2026-10-15)
+
+- Ud over concurrency-gruppen `production-deploy` (se øverst) springer trinnet
+  "Skip stale release" resten af deploy-jobbet over, når serverens
+  `HELLOCAL_TAG` allerede er en nyere commit på master end jobbets egen. Det
+  dækker det tilfælde, hvor en ældre commits build bliver færdig efter en
+  nyeres og ellers ville erstatte den ventende nyere udrulning. Kan det ikke
+  afgøres (ingen tag, git-fejl), udrulles som hidtil.
 
 ## Udrulning uden nedetid (2026-10-04)
 

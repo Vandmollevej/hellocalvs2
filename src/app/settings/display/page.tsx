@@ -5,18 +5,20 @@ import {
   IconHome2,
   IconAlertTriangle,
   IconCalendarWeek,
-  IconMoon,
   IconCalendarHeart,
   IconBulb,
   IconArrowsSort,
   IconRuler,
+  IconBabyCarriage,
+  IconLanguage,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Settings → Visning: overview of the display sub-pages (same rows as the
-// "Visning" card on /settings). Menstruationscyklus only for sex = FEMALE.
+// "Visning" card on /settings). Menstruationscyklus and Graviditet og amning
+// only for sex = FEMALE (user rule 2026-10-14: "Kun for kvinder").
 export default function DisplaySettingsIndexPage() {
   const { t } = useTranslation();
   const [isFemale, setIsFemale] = useState(false);
@@ -76,15 +78,15 @@ export default function DisplaySettingsIndexPage() {
             divider
           />
           <ChevronRow
-            icon={<IconCalendarWeek size={20} />}
-            label={t("settings.calendarView")}
-            href="/settings/display/calendar-view"
+            icon={<IconLanguage size={20} />}
+            label={t("settings.translation")}
+            href="/settings/display/translation"
             divider
           />
           <ChevronRow
-            icon={<IconMoon size={20} />}
-            label={t("settings.sleepQuality")}
-            href="/settings/display/sleep-quality"
+            icon={<IconCalendarWeek size={20} />}
+            label={t("settings.calendarView")}
+            href="/settings/display/calendar-view"
             divider
           />
           <ChevronRow
@@ -98,6 +100,14 @@ export default function DisplaySettingsIndexPage() {
               icon={<IconCalendarHeart size={20} />}
               label={t("settings.menstrualCycle")}
               href="/settings/display/menstrual-cycle"
+              divider
+            />
+          )}
+          {isFemale && (
+            <ChevronRow
+              icon={<IconBabyCarriage size={20} />}
+              label={t("settings.pregnancy")}
+              href="/settings/display/pregnancy"
               divider={false}
             />
           )}

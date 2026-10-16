@@ -13,6 +13,8 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
@@ -42,6 +44,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
@@ -425,6 +428,72 @@ object AndroidDevice : DevicePlatform {
                 putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
             }
             speech.startListening(intent)
+        }
+    }
+
+    // --- Voice (text to speech) ------------------------------------------------------
+
+    private var tts: TextToSpeech? = null
+    private var ttsReady: CompletableDeferred<Boolean>? = null
+    private var speakingDone: ((String?) -> Unit)? = null
+    private var utteranceCount = 0
+
+    /** One TextToSpeech for the app, created on first use (the engine takes a moment to start). */
+    private fun ttsEngine(): Pair<TextToSpeech, CompletableDeferred<Boolean>> {
+        val engine = tts
+        val ready = ttsReady
+        if (engine != null && ready != null) return engine to ready
+        val deferred = CompletableDeferred<Boolean>()
+        val created = TextToSpeech(app) { status -> deferred.complete(status == TextToSpeech.SUCCESS) }
+        created.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) = Unit
+            override fun onDone(utteranceId: String?) = finishUtterance(utteranceId, null)
+            override fun onStop(utteranceId: String?, interrupted: Boolean) = finishUtterance(utteranceId, null)
+            @Deprecated("Deprecated in Java")
+            override fun onError(utteranceId: String?) = finishUtterance(utteranceId, "failed")
+            override fun onError(utteranceId: String?, errorCode: Int) = finishUtterance(utteranceId, "failed")
+        })
+        tts = created
+        ttsReady = deferred
+        return created to deferred
+    }
+
+    private fun finishUtterance(utteranceId: String?, error: String?) = onMain {
+        if (utteranceId != "hellocal-$utteranceCount") return@onMain
+        val done = speakingDone ?: return@onMain
+        speakingDone = null
+        done(error)
+    }
+
+    override fun speak(text: String, languageTag: String, onDone: (String?) -> Unit) {
+        // Whatever was being said is replaced and reported as done.
+        speakingDone?.let { previous ->
+            speakingDone = null
+            previous(null)
+        }
+        val id = "hellocal-${++utteranceCount}"
+        speakingDone = onDone
+        scope.launch {
+            val (engine, ready) = ttsEngine()
+            if (!ready.await()) {
+                finishUtterance(id, DeviceError.UNAVAILABLE)
+                return@launch
+            }
+            if (id != "hellocal-$utteranceCount") return@launch
+            val locale = Locale.forLanguageTag(languageTag)
+            if (engine.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) engine.language = locale
+            if (engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, id) != TextToSpeech.SUCCESS) {
+                finishUtterance(id, "failed")
+            }
+        }
+    }
+
+    override fun stopSpeaking() = onMain {
+        utteranceCount++
+        tts?.stop()
+        speakingDone?.let { done ->
+            speakingDone = null
+            done(null)
         }
     }
 

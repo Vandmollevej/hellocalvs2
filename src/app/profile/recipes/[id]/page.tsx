@@ -15,6 +15,7 @@ import { RecipeThumbs } from "@/components/recipes/RecipeThumbs";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 import { RecipeUnitToggle, type RecipeUnitMode } from "@/components/recipe-view/RecipeUnitToggle";
 import { gramsAsMeasureText } from "@/lib/kitchen-conversions";
+import { imageThumb } from "@/lib/image-thumb";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -96,7 +97,7 @@ function RecipeDetailContent() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
   // Justering til antal personer
-  const [persons, setPersons] = useState(() => Math.max(1, loadRecipeFilters().persons));
+  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
   const [portionKcal, setPortionKcal] = useState<number | null>(null);
   // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via src/lib/kitchen-conversions.ts.
   const [unitMode, setUnitMode] = useState<RecipeUnitMode>("grams");
@@ -371,6 +372,8 @@ function RecipeDetailContent() {
                 <PersonsSlider
                   label={t("recipeFilters.personsTitle")}
                   value={persons}
+                  min={0}
+                  unset={persons === 0}
                   max={MAX_RECIPE_PERSONS}
                   onChange={changePersons}
                 />
@@ -378,11 +381,11 @@ function RecipeDetailContent() {
                   <div className="pt-3">
                     <Skeleton type="caption" width={128} height={12} className="my-[3px]" />
                   </div>
-                ) : (
+                ) : persons > 0 ? (
                   <p className="hf-type-caption pt-3">
                     {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
                   </p>
-                )}
+                ) : null}
               </div>
             )}
 
@@ -414,7 +417,7 @@ function RecipeDetailContent() {
                     <div className="h-9 w-9 flex-shrink-0">
                       {ingredient.imageUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={ingredient.imageUrl} alt="" className="h-full w-full object-contain" />
+                        <img src={imageThumb(ingredient.imageUrl, 128)} alt="" className="h-full w-full object-contain" />
                       )}
                     </div>
                     <div className="flex-1">

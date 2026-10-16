@@ -144,6 +144,9 @@ model User {
   // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): ~ vises altid; denne
   // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
   autoExpandUncertainty   Boolean @default(false)
+  // Visning → Oversættelse (docs/DECISIONS.md 2026-10-15): varer på et andet
+  // sprog end appens vises oversat (standard) eller som original.
+  translateForeignText    Boolean @default(true)
 
   // Daglig kaloriegrænse pr. bruger (src/lib/goals.ts). Null = standardværdien
   // DAILY_KCAL_GOAL. Opdateres af brugeren via "Opdater"-popuppen
@@ -238,6 +241,15 @@ model User {
   // og logges i MenstrualCycleEntry. De to gennemsnit bruges kun til en
   // simpel fremtidig prognose, ikke til noget klinisk.
   cycleTrackingEnabled    Boolean @default(false)
+  // Graviditet og amning (docs/DECISIONS.md 2026-10-14): spørges i oprettelses-
+  // guiden og rettes under Indstillinger → Visning → Graviditet og amning (kun
+  // sex = FEMALE/ukendt). Ugen/ugerne gælder pr. pregnancyStatusUpdatedAt og
+  // regnes frem i tid i src/lib/pregnancy.ts; tillægget (EFSA 2013) lægges
+  // på energibehovet, og der sættes aldrig et kalorieunderskud.
+  pregnancyStatus          PregnancyStatus?
+  pregnancyWeek            Int?
+  breastfeedingWeeks       Int?
+  pregnancyStatusUpdatedAt DateTime?
   // Screeninger (docs/DECISIONS.md 2026-10-09): forudlavede screeninger (migræne,
   // mavesmerter, humør) oprettes første gang brugeren åbner Profil → Screeninger.
   screeningsSeeded        Boolean @default(false)
@@ -406,6 +418,11 @@ enum Locale {
 enum Sex {
   FEMALE
   MALE
+}
+
+enum PregnancyStatus {
+  PREGNANT
+  BREASTFEEDING
 }
 
 enum ActivityLevel {
@@ -1426,6 +1443,27 @@ model Product {
   ingredientsOriginal    String?
   translationSourceLang  String?
   translationStatus      String?
+  // Varens sprog (docs/DECISIONS.md 2026-10-15): det sprog, kolonnerne står
+  // på (ISO 639-1, fx "da", "de", "zh"). Kolonnerne er altid originalen og
+  // overskrives aldrig af en oversættelse; oversættelser ligger i
+  // ProductTranslation. null = ukendt endnu (udfyldes af vedligeholdet,
+  // src/lib/product-language.ts) — en vare med ukendt sprog oversættes ikke.
+  language               String?
+  // Sprogrobotten (scripts/quality-control-agent/language_local.py) har læst
+  // teksten og evt. rettet language. null = ikke tjekket endnu.
+  languageCheckedAt      DateTime?
+  // Varer uden varenavn (brand + subbrand): hvornår OpenAI er spurgt "Hvilken
+  // produkttype er <brand subbrand variant>?" (src/lib/product-type-name.ts).
+  // null = ikke spurgt endnu; vedligeholdet spørger én gang.
+  productTypeAskedAt     DateTime?
+  // Scannede varer med 0 kcal: hvornår det er tjekket, om varen er en
+  // alkoholisk drik, hvis næring kan skønnes (src/lib/alcohol-nutrition.ts).
+  // null = ikke tjekket endnu; vedligeholdet tjekker én gang.
+  alcoholCheckedAt       DateTime?
+  // Landet, varen/retten sælges i (ISO, fx "DK", "DE"); sat af importen for
+  // HelloFresh fra alle lande (scripts/hellofresh-import/markets.py). null = ukendt.
+  market                 String?
+  translations           ProductTranslation[]
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
@@ -1538,6 +1576,17 @@ model Product {
   offImageReview          OffImageReview?
   offImageReviewedAt      DateTime?
   offImageReviewedById    String?
+  // Beskåret/halveret forsidefoto (docs/DECISIONS.md 2026-10-15): fundet ved
+  // oprettelsen eller af robotten "front-image-check". Grund, billedets sti og
+  // hvornår; frontImageFixedAt = et nyt forsidefoto har erstattet det.
+  frontImageSuspect       String?
+  frontImageSuspectUrl    String?
+  frontImageSuspectAt     DateTime?
+  frontImageFixedAt       DateTime?
+  // 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): sidst varen blev
+  // tjekket med nye fotos fra en kunde. Er varen (eller tjekket) over to år
+  // gammel, fremstår den som ny ved næste scanning (src/lib/product-recheck.ts).
+  qualityCheckedAt        DateTime?
   discontinued     Boolean                @default(false)
   // Butiksvare uden kalorietal i produktarkene (docs/DECISIONS.md 2026-10-02):
   // kcal/protein/kulhydrat/fedt er 0 som pladsholder, ikke målte værdier.
@@ -1630,6 +1679,10 @@ model Product {
   // (docs/DECISIONS.md 2026-10-02). labelsScannedAt = sidste kørsel.
   labels             ProductLabel[]
   labelsScannedAt    DateTime?
+  // Den lokale mærkesøgning (quality-control-agent, 2026-10-15).
+  labelPhotoScans    LabelPhotoScan[]
+  // Originale produktbilleder fundet online (2026-10-15).
+  imageSearches      ProductImageSearch[]
   // Dyrefoder-billedtjek (natligt job "pet-food-scan", docs/DECISIONS.md 2026-10-07). petFoodCheckedAt = sidste kørsel.
   petFoodCheckedAt   DateTime?
   // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
@@ -1645,6 +1698,7 @@ model Product {
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
+  backPhotos         ProductBackPhoto[]
   cutoutJobs         ImageCutoutJob[]
   matchChecks        ProductMatchCheck[]
   photoAwards        ProductPhotoAward[]
@@ -1657,8 +1711,10 @@ model Product {
   nutritionReports   ProductNutritionReport[]
   shelfPhotoItems    ShelfPhotoItem[]
   scanSubmissions    ScanSubmission[]
+  rechecks           ProductRecheck[]
 
   @@index([externalSource, externalId])
+  @@index([externalSource, market])
   @@index([externalSource, offImageReview, offImageReviewedAt])
   @@map("products")
 }
@@ -1836,6 +1892,10 @@ model ImageCutoutJob {
   appliedAt      DateTime?
   label          ProductLabel?
 
+  // PRODUCT_FRONT: Google-søgningen efter originalbilledet online er kørt
+  // (logo-agent, docs/DECISIONS.md 2026-10-15). Fritlægningen venter på den.
+  webSearchedAt  DateTime?
+
   @@index([status, createdAt])
   @@index([brandId])
   @@index([analysisId])
@@ -1878,6 +1938,28 @@ model ProductLabel {
   @@unique([productId, key])
   @@index([key])
   @@map("product_labels")
+}
+
+// Lokal mærkesøgning (docs/DECISIONS.md 2026-10-15, brugerens regel: intern AI
+// først, OpenAI kun hvis intet findes). quality-control-agent søger
+// forsidefotoet af varer, der venter på mærkat-jobbet, igennem for kendte
+// logoer (OpenCV mod public/certifications og tidligere fritskrabede mærker) og
+// mærketekster (tesseract) og gemmer fundene her. Det natlige job "label-scan"
+// bruger fundene og spørger kun OpenAI, når intet blev fundet lokalt.
+model LabelPhotoScan {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
+  // Fotoets URL (som ai_product_analyses.image_url / products.imageUrl).
+  url       String
+  // [{ key, name, text, category, box, confidence }] — samme form som AI'ens fund.
+  labels    Json     @default("[]")
+  // Fotoet kunne ikke hentes eller læses lokalt.
+  failed    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([productId, url])
+  @@map("label_photo_scans")
 }
 
 enum ProductLabelCategory {
@@ -2360,6 +2442,22 @@ model GenericIngredient {
   category GenericIngredientCategory @default(OTHER)
   imageUrl String?
 
+  // Felterne fra arket "Generiske produkter.xlsx" (admin → Varer → Generiske
+  // produkter, docs/DECISIONS.md 2026-10-15). name = Titel (ental).
+  sheetCategory String? // Kategori, fx "Kernefrugt"
+  productType   String? // Produkttype, fx "Æble"
+  variation     String? // Variation, fx "med skræl"
+  keywords      String[] @default([])
+  properties    String[] @default([]) // Egenskaber, fx ["rå", "frost", "10%"]
+  // Kilde (påkrævet ved oprettelse i admin): FRIDA (fridaProductId) eller
+  // OTHER med fritekst og URL. Næring kopieres kun fra Frida/appens egne data.
+  sourceKind String?
+  sourceName String?
+  sourceUrl  String?
+  // Slettet i admin, men brugt i registreringer: skjules fra søgning, så
+  // registreringerne (snapshots) stadig kan åbnes.
+  archivedAt DateTime?
+
   // No packaging means no energideklaration to read — nutrition is resolved
   // once at creation time from the best-matching Frida (DTU) reference
   // product (externalSource="FRIDA", see the 2026-08-27 Frida entry in
@@ -2389,6 +2487,7 @@ model GenericIngredient {
   personalSearchHistory UserProductSearchHistory[]
   images            GenericIngredientImage[]
   ingredientRequests IngredientRequest[]
+  bugReports        BugReport[]
 
   @@map("generic_ingredients")
 }
@@ -2809,6 +2908,10 @@ model BugReport {
   // rettelser på samme produkt — se docs/DECISIONS.md 2026-09-19.
   product   Product? @relation(fields: [productId], references: [id])
   productId String?
+  // Samme link fra en generisk vare (GenericIngredient har sin egen tabel).
+  // Knappen vises på alle varer (brugerens regel 2026-10-15).
+  genericIngredient   GenericIngredient? @relation(fields: [genericIngredientId], references: [id], onDelete: SetNull)
+  genericIngredientId String?
 
   // Login-frit admin-godkendelseslink, samme mønster som Product.approvalToken.
   approvalToken    String?   @unique
@@ -2818,6 +2921,7 @@ model BugReport {
   notes              BugReportNote[]
 
   @@index([userId, productId])
+  @@index([userId, genericIngredientId])
   @@map("bug_reports")
 }
 
@@ -4161,6 +4265,49 @@ model BrandLogoSearch {
   @@map("brand_logo_searches")
 }
 
+// Originale produktbilleder fundet online (Google Vision WEB_DETECTION) for en
+// scannet vare — søgningen kører, før kamerafotoet fritlægges (brugerens regel
+// 2026-10-15: originalen online før AI-billedarbejde). Admin → Billedforslag
+// viser kamerafotoet, udklippet og fundene side om side.
+model ProductImageSearch {
+  id                String                  @id @default(cuid())
+  product           Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId         String
+  cutoutJobId       String?
+  // Kamerafotoets udsnit, der blev søgt med.
+  originalUrl       String
+  // PENDING_REVIEW | NO_CANDIDATES | CHOSEN | REJECTED
+  status            String
+  bestConfidence    Float?
+  chosenCandidateId String?
+  createdAt         DateTime                @default(now())
+  resolvedAt        DateTime?
+  candidates        ProductImageCandidate[]
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("product_image_searches")
+}
+
+model ProductImageCandidate {
+  id          String             @id @default(cuid())
+  search      ProductImageSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId    String
+  imageUrl    String
+  sourceUrl   String
+  pageUrl     String?
+  pageTitle   String?
+  // 0..1 — robottens vurdering af, at det er samme vare.
+  confidence  Float
+  transparent Boolean            @default(false)
+  width       Int
+  height      Int
+  createdAt   DateTime           @default(now())
+
+  @@index([searchId, confidence])
+  @@map("product_image_candidates")
+}
+
 model BrandLogoCandidate {
   id          String          @id @default(cuid())
   search      BrandLogoSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
@@ -4173,6 +4320,9 @@ model BrandLogoCandidate {
   confidence  Float
   brandInPage Boolean         @default(false)
   transparent Boolean         @default(false)
+  // AI-rentegning af originaludklippet (gpt-image-1), når intet fritlagt logo
+  // fandtes online (docs/DECISIONS.md 2026-10-15). sourceUrl = "openai:<model>".
+  aiGenerated Boolean         @default(false)
   width       Int
   height      Int
   createdAt   DateTime        @default(now())
@@ -5110,6 +5260,43 @@ model QuickEnrichmentJob {
   @@map("quick_enrichment_jobs")
 }
 
+// Ubeskårne bagsidebilleder fra Tilføj-kameraet (docs/DECISIONS.md
+// 2026-10-15): energi-/indholdstrinnets hele kamerabillede, gemt uden
+// beskæring ved siden af det kvadrat, AI læser ved oprettelsen. Uploades
+// under flowet (flowId) og kobles til varen, når den er oprettet. Nattens
+// robot "back-photo-scan" analyserer hvert billede præcis ÉN gang
+// (mærkninger, der ikke står på forsiden, finlæsning, udvidet stavekontrol);
+// analyzedAt sat = færdig, billedet indgår aldrig i senere kørsler.
+model ProductBackPhoto {
+  id         String    @id @default(cuid())
+  productId  String?
+  product    Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String?
+  flowId     String
+  // "nutrition" | "ingredients" — trinnet, billedet blev taget på.
+  step       String
+  imageUrl   String
+  width      Int?
+  height     Int?
+  attempts   Int       @default(0)
+  // Analysens svar (mærkninger, finlæst tekst, stavefund) eller fejlen.
+  result     Json?
+  error      String?
+  analyzedAt DateTime?
+  // Lokal læsning først (quality-control-agent back_local.py, brugerens regel
+  // 2026-10-15: OCR først, intern AI før OpenAI): { labels, text, confidence,
+  // doubtfulWords }. Nattens analyse bruger den; OpenAI læser kun billedet,
+  // når den lokale søgning ingen mærker fandt.
+  localResult    Json?
+  localScannedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([analyzedAt, createdAt])
+  @@index([flowId])
+  @@index([productId])
+  @@map("product_back_photos")
+}
+
 // Natlig robot "energy-split-check" (docs/DECISIONS.md 2026-10-07): en vare,
 // hvis energifordeling (% af kcal fra protein/kulhydrat/fedt) afviger fra
 // andre varer med samme brand/produkttype/serie/variant/smag, der kun
@@ -5133,6 +5320,78 @@ model ProductEnergySplitFlag {
 
   @@index([reviewedAt])
   @@map("product_energy_split_flags")
+}
+
+// 2-års kvalitetstjek (docs/DECISIONS.md 2026-10-15): en kunde scanner en vare,
+// der har ligget i databasen i over to år. Kameraet tager fotos som ved en ny
+// vare, kunden får varens tidligere info med det samme, og fotoene gemmes her.
+// Kun det natlige job "product-recheck" læser dem: AI'en sammenligner det nye
+// forsidefoto med originalen og læser energi/indhold. Ændringer går til admin
+// → Nye varer → 2-års tjek, som tager stilling, FØR billedet fritlægges
+// (ingen spildte tokens); det nye billede er valgt som standard.
+model ProductRecheck {
+  id                       String               @id @default(cuid())
+  product                  Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId                String
+  // Kunden, der scannede. Registreringer fra og med createdAt får de nye tal.
+  userId                   String?
+  createdAt                DateTime             @default(now())
+  status                   ProductRecheckStatus @default(SUBMITTED)
+  marketRegion             String               @default("DK")
+  signals                  Json?
+  frontPhotoUrl            String
+  nutritionPhotoUrl        String?
+  ingredientsPhotoUrl      String?
+  nutritionOcrText         String?
+  nutritionOcrConfidence   Float?
+  ingredientsOcrText       String?
+  ingredientsOcrConfidence Float?
+  // Varen, som den var ved scanningen: billede, navn, næring og ingredienser.
+  originalImageUrl         String?
+  original                 Json
+  // Intern AI først (REGLER: "AI: intern AI først"): quality-control-agent
+  // (`recheck-local`) sammenligner det nye foto med originalen lokalt
+  // (DINOv2, farve, struktur; 0-1). OpenAI spørges kun ved tvivl.
+  localVisualScore         Float?
+  localColorScore          Float?
+  localStructuralScore     Float?
+  localComparedAt          DateTime?
+  localError               String?
+  // Nattens vurdering: om billedet er ændret (eller det nye er bedre), hvad
+  // AI'en så, de aflæste værdier og de felter, der afviger fra originalen.
+  analyzedAt               DateTime?
+  imageChanged             Boolean?
+  imageNote                String?
+  readValues               Json?
+  changedFields            String[]             @default([])
+  error                    String?
+  // Admins valg (standard: det nyeste).
+  decidedAt                DateTime?
+  decidedById              String?
+  useNewImage              Boolean?
+  useNewData               Boolean?
+  // Fritlægningen af det nye forsidefoto (kun efter admins ja, kun om natten).
+  cutoutJobId              String?
+  closedAt                 DateTime?
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("product_rechecks")
+}
+
+enum ProductRecheckStatus {
+  // Fotos gemt — venter på nattens AI-vurdering.
+  SUBMITTED
+  // Ingen ændringer — lukket uden admin.
+  NO_CHANGE
+  // Ændringer fundet — admin tager stilling.
+  AWAITING_ADMIN
+  // Admin valgte det nye billede — fritlægges og sættes på varen i nat.
+  APPROVED
+  // Afsluttet.
+  DONE
+  // Vurderingen fejlede — varen tjekkes igen ved næste scanning.
+  FAILED
 }
 
 // Open Food Facts-kontrol (docs/DECISIONS.md 2026-10-11): robotten "off-quality"
@@ -5307,4 +5566,102 @@ model ScreeningEntry {
   @@unique([screeningId, date])
   @@index([userId, date])
   @@map("screening_entries")
+}
+
+// --- Stavekontrol-robotten (docs/DECISIONS.md 2026-10-14) ---------------------
+// Nattens robot (job "spelling-check", src/lib/spelling-robot.ts) læser
+// varernes ingredienslister med stavemotoren (src/lib/spelling-engine.ts).
+// Sikre rettelser laves straks (AUTO_FIXED, med ordet før/efter, så de kan
+// fortrydes); usikre bliver forslag (PENDING) på admin → Stavekontrol, hvor
+// admin godkender, afviser eller skriver sin egen rettelse.
+enum SpellingIssueStatus {
+  AUTO_FIXED
+  PENDING
+  ACCEPTED
+  REJECTED
+  REVERTED
+}
+
+model SpellingIssue {
+  id            String              @id @default(cuid())
+  productId     String
+  // Feltet på varen (i dag kun "ingredientsText").
+  field         String              @default("ingredientsText")
+  // Ordet som det stod, og robottens forslag: null = intet forslag, "" = slet.
+  word          String
+  suggestion    String?
+  confidence    Float
+  // learned | look_alike | allergen | junk | e_number | nutrition
+  reason        String
+  // Sammenhængen omkring ordet, som teksten så ud, da det blev fundet.
+  contextBefore String
+  contextAfter  String
+  // Ordets placering i teksten, da det blev fundet.
+  position      Int
+  status        SpellingIssueStatus
+  // Det, der står i teksten nu (robottens eller admins rettelse).
+  appliedText   String?
+  createdAt     DateTime            @default(now())
+  reviewedAt    DateTime?
+  reviewedById  String?
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@map("spelling_issues")
+}
+
+// Admins afgørelser — robotten og kontrollen ved gem lærer af dem: et ord med
+// `replacement` rettes altid til det ("" = slettes); uden er ordet rigtigt.
+model SpellingRule {
+  word        String   @id
+  replacement String?
+  createdAt   DateTime @default(now())
+  createdById String?
+
+  @@map("spelling_rules")
+}
+
+// Katalogets ordforråd: ord og hvor mange varers lister de står i. Skrives
+// af robotten hver nat; ord i mindst CORPUS_MIN_PRODUCTS varer regnes for kendte.
+model SpellingWord {
+  word         String @id
+  productCount Int
+
+  @@map("spelling_words")
+}
+
+// Fingeraftryk af hver vares liste ved sidste gennemsyn — kun ændrede lister
+// læses igen.
+model SpellingScan {
+  productId   String   @id
+  fingerprint String
+  scannedAt   DateTime @default(now())
+
+  @@map("spelling_scans")
+}
+
+// Oversættelse af en vares tekst til ét app-sprog (docs/DECISIONS.md
+// 2026-10-15). Laves første gang en bruger med sproget ser varen og gemmes.
+// sourceHash er et fingeraftryk af varens originaltekst: ændres varen,
+// laves oversættelsen forfra. brandName er brandets navn skrevet med
+// latinske bogstaver (brandet selv omdøbes aldrig).
+model ProductTranslation {
+  id              String   @id @default(cuid())
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String
+  locale          String
+  sourceHash      String
+  name            String?
+  namePlural      String?
+  productType     String?
+  variant         String?
+  packageSizeText String?
+  ingredientsText String?
+  subbrand        String?
+  brandName       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([productId, locale])
+  @@map("product_translations")
 }

@@ -419,6 +419,7 @@
     "helpCenter": "Helpcentrum",
     "learnTheApp": "Leer de app kennen",
     "integrations": "Integraties",
+    "import": "Importeren",
     "terms": "Voorwaarden",
     "privacyPolicy": "Privacybeleid",
     "dataTracking": "Gegevens bijhouden",
@@ -437,6 +438,7 @@
     "frontPage": "Startscherm",
     "recommendedLimits": "Aanbevolen grenzen",
     "menstrualCycle": "Menstruatiecyclus",
+    "pregnancy": "Zwangerschap en borstvoeding",
     "sleepQuality": "Slaapbeleving",
     "calendarView": "Agendaweergave",
     "displayHelpTip": "Hier bepaal je hoe het startscherm, de agenda en waarschuwingen eruitzien op dit apparaat.",
@@ -445,7 +447,8 @@
     "showTooltips": "Tooltips tonen",
     "showTooltipsDescription": "Toont een korte hulptekst onder de verschillende instellingen en vensters.",
     "showStartupTips": "Starttips tonen",
-    "showStartupTipsDescription": "Toont een korte tip op het hele scherm wanneer je de app opent, over functies die je nog niet hebt gebruikt."
+    "showStartupTipsDescription": "Toont een korte tip op het hele scherm wanneer je de app opent, over functies die je nog niet hebt gebruikt.",
+    "translation": "Vertaling"
   },
   "guide": {
     "back": "Terug",
@@ -514,7 +517,9 @@
     "warnOnRecommendedLimitsDescription": "Toont een donkerrode rand van 1 px rond statistiekvakken wanneer een gedocumenteerde aanbevolen grens voor jouw regio en profiel is overschreden. Ontbrekende gegevens worden niet gemarkeerd.",
     "uncertainty": "Onzekerheid",
     "autoExpandUncertainty": "Onzekerheid automatisch uitklappen",
-    "autoExpandUncertaintyDescription": "Een groene ~ staat altijd voor waarden die we hebben geschat, omdat de fabrikant ze zelf niet opgeeft. Als je dit aanzet, verschijnt de grijze regel met de onzekerheid onder de waarde zonder dat je hoeft te tikken."
+    "autoExpandUncertaintyDescription": "Een groene ~ staat altijd voor waarden die we hebben geschat, omdat de fabrikant ze zelf niet opgeeft. Als je dit aanzet, verschijnt de grijze regel met de onzekerheid onder de waarde zonder dat je hoeft te tikken.",
+    "translateForeignText": "Vreemde talen vertalen naar het Nederlands",
+    "translateForeignTextDescription": "Producten in een andere taal dan het Nederlands worden vertaald getoond. Boven de productnaam staat uit welke taal is vertaald, met een link naar het origineel. Uitgeschakeld zie je producten in hun oorspronkelijke taal."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Vraag naar de slaap van afgelopen nacht",
@@ -533,6 +538,26 @@
     "intro": "Log je menstruatiecyclus en krijg het als optie in het toevoegmenu.",
     "toggleLabel": "Menstruatiecyclus tonen",
     "toggleDescription": "Voegt \"Menstruatie\" toe aan het toevoegmenu, zodat je het begin van je cyclus kunt loggen."
+  },
+  "pregnancySettings": {
+    "intro": "Ben je zwanger of geef je borstvoeding, dan tellen we de officiële toeslag (EFSA) bij je energiebehoefte op en stellen we nooit een calorietekort in. De week telt vanzelf door, dus pas dit alleen aan als er iets verandert.",
+    "question": "Ben je zwanger of geef je borstvoeding?"
+  },
+  "pregnancy": {
+    "none": "Nee",
+    "status": {
+      "PREGNANT": "Zwanger",
+      "BREASTFEEDING": "Borstvoeding"
+    },
+    "weekLabel": "In welke week zit je?",
+    "weekPlaceholder": "bijv. 20",
+    "weekHint": "Trimester 1 is week 1–13, trimester 2 week 14–27 en trimester 3 vanaf week 28. De week telt vanzelf door.",
+    "trimester": "{trimester}e trimester",
+    "extraKcal": "+{kcal} kcal per dag",
+    "breastfeedingWeeksLabel": "Hoeveel weken geef je al borstvoeding?",
+    "breastfeedingWeeksPlaceholder": "bijv. 8",
+    "breastfeedingHint": "De eerste 26 weken rekenen we met volledige borstvoeding (+500 kcal per dag), daarna met gedeeltelijke borstvoeding (+300 kcal). De weken tellen vanzelf door.",
+    "noDeficit": "We stellen nooit een calorietekort in terwijl je zwanger bent of borstvoeding geeft. Volg altijd het advies van je verloskundige of arts."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -1005,9 +1030,9 @@
     "labelTextFound": "Voedingswaarde of ingrediënten gelezen",
     "frontCaptured": "Voorkant is gescand",
     "scanBarcode": "Streepjescode scannen",
-    "scanFront": "Foto scannen",
-    "scanNutrition": "Energie scannen",
-    "scanIngredients": "Ingrediëntenlijst scannen",
+    "scanFront": "Maak een foto van de voorkant",
+    "scanNutrition": "Fotografeer de voedingswaarden",
+    "scanIngredients": "Fotografeer de ingrediëntenlijst",
     "readingImage": "Foto lezen...",
     "searchingDatabase": "Database doorzoeken...",
     "comparingKnownItems": "Vergelijken met bekende producten...",
@@ -1031,7 +1056,15 @@
     "stepDone": "{step}: gemaakt en gelezen",
     "bothFound": "Energie en inhoud gevonden op dezelfde foto",
     "chooseObject": "Tik op het product dat in beeld moet zijn",
-    "useWholePhoto": "Hele foto gebruiken"
+    "useWholePhoto": "Hele foto gebruiken",
+    "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over.",
+    "skipIngredients": "Skip",
+    "shutter": "Take photo",
+    "shutterHint": "Press the shutter when the product is sharp in the picture.",
+    "creating": "Product wordt aangemaakt …",
+    "sendingPhotos": "Foto's worden verzonden …",
+    "processingPhotos": "Foto’s worden verwerkt: {steps} …"
   },
   "foods": {
     "title": "Voedingsmiddelen",
@@ -1849,7 +1882,51 @@
     "noEntriesYet": "Nog geen lichaamsmaten geregistreerd.",
     "chooseSexHint": "Kies je geslacht onder Profiel → Profiel bewerken om de tekeningen te zien van waar je meet.",
     "deleteAria": "Meting verwijderen",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "voice": {
+      "start": "Maten inspreken",
+      "startHint": "Tik en ik loop de maten één voor één met je door.",
+      "stop": "Spraakgids stoppen",
+      "speaking": "Spreekt…",
+      "listening": "Luistert…",
+      "youSaid": "Je zei: {text}",
+      "unsupported": "Spraakherkenning is hier niet beschikbaar. Typ de maten in de velden.",
+      "micDenied": "De app heeft geen toegang tot de microfoon. Geef toegang in de instellingen van je telefoon.",
+      "unitCm": "centimeter",
+      "unitIn": "inch",
+      "intro": "Ik loop je lichaamsmaten met je door. Zeg na elke maat het getal. Zeg overslaan om een maat over te slaan, terug om een maat terug te gaan, of stop om te eindigen.",
+      "ask": "Nu heb ik de omtrek van je {target} nodig.",
+      "next": "Geef me nu de omtrek van je {target}.",
+      "recorded": "Ik heb {value} {unit} genoteerd.",
+      "skipped": "Die slaan we over.",
+      "notHeard": "Ik hoorde niets. Zeg de omtrek van je {target}.",
+      "notUnderstood": "Dat verstond ik niet. Zeg de omtrek van je {target} als getal, bijvoorbeeld 82 komma 5.",
+      "outOfRange": "{value} klinkt niet goed. Zeg de omtrek van je {target} nog een keer.",
+      "done": "Bedankt, al je maten zijn genoteerd.",
+      "stopped": "Oké, ik stop hier. Wat je hebt gezegd, is opgeslagen.",
+      "giveUp": "Ik stop omdat ik je niet kon horen. Tik op de microfoon om verder te gaan.",
+      "noFields": "Er zijn geen maten om in te vullen. Kies ze onder Instellingen, Weergave, Lichaamsmaten.",
+      "target": {
+        "chestCm": "borst",
+        "waistCm": "taille",
+        "hipCm": "heupen",
+        "upperArmCm": "bovenarm",
+        "thighCm": "dij",
+        "buttockCm": "billen",
+        "calfCm": "kuit",
+        "ankleCm": "enkel"
+      },
+      "how": {
+        "chestCm": "Meet rond je borst op het breedste punt, met het meetlint onder je armen.",
+        "waistCm": "Meet rond je taille op het smalste punt, meestal net boven de navel. Adem eerst rustig uit.",
+        "hipCm": "Meet rond je heupen op het breedste punt.",
+        "upperArmCm": "Meet rond je bovenarm halverwege schouder en elleboog, met de arm ontspannen hangend.",
+        "thighCm": "Meet rond je dij halverwege heup en knie.",
+        "buttockCm": "Meet rond je billen op het breedste punt, met de voeten tegen elkaar.",
+        "calfCm": "Meet rond het midden van je kuit, waar die het dikst is.",
+        "ankleCm": "Meet rond je enkel net boven het enkelbot, waar die het smalst is."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",
@@ -2272,7 +2349,13 @@
       "vitaminB9": "Vitamine B9 (foliumzuur)",
       "vitaminB12": "Vitamine B12"
     },
-    "swapLiquidUnit": "Wisselen tussen volume en gram"
+    "swapLiquidUnit": "Wisselen tussen volume en gram",
+    "translatedFrom": "Vertaald naar het {target} uit het {source}.",
+    "translatedTo": "Vertaald naar het {target}.",
+    "originalLanguage": "Origineel in het {source}.",
+    "originalText": "Originele tekst.",
+    "showOriginal": "Toon origineel",
+    "showTranslation": "Toon vertaling"
   },
   "photoAward": {
     "bannerSingle": "Je kunt {points} punten verdienen door een nieuwe foto te maken van {photoType}.",
@@ -2289,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Verdien {points} punten door het product bij te werken",
+    "bannerPhoto": "Verdien {points} punten door een mooie nieuwe foto toe te voegen",
     "toggle": "Banner tonen of verbergen",
     "tileFront": "Voorkant",
     "tileNutrition": "Energie",
@@ -2848,11 +2932,17 @@
     "stepProgress": "Stap {current} van {total} voltooid",
     "sleepPatternQuestion": "Heb je een vast slaappatroon?",
     "shiftWorkQuestion": "Komt dat door wisselende werktijden of nachtwerk?",
+    "pregnancyQuestion": "Ben je zwanger of geef je borstvoeding?",
+    "pregnancyHint": "Dan tellen we de officiële toeslag bij je energiebehoefte op. Altijd aan te passen onder Instellingen → Weergave.",
     "dailyLogQuestion": "Wil je dagelijks werktijden of slaaptijden registreren?",
     "workHours": "Werktijden",
     "sleepTimes": "Slaaptijden",
     "healthImportQuestion": "Wil je gegevens van je smartwatch of gezondheidsapp importeren?",
     "healthImportHint": "Kan altijd later worden ingesteld onder persoonlijke gegevens.",
+    "migrationImportQuestion": "Heb je al een account bij een andere aanbieder?",
+    "migrationImportHint": "Dan kun je je gegevens misschien importeren, zodat je geschiedenis meekomt.",
+    "importNow": "Nu importeren",
+    "importLater": "Later",
     "setUpNow": "Nu instellen",
     "next": "Volgende",
     "remindLater": "Herinner me later",
@@ -2927,6 +3017,8 @@
     "rest": "Rust (je stofwisseling)",
     "everyday": "Je dagelijks leven",
     "training": "Je sport",
+    "pregnancy": "Zwangerschap",
+    "breastfeeding": "Borstvoeding",
     "need": "Je energiebehoefte",
     "goal": "Je gewichtsdoel",
     "budget": "Je dagbudget",
@@ -2942,6 +3034,8 @@
     "whyRest": "Wat je lichaam verbruikt als je de hele dag stil zou liggen. Berekend op basis van gewicht, lengte, leeftijd en geslacht (Mifflin-St Jeor).",
     "whyEveryday": "Werk, lopen, staan en vervoer — zonder sport. Je antwoorden komen overeen met het niveau \"{level}\" (PAL {pal}).",
     "whyTraining": "Je typische sport verdeeld over de week, netto berekend, zodat de ruststofwisseling niet dubbel wordt geteld. Registreer je een training, dan vervangt die de toeslag van die dag.",
+    "whyPregnancy": "Officiële toeslag (EFSA): 70 kcal per dag in trimester 1, 260 in trimester 2 en 500 in trimester 3. Je zit in trimester {trimester} (week {week}).",
+    "whyBreastfeeding": "Officiële toeslag (EFSA): 500 kcal per dag bij volledige borstvoeding in de eerste 6 maanden, daarna ongeveer 300 bij gedeeltelijke borstvoeding. Je geeft al {weeks} weken borstvoeding.",
     "whyGoal": "Het verschil tussen wat je verbruikt en wat je zou moeten eten om je doel in een gezond tempo te bereiken.",
     "disclaimer": "Alle getallen zijn schattingen, geen metingen. Ze vervangen geen advies van een arts of diëtist.",
     "missingData": "Om je energiebehoefte te berekenen missen we:",
@@ -2953,6 +3047,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Onder de 18 jaar stellen we geen caloriedeficit in — het lichaam groeit nog.",
+      "PREGNANCY_NO_DEFICIT": "Je bent zwanger of geeft borstvoeding, dus we stellen geen calorietekort in — bespreek je gewicht met je verloskundige of arts.",
       "UNDERWEIGHT_NO_LOSS": "Je gewicht ligt onder wat we als gezond beschouwen, dus we stellen geen gewichtsverlies voor.",
       "TARGET_RAISED_TO_MIN_BMI": "Je gewichtsdoel is verhoogd naar het laagste gewicht dat we als gezond beschouwen voor je lengte.",
       "PACE_CAPPED": "Het tempo is verlaagd naar wat gezond is om per week af te vallen.",
@@ -2983,6 +3078,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Opslaan als favoriet",
+    "removeFavorite": "Favoriet verwijderen",
+    "favoriteSaved": "Opgeslagen",
     "favorite": "Favoriet",
     "reportErrorAria": "Een fout gevonden?",
     "reportError": "Fout",
@@ -3538,8 +3635,13 @@
   },
   "migrationImport": {
     "title": "Move from MyFitnessPal or Lifesum",
+    "landingTitle": "Importeren",
+    "landingIntro": "Gebruik je al MyFitnessPal of Lifesum? Dan kun je je gegevens automatisch importeren.",
+    "otherProvider": "Gebruik je een andere aanbieder en wil je je oude gegevens importeren? Neem contact met ons op.",
+    "contactUs": "Neem contact op",
+    "contactSubject": "Import van een andere aanbieder",
+    "providerTitle": "Importeren uit {provider}",
     "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
-    "fromApp": "From the app",
     "step1": "Start a screen recording on your phone (or take screenshots).",
     "step2": "Open the diary in the other app and scroll calmly back, day by day.",
     "step3": "Stop the recording and choose the video here.",

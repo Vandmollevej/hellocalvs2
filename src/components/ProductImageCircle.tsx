@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Produktskærmens billedcirkel (190 px) med Hello Cal-frugten. Samme faste
 // størrelse med og uden billede, så produktskærmen og registreringsvisningen
@@ -18,7 +19,7 @@ export function ProductImageCircle({
       <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt="" className="block h-full w-full max-h-full max-w-full object-cover" />
+          <img src={imageThumb(imageUrl, 384)} alt="" className="block h-full w-full max-h-full max-w-full object-cover" />
         ) : (
           <div aria-hidden="true" className="h-full w-full" />
         )}
@@ -29,7 +30,7 @@ export function ProductImageCircle({
       {logoUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={logoUrl}
+          src={imageThumb(logoUrl, 256)}
           alt=""
           className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
         />

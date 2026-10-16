@@ -8,6 +8,8 @@ import { productConfidencePercent } from "@/lib/pending-product-confidence";
 import { asNumberRecord } from "@/lib/nutrients";
 import { t } from "@/lib/admin-i18n";
 import { userLabel } from "@/lib/user-label";
+import { countProductRechecks, listProductRechecks } from "@/lib/product-recheck";
+import { RecheckCard } from "@/components/admin/RecheckCard";
 
 const SORTS = [
   { key: "time", label: "Tidspunkt (nyeste øverst)" },
@@ -41,8 +43,59 @@ export default async function AdminProductsPage({
   if (!admin) redirect("/admin/login");
 
   const { tab: tabParam, sort: sortParam } = await searchParams;
-  const tab = tabParam === "auto" ? "auto" : "user";
+  const tab = tabParam === "auto" ? "auto" : tabParam === "recheck" ? "recheck" : "user";
   const sort: SortKey = SORTS.some((s) => s.key === sortParam) ? (sortParam as SortKey) : "time";
+  const recheckCounts = await countProductRechecks().catch(() => ({ awaiting: 0, waitingForNight: 0 }));
+  const tabClass = (active: boolean) =>
+    `hf-type-body rounded-md px-3 py-1.5 ${active ? "hf-selected" : "border border-hf-tan-dark text-text-secondary"}`;
+  const tabs = (
+    <div className="flex flex-wrap gap-2">
+      <Link href={`/admin/products?tab=user&sort=${sort}`} className={tabClass(tab === "user")}>
+        {t(admin.locale, "products_tab_user")}
+      </Link>
+      <Link href={`/admin/products?tab=auto&sort=${sort}`} className={tabClass(tab === "auto")}>
+        {t(admin.locale, "products_tab_auto")}
+      </Link>
+      <Link href={`/admin/products?tab=recheck&sort=${sort}`} className={tabClass(tab === "recheck")}>
+        {t(admin.locale, "products_tab_recheck")}
+        {recheckCounts.awaiting > 0 ? ` (${recheckCounts.awaiting})` : ""}
+      </Link>
+    </div>
+  );
+
+  // 2-års tjek (docs/DECISIONS.md 2026-10-15): varer over to år, som en kunde
+  // har taget nye fotos af, og hvor nattens AI fandt ændringer.
+  if (tab === "recheck") {
+    const rechecks = await listProductRechecks(["AWAITING_ADMIN"]);
+    return (
+      <div className="hf-admin-page">
+        <h1 className="hf-type-title text-hf-black min-w-0 truncate">{t(admin.locale, "products_title")}</h1>
+        {tabs}
+        <p className="hf-type-small text-text-secondary">
+          Varer, der har ligget i databasen i over to år, fremstår som nye, når en kunde scanner dem. Nattens AI
+          sammenligner det nye foto med originalen og læser energi og indhold; kun ændringer står her. Det nye er valgt
+          som standard — billedet fritlægges først, når du har gemt.
+          {recheckCounts.waitingForNight > 0 ? ` ${recheckCounts.waitingForNight} venter på nattens kørsel.` : ""}
+        </p>
+        {rechecks.length === 0 ? (
+          <p className="hf-type-body text-text-secondary">Ingen 2-års tjek venter på dig.</p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {rechecks.map((item) => (
+              <RecheckCard
+                key={item.id}
+                item={{
+                  ...item,
+                  productCreatedLabel: createdAtFormat.format(item.productCreatedAt),
+                  scannedLabel: createdAtFormat.format(item.createdAt),
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const where = {
     status: "PENDING" as const,
@@ -158,8 +211,6 @@ export default async function AdminProductsPage({
     dietaryTags: Object.values(asStringRecord(p.dietaryTags)),
   }));
 
-  const tabClass = (active: boolean) =>
-    `hf-type-body rounded-md px-3 py-1.5 ${active ? "hf-selected" : "border border-hf-tan-dark text-text-secondary"}`;
   const activeSort = SORTS.find((s) => s.key === sort)!;
 
   return (
@@ -189,14 +240,7 @@ export default async function AdminProductsPage({
           </div>
         </details>
       </div>
-      <div className="flex gap-2">
-        <Link href={`/admin/products?tab=user&sort=${sort}`} className={tabClass(tab === "user")}>
-          {t(admin.locale, "products_tab_user")}
-        </Link>
-        <Link href={`/admin/products?tab=auto&sort=${sort}`} className={tabClass(tab === "auto")}>
-          {t(admin.locale, "products_tab_auto")}
-        </Link>
-      </div>
+      {tabs}
       {products.length === 0 ? (
         <p className="hf-type-body text-text-secondary">Ingen varer afventer godkendelse i denne fane.</p>
       ) : (

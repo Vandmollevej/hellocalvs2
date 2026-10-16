@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { productImageForViewer } from "@/lib/product-display-image";
-import { unauthorized } from "@/lib/session";
+import { getSessionUser, unauthorized } from "@/lib/session";
+import { localizedProductNames } from "@/lib/product-translations";
 import { getProfileContext, getProfileUser, shareRegistration } from "@/lib/family-access";
 import { fulfillMatchingForward } from "@/lib/forwards";
 import { getUserSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
@@ -29,6 +30,10 @@ export async function GET() {
       include: {
         product: {
           select: {
+            id: true,
+            name: true,
+            language: true,
+            externalSource: true,
             imageUrl: true,
             pendingImageUrl: true,
             createdByUserId: true,
@@ -48,11 +53,24 @@ export async function GET() {
       take: 3000,
     });
 
+    // Varens navn på brugerens sprog (docs/DECISIONS.md 2026-10-15): kun når
+    // registreringens titel stadig er varens originalnavn — snapshottet i
+    // databasen røres ikke.
+    const viewer = await getSessionUser().catch(() => null);
+    const localized = await localizedProductNames(
+      registrations.flatMap((r) => (r.product ? [r.product] : [])),
+      viewer,
+    ).catch(() => new Map<string, { name: string; brandName: string | null }>());
+
     // G3-klassifikation (kødtype, alkohol, sukkerholdig drik) beregnes fra
     // produktet; kun de visningsfelter, klienten bruger, sendes med.
     return NextResponse.json({
       registrations: registrations.map(({ product, ...registration }) => ({
         ...registration,
+        titleSnapshot:
+          product && registration.titleSnapshot === product.name
+            ? (localized.get(product.id)?.name ?? registration.titleSnapshot)
+            : registration.titleSnapshot,
         product: product
           ? {
               imageUrl: productImageForViewer(product, user.id),

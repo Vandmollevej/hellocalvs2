@@ -13,6 +13,11 @@ import {
 } from "@/lib/product-label-ai";
 import { labelsToFilterPatch } from "@/lib/product-label-filters";
 
+// Intern AI først (brugerens regel 2026-10-15): forsidefotoet søges først
+// igennem lokalt af quality-control-agent (label_photo_scans,
+// scripts/quality-control-agent/label_local.py); OpenAI læser kun fotos,
+// hvor intet blev fundet lokalt.
+//
 // Natligt job "label-scan" (docs/DECISIONS.md 2026-10-02): finder mærkater
 // (laktosefri, Haltungsform, QMilch …) på forsiden af varer, der ikke er
 // scannet for mærkater endnu. Lavere prioritet end selve scanningen, så det
@@ -85,12 +90,18 @@ export async function storeDetectedLabels({
   sourceUrl,
   labels,
   filters,
+  markScanned = true,
+  cutouts = true,
 }: {
   productId: string;
   analysisId: string | null;
   sourceUrl: string;
   labels: DetectedLabel[];
   filters: Candidate["filters"];
+  // Bagsidebilledets engangsanalyse (src/lib/product-back-photos.ts): forsiden
+  // markeres ikke som scannet, og mærkerne fritskrabes ikke fra bagsiden.
+  markScanned?: boolean;
+  cutouts?: boolean;
 }) {
   const kept = labels.filter((l) => l.confidence >= MIN_STORE_CONFIDENCE);
   await prisma.$transaction(async (tx) => {
@@ -107,7 +118,7 @@ export async function storeDetectedLabels({
         ? await tx.productLabel.update({ where: { id: existing.id }, data: base })
         : await tx.productLabel.create({ data: { ...base, productId, key: label.key } });
       // Fritskrabning kun én gang pr. mærke, og kun når der er en boks.
-      if (label.box && !existing?.cutoutJobId && !existing?.imageUrl) {
+      if (cutouts && label.box && !existing?.cutoutJobId && !existing?.imageUrl) {
         const job = await tx.imageCutoutJob.create({
           data: {
             kind: "PRODUCT_LABEL",
@@ -126,7 +137,7 @@ export async function storeDetectedLabels({
     if (Object.keys(patch).length) {
       await tx.productFilters.upsert({ where: { productId }, create: { productId, ...patch }, update: patch });
     }
-    await tx.product.update({ where: { id: productId }, data: { labelsScannedAt: new Date() } });
+    if (markScanned) await tx.product.update({ where: { id: productId }, data: { labelsScannedAt: new Date() } });
   });
   return kept.length;
 }
@@ -169,8 +180,42 @@ export async function scanProductLabels(): Promise<string> {
   let found = 0;
   let failed = 0;
   let skipped = 0;
+  let local = 0;
+  let waiting = 0;
   for (const product of products) {
     const source = pickSource(product);
+    if (source) {
+      // Intern AI først (brugerens regel 2026-10-15): quality-control-agent har
+      // søgt fotoet igennem lokalt (label_photo_scans). Er det ikke sket endnu,
+      // venter varen. Fandt den noget, bruges det uden OpenAI.
+      const scan = await prisma.labelPhotoScan.findUnique({
+        where: { productId_url: { productId: product.id, url: source.url } },
+        select: { labels: true },
+      });
+      if (!scan) {
+        waiting += 1;
+        continue;
+      }
+      const localLabels = cleanLabelsAnalysis({ labels: scan.labels }).labels;
+      if (localLabels.length) {
+        try {
+          found += await storeDetectedLabels({
+            productId: product.id,
+            analysisId: source.analysisId,
+            sourceUrl: source.url,
+            labels: localLabels,
+            filters: product.filters,
+          });
+          scanned += 1;
+          local += 1;
+        } catch (error) {
+          failed += 1;
+          console.error(`[label-scan] ${product.id} lokale fund kunne ikke gemmes`, error);
+        }
+        continue;
+      }
+    }
+    // OpenAI kun, når den lokale søgning intet fandt.
     const photo = source ? await loadPhoto(source.url) : null;
     if (!source || !photo) {
       // Intet læsbart foto: markér som scannet, så varen ikke blokerer køen hver nat.
@@ -200,5 +245,5 @@ export async function scanProductLabels(): Promise<string> {
       console.error(`[label-scan] ${product.id} fejlede (${LABELS_PROMPT_VERSION})`, error);
     }
   }
-  return `${products.length} varer i kø, ${scanned} scannet, ${found} mærkater fundet, ${skipped} uden foto, ${failed} fejl`;
+  return `${products.length} varer i kø, ${scanned} scannet (${local} lokalt, ${scanned - local} via OpenAI), ${found} mærkater fundet, ${waiting} venter på lokal søgning, ${skipped} uden foto, ${failed} fejl`;
 }

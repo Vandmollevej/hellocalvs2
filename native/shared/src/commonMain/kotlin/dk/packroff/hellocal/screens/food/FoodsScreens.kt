@@ -311,7 +311,7 @@ fun DrinksScreen(args: RouteArgs) {
                     row.forEach { drink ->
                         HcCard(Modifier.weight(1f), onClick = { nav.push("/drinks/${drink.id}$suffix") }) {
                             Box(Modifier.size(96.dp).clip(CircleShape).background(HcColors.Cream).align(Alignment.CenterHorizontally), contentAlignment = Alignment.Center) {
-                                if (drink.imageUrl != null) FoodImage(drink.imageUrl, Modifier.size(96.dp), ContentScale.Crop)
+                                if (drink.imageUrl != null) FoodImage(drink.imageUrl, Modifier.size(96.dp), ContentScale.Crop, thumbWidth = 384)
                                 else HcIcon("GlassCocktail", size = 36.dp, color = HcColors.Black, stroke = 1.5f)
                             }
                             HcText(drink.name, HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.Black, bold = true, align = TextAlign.Center)
@@ -378,7 +378,7 @@ fun DrinkDetailScreen(args: RouteArgs) {
             if (d != null) {
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
-                        if (d.imageUrl != null) FoodImage(d.imageUrl, Modifier.size(180.dp), ContentScale.Crop, contentDescription = d.name)
+                        if (d.imageUrl != null) FoodImage(d.imageUrl, Modifier.size(180.dp), ContentScale.Crop, contentDescription = d.name, thumbWidth = 640)
                         else HcIcon("GlassCocktail", size = 72.dp, color = HcColors.Black, stroke = 1.25f)
                     }
                 }

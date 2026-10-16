@@ -5,6 +5,7 @@ import { IconChevronRight, IconSoup } from "@tabler/icons-react";
 import { Skeleton, SkeletonTitleLines } from "@/components/hf/Skeleton";
 import { trackRecipeClick } from "@/lib/recipe-clicks";
 import { mealKitForId } from "@/lib/meal-kit-providers";
+import { imageThumb } from "@/lib/image-thumb";
 
 // En opskriftsrække (billede, navn, undertekst, pil). Bruges af Opskrifter
 // og Favoritter.
@@ -57,7 +58,7 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
         {row.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={row.imageUrl} alt="" className="h-full w-full object-cover" />
+          <img src={imageThumb(row.imageUrl, 128)} alt="" className="h-full w-full object-cover" />
         ) : (
           <IconSoup size={20} className="opacity-50" />
         )}
@@ -95,7 +96,7 @@ export function RecipeCard({ row }: { row: RecipeRowData }) {
       <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
         {row.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={row.imageUrl} alt="" className="h-full w-full object-cover" />
+          <img src={imageThumb(row.imageUrl, 384)} alt="" className="h-full w-full object-cover" />
         ) : (
           <IconSoup size={32} className="opacity-50" />
         )}

@@ -24,8 +24,21 @@ Natlig kørsel (standard kl. 03:00 dansk tid) i sin egen container:
    - ≥ 90 % **og** brandnavnet på siden/linket → gemmes automatisk som
      brandets logo (`/product-images/brand-logos/<brandId>.png`).
    - Ellers vises alle kandidater ≥ 50 % i admin **Logoer**.
-5. **Oprydning.** Hentede kandidater (fil + databaserække) slettes 7 dage
+5. **AI-rentegning (2026-10-15).** Blev intet fritlagt (transparent) logo fundet
+   online, rentegner OpenAI `gpt-image-1` originaludklippet med brugerens prompt
+   (100 % tro mod originalen, højere opløsning, fritlagt, ingen fortolkning).
+   Det vises i admin **Logoer** som "AI-rentegnet" ved siden af originalen og
+   vælges altid manuelt. Kræver `OPENAI_API_KEY` (model: `LOGO_AGENT_REDRAW_MODEL`).
+6. **Oprydning.** Hentede kandidater (fil + databaserække) slettes 7 dage
    efter afgørelsen. Det valgte logo er kopieret ud og bevares.
+
+## Produktbilleder online (`product_images.py`, 2026-10-15)
+
+Samme container kører også robotten `product-image-search` (løbende): hvert
+nyt kamerafoto (PRODUCT_FRONT-fritlægningsjob) søges online med Vision
+`WEB_DETECTION`, før image-agent fritlægger det. Fundene vises under admin
+**Billedforslag** ved siden af kamerafotoet og udklippet. Se DECISIONS.md
+2026-10-15.
 
 ## Admin "Logoer" (`/admin/logos`)
 
@@ -94,6 +107,16 @@ docker exec hellocal-v2-logo-agent-1 python /app/import_logos.py
   brand i databasen endnu (de venter i `_import`).
 - `ALIASES` i scriptet bruges til filer, der ikke hedder som brandet
   (fx Meica).
+
+## Numpy-skalarer og SQL (2026-10-14)
+
+`imagehash` regner med numpy. Med numpy 2 sender psycopg2 en `np.float64` som
+teksten `np.float64(0.9)`, og indsættelsen fejler med `schema "np" does not
+exist` (så kandidater og søgninger aldrig blev gemt). Alle værdier, der går til
+`cur.execute`, skal derfor være rene Python-typer: `visual_similarity()` og
+`confidence` returnerer `float`, og kandidat-/søgningsrækkerne castes eksplicit
+(`float`/`int`/`bool`). Regressionstest uden database: `python test_agent.py`
+i `scripts/logo-agent/` (kopieres ikke ind i containeren).
 
 ## Ikke med i denne opgave
 

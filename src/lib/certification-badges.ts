@@ -104,8 +104,11 @@ export function certificationLogoSrc(kind: CertificationKind): string | null {
   return kind === "generic" ? null : `/certifications/${CERTIFICATION_LOGO_FILES[kind]}`;
 }
 
-function kindForOrganic(label: string): CertificationKind {
+// Logoet for et økologimærke i organic-feltet.
+export function organicLogoKind(label: string): CertificationKind {
   const value = label.toLowerCase();
+  if (/\bkrav\b/.test(value)) return "krav";
+  if (value.includes("naturland")) return "naturland";
   if (value.includes("bioland")) return "bioland";
   if (value.includes("landbau")) return "landbau";
   if (value.includes("biologisch") || /\bbio\b/.test(value)) return "bioGermany";
@@ -153,9 +156,11 @@ function kindForCertification(label: string): CertificationKind {
   if (value.includes("bioland")) return "bioland";
   if (value.includes("naturskånsom") || value.includes("natur skånsom") || value.includes("naturskaansom")) return "naturSkaansom";
   if (value.includes("dyrenes beskyttelse") || value.includes("dyrevelfærd")) return kindForAnimalWelfare(label);
-  if (value.includes("økolog") || value.includes("organic") || value.includes("bio")) return kindForOrganic(label);
+  if (value.includes("økolog") || value.includes("organic") || value.includes("bio")) return organicLogoKind(label);
   return "generic";
 }
+
+const ORGANIC_KINDS = new Set<CertificationKind>(["organic", "euOrganic", "bioGermany", "landbau", "bioland"]);
 
 export function certificationBadges(
   filters: CertificationFilters | null | undefined,
@@ -165,8 +170,11 @@ export function certificationBadges(
   filters ??= {};
   const badges: CertificationBadge[] = [];
   const text = (value?: string | null) => value?.trim() || null;
-  const organic = text(filters.organic);
-  if (organic) badges.push({ kind: kindForOrganic(organic), label: organic });
+  // Flere økologimærker står i organic adskilt af komma (src/lib/label-certifications.ts).
+  for (const organic of (filters.organic ?? "").split(",")) {
+    const kind = organicLogoKind(organic.trim());
+    if (organic.trim() && !badges.some((b) => b.kind === kind)) badges.push({ kind, label: organic.trim() });
+  }
   const keyhole = text(filters.keyhole);
   if (keyhole) badges.push({ kind: "keyhole", label: keyhole });
   const wholeGrain = text(filters.wholeGrain);
@@ -181,12 +189,17 @@ export function certificationBadges(
   // eget badge (fx "Laktosefri", "QMilch"), så alle mærker på emballagen vises.
   for (const label of labels ?? []) {
     if (label.confidence < LABEL_SHOW_MIN_CONFIDENCE) continue;
-    const match = badges.find((b) => b.label.toLowerCase() === label.name.toLowerCase());
+    // Et økologimærke matcher på logo, så "EU-økologi" (mærkat) og
+    // "EU-økologisk" (filter) ikke giver EU-bladet to gange.
+    const kind = kindForLabel(label);
+    const match = badges.find(
+      (b) => b.label.toLowerCase() === label.name.toLowerCase() || (ORGANIC_KINDS.has(kind) && b.kind === kind),
+    );
     if (match) {
       if (label.imageUrl && !match.imageUrl) match.imageUrl = label.imageUrl;
       continue;
     }
-    badges.push({ kind: kindForLabel(label), label: label.name, imageUrl: label.imageUrl });
+    badges.push({ kind, label: label.name, imageUrl: label.imageUrl });
   }
   const seen = new Set<string>();
   return badges.filter((badge) => {

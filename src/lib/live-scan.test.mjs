@@ -36,3 +36,4 @@ test("tomme billeder tæller ikke som forsøg, og det skarpeste billede vælges"
   assert.equal(sharpest([{ sharpness: 10 }, { sharpness: 30 }, { sharpness: 20 }]).sharpness, 30);
   assert.equal(sharpest([]), null);
 });
+

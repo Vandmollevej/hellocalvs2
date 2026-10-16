@@ -42,6 +42,13 @@ test("quantity: bilka-style text", () => {
   assert.equal(parseQuantity(""), null);
 });
 
+test("organic is read in other languages, Danish 'biologisk' is not organic", () => {
+  for (const name of ["Ekologisk Havregryn", "Ökologische Haferflocken", "Biologische Havermout", "Avena Ecológica"]) {
+    assert.equal(split({ name, hasDanishName: false }).filters.organic, "Økologisk", name);
+  }
+  assert.equal(split({ name: "Biologisk Vaskepulver", hasDanishName: true }).filters.organic, null);
+});
+
 test("brand, flags and type are split from a Danish OFF name", () => {
   const r = split({ name: "Økologiske Bagte Hvedeboller", brands: "Änglamark", hasDanishName: true });
   assert.equal(r.filters.organic, "Økologisk");

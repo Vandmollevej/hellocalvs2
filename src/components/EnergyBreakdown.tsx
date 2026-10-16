@@ -54,7 +54,7 @@ function Line({
 
 export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
   const { t } = useTranslation();
-  const { bmr, pal, daily, budget, trainingAllowanceKcal, level, calibration, needKcal } = summary;
+  const { bmr, pal, daily, budget, trainingAllowanceKcal, level, calibration, needKcal, pregnancy } = summary;
 
   if (!daily || bmr === null || pal === null) {
     return (
@@ -71,7 +71,10 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
 
   const everydayKcal = daily.baselineKcal - bmr;
   const goalDelta = budget?.deltaKcal ?? 0;
-  const calibratedDelta = needKcal !== null && calibration?.reason === "OK" && calibration.weight > 0 ? needKcal - daily.kcal : 0;
+  // Graviditets-/ammetillægget (src/lib/pregnancy.ts) ligger i needKcal og vises som egen linje.
+  const pregnancyKcal = pregnancy?.extraKcal ?? 0;
+  const calibratedDelta =
+    needKcal !== null && calibration?.reason === "OK" && calibration.weight > 0 ? needKcal - pregnancyKcal - daily.kcal : 0;
   const finalNeed = needKcal ?? daily.kcal;
   const lines: Record<LineKey, string> = {
     rest: t("energy.whyRest"),
@@ -101,6 +104,18 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
           })}
         />
       )}
+      {pregnancy && (
+        <Line
+          label={pregnancy.status === "PREGNANT" ? t("energy.pregnancy") : t("energy.breastfeeding")}
+          value={formatKcal(pregnancyKcal)}
+          sign="+"
+          why={
+            pregnancy.status === "PREGNANT"
+              ? t("energy.whyPregnancy", { trimester: pregnancy.trimester ?? 3, week: pregnancy.week ?? "?" })
+              : t("energy.whyBreastfeeding", { weeks: pregnancy.breastfeedingWeeks ?? 0 })
+          }
+        />
+      )}
       <Line
         label={t("energy.need")}
         value={`${t("energy.approx")} ${formatKcal(finalNeed)}`}
@@ -108,7 +123,10 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
         strong
       />
       <p className="hf-type-caption">
-        {t("energy.range", { low: formatKcal(daily.low + calibratedDelta), high: formatKcal(daily.high + calibratedDelta) })}
+        {t("energy.range", {
+          low: formatKcal(daily.low + calibratedDelta + pregnancyKcal),
+          high: formatKcal(daily.high + calibratedDelta + pregnancyKcal),
+        })}
       </p>
       {calibration && calibratedDelta === 0 && (
         <p className="hf-type-caption">{t(`energy.calibrationStatus.${calibration.reason}`)}</p>

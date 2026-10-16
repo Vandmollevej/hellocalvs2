@@ -419,6 +419,7 @@
     "helpCenter": "Hilfecenter",
     "learnTheApp": "Lerne die App kennen",
     "integrations": "Integrationen",
+    "import": "Import",
     "terms": "Bedingungen",
     "privacyPolicy": "Datenschutzerklärung",
     "dataTracking": "Datenerfassung",
@@ -437,6 +438,7 @@
     "frontPage": "Startseite",
     "recommendedLimits": "Empfohlene Grenzwerte",
     "menstrualCycle": "Menstruationszyklus",
+    "pregnancy": "Schwangerschaft und Stillen",
     "sleepQuality": "Schlafempfinden",
     "calendarView": "Kalenderansicht",
     "displayHelpTip": "Hier bestimmst du, wie Startseite, Kalender und Warnungen auf diesem Gerät aussehen.",
@@ -445,7 +447,8 @@
     "showTooltips": "Tooltips anzeigen",
     "showTooltipsDescription": "Zeigt unter den verschiedenen Einstellungen und Fenstern einen kleinen Hilfetext an.",
     "showStartupTips": "Start-Tipps anzeigen",
-    "showStartupTipsDescription": "Zeigt beim Öffnen der App einen kurzen Vollbild-Tipp zu Funktionen, die du noch nicht genutzt hast."
+    "showStartupTipsDescription": "Zeigt beim Öffnen der App einen kurzen Vollbild-Tipp zu Funktionen, die du noch nicht genutzt hast.",
+    "translation": "Übersetzung"
   },
   "guide": {
     "back": "Zurück",
@@ -514,7 +517,9 @@
     "warnOnRecommendedLimitsDescription": "Zeigt einen 1 px dunkelroten Rand um Statistikfelder, wenn eine dokumentierte empfohlene Grenze für deine Region und dein Profil überschritten ist. Fehlende Daten werden nicht markiert.",
     "uncertainty": "Unsicherheit",
     "autoExpandUncertainty": "Unsicherheit automatisch aufklappen",
-    "autoExpandUncertaintyDescription": "Eine grüne ~ steht immer vor Werten, die wir geschätzt haben, weil der Hersteller sie nicht selbst angibt. Wenn du das aktivierst, wird die graue Zeile mit der Unsicherheit unter dem Wert angezeigt, ohne dass du tippen musst."
+    "autoExpandUncertaintyDescription": "Eine grüne ~ steht immer vor Werten, die wir geschätzt haben, weil der Hersteller sie nicht selbst angibt. Wenn du das aktivierst, wird die graue Zeile mit der Unsicherheit unter dem Wert angezeigt, ohne dass du tippen musst.",
+    "translateForeignText": "Fremdsprachen ins Deutsche übersetzen",
+    "translateForeignTextDescription": "Produkte in einer anderen Sprache als Deutsch werden übersetzt angezeigt. Über dem Produktnamen steht, aus welcher Sprache übersetzt wurde, mit einem Link zum Original. Ausgeschaltet werden Produkte in ihrer Originalsprache angezeigt."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Nach dem Schlaf der Nacht fragen",
@@ -533,6 +538,26 @@
     "intro": "Erfasse deinen Menstruationszyklus und erhalte ihn als Option im Hinzufügen-Menü.",
     "toggleLabel": "Menstruationszyklus anzeigen",
     "toggleDescription": "Fügt \"Menstruation\" zum Hinzufügen-Menü hinzu, damit du den Beginn des Zyklus erfassen kannst."
+  },
+  "pregnancySettings": {
+    "intro": "Wenn du schwanger bist oder stillst, rechnen wir den offiziellen Zuschlag (EFSA) zu deinem Energiebedarf hinzu und setzen nie ein Kaloriendefizit. Die Woche zählt von selbst weiter, ändere es hier also nur, wenn sich etwas ändert.",
+    "question": "Bist du schwanger oder stillst du?"
+  },
+  "pregnancy": {
+    "none": "Nein",
+    "status": {
+      "PREGNANT": "Schwanger",
+      "BREASTFEEDING": "Stillend"
+    },
+    "weekLabel": "In welcher Woche bist du?",
+    "weekPlaceholder": "z. B. 20",
+    "weekHint": "Trimester 1 ist Woche 1–13, Trimester 2 Woche 14–27 und Trimester 3 ab Woche 28. Die Woche zählt von selbst weiter.",
+    "trimester": "{trimester}. Trimester",
+    "extraKcal": "+{kcal} kcal pro Tag",
+    "breastfeedingWeeksLabel": "Seit wie vielen Wochen stillst du?",
+    "breastfeedingWeeksPlaceholder": "z. B. 8",
+    "breastfeedingHint": "In den ersten 26 Wochen rechnen wir mit vollem Stillen (+500 kcal pro Tag), danach mit teilweisem Stillen (+300 kcal). Die Wochen zählen von selbst weiter.",
+    "noDeficit": "Während Schwangerschaft oder Stillzeit setzen wir nie ein Kaloriendefizit. Folge immer dem Rat von Hebamme oder Arzt."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -1005,9 +1030,9 @@
     "labelTextFound": "Nährwerte oder Zutaten gelesen",
     "frontCaptured": "Vorderseite gescannt",
     "scanBarcode": "Barcode scannen",
-    "scanFront": "Foto scannen",
-    "scanNutrition": "Energie scannen",
-    "scanIngredients": "Zutatenliste scannen",
+    "scanFront": "Foto der Vorderseite aufnehmen",
+    "scanNutrition": "Nährwerte fotografieren",
+    "scanIngredients": "Zutatenliste fotografieren",
     "readingImage": "Foto wird gelesen...",
     "searchingDatabase": "Datenbank wird durchsucht...",
     "comparingKnownItems": "Vergleich mit bekannten Artikeln...",
@@ -1031,7 +1056,15 @@
     "stepDone": "{step}: aufgenommen und gelesen",
     "bothFound": "Energie und Inhalt auf demselben Foto gefunden",
     "chooseObject": "Tippe auf den Artikel, der im Fokus sein soll",
-    "useWholePhoto": "Ganzes Foto verwenden"
+    "useWholePhoto": "Ganzes Foto verwenden",
+    "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over.",
+    "skipIngredients": "Skip",
+    "shutter": "Take photo",
+    "shutterHint": "Press the shutter when the product is sharp in the picture.",
+    "creating": "Produkt wird erstellt …",
+    "sendingPhotos": "Fotos werden gesendet …",
+    "processingPhotos": "Fotos werden verarbeitet: {steps} …"
   },
   "foods": {
     "title": "Lebensmittel",
@@ -1849,7 +1882,51 @@
     "noEntriesYet": "Noch keine Körpermaße erfasst.",
     "chooseSexHint": "Wähle unter Profil → Profil bearbeiten dein Geschlecht, um die Zeichnungen zu sehen, wo du misst.",
     "deleteAria": "Messung löschen",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "voice": {
+      "start": "Maße einsprechen",
+      "startHint": "Tippe, und ich führe dich nacheinander durch die Maße.",
+      "stop": "Sprachführung beenden",
+      "speaking": "Spricht…",
+      "listening": "Hört zu…",
+      "youSaid": "Du hast gesagt: {text}",
+      "unsupported": "Spracherkennung ist hier nicht verfügbar. Gib die Maße in die Felder ein.",
+      "micDenied": "Die App hat keinen Zugriff auf das Mikrofon. Erlaube ihn in den Einstellungen des Telefons.",
+      "unitCm": "Zentimeter",
+      "unitIn": "Zoll",
+      "intro": "Ich führe dich durch deine Körpermaße. Sag nach jedem Maß die Zahl. Sag überspringen, um ein Maß auszulassen, zurück, um ein Maß zurückzugehen, oder stopp, um aufzuhören.",
+      "ask": "Jetzt brauche ich das Maß für {target}.",
+      "next": "Jetzt gib mir das Maß für {target}.",
+      "recorded": "Ich habe {value} {unit} eingetragen.",
+      "skipped": "Das überspringen wir.",
+      "notHeard": "Ich habe nichts gehört. Sag das Maß für {target}.",
+      "notUnderstood": "Das habe ich nicht verstanden. Sag das Maß für {target} als Zahl, zum Beispiel 82 Komma 5.",
+      "outOfRange": "{value} klingt nicht richtig. Sag das Maß für {target} noch einmal.",
+      "done": "Danke, alle deine Maße sind eingetragen.",
+      "stopped": "Okay, ich höre hier auf. Was du gesagt hast, ist gespeichert.",
+      "giveUp": "Ich höre auf, weil ich dich nicht hören konnte. Tippe auf das Mikrofon, um weiterzumachen.",
+      "noFields": "Es gibt keine Maße zum Ausfüllen. Wähle sie unter Einstellungen, Anzeige, Körpermaße.",
+      "target": {
+        "chestCm": "die Brust",
+        "waistCm": "die Taille",
+        "hipCm": "die Hüfte",
+        "upperArmCm": "den Oberarm",
+        "thighCm": "den Oberschenkel",
+        "buttockCm": "das Gesäß",
+        "calfCm": "die Wade",
+        "ankleCm": "den Knöchel"
+      },
+      "how": {
+        "chestCm": "Miss um die Brust an der breitesten Stelle, mit dem Maßband unter den Armen.",
+        "waistCm": "Miss um die Taille an der schmalsten Stelle, meist knapp über dem Bauchnabel. Atme vorher ruhig aus.",
+        "hipCm": "Miss um die Hüfte an der breitesten Stelle.",
+        "upperArmCm": "Miss um den Oberarm in der Mitte zwischen Schulter und Ellbogen, mit locker hängendem Arm.",
+        "thighCm": "Miss um den Oberschenkel in der Mitte zwischen Hüfte und Knie.",
+        "buttockCm": "Miss um das Gesäß an der breitesten Stelle, mit geschlossenen Füßen.",
+        "calfCm": "Miss um die Mitte der Wade, wo sie am dicksten ist.",
+        "ankleCm": "Miss um den Knöchel knapp über dem Knöchelknochen, wo er am schmalsten ist."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",
@@ -2272,7 +2349,13 @@
       "vitaminB9": "Vitamin B9 (Folat)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln"
+    "swapLiquidUnit": "Zwischen Volumen und Gramm wechseln",
+    "translatedFrom": "Auf {target} übersetzt, Original auf {source}.",
+    "translatedTo": "Auf {target} übersetzt.",
+    "originalLanguage": "Original auf {source}.",
+    "originalText": "Originaltext.",
+    "showOriginal": "Original anzeigen",
+    "showTranslation": "Übersetzung anzeigen"
   },
   "photoAward": {
     "bannerSingle": "Du kannst {points} Punkte verdienen, indem du ein neues Foto von {photoType} machst.",
@@ -2289,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Verdiene {points} Punkte, indem du das Produkt aktualisierst",
+    "bannerPhoto": "Verdiene {points} Punkte, indem du ein schönes neues Foto hinzufügst",
     "toggle": "Banner ein- oder ausblenden",
     "tileFront": "Vorderseite",
     "tileNutrition": "Energie",
@@ -2848,11 +2932,17 @@
     "stepProgress": "Schritt {current} von {total} abgeschlossen",
     "sleepPatternQuestion": "Hast du einen festen Schlafrhythmus?",
     "shiftWorkQuestion": "Liegt das an wechselnden Arbeitszeiten oder Nachtarbeit?",
+    "pregnancyQuestion": "Bist du schwanger oder stillst du?",
+    "pregnancyHint": "Dann rechnen wir den offiziellen Zuschlag zu deinem Energiebedarf hinzu. Kann jederzeit unter Einstellungen → Anzeige geändert werden.",
     "dailyLogQuestion": "Möchtest du Arbeitszeiten oder Schlafzeiten täglich erfassen?",
     "workHours": "Arbeitszeiten",
     "sleepTimes": "Schlafzeiten",
     "healthImportQuestion": "Möchtest du Daten von deiner Smartwatch oder Gesundheits-App importieren?",
     "healthImportHint": "Kann jederzeit später unter persönliche Angaben eingerichtet werden.",
+    "migrationImportQuestion": "Hast du schon ein Konto bei einem anderen Anbieter?",
+    "migrationImportHint": "Dann kannst du deine Daten vielleicht importieren, damit dein Verlauf mitkommt.",
+    "importNow": "Jetzt importieren",
+    "importLater": "Später",
     "setUpNow": "Jetzt einrichten",
     "next": "Weiter",
     "remindLater": "Später erinnern",
@@ -2927,6 +3017,8 @@
     "rest": "Ruhe (dein Grundumsatz)",
     "everyday": "Dein Alltag",
     "training": "Dein Sport",
+    "pregnancy": "Schwangerschaft",
+    "breastfeeding": "Stillen",
     "need": "Dein Energiebedarf",
     "goal": "Dein Gewichtsziel",
     "budget": "Dein Tagesbudget",
@@ -2942,6 +3034,8 @@
     "whyRest": "Das, was der Körper verbraucht, wenn du den ganzen Tag still liegen würdest. Berechnet aus Gewicht, Größe, Alter und Geschlecht (Mifflin-St Jeor).",
     "whyEveryday": "Arbeit, Gehen, Stehzeit und Transport — ohne Sport. Deine Antworten entsprechen dem Niveau \"{level}\" (PAL {pal}).",
     "whyTraining": "Dein typischer Sport, über die Woche verteilt und netto gerechnet, damit der Grundumsatz nicht doppelt gezählt wird. Wenn du ein Training erfasst, ersetzt es den Zuschlag an diesem Tag.",
+    "whyPregnancy": "Offizieller Zuschlag (EFSA): 70 kcal pro Tag im 1. Trimester, 260 im 2. und 500 im 3. Du bist im {trimester}. Trimester (Woche {week}).",
+    "whyBreastfeeding": "Offizieller Zuschlag (EFSA): 500 kcal pro Tag bei vollem Stillen in den ersten 6 Monaten, danach etwa 300 bei teilweisem Stillen. Du stillst seit {weeks} Wochen.",
     "whyGoal": "Der Unterschied zwischen dem, was du verbrauchst, und dem, was du essen solltest, um dein Ziel in gesundem Tempo zu erreichen.",
     "disclaimer": "Alle Zahlen sind Schätzungen, keine Messungen. Sie ersetzen nicht die Beratung durch Arzt oder Ernährungsberater.",
     "missingData": "Um deinen Energiebedarf zu berechnen, fehlen uns:",
@@ -2953,6 +3047,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Unter 18 Jahren setzen wir kein Kaloriendefizit — der Körper wächst noch.",
+      "PREGNANCY_NO_DEFICIT": "Du bist schwanger oder stillst, deshalb setzen wir kein Kaloriendefizit — sprich mit Hebamme oder Arzt über dein Gewicht.",
       "UNDERWEIGHT_NO_LOSS": "Dein Gewicht liegt unter dem, was wir als gesund ansehen, deshalb schlagen wir keine Gewichtsabnahme vor.",
       "TARGET_RAISED_TO_MIN_BMI": "Dein Gewichtsziel wurde auf das niedrigste Gewicht angehoben, das wir für deine Größe als gesund ansehen.",
       "PACE_CAPPED": "Das Tempo wurde auf das gesunde Maß an Gewichtsverlust pro Woche gesenkt.",
@@ -2983,6 +3078,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Als Favorit speichern",
+    "removeFavorite": "Favorit entfernen",
+    "favoriteSaved": "Gespeichert",
     "favorite": "Favorit",
     "reportErrorAria": "Hast du einen Fehler gefunden?",
     "reportError": "Fehler",
@@ -3538,8 +3635,13 @@
   },
   "migrationImport": {
     "title": "Move from MyFitnessPal or Lifesum",
+    "landingTitle": "Import",
+    "landingIntro": "Nutzt du bereits MyFitnessPal oder Lifesum, kannst du deine Daten automatisch importieren.",
+    "otherProvider": "Nutzt du einen anderen Anbieter und möchtest deine alten Daten importieren, kontaktiere uns.",
+    "contactUs": "Kontaktiere uns",
+    "contactSubject": "Import von einem anderen Anbieter",
+    "providerTitle": "Import von {provider}",
     "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
-    "fromApp": "From the app",
     "step1": "Start a screen recording on your phone (or take screenshots).",
     "step2": "Open the diary in the other app and scroll calmly back, day by day.",
     "step3": "Stop the recording and choose the video here.",

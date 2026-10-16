@@ -57,7 +57,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
-import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.roundToLong
 
@@ -163,7 +162,7 @@ fun RecipeDetailScreen(args: RouteArgs) {
     var showShareInfo by remember { mutableStateOf(false) }
     var isFavorite by remember { mutableStateOf(false) }
     var canReport by remember { mutableStateOf(false) }
-    var persons by remember { mutableStateOf(max(1, RecipeFilters.load().persons)) }
+    var persons by remember { mutableStateOf(RecipeFilters.load().persons) }
     var portionKcal by remember { mutableStateOf<Int?>(null) }
     // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via KitchenConversions.kt.
     var showGrams by remember { mutableStateOf(true) }
@@ -364,8 +363,8 @@ fun RecipeDetailScreen(args: RouteArgs) {
                 if (pk != null && baseKcal > 0) {
                     val shape = RoundedCornerShape(16.dp)
                     Column(Modifier.fillMaxWidth().clip(shape).background(HcColors.Tan, shape).padding(horizontal = 16.dp, vertical = 12.dp)) {
-                        PersonsSlider(t.t("recipeFilters.personsTitle"), persons, RecipePortions.MAX_PERSONS, ::changePersons)
-                        HcText(t.t("recipeFilters.kcalPerServing", "kcal" to round(totalKcal / persons)), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary)
+                        PersonsSlider(t.t("recipeFilters.personsTitle"), persons, RecipePortions.MAX_PERSONS, ::changePersons, min = 0, unset = persons == 0)
+                        if (persons > 0) HcText(t.t("recipeFilters.kcalPerServing", "kcal" to round(totalKcal / persons)), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary)
                     }
                 }
 
