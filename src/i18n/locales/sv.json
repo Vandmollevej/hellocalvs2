@@ -3886,6 +3886,7 @@
     "noPulse": "Ingen pulsdata endnu",
     "intake": "Kalorier",
     "planVsActual": "Anbefalet mod indtag",
+    "clockLeft": "kl. {hour}",
     "goalDays": "Målsætning · dage",
     "goalWeeks": "Målsætning · uger",
     "actionOpen": "Se forslag til at holde dagens mål",

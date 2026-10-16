@@ -15,13 +15,14 @@ import { GoalTimeline, KcalSticks, PlanVsActual, PulseSticks } from "./FrontChar
 
 // Forsidens grafer (bruger 2026-10-14) i infoboksens plads ved siden af
 // tal-hjulet (bruger 2026-10-16): puls, kalorier, anbefalet mod faktisk indtag
-// og målsætningens tidslinje uden baggrund, 1/3 af skærmbredden. Ingen tekst
+// og målsætningens tidslinje uden baggrund i hele boksens plads. Ingen tekst
 // under graferne. Resten af forsiden er uændret.
 
 const BUCKET_MIN = 15;
 const GOAL_BAR_PX = 4;
-/** Samme afstand til skærmkanten som den gamle hvide infoboks. */
+/** Samme vandrette udstrækning som den gamle hvide infoboks: fra kanten til midten. */
 const EDGE = 13;
+const CENTER_GAP = 12;
 /** Graferne fylder den hvide boks' højde, fra dens top til dens bund (bruger 2026-10-16). */
 const BOX_H = WHEEL_SPAN.half * 2;
 
@@ -124,7 +125,10 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
     };
   }, [goals, registrations, width, budgetKcal]);
 
-  const chartH = Math.floor(BOX_H / (goal ? 4 : 3));
+    // Graferne er lavere end deres andel af boksen, så der er luft imellem dem (bruger 2026-10-16).
+  const chartCount = goal ? 4 : 3;
+  const chartH = Math.floor((BOX_H / chartCount) * 0.72);
+  const leftLabel = (hour: string) => t("frontCharts.clockLeft", { hour });
   const shortDate = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`;
 
   return (
@@ -133,23 +137,26 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
       className="absolute z-10"
       style={{
         [side]: EDGE,
-        width: "33.333%",
+        [side === "left" ? "right" : "left"]: `calc(50% + ${CENTER_GAP}px)`,
         top: `calc(50% + ${WHEEL_SPAN.shift - WHEEL_SPAN.half}px)`,
         height: BOX_H,
       } as React.CSSProperties}
     >
-      <div ref={boxRef}>
+      <div ref={boxRef} className="flex h-full flex-col justify-between">
         {width > 0 && (
           <>
             <PulseSticks
+              leftLabel={leftLabel}
               width={width} height={chartH} buckets={model.pulse} startHour={model.start} endHour={model.end}
               title={t("frontCharts.pulse")}
             />
             <KcalSticks
+              leftLabel={leftLabel}
               width={width} height={chartH} sums={model.sums} shares={model.shares} budgetKcal={budgetKcal}
               startHour={model.start} endHour={model.end} title={t("frontCharts.intake")}
             />
             <PlanVsActual
+              leftLabel={leftLabel}
               width={width} height={chartH} planCumulative={model.planCum} actualCumulative={model.actualCum} elapsed={model.elapsed}
               startHour={model.start} endHour={model.end} title={t("frontCharts.planVsActual")}
             />

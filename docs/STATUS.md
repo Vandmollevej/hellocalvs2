@@ -31,10 +31,11 @@
 - Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
 - "Ikke synkroniseret"-popuppen i layoutet bruger nu samme bundark som vægt-popuppen og springer integrationer med vægt over (vægt-popuppen tager dem), så samme spørgsmål ikke kommer to gange. Web + native. Native kompileres kun i CI. Se DECISIONS 2026-10-16.
 
-## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
+## 2026-10-16: Forsidens grafer i den hvide boks' plads
 
-- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
-- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: fra kanten ind til boksens gamle højre/venstre side og fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
+- Graferne er 72 % af deres andel af boksen, så der er luft imellem. Titel i midten på alle (Puls, Kalorier, Anbefalet mod indtag, Målsætning), "kl." foran venstre timetal. Ingen "Ingen pulsdata endnu" og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16).
+- Kendt: den grå anbefalede kurve i Kalorier ligger næsten på 0, fordi skalaen følger det største måltid — afventer brugerens svar om, hvad graferne skal vise. Web + native; native er ikke kompileret lokalt — CI afgør.
 
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
