@@ -5665,3 +5665,44 @@ model ProductTranslation {
   @@unique([productId, locale])
   @@map("product_translations")
 }
+
+// Admin → API-forbrug (docs/DECISIONS.md 2026-10-16): kald pr. betalt
+// tjeneste pr. måned (YYYY-MM), tællet hvor appen kalder udbyderen.
+model ApiUsageMonth {
+  serviceId   String
+  month       String
+  calls       Int       @default(0)
+  errors      Int       @default(0)
+  lastOkAt    DateTime?
+  lastErrorAt DateTime?
+  lastError   String?
+
+  @@id([serviceId, month])
+  @@map("api_usage_months")
+}
+
+// Månedsbudget og pris pr. kald, rettet af admin. Beløb i tjenestens valuta.
+model ApiBudget {
+  serviceId     String   @id
+  monthlyBudget  Float?
+  unitPrice      Float?
+  /// Varsel, når månedens forbrug når dette beløb.
+  alertAt        Float?
+  /// Kun OpenAI: varsel, når kreditsaldoen kommer under dette beløb.
+  balanceAlertAt Float?
+  updatedAt      DateTime @updatedAt
+
+  @@map("api_budgets")
+}
+
+// Varsler om API-forbrug og -status: til/fra og modtagere. `sent` husker
+// hvilke varsler der er sendt (nøgle → tidspunkt), så samme varsel ikke gentages.
+model ApiAlertSettings {
+  id        String   @id @default("default")
+  enabled   Boolean  @default(true)
+  emails    String[] @default([])
+  sent      Json?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("api_alert_settings")
+}

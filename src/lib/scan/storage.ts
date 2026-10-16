@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { stripImageMetadata } from "@/lib/image-metadata";
+import { recordApiCall } from "@/lib/api-usage-record";
 
 // Hyldebilleder gemmes i den delte product-images-volume
 // (compose.production.yaml), som både app- og scan-app-containeren mounter.
@@ -57,10 +58,12 @@ export async function lookupStoreName(latitude: number, longitude: number): Prom
       }),
       signal: AbortSignal.timeout(5000),
     });
+    recordApiCall("google-places", response.ok, response.ok ? null : `HTTP ${response.status}`);
     if (!response.ok) return null;
     const data = (await response.json()) as { places?: { displayName?: { text?: string } }[] };
     return data.places?.[0]?.displayName?.text?.trim() || null;
-  } catch {
+  } catch (error) {
+    recordApiCall("google-places", false, error instanceof Error ? error.message : null);
     return null;
   }
 }

@@ -397,7 +397,7 @@ export const KEY_SERVICES: KeyService[] = [
         label: "Admin-nøgle til forbrug (valgfri)",
         kind: "secret",
         optional: true,
-        hint: "Kun til admin → OpenAI (forbrug i dollar). Begynder med sk-admin-.",
+        hint: "Kun til admin → API-forbrug (forbrug i dollar). Begynder med sk-admin-.",
         manage: { url: "https://platform.openai.com/settings/organization/admin-keys", where: "OpenAI Platform → Settings → Organization → Admin keys" },
       },
       {
@@ -405,7 +405,7 @@ export const KEY_SERVICES: KeyService[] = [
         label: "Kreditsaldo i dollar (valgfri)",
         kind: "text",
         optional: true,
-        hint: "Rettes på admin → OpenAI. Forbruget efter datoen trækkes fra.",
+        hint: "Rettes på admin → API-forbrug. Forbruget efter datoen trækkes fra.",
         manage: { url: "https://platform.openai.com/settings/organization/billing/overview", where: "OpenAI Platform → Settings → Billing" },
       },
       {
@@ -413,7 +413,7 @@ export const KEY_SERVICES: KeyService[] = [
         label: "Saldoens dato (valgfri)",
         kind: "text",
         optional: true,
-        hint: "Sættes automatisk, når saldoen gemmes på admin → OpenAI.",
+        hint: "Sættes automatisk, når saldoen gemmes på admin → API-forbrug.",
         manage: { url: "https://platform.openai.com/settings/organization/billing/overview", where: "OpenAI Platform → Settings → Billing" },
       },
     ],

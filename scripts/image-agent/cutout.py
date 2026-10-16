@@ -27,7 +27,7 @@ import numpy as np
 from PIL import Image
 from rembg import remove
 
-from bria import remove_background_bria
+from bria import available as bria_available, remove_background_bria
 
 log = logging.getLogger("image-agent.cutout")
 
@@ -406,11 +406,26 @@ def fetch_pending_jobs(conn):
         return cur.fetchall()
 
 
+def save_bria_variant(job_id, source_url, crop_box, kind):
+    """Lægger en Bria-udgave som {job}_bria.png ved siden af rembg-udklippet, så
+    admin kan sammenligne dem under Billedforslag (docs/BRIA.md). Fejl her må
+    aldrig vælte jobbet: rembg-udklippet er det, der godkendes som standard."""
+    if not bria_available():
+        return
+    try:
+        variant = make_cutout(open_source(source_url), crop_box, kind, engine="bria", allow_fallback=False)
+        variant.save(os.path.join(OUTPUT_DIR, CUTOUT_DIR, f"{job_id}_bria.png"), format="PNG")
+    except Exception as exc:  # noqa: BLE001
+        log.warning("bria-udgave fejlede for %s: %s", job_id, exc)
+
+
 def process_job(conn, job_id, source_url, crop_box, kind):
     try:
         cutout = make_cutout(open_source(source_url), crop_box, kind)
         os.makedirs(os.path.join(OUTPUT_DIR, CUTOUT_DIR), exist_ok=True)
         cutout.save(os.path.join(OUTPUT_DIR, CUTOUT_DIR, f"{job_id}.png"), format="PNG")
+        if kind == "PRODUCT_FRONT":
+            save_bria_variant(job_id, source_url, crop_box, kind)
         result_url = f"{PUBLIC_PATH_PREFIX}/{CUTOUT_DIR}/{job_id}.png"
         with conn.cursor() as cur:
             cur.execute(

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { pushSentNotice } from "@/lib/sent-notices";
 import { isSmsConfigured as isTeamMessageConfigured, sendSms as sendViaTeamMessageApi } from "@/lib/teammessage";
 import type { MessageEvent as MessageEventType } from "@prisma/client";
+import { recordApiCall } from "@/lib/api-usage-record";
 
 // SMS med logning (OutboundMessage). Udbyder: TeamMessage (src/lib/teammessage.ts)
 // hvis den er sat op, ellers GatewayAPI (SMS_GATEWAY_TOKEN) som reserve.
@@ -33,6 +34,7 @@ async function sendViaGatewayApi(msisdn: string, text: string) {
     }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
+  recordApiCall("sms", res.ok, res.ok ? null : `Gateway svarede ${res.status}`);
   return res.ok ? null : `Gateway svarede ${res.status}`;
 }
 export async function sendSms({

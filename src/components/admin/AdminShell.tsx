@@ -119,7 +119,7 @@ export const NAV: NavEntry[] = [
   },
   { kind: "link", href: "/admin/integrations", key: "nav_integrations", icon: "plug" },
   { kind: "link", href: "/admin/economy", key: "nav_economy", icon: "coin" },
-  { kind: "link", href: "/admin/openai", key: "nav_openai", icon: "coin" },
+  { kind: "link", href: "/admin/api-usage", key: "nav_api_usage", icon: "coin" },
   { kind: "link", href: "/admin/hello-doc", key: "nav_hello_doc", icon: "users" },
   {
     kind: "group",

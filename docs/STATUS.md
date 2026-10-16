@@ -2,6 +2,16 @@
 
 - Rodårsagen til de tomme varer: OpenAI-kontoen har ingen kredit (429 `insufficient_quota`) — skal fyldes op af brugeren. Energi-trinnet klares nu først, når energien er læst (telefonen, ellers AI mens man venter); ellers tages billedet om. Intet energiskøn på scannede varer. Web + native. Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
 
+## 2026-10-16: Beløbsgrænse for API-varsler
+
+- Under "Ret budget og varsler" på hvert kort i admin → API-forbrug: beløbet, hvor du vil advares om forbruget, og for OpenAI saldoen, du vil advares under. **Migration `20261016180000_api_alert_amount` skal med deployet.** Prøvet mod lokal Postgres (varsel sendes én gang). Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
+
+- `/admin/openai` er blevet til `/admin/api-usage` ("API-forbrug", Alt+Shift+3): ét kort pr. betalt tjeneste — OpenAI, Google Places, Google Vision (logo-robotten), Google Custom Search (billedrobotten), Bria, Passio, SMS og Mailjet — med status, månedens forbrug og budget (rettes på kortet). OpenAI-detaljerne og kreditsaldoen står som før nedenunder.
+- Forsiden i admin har en "API-forbrug"-widget. Varsler: til/fra, modtagerliste og testmail på siden; jobbet `api-alerts` (hvert kvarter) mailer ved fejl, lav OpenAI-kredit og 80 %/100 % af budgettet, hvert varsel én gang.
+- **Migration `20261016170000_api_usage` skal med deployet**; image-agent og logo-agent genbygges af deployet. Prøvet mod lokal Postgres (tælling, budget, varsel sendes én gang, Python-tællingen). Ikke prøvet mod rigtige udbydere. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Admin → OpenAI-forbrug
 
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
