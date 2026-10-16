@@ -1,3 +1,8 @@
+## 2026-10-16: Forsidens grafer i infoboksens plads
+
+- Graferne fra 2026-10-14 (puls, kalorier, anbefalet mod indtag, målsætning og teksten "For at kunne holde dig inden for dagens mål …" nederst) står nu uden baggrund i præcis den plads, infoboksen havde, modsat tal-hjulet (`FrontCharts` i `Hero`). Resten af forsiden (topbar, tal-hjul, puls-linje, dagens liste, ingen rulning) er som før graferne. Graferne deler infoboksens højde ligeligt.
+- Vågne timer: rundet OP til venstre og NED til højre, som brugeren skrev. Web + native (`HomeFrontCharts` i hero-boksen). Native er ikke kompileret lokalt — CI afgør.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.
@@ -5,6 +10,10 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale finder varen
+
+- "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).
+
 ## 2026-10-16: Tale-siden flettet ind i Madvarer
 
 - Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
@@ -15,8 +24,7 @@
 
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
-- Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu. Markeringerne ses under Admin → Kvalitetskontrol → Ufuldstændige billeder ("Fjern markering" afviser en fejlmarkering). Ikke typetjekket lokalt (node_modules mangler) — CI afgør. Se DECISIONS 2026-10-16.
-
+- Kun pc-scriptet `scripts/image-screen` (CSV-rapport, intet på NAS'en). NAS-jobbet, admin-fanen og tabellen er fjernet igen. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Frida-skøn straks på varesiden
 

@@ -20,7 +20,8 @@ type PickerProps = {
   onChange: (code: MealInputLanguageCode) => void;
 };
 
-// Flaget i headerens venstre hjørne på tale- og chat-siden. Åbner et bundark
+// Flaget til venstre for mikrofonen på madvaresiden og i headerens venstre
+// hjørne på chat-siden. Åbner et bundark
 // (KRAV.md "Bundark") med sprogene; valget styrer både talegenkendelsen og
 // AI-tolkningen. I webvisningen er det en dropdown med landekoden ("DK") i
 // stedet for flaget (brugerens ønske 2026-10-11).
