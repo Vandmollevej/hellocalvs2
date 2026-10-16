@@ -4,7 +4,6 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
 import {
-  IconHome,
   IconApple,
   IconCalendar,
   IconCamera,
@@ -97,7 +96,19 @@ const HOME_ITEM: NavItem = {
   key: HOME_NAV_KEY,
   href: BOTTOM_NAV_HREFS[HOME_NAV_KEY],
   labelKey: "home",
-  render: (color, size) => <IconHome size={size} stroke={1.6} color={color} />,
+  // Logoets limefrugt i farver (ikke monokrom) og lidt større end de andre ikoner.
+  render: (_color, size) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/hello-cal-fruit.png"
+      alt=""
+      width={size + 8}
+      height={size + 8}
+      draggable={false}
+      className="-my-1 object-contain"
+      style={{ width: size + 8, height: size + 8 }}
+    />
+  ),
 };
 
 const NAV_ITEMS: NavItem[] = [
