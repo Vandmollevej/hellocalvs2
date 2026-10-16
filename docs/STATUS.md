@@ -1,3 +1,8 @@
+## 2026-10-16: Google Health synkroniserer af sig selv + kun én synk-popup
+
+- Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
+- "Ikke synkroniseret"-popuppen i layoutet bruger nu samme bundark som vægt-popuppen og springer integrationer med vægt over (vægt-popuppen tager dem), så samme spørgsmål ikke kommer to gange. Web + native. Native kompileres kun i CI. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.

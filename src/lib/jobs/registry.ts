@@ -35,6 +35,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Eget job (2026-10-16): lå før i Vedligehold, hvor en fejl eller et langt
+    // trin tidligere i kørslen kunne stoppe hentningen i dagevis (Google Health).
+    key: "integration-sync",
+    name: "Integrationer: hent data",
+    description:
+      "Henter nye data (vægt, aktivitet, søvn, puls …) fra alle forbundne cloud-integrationer som Google Health, Withings, Strava og Garmin, og sender Hello Cal-data tilbage efter brugerens til/fra-valg. Hver integration får højst 2 minutter, så én der hænger, ikke stopper de andre.",
+    runtime: "app",
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "quick-enrichment-recovery",
     name: "Ny vare: genoptag aflæsning",
     description:

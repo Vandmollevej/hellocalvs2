@@ -5703,3 +5703,8 @@ Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning:
 ### 2026-10-16 — Screeningen kører som nat-job på NAS'en (afløser pc-løsningen ovenfor som standard)
 
 Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Markeringerne vises under Admin → Kvalitetskontrol → Ufuldstændige billeder (op til 200, nyeste først); "Fjern markering" sætter `reviewedAt` og rører ikke varen.
+
+## 2026-10-16: Integrationshentning som eget job + ved åbning; én synk-popup
+
+Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook) var i realtid, og fik to forskellige "ikke synkroniseret"-popups efter hinanden. Beslutning: (1) baggrundshentningen af cloud-integrationer er sit eget job `integration-sync` (15 min., 2 min. tidsgrænse pr. integration) i stedet for et trin i Vedligehold; (2) `POST /api/integrations/app-open` henter alle forbundne cloud-integrationer (normal 15-min.-grænse), så data er friske, når appen åbnes; (3) `StaleSyncPrompt` (layout) genbruger vægt-popuppens bundark (`StaleSyncSheet`) og ignorerer integrationer, der læser vægt — dem ejer `WeighInPrompts`.
+

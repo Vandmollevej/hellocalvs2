@@ -191,7 +191,8 @@ fun HomeWeighInPrompts() {
 }
 
 @Composable
-private fun StaleSyncSheet(items: List<SyncStatusItem>, onSynced: () -> Unit, onClose: () -> Unit) {
+/** Also used by app/StaleSyncPrompt.kt (integrations without weight), so both look the same. */
+internal fun StaleSyncSheet(items: List<SyncStatusItem>, onSynced: () -> Unit, onClose: () -> Unit) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
