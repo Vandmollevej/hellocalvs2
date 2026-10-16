@@ -439,6 +439,12 @@ Brugerens krav: nu hvor Frida-arket er lagt ind, skal varer uden energimærkning
 - **Retter**: Valdemarsro-retter uden næring regnes ud fra ingredienslinjerne med Fridas tal. Det sker kun, hvis ALLE linjer kan regnes med (brugerens valg "undlad da"). Linjer uden mængde tæller kun med, hvis de er salt/peber/vand. dl/spsk omregnes med omregningstabellen, stk med håndstørrelserne (frugt/æg). Valdemarsro-agenten gemmer nu `servings` i `recipeDetails`. Brugernes egne retter regnes live ud fra varerne og får skønnet automatisk. Delte retter, hvor et ingrediens-snapshot stod med 0, fordi varen manglede næring, får varens Frida-tal. Registreringer ændres aldrig.
 - **Visning**: ∼ foran kalorietallet på varesiden, når kcal er et skøn (`kcalEstimated`), og ∼ ved de enkelte næringsstoffer som hidtil. **Kildeangivelse** kun helt nederst i det udfoldede næringsfelt og kun, når en værdi på varen kommer fra Frida (brugerens regel, ingen andre steder): "∼ Kilde: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet" (Fridas krævede kildeangivelse; kun "Kilde" oversættes). Web + native.
 
+## 2026-10-16: Frida-skøn hentes straks, når varesiden åbnes
+
+- Årsag til brugerens rapport (rødvin uden næringsdeklaration viste 0 g): Frida-skønnet blev kun sat af natrobotten `frida-estimates` (kl. 02:30 og efter importer), så en vare uden energimærkning stod med 0, indtil næste kørsel.
+- `GET /api/products/[id]` kalder nu `applyFridaEstimateTo` (`src/lib/frida-estimates.ts`), når varen har `nutritionMissing`: samme match og udfyldning som robotten (kun tomme felter, kilde `FRIDA`, ∼). Tvivlstilfælde (flere lige gode, tilstand/alkohol passer ikke) skrives stadig kun af robotten til admin → Frida-match. Frida-listen caches 10 min.
+- Ikke verificeret mod rigtig database her (node_modules/DB mangler); hvis en bestemt rødvin stadig står med 0, er den et tvivlstilfælde under admin → Usikkerheder → Frida-match.
+
 ## 2026-10-10: Webhooks er undtaget adgangsmurens bot-spærre
 
 - Udbyderes servere (Withings, Garmin, Stripe, MobilePay) er ikke browsere og blev afvist som bots (403). Deres webhook-stier står nu i `TOKEN_API_PREFIXES` i `src/lib/access-wall.ts`; nye webhooks skal også stå der. Hver rute validerer selv sin afsender.

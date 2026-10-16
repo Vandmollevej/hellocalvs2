@@ -36,7 +36,7 @@ import dk.packroff.hellocal.ui.icons.HcIcon
 private const val ACTION_WIDTH = 80f
 
 /** Texts for the swipe actions (src/components/SwipeableRow.tsx uses swipeableRow.* and family.copy.action). */
-data class FoodSwipeTexts(val favorite: String, val copy: String, val reportError: String, val delete: String)
+data class FoodSwipeTexts(val favorite: String, val copy: String, val reportError: String, val delete: String, val favoriteSaved: String = favorite)
 
 /**
  * src/components/SwipeableRow.tsx — swipe right for Favorit (+ Kopier til konto),
@@ -48,6 +48,7 @@ fun FoodSwipeableRow(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     onFavorite: (() -> Unit)? = null,
+    isFavorite: Boolean = false,
     onCopyToAccount: (() -> Unit)? = null,
     onReportError: (() -> Unit)? = null,
     surface: Color = HcColors.Cream,
@@ -62,7 +63,7 @@ fun FoodSwipeableRow(
 
     Box(modifier.fillMaxWidth().height(IntrinsicSize.Min).clipToBounds()) {
         Row(Modifier.fillMaxWidth().fillMaxHeight()) {
-            if (onFavorite != null) SwipeAction(texts.favorite, HcColors.Green, icon = { FoodFavoriteIcon(false, 18.dp, HcColors.White) }) {
+            if (onFavorite != null) SwipeAction(if (isFavorite) texts.favoriteSaved else texts.favorite, if (isFavorite) HcColors.Black else HcColors.Green, icon = { FoodFavoriteIcon(isFavorite, 18.dp, HcColors.White) }) {
                 onFavorite()
                 dragX = 0f
             }

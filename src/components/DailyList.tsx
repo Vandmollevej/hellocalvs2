@@ -68,6 +68,7 @@ export function DailyList() {
   // i dag", når listen er tom — så længe der findes indscanninger
   // (bruger 2026-10-03, src/lib/user-scans.ts).
   const [hasScans, setHasScans] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const { status } = useFamilyStatus();
   // "Kopier til konto" kun på egne indtastninger, og kun når man styrer
   // andre profiler (docs/FAMILY.md).
@@ -104,6 +105,16 @@ export function DailyList() {
   }, [t]);
 
   useEffect(() => {
+    fetch("/api/favorites")
+      .then(async (res) => {
+        if (!res.ok) return;
+        const data = (await res.json()) as { favorites: Array<{ product?: { id: string } | null }> };
+        setFavoriteIds(new Set(data.favorites.flatMap((f) => (f.product ? [f.product.id] : []))));
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const controller = new AbortController();
     fetch("/api/my-scans", { signal: controller.signal })
       .then(async (res) => {
@@ -117,9 +128,16 @@ export function DailyList() {
 
   async function favoriteEntry(productId: string | null) {
     if (!productId) return;
+    const next = !favoriteIds.has(productId);
+    setFavoriteIds((current) => {
+      const ids = new Set(current);
+      if (next) ids.add(productId);
+      else ids.delete(productId);
+      return ids;
+    });
     try {
       await fetch("/api/favorites", {
-        method: "POST",
+        method: next ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       });
@@ -177,6 +195,7 @@ export function DailyList() {
             <SwipeableRow
               surfaceClassName="bg-hf-tan px-4"
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
+              isFavorite={entry.productId ? favoriteIds.has(entry.productId) : false}
               onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}
               onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
               onDelete={() => setConfirmDelete(entry)}
