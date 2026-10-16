@@ -5557,6 +5557,13 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Søgeord uden artikel vælger ental-/flertalstitlen, når kun den ene titel indeholder ordet; uklare match bevarer standardtitlen.
 - Efterladt GuideGate og 25-point OFF-fotoflow indføres ikke: masters flow-system og 10-point genscanning er den aktuelle produktkontrakt.
 
+## 2026-10-16: Trender netop nu viser altid noget (også uden kendt energi)
+
+Brugeren så en tom "Trender netop nu" (web og app). Årsag: 2026-10-11-reglen skjulte alle retter uden kendt energi, og er alle importerede retter uden næring, blev rækken tom. "Altid mindst tre retter" gælder alle platforme.
+
+- `/api/shared-recipes?trending=1` tager retter uden energi med som opfyldning (sidst, efter retter med kendt energi); almindelig søgning skjuler dem stadig.
+- "Aldrig 0 kcal" gælder uændret: klienterne viser ingen kcal-tekst, når tallet er 0.
+
 ## 2026-10-14: Natlig database-backup med 30 dages rotation
 
 - Brugeren ønskede natlig backup med rullende 30 dage. Ny compose-tjeneste `db-backup` (postgres:17-alpine) tager `pg_dump -Fc` af `hellocal` og `umami` til `./backups` (på NAS: `/volume1/docker/App/hellocal-v2/backups`) ved opstart og hver nat kl. 01:00 UTC (02-03 dansk tid).
