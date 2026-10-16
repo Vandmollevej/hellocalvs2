@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { HERO_HEIGHT } from "./AddButton";
+import { InfoBox } from "./InfoBox";
 import { StatsWheel } from "./StatsWheel";
 import { WelcomeSheet } from "./WelcomeSheet";
 import { OnboardingWizard } from "./OnboardingWizard";
@@ -53,6 +54,7 @@ export function Hero() {
   return (
     <div className="relative" style={{ height: HERO_HEIGHT }}>
       {/* Side-cirklen (AddButton) er slået fra 2026-10-09; bundcirklen i BottomNav erstatter den. */}
+      <InfoBox side={fabSide} />
       <StatsWheel side={oppositeSide(fabSide)} />
       {showOnboarding && <WelcomeSheet onClose={dismiss} onStartGuide={() => setShowGuide(true)} />}
       {showGuide && <OnboardingWizard forceVisible onClose={() => setShowGuide(false)} />}
