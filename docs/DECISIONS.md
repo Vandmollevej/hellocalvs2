@@ -7,6 +7,7 @@ Brugeren afviste energiskønnet ("Skønner energien? Dette er ikke ok") og beste
 - Aflæsningen sendes med oprettelsen (`nutritionAnalysisId`) og bruges direkte af `enrichLabel`.
 - Skønnet fra samme dag (Frida/varetype på nye scannede varer, `type-nutrition-estimate.ts`) er fjernet, og Frida-robotten springer varer fra kameraflowet over (`quickEnrichmentJob: null`).
 - Manglende kredit prøves ikke igen med det samme (kun de øvrige 429/5xx).
+- Alarm: `/api/health?deep=1` melder OpenAI-status (`ai`: ok/quota/invalid/missing/low …), og Uptime-overvågningen fejler — og mailer — ved tom kredit, afvist nøgle eller lav saldo (højst i timens første 10 minutter). Vagt: `src/lib/scan-energy-guard.test.mjs` fejler, hvis energi-porten, skøn-forbuddet eller alarmen fjernes.
 
 ## 2026-10-16: Admin → OpenAI-forbrug
 
