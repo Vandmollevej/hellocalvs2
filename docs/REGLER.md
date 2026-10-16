@@ -149,6 +149,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Talte sætninger søges som varen (2026-10-16)**: "Jeg har spist en bakke
+  pomfritter" søges som "pomfritter" — indledning, mængde/enhed og tidsangivelse
+  skrælles af i `/api/products` (`src/lib/spoken-food-query.ts`) på alle
+  mikrofonens sprog. Nye talte vendinger tilføjes dér, med test.
 - **Danske kædemærker kendes altid (bruger 2026-10-15)**: ØGO, Salling, Coop 365,
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.

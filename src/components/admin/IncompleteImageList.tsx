@@ -50,7 +50,7 @@ export function IncompleteImageList({ rows, locale }: { rows: IncompleteImageRow
           </div>
           <button
             type="button"
-            className="hf-btn-secondary hf-btn--inline"
+            className="hf-btn-secondary hf-btn--compact"
             disabled={busy === row.productId}
             onClick={() => dismiss(row.productId)}
           >

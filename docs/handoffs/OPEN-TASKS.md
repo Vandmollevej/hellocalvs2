@@ -545,7 +545,7 @@ Ejer: ledig (2026-10-10)
 
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
-| **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+| **PRODUKTTYPE-GENNEMGANG (2026-10-11, udført 2026-10-16)** | Regel-lint (20 regler), dyremad slettet, Quantity/Pack Count/MHD/lande rettet, produkttype/brand/subbrand/co-brand/variation/flag udtrukket for DRK, Årstiderne, Wolt, dm, EDEKA, REWE (7.628 rækker læst af agent + uafhængig kontrollør, ændringer skrevet med gul baggrund, 45 ikke-mad-rækker slettet) | Skrevet i arkene — afventer Peters gennemsyn | Peter gennemgår de gule celler. Rester: `Produkter/Backup/produkttype_udtraek_aendringer_2026-10-16.csv` (før/efter pr. felt, sikkerhed + note; kig på sikkerhed «low»). Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md` afsnit «Opdatering 2026-10-16». Genkør: `scripts/produkttype-forslag/pipeline-2026-10-16/` |
 
 | forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |
 
