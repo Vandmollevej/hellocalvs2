@@ -146,6 +146,12 @@ private val WHEEL_HEIGHT = 2 * (offsetAt(SIDE_ROWS.toFloat()) + ROW_HEIGHT)
  * data-stats-wheel-last-row (rowOffset(SIDE_ROWS)) added to the wheel box's
  * centre (hero centre + VERTICAL_SHIFT). HomeWaves puts the pulse just above it.
  */
+/** Top of the old white info box: wheel row 2 above the centre (web: WHEEL_SPAN in StatsWheel). */
+internal fun infoBoxTopY(): Float = HERO_HEIGHT / 2 + VERTICAL_SHIFT - (offsetAt(2f) + ROW_HEIGHT / 2)
+
+/** Height of the old white info box: wheel row 2 above to row 2 below the centre. */
+internal fun infoBoxHeight(): Float = 2 * (offsetAt(2f) + ROW_HEIGHT / 2)
+
 internal fun statsWheelLastRowY(): Float = HERO_HEIGHT / 2 + VERTICAL_SHIFT + offsetAt(SIDE_ROWS.toFloat())
 
 /** All registrations (today's are filtered in the wheel), health metrics and calorie budget for the wheel. */

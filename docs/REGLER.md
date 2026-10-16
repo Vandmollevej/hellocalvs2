@@ -396,7 +396,8 @@ Certifikater står nederst til venstre ud for cirklens bund (økologi altid nede
 
 ## Venstre menu: alt foldet ud som standard (user rule 2026-10-11)
 
-- Fanerne/accordions i venstre menu — både webversionen (`WebShell`) og admin (`AdminShell`) — er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
+- Fanerne/accordions i webversionens venstre menu (`WebShell`) er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
+- **Admin (afløser ovenstående for `AdminShell`, user rule 2026-10-16)**: hver gang man logger ind i admin, er ALLE accordions i venstre menu lukket — også den gruppe, den aktuelle side ligger i. Admin folder aldrig selv en gruppe ud ved sideskift; kun admins egne klik åbner en gruppe.
 - Brugerens egne fold/sammenklap huskes kun, mens fanen er åben (`sessionStorage`, `src/lib/sidebar-state.ts`) og nulstilles ved login/logout. Aldrig `localStorage` til fold-tilstand.
 - **Ark-gennemgang 2026-10-11 (bruger)**: 20 nye/præciserede regler (Quantity uden stk, Pack Count ens, MHD/datoer væk, brand/subbrand egne kolonner, kategori er aldrig produkttype, ingen dobbelte ord, dyremad fjernes, lande i `_is_country_of_origen` undtagen vin, certifikater/alkohol-% til egne felter). Fuld liste: `Excelark/NAVNEREGLER.md` → "Brugerens regler 2026-10-11". Overlevering: `docs/handoffs/2026-10-11-produkttype-gennemgang.md`.
 ## Middleware: /_next/ på admin-værten (2026-10-11)

@@ -197,9 +197,6 @@ export const NAV: NavEntry[] = [
 const OPEN_GROUPS_KEY = ADMIN_OPEN_GROUPS_KEY;
 const COLLAPSED_KEY = ADMIN_COLLAPSED_KEY;
 
-// Alle grupper er foldet ud som standard (se src/lib/sidebar-state.ts).
-const ALL_GROUP_IDS = NAV.flatMap((entry) => (entry.kind === "group" ? [entry.id] : []));
-
 const ALL_HREFS = NAV.flatMap((entry) => (entry.kind === "link" ? [entry.href] : entry.links.map((link) => link.href)));
 
 function matches(pathname: string, href: string) {
@@ -217,13 +214,6 @@ function isActive(pathname: string, href: string) {
   if (ALSO_ACTIVE[href]?.some((extra) => matches(pathname, extra))) return true;
   if (!matches(pathname, href)) return false;
   return !ALL_HREFS.some((other) => other.length > href.length && matches(pathname, other));
-}
-
-function activeGroupId(pathname: string) {
-  for (const entry of NAV) {
-    if (entry.kind === "group" && entry.links.some((link) => isActive(pathname, link.href))) return entry.id;
-  }
-  return null;
 }
 
 function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "chevron" | "menu" | "close" | "collapse"; className?: string }) {
@@ -752,8 +742,9 @@ export function AdminShell({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  // Alle grupper er foldet ud som standard, hver gang admin åbnes på ny.
-  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set(ALL_GROUP_IDS));
+  // Alle grupper er lukket, hver gang admin åbnes på ny (brugerens regel
+  // 2026-10-16). Kun admins egne klik folder en gruppe ud.
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set());
 
   // Egne fold/sammenklap huskes kun, mens fanen er åben (sessionStorage).
   useEffect(() => {
@@ -768,11 +759,8 @@ export function AdminShell({
   }, []);
 
   useEffect(() => {
-    const groupId = activeGroupId(pathname);
-    /* eslint-disable react-hooks/set-state-in-effect -- følger ruteskift */
-    if (groupId) setOpenGroups((current) => (current.has(groupId) ? current : new Set([...current, groupId])));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- følger ruteskift
     setDrawerOpen(false);
-    /* eslint-enable react-hooks/set-state-in-effect */
     let cancelled = false;
     fetch("/api/admin/support/count", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))

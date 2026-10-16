@@ -3,8 +3,8 @@
 import type { GoalBar, StickBucket } from "@/lib/front-charts";
 
 // Forsidens fire grafer (bruger 2026-10-14) i infoboksens plads: uden
-// baggrund, kun min/maks til venstre, timetal i siderne under x-aksen og
-// titlen i midten. Farven er den
+// baggrund, kun min/maks til venstre og timetal i siderne under x-aksen. Kun
+// pulsen har en titel ("Puls") i midten; de andre viser grafen i midten. Farven er den
 // nye graf-accent (--hf-color-chart-blue).
 
 // Højden følger pladsen i infoboksens felt (bruger 2026-10-16).
@@ -62,7 +62,7 @@ function Frame({
       <line x1={PAD_L} x2={width - PAD_R} y1={PLOT_H + 3} y2={PLOT_H + 3} className="stroke-hf-line" strokeWidth={0.5} />
       {children}
       <text x={PAD_L} y={LABEL_Y} className="hf-chart-axis fill-hf-text-secondary">{left}</text>
-      <text x={width / 2 + PAD_L / 2} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis fill-hf-text">{title}</text>
+      {title && <text x={width / 2 + PAD_L / 2} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis fill-hf-text">{title}</text>}
       <text x={width - PAD_R} y={LABEL_Y} textAnchor="end" className="hf-chart-axis fill-hf-text-secondary">{right}</text>
     </svg>
   );
@@ -70,9 +70,6 @@ function Frame({
 
 const hourLabel = (h: number) => String(h % 24 === 0 && h > 0 ? 24 : h).padStart(2, "0");
 
-function Empty({ width, height, text }: { width: number; height: number; text: string }) {
-  return <text x={PAD_L + (width - PAD_L - PAD_R) / 2} y={plotH(height) / 2} textAnchor="middle" className="hf-chart-axis--large fill-hf-inactive">{text}</text>;
-}
 
 function plotX(width: number, count: number, i: number) {
   const w = width - PAD_L - PAD_R;
@@ -81,8 +78,8 @@ function plotX(width: number, count: number, i: number) {
 
 /** Pulsen over dagen som pindediagram (én min/maks-pind pr. kvarter). */
 export function PulseSticks({
-  width, height, buckets, startHour, endHour, title, emptyText,
-}: { width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string; emptyText: string }) {
+  width, height, buckets, startHour, endHour, title,
+}: { width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string }) {
   const filled = buckets.filter((b): b is NonNullable<StickBucket> => b !== null);
   const lo = filled.length ? Math.min(...filled.map((b) => b.min)) : 0;
   const hi = filled.length ? Math.max(...filled.map((b) => b.max)) : 0;
@@ -95,7 +92,6 @@ export function PulseSticks({
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={filled.length ? String(Math.round(hi)) : ""} bottom={filled.length ? String(Math.round(lo)) : ""}
     >
-      {filled.length === 0 && <Empty width={width} height={height} text={emptyText} />}
       {filled.map((b) => (
         <line
           key={b.index}
@@ -119,7 +115,7 @@ export function KcalSticks({
   const plan = shares.map((s, i) => ({ x: plotX(width, shares.length, i), y: y(s * budgetKcal) }));
   return (
     <Frame
-      width={width} height={height} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
@@ -144,7 +140,7 @@ export function PlanVsActual({
   const actual = actualCumulative.slice(0, Math.max(0, elapsed)).map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
   return (
     <Frame
-      width={width} height={height} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
@@ -177,7 +173,7 @@ export function GoalTimeline({
   const barW = Math.max(1.5, Math.min(6, ((width - PAD_L - PAD_R) / slots) * 0.6));
   return (
     <Frame
-      width={width} height={height} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={startLabel} right={endLabel}
       top={String(Math.round(top))} bottom={String(Math.round(bottom))}
     >

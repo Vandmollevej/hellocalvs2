@@ -2,9 +2,16 @@
 
 - Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.
 ## 2026-10-16: Forsidens grafer i infoboksens plads
+## 2026-10-16: Google Health synkroniserer af sig selv + kun én synk-popup
 
-- Graferne fra 2026-10-14 (puls, kalorier, anbefalet mod indtag, målsætning og teksten "For at kunne holde dig inden for dagens mål …" nederst) står nu uden baggrund i præcis den plads, infoboksen havde, modsat tal-hjulet (`FrontCharts` i `Hero`). Resten af forsiden (topbar, tal-hjul, puls-linje, dagens liste, ingen rulning) er som før graferne. Graferne deler infoboksens højde ligeligt.
-- Vågne timer: rundet OP til venstre og NED til højre, som brugeren skrev. Web + native (`HomeFrontCharts` i hero-boksen). Native er ikke kompileret lokalt — CI afgør.
+- Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
+- "Ikke synkroniseret"-popuppen i layoutet bruger nu samme bundark som vægt-popuppen og springer integrationer med vægt over (vægt-popuppen tager dem), så samme spørgsmål ikke kommer to gange. Web + native. Native kompileres kun i CI. Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
+
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
+- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
+
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
