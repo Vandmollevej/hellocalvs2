@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -86,8 +84,7 @@ fun HomeScreen(args: RouteArgs) {
             rootBottom = rootTop + it.size.height / density
         },
     ) {
-        // Charts, hero and list scroll together (web: the scroll wrapper in page.tsx).
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(Modifier.fillMaxSize()) {
             // <div className="relative flex-none"><HomeWaves/><TopBar/><Hero/></div>
             Box(
                 Modifier.fillMaxWidth().onGloballyPositioned { topBlockTop = it.positionInRoot().y / density },
@@ -97,16 +94,15 @@ fun HomeScreen(args: RouteArgs) {
                 HomeWaves(pulseY, Modifier.matchParentSize())
                 Column(Modifier.fillMaxWidth()) {
                     HomeTopBar()
-                    HomeFrontCharts(Modifier.padding(top = 8.dp))
                     Box(
-                        Modifier.padding(top = 16.dp).fillMaxWidth().height(HERO_HEIGHT.dp),
+                        Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp),
                     ) {
                         HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
                     }
                 }
             }
             // The list lies over the hero (z-10): the wheel's rows turn in behind it.
-            HomeDailyList(Modifier.height(416.dp).padding(top = 8.dp))
+            HomeDailyList(Modifier.weight(1f).padding(top = 8.dp))
         }
     }
 

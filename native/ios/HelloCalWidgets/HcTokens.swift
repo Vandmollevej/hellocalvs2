@@ -77,8 +77,6 @@ enum HcColors {
     static let overlay = Color(.sRGB, red: 0.1373, green: 0.1373, blue: 0.1373, opacity: 0.4000)
     /// --hf-color-watch
     static let watch = Color(.sRGB, red: 0.1843, green: 0.5020, blue: 0.9294, opacity: 1.0000)
-    /// --hf-color-chart-blue
-    static let chartBlue = Color(.sRGB, red: 0.3569, green: 0.6235, blue: 0.8118, opacity: 1.0000)
     /// --hf-color-faceid
     static let faceid = Color(.sRGB, red: 0.0392, green: 0.4784, blue: 1.0000, opacity: 1.0000)
     /// --hf-color-faceid-spin
