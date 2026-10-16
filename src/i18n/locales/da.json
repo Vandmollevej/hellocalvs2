@@ -3083,7 +3083,7 @@
     "favorite": "Favorit",
     "reportErrorAria": "Har du fundet en fejl?",
     "reportError": "Fejl",
-    "delete": "Slet"
+    "delete": "Fjern"
   },
   "myScans": {
     "title": "Dine indscanninger",
@@ -3097,8 +3097,8 @@
     "syncedLocked": "Målinger fra {name} kan ikke slettes eller rettes i Hello Cal.",
     "manual": "Indtastet af dig",
     "loading": "Henter målinger…",
-    "delete": "Slet",
-    "deleteWarning": "Du er ved at slette denne indtastning. Det kan ikke fortrydes.",
+    "delete": "Fjern",
+    "deleteWarning": "Du er ved at fjerne denne indtastning. Det kan ikke fortrydes.",
     "conditions": "Forhold",
     "amount": "Mængde",
     "energy": "Energi",
