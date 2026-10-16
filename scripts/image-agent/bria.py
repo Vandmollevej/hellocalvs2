@@ -7,6 +7,7 @@ svarer med en adresse til et transparent PNG, som hentes her.
 """
 
 import base64
+import hashlib
 import logging
 import os
 
@@ -20,6 +21,18 @@ log = logging.getLogger("image-agent.bria")
 
 BRIA_API_URL = os.environ.get("BRIA_API_URL", "https://engine.prod.bria-api.com/v2/image/edit/remove_background")
 BRIA_TIMEOUT = int(os.environ.get("BRIA_TIMEOUT_SECONDS", "60"))
+# Hvert Bria-svar gemmes på disken efter billedets indhold, så samme billede
+# aldrig koster to credits. Antallet af gemte svar er også kreditregnskabet:
+# ved BRIA_MAX_CREDITS stopper vi, så de sidste credits ikke brændes af.
+CACHE_DIR = os.path.join(os.environ.get("IMAGE_OUTPUT_DIR", "/images"), "bria-cache")
+MAX_CREDITS = int(os.environ.get("BRIA_MAX_CREDITS", "170"))
+
+
+def credits_used():
+    try:
+        return len([name for name in os.listdir(CACHE_DIR) if name.endswith(".png")])
+    except FileNotFoundError:
+        return 0
 
 
 def _admin_token():
@@ -78,12 +91,22 @@ def record_api_call(service_id, ok, error=None, count=1):
 
 
 def remove_background_bria(image_bytes):
+    path = os.path.join(CACHE_DIR, hashlib.sha256(image_bytes).hexdigest() + ".png")
+    if os.path.exists(path):  # gemt svar: ingen credits, ingen kaldtælling
+        with open(path, "rb") as handle:
+            return handle.read()
+    if credits_used() >= MAX_CREDITS:
+        raise RuntimeError(f"Bria-kreditgrænsen er nået ({MAX_CREDITS} billeder) — hæv BRIA_MAX_CREDITS, når der er købt flere")
     try:
         result = _remove_background_bria(image_bytes)
     except Exception as exc:
         record_api_call("bria", False, str(exc))
         raise
     record_api_call("bria", True)
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    with open(path + ".tmp", "wb") as handle:
+        handle.write(result)
+    os.replace(path + ".tmp", path)
     return result
 
 
