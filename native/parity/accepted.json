@@ -1,7 +1,7 @@
 {
   "/": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/page.tsx": "46c680291f106ff5",
+    "src/app/page.tsx": "795f61ee871d9abf",
     "src/components/AddButton.tsx": "0ff7af78748cc2c0",
     "src/components/AppHomeGate.tsx": "baa51e8bdefd34a0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -14,9 +14,8 @@
     "src/components/FoodRow.tsx": "73f6b0db83b31fd4",
     "src/components/FooterArc.tsx": "09d67afd4d748237",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
-    "src/components/Hero.tsx": "770f2d1a1a2d02c3",
+    "src/components/Hero.tsx": "8ec268c27f9e8147",
     "src/components/HomeWaves.tsx": "cc30f44ebba9027c",
-    "src/components/InfoBox.tsx": "325b16d7035f9af1",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/OnboardingWizard.tsx": "bbe54d3abc6ab25b",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
@@ -38,6 +37,8 @@
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
     "src/components/family/ProfileSwitcher.tsx": "25b2d318dea9674a",
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
+    "src/components/frontcharts/FrontChartSvgs.tsx": "59aea450c8aa5706",
+    "src/components/frontcharts/FrontCharts.tsx": "fbcb94e490228338",
     "src/components/hf/AccordionCard.tsx": "8cab6c407d964400",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
     "src/components/hf/EntryDetailsSheet.tsx": "f2434e44767670af",

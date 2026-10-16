@@ -276,3 +276,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Seneste produktregler på master går forud for gamle efterladte implementationer. Samlingsgennemgang: `docs/handoffs/2026-10-11-github-samling.md`.
 - Ental/flertal uden artikel: når søgeordet kun findes i den ene titelform, vises denne. Fælles ord og delord beholder standardtitlen (`displayNameForQuery`).
 - Labels i Varedatabase bruger de eksisterende certifikatlogoer; ingen tegnede erstatningslogoer.
+
+- **Graf-accent (2026-10-14)**: grafer på forsiden bruger `--hf-color-chart-blue` (mørkere lyseblå, `stroke-hf-chart-blue`/`fill-hf-chart-blue`); grå bruges til anbefalinger/mål. Ingen andre blå i grafer.

@@ -1,3 +1,10 @@
+## 2026-10-14: Forsidens grafer erstatter infoboksen
+
+- Den hvide infoboks er fjernet. Øverst vises fire grafer uden baggrund (`src/components/frontcharts/`): puls (pindediagram), kalorieindtag (pinde + anbefalet energifordeling som glat kurve), anbefalet mod faktisk indtag (grå statisk mod blå) og målsætningens tidslinje (pind pr. dag/uge, bredt anbefalet min–maks-bånd, grå målstreg). Kun vågne timer (sengetid/opvågning fra Søvn; ellers 07–23), rundet ned til venstre og op til højre.
+- Nederst en handlingsboks ("forbrænd X kcal", eller reducér indtag/forbrænd). Tryk åbner et ark med gåture (rolig/rask/hurtig ud fra vægt) og forslag til mad; Hello Fresh-link vises kun, når integrationen er slået til.
+- Ny graf-accent `--hf-color-chart-blue` (#5b9fcf). Regler i `src/lib/front-charts.ts` (+ test), native port i `HomeFrontCharts*.kt`.
+- Kendt: norsk/svensk tekst er foreløbigt dansk, tysk/fransk/hollandsk engelsk. Native er ikke kompileret lokalt (ingen Android SDK) — CI afgør.
+
 ## 2026-10-12: Adminadgang tilgængelig — visuel opfølgning i gang
 
 - Brugeren melder "Nu virker det"; admin.hellocal.io/admin er indlogget, så den tidligere adgangsblokering er væk.
