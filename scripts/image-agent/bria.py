@@ -7,22 +7,54 @@ svarer med en adresse til et transparent PNG, som hentes her.
 """
 
 import base64
+import logging
 import os
 
+import psycopg2
 import requests
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+
+log = logging.getLogger("image-agent.bria")
 
 BRIA_API_URL = os.environ.get("BRIA_API_URL", "https://engine.prod.bria-api.com/v2/image/edit/remove_background")
 BRIA_TIMEOUT = int(os.environ.get("BRIA_TIMEOUT_SECONDS", "60"))
 
 
+def _admin_token():
+    """Nøglen gemt i admin → API-nøgler (app_secrets, samme kryptering som appen)."""
+    master = os.environ.get("ADMIN_SESSION_SECRET", "")
+    database_url = os.environ.get("DATABASE_URL", "").split("?")[0]
+    if len(master) < 16 or not database_url:
+        return None
+    key = HKDF(algorithm=hashes.SHA256(), length=32, salt=b"hellocal-app-secrets", info=b"api-keys-v1").derive(master.encode())
+    try:
+        with psycopg2.connect(database_url, connect_timeout=10) as conn, conn.cursor() as cur:
+            cur.execute('SELECT "cipherText" FROM app_secrets WHERE key = %s', ("BRIA_API_TOKEN",))
+            row = cur.fetchone()
+        if not row:
+            return None
+        raw = base64.b64decode(row[0][3:])
+        return AESGCM(key).decrypt(raw[:12], raw[28:] + raw[12:28], None).decode("utf-8").strip()
+    except Exception as exc:  # noqa: BLE001
+        log.warning("Kunne ikke læse Bria-nøglen fra admin: %s", exc)
+        return None
+
+
+def get_token():
+    """Admin-gemt værdi vinder over .env, som i appen."""
+    return _admin_token() or os.environ.get("BRIA_API_TOKEN", "").strip() or None
+
+
 def available():
-    return bool(os.environ.get("BRIA_API_TOKEN"))
+    return bool(get_token())
 
 
 def remove_background_bria(image_bytes):
-    token = os.environ.get("BRIA_API_TOKEN")
+    token = get_token()
     if not token:
-        raise RuntimeError("BRIA_API_TOKEN is not set")
+        raise RuntimeError("Bria-nøgle mangler (admin → API-nøgler → Bria)")
     response = requests.post(
         BRIA_API_URL,
         headers={"api_token": token, "Content-Type": "application/json"},

@@ -454,6 +454,23 @@ export const KEY_SERVICES: KeyService[] = [
     testable: true,
   },
   {
+    id: "bria",
+    name: "Bria (fritlægning af billeder)",
+    group: "ai",
+    purpose: "Alternativ til rembg, når billeder fritlægges. Bruges af billedrobotten og af sammenligningen under Robotter.",
+    fields: [
+      {
+        key: "BRIA_API_TOKEN",
+        label: "API-token",
+        kind: "secret",
+        editable: true,
+        manage: { url: "https://platform.bria.ai", where: "Bria → konto → API-token (oprettes automatisk ved tilmelding)" },
+      },
+    ],
+    setupUrl: "https://platform.bria.ai",
+    testable: true,
+  },
+  {
     id: "stripe",
     name: "Stripe (Vipps i Danmark, kort/EC i Tyskland)",
     group: "payment",
