@@ -24,12 +24,15 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.HcText
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -49,6 +52,7 @@ import kotlin.math.min
 
 private const val BUCKET_MIN = 15
 private const val GOAL_BAR_DP = 4
+private const val FALLBACK_DAYS = 30
 private const val FLOOR_KCAL_FEMALE = 1200.0
 
 @Serializable
@@ -135,20 +139,31 @@ private fun smoothPath(points: List<Offset>): Path {
     return path
 }
 
-private const val PLOT_PAD = 6f
+/** Room above the plot for the number on top of the highest stick (web: PEAK_SPACE). */
+private val PEAK_PAD = 11.dp
 
-/** A chart: max/min labels on the left, hour captions below ("kl." on the left) and the title in the middle. */
+/** The highest value and where it sits; drawn as a number just above that point (user 2026-10-16). */
+private data class Peak(val x: Float, val y: Float, val value: Double)
+
+/**
+ * A chart without numbers on the left (user 2026-10-16): only the highest value on top of the
+ * highest stick/top, hour captions below ("kl." on the left) and the title in the middle.
+ */
 @Composable
-private fun ColumnScope.ChartFrame(top: String, bottom: String, left: String, right: String, title: String, draw: DrawScope.() -> Unit) {
-    // Each chart is lower than its share of the white box, leaving air between them (web: chartH = 72 %).
+private fun ColumnScope.ChartFrame(left: String, right: String, title: String, draw: DrawScope.() -> Peak?) {
+    val measurer = rememberTextMeasurer()
+    val peakStyle = HcTypeRoles.Micro.style(HcColors.TextSecondary)
+    // Each chart is lower than its share of the space, leaving air between them.
     Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-        Column(Modifier.fillMaxWidth().fillMaxHeight(0.72f)) {
-            Row(Modifier.fillMaxWidth().weight(1f)) {
-                Column(Modifier.fillMaxHeight().padding(end = 6.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                    HcText(top, HcTypeRoles.Caption, color = HcColors.TextSecondary)
-                    HcText(bottom, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+        Column(Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+            Canvas(Modifier.fillMaxWidth().weight(1f)) {
+                val peak = draw()
+                if (peak != null) {
+                    val layout = measurer.measure(peak.value.toInt().toString(), peakStyle)
+                    val w = layout.size.width.toFloat()
+                    val x = (peak.x - w / 2).coerceIn(0f, max(0f, size.width - w))
+                    drawText(layout, topLeft = Offset(x, peak.y - 2.dp.toPx() - layout.size.height))
                 }
-                Canvas(Modifier.fillMaxSize()) { draw() }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 HcText(left, HcTypeRoles.Caption, color = HcColors.TextSecondary)
@@ -157,6 +172,13 @@ private fun ColumnScope.ChartFrame(top: String, bottom: String, left: String, ri
             }
         }
     }
+}
+
+/** Vertical scale: [lo] at the bottom, [hi] PEAK_PAD below the top. */
+private fun DrawScope.scaleY(lo: Double, hi: Double): (Double) -> Float {
+    val span = max(1.0, hi - lo)
+    val pad = PEAK_PAD.toPx()
+    return { v -> size.height - ((v - lo) / span).toFloat() * (size.height - pad) }
 }
 
 private fun DrawScope.baseline() {
@@ -190,59 +212,74 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
     val nowHour = now.hour + now.minute / 60.0
     val elapsed = max(0, min(shares.size, kotlin.math.ceil((nowHour - start) * 60 / BUCKET_MIN).toInt()))
     val budget = data.budgetKcal
+    // The calorie chart sums per hour so the recommended curve shows next to the meals (web: KCAL_BUCKET_MIN).
+    val hourShares = recommendedShares(start, end, 60)
+    val hourSums = sumBuckets(intake, start, end, 60)
     // "kl." in front of the left hour under the x axis (web: frontCharts.clockLeft).
     fun clock(hour: String) = t.t("frontCharts.clockLeft", "hour" to hour)
     val planCum = cumulative(shares.map { it * budget })
     val actualCum = cumulative(sums)
 
     Column(modifier) {
-        // Pulse: one min/max stick per quarter hour.
+      Column(Modifier.fillMaxWidth().weight(1f)) {
+        // Pulse: one min/max stick per quarter hour; the day's max on top of the highest stick.
         val filled = pulse.filterNotNull()
         val lo = filled.minOfOrNull { it.min } ?: 0.0
         val hi = filled.maxOfOrNull { it.max } ?: 0.0
-        ChartFrame(
-            if (filled.isEmpty()) "" else hi.toInt().toString(), if (filled.isEmpty()) "" else lo.toInt().toString(),
-            clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.pulse"),
-        ) {
+        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.pulse")) {
             baseline()
-            val span = max(1.0, hi - lo).toFloat()
+            val y = scaleY(lo, hi)
             for (b in filled) {
                 val x = plotX(pulse.size, b.index)
-                val y1 = size.height - PLOT_PAD - ((b.min - lo).toFloat() / span) * (size.height - 2 * PLOT_PAD)
-                val y2 = size.height - PLOT_PAD - ((b.max - lo).toFloat() / span) * (size.height - 2 * PLOT_PAD)
+                val y1 = y(b.min)
+                val y2 = y(b.max)
                 drawLine(HcColors.ChartBlue, Offset(x, y1), Offset(x, if (y1 == y2) y2 - 1f else y2), strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
             }
+            filled.firstOrNull { it.max == hi }?.let { Peak(plotX(pulse.size, it.index), y(hi), hi) }
         }
 
-        // Calories: sticks per quarter hour with the recommended distribution as a smooth curve.
-        val topKcal = max(sums.maxOrNull() ?: 0.0, max((shares.maxOrNull() ?: 0.0) * budget, 1.0))
-        ChartFrame(topKcal.toInt().toString(), "0", clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.intake")) {
+        // Calories: blue sticks per hour with the recommended distribution as a smooth blue curve.
+        val maxSum = hourSums.maxOrNull() ?: 0.0
+        val topKcal = max(maxSum, max((hourShares.maxOrNull() ?: 0.0) * budget, 1.0))
+        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.intake")) {
             baseline()
-            sums.forEachIndexed { i, v ->
+            val y = scaleY(0.0, topKcal)
+            val plan = hourShares.mapIndexed { i, s -> Offset(plotX(hourShares.size, i), y(s * budget)) }
+            drawPath(smoothPath(plan), HcColors.ChartBlue, alpha = 0.5f, style = Stroke(width = 1.25.dp.toPx(), cap = StrokeCap.Round))
+            hourSums.forEachIndexed { i, v ->
                 if (v > 0) {
-                    val x = plotX(sums.size, i)
-                    drawLine(HcColors.ChartBlue, Offset(x, size.height), Offset(x, size.height - (v / topKcal).toFloat() * (size.height - PLOT_PAD)), strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
+                    val x = plotX(hourSums.size, i)
+                    drawLine(HcColors.ChartBlue, Offset(x, size.height), Offset(x, y(v)), strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round)
                 }
             }
-            val plan = shares.mapIndexed { i, s -> Offset(plotX(shares.size, i), size.height - (s * budget / topKcal).toFloat() * (size.height - PLOT_PAD)) }
-            drawPath(smoothPath(plan), HcColors.TextSecondary, style = Stroke(width = 1.25.dp.toPx(), cap = StrokeCap.Round))
+            if (maxSum > 0) Peak(plotX(hourSums.size, hourSums.indexOf(maxSum)), y(maxSum), maxSum) else null
         }
 
-        // Recommended (grey, static) vs. actual intake (blue).
-        val topCum = max(planCum.lastOrNull() ?: 0.0, max(actualCum.getOrElse(max(0, elapsed - 1)) { 0.0 }, 1.0))
-        ChartFrame(topCum.toInt().toString(), "0", clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.planVsActual")) {
+        // Calorie status: recommended (grey, static) vs. actual intake (blue); the top value at the end.
+        val planEnd = planCum.lastOrNull() ?: 0.0
+        val actualNow = actualCum.getOrElse(max(0, elapsed - 1)) { 0.0 }
+        val topCum = max(planEnd, max(actualNow, 1.0))
+        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.planVsActual")) {
             baseline()
-            val plan = planCum.mapIndexed { i, v -> Offset(plotX(planCum.size, i), size.height - (v / topCum).toFloat() * (size.height - PLOT_PAD)) }
+            val y = scaleY(0.0, topCum)
+            val plan = planCum.mapIndexed { i, v -> Offset(plotX(planCum.size, i), y(v)) }
             drawPath(smoothPath(plan), HcColors.Line, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
-            val actual = actualCum.take(elapsed).mapIndexed { i, v -> Offset(plotX(planCum.size, i), size.height - (v / topCum).toFloat() * (size.height - PLOT_PAD)) }
+            val actual = actualCum.take(elapsed).mapIndexed { i, v -> Offset(plotX(planCum.size, i), y(v)) }
             if (actual.size > 1) drawPath(smoothPath(actual), HcColors.ChartBlue, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
+            when {
+                actualNow > planEnd && elapsed > 0 -> Peak(plotX(planCum.size, elapsed - 1), y(actualNow), actualNow)
+                planCum.isNotEmpty() -> Peak(plotX(planCum.size, planCum.size - 1), y(planEnd), planEnd)
+                else -> null
+            }
         }
 
-        // Goal timeline: one stick per day/week from the goal's start to its target date.
+        // Goal timeline: one stick per day/week from the goal's start to its target date;
+        // without a dated weight goal the last 30 days (web: FALLBACK_DAYS).
         val weightGoal = data.goals.firstOrNull { g -> g.targetDate != null && g.targets.any { it.type == "weight" } }
+        val goalEnd = weightGoal?.targetDate?.let { runCatching { LocalDate.parse(it.take(10)) }.getOrNull() } ?: today
         val goalStart = weightGoal?.let { FoodTime.parse(it.createdAt)?.let { i -> FoodTime.local(i).date } }
-        val goalEnd = weightGoal?.targetDate?.let { runCatching { LocalDate.parse(it.take(10)) }.getOrNull() }
-        if (weightGoal != null && goalStart != null && goalEnd != null) {
+            ?: goalEnd.plus(-(FALLBACK_DAYS - 1), DateTimeUnit.DAY)
+        run {
             val totalDays = max(1, goalStart.daysUntil(goalEnd) + 1)
             val perDay = HashMap<LocalDate, Double>()
             for (r in data.registrations) {
@@ -257,13 +294,11 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
             val measured = bars.filter { it.lowKcal != null && it.highKcal != null }
             val top = max(measured.maxOfOrNull { it.highKcal!! } ?: 0.0, max(recMax, max(budget, 1.0)))
             val bottom = min(measured.minOfOrNull { it.lowKcal!! } ?: recMin, min(recMin, budget))
-            val span = max(1.0, top - bottom).toFloat()
             ChartFrame(
-                top.toInt().toString(), bottom.toInt().toString(),
                 "${goalStart.dayOfMonth}/${goalStart.monthNumber}", "${goalEnd.dayOfMonth}/${goalEnd.monthNumber}", t.t(if (per >= 7) "frontCharts.goalWeeks" else "frontCharts.goalDays"),
             ) {
                 baseline()
-                fun y(v: Double) = size.height - PLOT_PAD - ((v - bottom).toFloat() / span) * (size.height - 2 * PLOT_PAD)
+                val y = scaleY(bottom, top)
                 drawRect(HcColors.Nav, Offset(0f, y(recMax)), Size(size.width, max(2f, y(recMin) - y(recMax))), alpha = 0.7f)
                 drawLine(HcColors.TextSecondary, Offset(0f, y(budget)), Offset(size.width, y(budget)), strokeWidth = 1.5.dp.toPx())
                 val slots = bars.size
@@ -274,7 +309,13 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
                     val x = plotX(slots, i)
                     drawLine(HcColors.ChartBlue, Offset(x, y(low)), Offset(x, min(y(low) - 1f, y(high))), strokeWidth = barW, cap = StrokeCap.Round)
                 }
+                // The highest intake on top of its stick, otherwise the goal at the bar's right end.
+                val maxHigh = measured.maxOfOrNull { it.highKcal!! }
+                val peakIndex = if (maxHigh == null) -1 else bars.indexOfFirst { it.highKcal == maxHigh }
+                if (maxHigh != null && peakIndex >= 0) Peak(plotX(slots, peakIndex), y(maxHigh) - barW / 2, maxHigh)
+                else Peak(size.width, y(budget), budget)
             }
         }
+      }
     }
 }

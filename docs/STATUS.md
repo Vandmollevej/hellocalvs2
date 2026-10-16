@@ -2,6 +2,10 @@
 
 - Stregkode, forside, energi og indhold: hver optagelse gemmes ubeskåret (op til 4096 px) og kobles til varen (web; native alle undtagen stregkoden). Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
 
+## 2026-10-16: Ingen tekst under forsidens grafer
+
+- Brugeren vil ikke have teksten "For at kunne holde dig inden for dagens mål anbefaler vi at du …" eller forslagsarket under graferne. Fjernet i web (`FrontCharts.tsx`) og native (`HomeFrontCharts.kt`); graferne fylder pladsen. Gentag den ikke.
+
 ## 2026-10-16: Scannede fotos læses igen, når OpenAI-kreditten er tilbage
 
 - Fotoene fra scanningen var gemt, men genlæsningen (`quick-enrichment-recovery`) brugte sine 3 forsøg og engangsreparationen, mens kreditten var tom, og opgav så varen (fx Änglamark-letmælken: intet navn, 0 kcal, råfoto). Nu står jobbet stille, så længe OpenAI melder tom kredit/afvist nøgle, og varer, hvis reparation blev brændt af, genåbnes én gang til (`repairRound` 2) og læses fra de gemte fotos, så snart kreditten er fyldt op. Ikke prøvet mod rigtig database herfra.
@@ -32,6 +36,14 @@
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
 - Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
 
+## 2026-10-16: Forsidens grafer uden tal i venstre side
+
+- Ingen min/maks/0 i venstre side; kun det højeste tal står oven på den højeste pind/top (puls: dagens maks, kalorier: største pind, kaloriestatus: slutværdien, mål: højeste dagsindtag eller målet). Timetal og titel er 12 px (før 9 px). Kalorier: blå pinde (3 px) og den anbefalede fordeling som blå kurve. Graferne bruger nu hele bredden. Web + native; native kompileres kun i CI.
+
+## 2026-10-16: Forsidens grafer smallere, målgrafen altid med
+
+- Graferne slutter 36 px før skærmens midte (før 12 px), så de holder sig fri af tal-hjulets tekst. Målgrafen (kalorier pr. dag med den grå tværbar for målet og anbefalet min–maks) vises nu altid: uden et vægtmål med dato viser den de seneste 30 dage. Den tredje graf hedder "Kaloriestatus" (brugerens ord: anbefalet kalorieforbrug i grå mod den faktiske kaloriestatus i blå), og målgrafen hedder "Mål · dage/uger". Web + native; native kompileres kun i CI. Skærmbilledet fra brugerens iPhone så ud som om siden var zoomet ind (ca. 110 %), hvilket ikke kunne genskabes i Chromium.
+
 ## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
 - Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
 
@@ -53,8 +65,7 @@
 ## 2026-10-16: Forsidens grafer i den hvide boks' plads
 
 - Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: fra kanten ind til boksens gamle højre/venstre side og fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
-- Graferne er 72 % af deres andel af boksen, så der er luft imellem. Titel i midten på alle (Puls, Kalorier, Anbefalet mod indtag, Målsætning), "kl." foran venstre timetal. Ingen "Ingen pulsdata endnu" og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16).
-- Kendt: den grå anbefalede kurve i Kalorier ligger næsten på 0, fordi skalaen følger det største måltid — afventer brugerens svar om, hvad graferne skal vise. Web + native; native er ikke kompileret lokalt — CI afgør.
+- Graferne står i boksens plads med luft imellem, titel i midten på alle og "kl." foran venstre timetal. Under graferne brugerens originaltekst ("For at kunne holde dig inden for dagens mål anbefaler vi at du forbrænder X kalorier", tallet stort på egen linje, "eller reducerer kalorieindtag med … og forbrænder …"); tryk åbner forslagsarket (gåture, mad, Hello Fresh). Kalorie-grafen samler pr. time, så den anbefalede kurve ses ved siden af måltiderne.
 
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
