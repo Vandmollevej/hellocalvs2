@@ -155,7 +155,7 @@ private fun ColumnScope.ChartFrame(left: String, right: String, title: String, d
     val peakStyle = HcTypeRoles.Micro.style(HcColors.TextSecondary)
     // Each chart is lower than its share of the space, leaving air between them.
     Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-        Column(Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight(0.7f)) {
             Canvas(Modifier.fillMaxWidth().weight(1f)) {
                 val peak = draw()
                 if (peak != null) {

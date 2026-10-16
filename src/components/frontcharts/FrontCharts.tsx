@@ -27,8 +27,9 @@ const EDGE = 13;
 const CENTER_GAP = 36;
 /** Uden et vægtmål med dato viser målgrafen de seneste 30 dage (bruger 2026-10-16: kalorier mod målet skal altid vises). */
 const FALLBACK_DAYS = 30;
-/** Fra den hvide boks' top til hero-bunden. */
+/** Den hvide boks' top og højde: graferne står fra dens top til dens bund. */
 const BOX_TOP = WHEEL_SPAN.shift - WHEEL_SPAN.half;
+const BOX_H = WHEEL_SPAN.half * 2;
 
 type Metric = { type: string; value: number; recordedAt: string };
 type Registration = { createdAt: string; kcalSnapshot: number };
@@ -142,19 +143,20 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
     };
   }, [goals, registrations, width, budgetKcal]);
 
-  // Graferne er lavere end deres andel af pladsen, så der er luft imellem dem (bruger 2026-10-16).
-  const chartH = Math.floor((chartsH / 4) * 0.85);
+  // Graferne fylder 70 % af deres andel af boksen, så der er tydelig luft imellem dem (bruger 2026-10-16).
+  const chartH = Math.floor((chartsH / 4) * 0.7);
   const leftLabel = (hour: string) => t("frontCharts.clockLeft", { hour });
   const shortDate = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`;
 
   return (
     <section
       aria-label={t("frontCharts.aria")}
-      className="absolute bottom-0 z-10 flex flex-col"
+      className="absolute z-10 flex flex-col"
       style={{
         [side]: EDGE,
         [side === "left" ? "right" : "left"]: `calc(50% + ${CENTER_GAP}px)`,
         top: `calc(50% + ${BOX_TOP}px)`,
+        height: BOX_H,
       } as React.CSSProperties}
     >
       <div ref={chartsRef} className="min-h-0 flex-1">
