@@ -218,6 +218,9 @@ async function estimateProducts(frida: { rows: FridaRow[]; groups: FridaTypeGrou
         ],
         privateOwnerId: null,
         discontinued: false,
+        // Varer scannet i kameraflowet skønnes aldrig: deres energi læses af
+        // fotoet (brugerens krav 2026-10-16).
+        quickEnrichmentJob: { is: null },
       },
       select: productSelect,
       orderBy: { id: "asc" },
@@ -263,6 +266,7 @@ export async function applyFridaEstimateTo(productId: string): Promise<boolean> 
       nutritionMissing: true,
       privateOwnerId: null,
       discontinued: false,
+      quickEnrichmentJob: { is: null },
       OR: [{ externalSource: null }, { externalSource: { notIn: ["FRIDA", ...IMPORTED_DISH_SOURCES] } }],
     },
     select: productSelect,

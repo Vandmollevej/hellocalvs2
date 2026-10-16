@@ -1064,7 +1064,10 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Skapar varan …",
     "sendingPhotos": "Skickar bilderna …",
-    "processingPhotos": "Bearbetar bilder: {steps} …"
+    "processingPhotos": "Bearbetar bilder: {steps} …",
+    "readingEnergy": "Läser energin …",
+    "energyUnreadable": "Energin kunde inte läsas. Ta bilden igen, nära näringstabellen.",
+    "energyAiUnavailable": "Energin kan inte läsas just nu. Försök igen om en stund."
   },
   "foods": {
     "title": "Livsmedel",
@@ -3886,6 +3889,7 @@
     "noPulse": "Ingen pulsdata endnu",
     "intake": "Kalorier",
     "planVsActual": "Anbefalet mod indtag",
+    "clockLeft": "kl. {hour}",
     "goalDays": "Målsætning · dage",
     "goalWeeks": "Målsætning · uger",
     "actionOpen": "Se forslag til at holde dagens mål",

@@ -47,6 +47,7 @@ export type QuickEnrichmentStoredInput = {
   // null, når ingredienslisten stod på næringsfotoet.
   ingredientsPhotoUrl: string | null;
   frontOcrText?: string;
+  nutritionAnalysisId?: string | null;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   ingredientsOcrText?: string;
@@ -237,6 +238,7 @@ function toEnrichmentInput(
     nutritionPhotoUrl: stored.nutritionPhotoUrl,
     ingredientsPhotoUrl: stored.ingredientsPhotoUrl,
     frontOcrText: stored.frontOcrText,
+    nutritionAnalysisId: stored.nutritionAnalysisId ?? null,
     nutritionOcrText: stored.nutritionOcrText,
     nutritionOcrConfidence: stored.nutritionOcrConfidence,
     ingredientsOcrText: stored.ingredientsOcrText,

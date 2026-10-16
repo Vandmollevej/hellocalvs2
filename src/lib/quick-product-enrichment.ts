@@ -32,8 +32,6 @@ import { askProductType, findProductType } from "@/lib/product-type-name";
 import { parseAlcoholPercent } from "@/lib/alcohol-label";
 import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
 import { productTypeFromText, readFrontText } from "@/lib/front-text-name";
-import { applyFridaEstimateTo } from "@/lib/frida-estimates";
-import { estimateNutritionFromType } from "@/lib/type-nutrition-estimate";
 import { MACRO_SOURCE_KEYS } from "@/lib/nutrients";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
@@ -64,6 +62,8 @@ export type QuickEnrichmentInput = {
   // Telefonens tekstlæsning af forsiden — reserve til navn/brand, når
   // OpenAI ikke kan læse forsiden (src/lib/front-text-name.ts).
   frontOcrText?: string;
+  // Energien, AI'en læste under flowet (POST /api/products/read-energy).
+  nutritionAnalysisId?: string | null;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   ingredientsOcrText?: string;
@@ -480,15 +480,14 @@ async function setNutritionKnown(productId: string, known: boolean) {
   }
 }
 
-// Ny vare uden aflæst næring (docs/DECISIONS.md 2026-10-16): Fridas tal for
-// varetypen, ellers et skøn ud fra varetypen (∼). Kræver et navn — derfor
-// efter forsiden. Returnerer true, når et skøn blev gemt.
-async function estimateMissingNutrition(productId: string): Promise<boolean> {
-  if (await applyFridaEstimateTo(productId).catch(() => false)) {
-    await debugLog({ category: "scan", event: "frida_estimate", message: "Ingen næringstabel læst — Fridas tal for varetypen bruges (∼)", productId });
-    return true;
-  }
-  return estimateNutritionFromType(productId);
+// Energiens aflæsning fra flowet (POST /api/products/read-energy).
+async function loadPrereadNutrition(analysisId: string | null | undefined): Promise<Read<NutritionAnalysis>> {
+  if (!analysisId) return null;
+  const row = await prisma.aiProductAnalysis
+    .findUnique({ where: { id: analysisId }, select: { id: true, kind: true, prediction: true } })
+    .catch(() => null);
+  if (!row || row.kind !== "NUTRITION" || !row.prediction) return null;
+  return { analysisId: row.id, result: row.prediction as unknown as NutritionAnalysis };
 }
 
 // Kvalitetskontrollens rettelser og tvivl i admin → Log (tvivl sætter også
@@ -518,7 +517,10 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const ingredientsText = input.ingredientsPhoto ? (input.ingredientsOcrText ?? "") : nutritionText;
   const ingredientsConfidence = input.ingredientsPhoto ? input.ingredientsOcrConfidence : input.nutritionOcrConfidence;
 
-  const localN = localNutrition(nutritionText, input.nutritionOcrConfidence ?? 0);
+  // Energien, AI'en allerede læste under flowet (read-energy), læses ikke igen.
+  const prereadN = await loadPrereadNutrition(input.nutritionAnalysisId);
+  const localN = prereadN ? null : localNutrition(nutritionText, input.nutritionOcrConfidence ?? 0);
+  const haveNutrition = Boolean(prereadN || localN);
   const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0, await loadSpellingDictionary());
 
   let nutrition: Read<NutritionAnalysis> = null;
@@ -529,7 +531,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const labelErrors: string[] = [];
 
   try {
-    if (!localN && !input.ingredientsPhoto) {
+    if (!haveNutrition && !input.ingredientsPhoto) {
       labelPath = "openai-combined";
       const both = await analyzeLabelPhoto({
         ...base,
@@ -543,10 +545,10 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
     } else {
       const wantIngredients =
         !localI && (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
-      labelPath = `nutrition:${localN ? "local" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
+      labelPath = `nutrition:${prereadN ? "flow" : localN ? "local" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
       const [nutritionRead, ingredientsRead] = await Promise.all([
-        localN
-          ? Promise.resolve(null)
+        haveNutrition
+          ? Promise.resolve(prereadN)
           : analyzeNutritionPhoto({
               ...base,
               photo: input.nutritionPhoto,
@@ -716,14 +718,11 @@ export async function enrichQuickProduct(
       : Promise.resolve(undefined),
     parts.label ? enrichLabel(input) : Promise.resolve(undefined),
   ]);
-  // Alkoholisk drik uden næringstabel: energien skønnes ud fra % vol og
+  // Alkoholisk drik uden næringstabel: energien regnes ud fra % vol og
   // varetypen, i stedet for at stå med 0 kcal (docs/DECISIONS.md 2026-10-15).
-  // Andre varer uden aflæst næring: Fridas tal eller et skøn ud fra
-  // varetypen (docs/DECISIONS.md 2026-10-16) — aldrig "∼ 0 kalorier".
-  if (
-    !input.existingProduct &&
-    ((await estimateAlcoholNutrition(input.productId)) || (await estimateMissingNutrition(input.productId)))
-  ) {
+  // Andre varer skønnes aldrig (brugerens krav 2026-10-16): energi-trinnet i
+  // flowet klares først, når energien er læst.
+  if (!input.existingProduct && (await estimateAlcoholNutrition(input.productId))) {
     await refreshRegistrationSnapshots(input.productId, input).catch(() => {});
   }
   // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
