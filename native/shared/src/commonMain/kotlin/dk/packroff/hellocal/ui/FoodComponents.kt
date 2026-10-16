@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -370,9 +373,15 @@ fun FoodSlider(
     step: Double = 1.0,
     enabled: Boolean = true,
 ) {
+    val haptic = LocalHapticFeedback.current
+    val currentValue by rememberUpdatedState(value)
     fun clamp(next: Double): Double {
         val stepped = kotlin.math.round((next - min) / step) * step + min
         return stepped.coerceIn(min, max)
+    }
+    fun emit(next: Double) {
+        if (next != currentValue) haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        onChange(next)
     }
     val fraction = if (max > min) ((value - min) / (max - min)).coerceIn(0.0, 1.0).toFloat() else 0f
     // 24 dp luft i hver side (som HfSlider.tsx), så et træk ikke starter ved skærmkanten.
@@ -382,12 +391,12 @@ fun FoodSlider(
         val track = Modifier.fillMaxWidth().height(20.dp).let { base ->
             if (!enabled) base else base
                 .pointerInput(min, max, step) {
-                    detectTapGestures { offset -> onChange(clamp(min + (offset.x / widthPx).coerceIn(0f, 1f) * (max - min))) }
+                    detectTapGestures { offset -> emit(clamp(min + (offset.x / widthPx).coerceIn(0f, 1f) * (max - min))) }
                 }
                 .pointerInput(min, max, step) {
                     detectDragGestures { change, _ ->
                         change.consume()
-                        onChange(clamp(min + (change.position.x / widthPx).coerceIn(0f, 1f) * (max - min)))
+                        emit(clamp(min + (change.position.x / widthPx).coerceIn(0f, 1f) * (max - min)))
                     }
                 }
         }

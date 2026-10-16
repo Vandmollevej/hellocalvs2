@@ -422,3 +422,10 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 
 - **Graf-accent (2026-10-14)**: grafer på forsiden bruger `--hf-color-chart-blue` (mørkere lyseblå, `stroke-hf-chart-blue`/`fill-hf-chart-blue`); grå bruges til anbefalinger/mål. Ingen andre blå i grafer.
 - **Antal personer (opskrifter): 0 = tag ikke højde for det (user rule 2026-10-16).** 0 er standard (web + native). Retten vises som gemt, uden skalering og uden "anbefalet servering"/"kcal pr. servering"; først ved ≥ 1 skaleres retten til brugerens anbefalede portion.
+
+## Slidere på alle talfelter + haptik (brugerregel 2026-10-16)
+
+- Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
+- Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
+- Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- Talfelter uden slider pr. 2026-10-16 (skal bygges): Brugerrettet — ScreeningInput, AddProductView (næring, 2 felter), PregnancyFields (2), activity/create (varighed, puls, distance, kcal), profile/cardio, profile/body-measurements, profile/family + FamilyProfileForm (højde/vægt), settings/display/front-page (2), scan/opret (kcal, protein, kulhydrat, fedt), product/create (5 næringsfelter + portion), viden-om/omregning, create-dish:539. Admin: ca. 39 talfelter (ikke prioriteret). Kodefelter (OTP, partnerkode) er undtaget.
