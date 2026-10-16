@@ -149,6 +149,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Talte sætninger søges som varen (2026-10-16)**: "Jeg har spist en bakke
+  pomfritter" søges som "pomfritter" — indledning, mængde/enhed og tidsangivelse
+  skrælles af i `/api/products` (`src/lib/spoken-food-query.ts`) på alle
+  mikrofonens sprog. Nye talte vendinger tilføjes dér, med test.
 - **Danske kædemærker kendes altid (bruger 2026-10-15)**: ØGO, Salling, Coop 365,
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
@@ -421,7 +425,6 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Ental/flertal uden artikel: når søgeordet kun findes i den ene titelform, vises denne. Fælles ord og delord beholder standardtitlen (`displayNameForQuery`).
 - Labels i Varedatabase bruger de eksisterende certifikatlogoer; ingen tegnede erstatningslogoer.
 
-- **Graf-accent (2026-10-14)**: grafer på forsiden bruger `--hf-color-chart-blue` (mørkere lyseblå, `stroke-hf-chart-blue`/`fill-hf-chart-blue`); grå bruges til anbefalinger/mål. Ingen andre blå i grafer.
 - **Antal personer (opskrifter): 0 = tag ikke højde for det (user rule 2026-10-16).** 0 er standard (web + native). Retten vises som gemt, uden skalering og uden "anbefalet servering"/"kcal pr. servering"; først ved ≥ 1 skaleres retten til brugerens anbefalede portion.
 
 - **Fritskrabede varebilleder på hjemmesiden har cirklen bagt ind (bruger 2026-10-16)**: varesiden (web) henter `/product-circle?src=…` i stedet for det rå fritlæg; cirklen skrumper aldrig, billedet vokser i stedet (`product-circle-layout.ts`). Gælder kun hjemmesiden, ikke native.

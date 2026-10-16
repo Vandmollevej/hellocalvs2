@@ -308,7 +308,7 @@ export const JOBS: JobDefinition[] = [
     key: "bria-compare",
     name: "Bria: sammenlign med rembg",
     description:
-      "Kører de 20 seneste fritlagte billeder gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
+      "Kører 20 danske Open Food Facts-varer, vi bruger (godkendte, med godkendt billede), gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: null,

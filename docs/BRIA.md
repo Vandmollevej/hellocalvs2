@@ -11,7 +11,7 @@ pipelinen (beskæring, opretning, lys). Fejler Bria, falder robotten tilbage til
 2. Admin → Robotter → **Bria: sammenlign med rembg** → Kør nu.
 3. Åbn `https://hellocal.io/product-images/compare/index.html`
    (original | rembg | Bria på tern). Jobbet bruger ét Bria-opslag pr. billede
-   (højst 20) og stopper efter tre fejl i træk.
+   (højst 20 danske Open Food Facts-varer, vi bruger) og stopper efter tre fejl i træk.
 
 Image-agent skal være genstartet med den nye version én gang (deploy).
 
