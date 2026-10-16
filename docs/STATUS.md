@@ -57,8 +57,7 @@
 ## 2026-10-16: Forsidens grafer i den hvide boks' plads
 
 - Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: fra kanten ind til boksens gamle højre/venstre side og fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
-- Graferne er 72 % af deres andel af boksen, så der er luft imellem. Titel i midten på alle (Puls, Kalorier, Anbefalet mod indtag, Målsætning), "kl." foran venstre timetal. Ingen "Ingen pulsdata endnu" og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16).
-- Kendt: den grå anbefalede kurve i Kalorier ligger næsten på 0, fordi skalaen følger det største måltid — afventer brugerens svar om, hvad graferne skal vise. Web + native; native er ikke kompileret lokalt — CI afgør.
+- Graferne står i boksens plads med luft imellem, titel i midten på alle og "kl." foran venstre timetal. Under graferne brugerens originaltekst ("For at kunne holde dig inden for dagens mål anbefaler vi at du forbrænder X kalorier", tallet stort på egen linje, "eller reducerer kalorieindtag med … og forbrænder …"); tryk åbner forslagsarket (gåture, mad, Hello Fresh). Kalorie-grafen samler pr. time, så den anbefalede kurve ses ved siden af måltiderne.
 
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
