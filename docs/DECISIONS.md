@@ -1,3 +1,13 @@
+## 2026-10-16: Rodårsagen var tom OpenAI-kredit — energi-trinnet kræver nu en aflæsning, ingen skøn
+
+Produktionens log (læst med brugerens tilladelse): alle AI-aflæsninger siden mindst 15/10 08:56 fejlede med 429 `insufficient_quota` ("You have no credits remaining") — letmælken, Verpoorten m.fl. Kreditten skal fyldes op på platform.openai.com → Billing (admin → OpenAI-forbrug viser status).
+
+Brugeren afviste energiskønnet ("Skønner energien? Dette er ikke ok") og bestemte: energi-trinnet må ikke kunne klares, hvis energien ikke er læst. Derfor:
+- `POST /api/products/read-energy`: AI'en læser energifotoet, mens brugeren står på trinnet, når telefonens egen aflæsning ikke var komplet. Kun komplet pr. 100 g/ml eller alkohol over 1,2 % vol (`energyReadOk`, `src/lib/energy-read.ts`) klarer trinnet; ellers tages billedet om. Web (`verifyEnergy`) + native.
+- Aflæsningen sendes med oprettelsen (`nutritionAnalysisId`) og bruges direkte af `enrichLabel`.
+- Skønnet fra samme dag (Frida/varetype på nye scannede varer, `type-nutrition-estimate.ts`) er fjernet, og Frida-robotten springer varer fra kameraflowet over (`quickEnrichmentJob: null`).
+- Manglende kredit prøves ikke igen med det samme (kun de øvrige 429/5xx).
+
 ## 2026-10-16: Admin → OpenAI-forbrug
 
 - Brugerens ønske: se live, hvad OpenAI koster, og om kreditten er ved at slippe op. Løber den tør, svarer OpenAI 429 `insufficient_quota` på alle kald; appen virker ellers, men al AI-aflæsning, stemme/foto-måltider, chatbot, oversættelser og AI-robotter fejler, indtil der fyldes op (anbefaling: Auto recharge under Billing).
