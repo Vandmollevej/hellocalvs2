@@ -64,7 +64,7 @@ private val TILES = listOf(
     AddTile("scan", "/camera?mode=product", "/icons/add/scan.webp"),
     AddTile("platePhoto", "/camera?mode=meal", "/icons/add/plate-photo.webp"),
     AddTile("dish", "/create-dish", "/icons/add/dish.webp"),
-    AddTile("voice", "/voice", "/icons/add/voice.webp"),
+    AddTile("voice", "/foods?mic=1", "/icons/add/voice.webp"),
     AddTile("weight", "/weight/create", "/icons/add/weight.webp"),
     AddTile("drink", "/water/create", "/icons/add/drink.webp"),
     AddTile("body", "/profile/body-measurements", "/icons/add/body.webp"),

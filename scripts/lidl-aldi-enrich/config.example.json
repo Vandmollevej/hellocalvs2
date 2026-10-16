@@ -1,0 +1,9 @@
+{
+  "inputDir": "C:\\Users\\Peter\\Desktop\\Hello Cal\\Lidl og Aldi",
+  "outputDir": "C:\\Users\\Peter\\Desktop\\Hello Cal\\Lidl og Aldi\\nye-fakta",
+  "visionCredentials": "C:\\Users\\Peter\\secrets\\google-vision.json",
+  "languages": ["da", "de"],
+  "stores": ["lidl", "aldi"],
+  "delaySeconds": 1.5,
+  "maxMinutes": 360
+}

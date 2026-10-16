@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { sliderHaptic } from "@/lib/haptics";
 
 // Global Hello Cal-slider (én værdi): samme bane, farver og runde 18 px-greb
 // som SleepRangeSlider og MacroSliderBar. Brug altid denne i stedet for en
@@ -11,6 +12,7 @@ export function HfSlider({
   max,
   step = 1,
   onChange,
+  onCommit,
   largeOnWeb = false,
   "aria-label": ariaLabel,
 }: {
@@ -19,6 +21,8 @@ export function HfSlider({
   max: number;
   step?: number;
   onChange: (value: number) => void;
+  // Kaldes når fingeren slippes / tasten er trykket (til felter der gemmer ved blur).
+  onCommit?: () => void;
   // Webvisning (≥1024px): tykkere bane og 24 px-greb. Mobil er uændret.
   largeOnWeb?: boolean;
   "aria-label"?: string;
@@ -36,7 +40,10 @@ export function HfSlider({
     const rect = track.getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
     const next = clamp(min + ratio * (max - min));
-    if (next !== value) onChange(next);
+    if (next !== value) {
+      sliderHaptic();
+      onChange(next);
+    }
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -57,6 +64,7 @@ export function HfSlider({
     else if (event.key === "End") next = max;
     if (next === null) return;
     event.preventDefault();
+    sliderHaptic();
     onChange(clamp(next));
   }
 
@@ -74,6 +82,8 @@ export function HfSlider({
       data-sheet-no-drag
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerUp={() => onCommit?.()}
+      onPointerCancel={() => onCommit?.()}
       onKeyDown={handleKeyDown}
       className={`flex h-10 touch-none items-center px-6 outline-none ${largeOnWeb ? "lg:h-12" : ""}`}
     >

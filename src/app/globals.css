@@ -84,6 +84,8 @@
      telefonikonet i topbjælken og 1 px-rammen rundt om skærmen. Blå, så den
      aldrig forveksles med brand-grøn; hvid kant gør den læsbar på grøn. */
   --hf-color-watch: #2f80ed;
+  /* Accentfarve til grafer (bruger 2026-10-14): mørkere lyseblå, kun til diagrammer på forsiden. */
+  --hf-color-chart-blue: #5b9fcf;
   /* Apples Face ID-blå: ikonet på profilen/login og animationen. Én værdi —
      tidligere havde knap og animation hver sin blå. */
   --hf-color-faceid: #0a7aff;
@@ -173,6 +175,7 @@
   --color-hf-meat: var(--hf-meat);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-watch: var(--hf-color-watch);
+  --color-hf-chart-blue: var(--hf-color-chart-blue);
   --color-hf-warning-fill: var(--hf-color-warning-fill);
   --color-hf-warning-bg: var(--hf-color-warning-bg);
   /* Kanoniske navne = tokens ovenfor, 1:1 (bg-hf-card, border-hf-line,
