@@ -147,6 +147,19 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
   const current = lightbox !== null ? flat[lightbox] : null;
   // Tal i bunden: højst 9 ad gangen omkring det aktuelle billede.
+  // Lightboxen viser altid nuværende billede og forslaget side om side; "godkend" gælder
+  // præcis det forslag, der står til højre.
+  const lightboxItem = current?.item;
+  const lightboxAlt = current && lightboxItem?.alternatives?.length
+    ? current.slide === lightboxItem.slides[0]
+      ? lightboxItem.alternatives[pickedIndex(lightboxItem)]
+      : current.slide
+    : null;
+  const lightboxSlides: ReviewSlide[] = !lightboxItem
+    ? []
+    : lightboxAlt
+      ? [lightboxItem.slides[0], lightboxAlt]
+      : lightboxItem.slides.filter((slide) => slide.src);
   const numbers: number[] = [];
   if (lightbox !== null) {
     const start = Math.max(0, Math.min(lightbox - 4, flat.length - 9));
@@ -264,14 +277,19 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
             </button>
           </div>
 
-          <div className="relative flex min-h-0 flex-1 items-center justify-center px-14">
+          <div className="relative flex min-h-0 flex-1 items-center justify-center gap-4 px-14">
             {flat.length > 1 && (
               <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
                 ‹
               </button>
             )}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.slide.src ?? ""} alt={current.slide.label} className="max-h-full max-w-full rounded-lg bg-hf-white object-contain" />
+            {lightboxSlides.map((slide, idx) => (
+              <div key={idx} className="flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={slide.src ?? ""} alt={slide.label} className="min-h-0 max-h-full max-w-full rounded-lg bg-hf-white object-contain" />
+                <span className="hf-type-small text-hf-white">{slide.label}</span>
+              </div>
+            ))}
             {flat.length > 1 && (
               <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
                 ›
@@ -303,7 +321,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
               </button>
               <button
                 type="button"
-                onClick={() => act(current.item, "approve", current.slide.key ?? pickedKey(current.item))}
+                onClick={() => act(current.item, "approve", lightboxAlt?.key ?? pickedKey(current.item))}
                 disabled={busy}
                 className="hf-btn-primary flex-1 hf-btn--large"
               >

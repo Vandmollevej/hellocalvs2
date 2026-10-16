@@ -43,8 +43,8 @@ export function PendingImageBoard({ items }: { items: ReviewItem[] }) {
   return (
     <ImageReviewBoard
       items={items}
-      approveLabel="Godkend forslag"
-      rejectLabel="Afvis"
+      approveLabel="Brug forslaget til højre"
+      rejectLabel="Behold nuværende"
       onApprove={approve}
       onReject={(id) => call(id, "reject")}
       emptyText="Ingen billedforslag afventer godkendelse."
