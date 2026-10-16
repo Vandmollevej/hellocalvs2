@@ -36,11 +36,9 @@ const nextConfig: NextConfig = {
         "/integrations/:path*",
         "/payment/:path*",
         "/certifications/:path*",
-        "/hello-cal-logo:rest*",
-        "/hello-cal-fruit:rest*",
-        "/flag-:rest*",
-        "/apple-icon:rest*",
-        "/favicon:rest*",
+        // Filnavne med fast forstavelse: path-to-regexp kræver et navngivet
+        // regex-segment her (":rest*" uden skråstreg foran bryder bygget).
+        "/:file((?:hello-cal-logo|hello-cal-fruit|flag-|apple-icon|favicon)[^/]*)",
       ].map((source) => ({
         source,
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
