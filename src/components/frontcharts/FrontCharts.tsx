@@ -22,8 +22,8 @@ const BUCKET_MIN = 15;
 const GOAL_BAR_PX = 4;
 /** Samme afstand til skærmkanten som den gamle hvide infoboks. */
 const EDGE = 13;
-/** Halvt så høje som de første grafer (96 px), bruger 2026-10-16. */
-const CHART_H = 48;
+/** Graferne fylder den hvide boks' højde, fra dens top til dens bund (bruger 2026-10-16). */
+const BOX_H = WHEEL_SPAN.half * 2;
 
 type Metric = { type: string; value: number; recordedAt: string };
 type Registration = { createdAt: string; kcalSnapshot: number };
@@ -124,36 +124,38 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
     };
   }, [goals, registrations, width, budgetKcal]);
 
+  const chartH = Math.floor(BOX_H / (goal ? 4 : 3));
   const shortDate = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`;
 
   return (
     <section
       aria-label={t("frontCharts.aria")}
-      className="absolute z-10 flex flex-col gap-1"
+      className="absolute z-10"
       style={{
         [side]: EDGE,
         width: "33.333%",
         top: `calc(50% + ${WHEEL_SPAN.shift - WHEEL_SPAN.half}px)`,
+        height: BOX_H,
       } as React.CSSProperties}
     >
       <div ref={boxRef}>
         {width > 0 && (
           <>
             <PulseSticks
-              width={width} height={CHART_H} buckets={model.pulse} startHour={model.start} endHour={model.end}
+              width={width} height={chartH} buckets={model.pulse} startHour={model.start} endHour={model.end}
               title={t("frontCharts.pulse")}
             />
             <KcalSticks
-              width={width} height={CHART_H} sums={model.sums} shares={model.shares} budgetKcal={budgetKcal}
+              width={width} height={chartH} sums={model.sums} shares={model.shares} budgetKcal={budgetKcal}
               startHour={model.start} endHour={model.end} title={t("frontCharts.intake")}
             />
             <PlanVsActual
-              width={width} height={CHART_H} planCumulative={model.planCum} actualCumulative={model.actualCum} elapsed={model.elapsed}
+              width={width} height={chartH} planCumulative={model.planCum} actualCumulative={model.actualCum} elapsed={model.elapsed}
               startHour={model.start} endHour={model.end} title={t("frontCharts.planVsActual")}
             />
             {goal && (
               <GoalTimeline
-                width={width} height={CHART_H} bars={goal.bars} slots={goal.slots} goalKcal={budgetKcal} recMin={goal.min} recMax={goal.max}
+                width={width} height={chartH} bars={goal.bars} slots={goal.slots} goalKcal={budgetKcal} recMin={goal.min} recMax={goal.max}
                 startLabel={shortDate(goal.from)} endLabel={shortDate(goal.to)}
                 title={t(goal.weeks ? "frontCharts.goalWeeks" : "frontCharts.goalDays")}
               />

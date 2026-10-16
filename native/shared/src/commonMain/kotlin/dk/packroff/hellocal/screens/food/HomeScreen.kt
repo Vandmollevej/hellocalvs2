@@ -99,7 +99,7 @@ fun HomeScreen(args: RouteArgs) {
                         Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp),
                     ) {
                         // The charts sit where the old white info box was, opposite the wheel,
-                        // 1/3 of the screen wide (web: FrontCharts in Hero, 13 px from the edge).
+                        // 1/3 of the screen wide, from its top to its bottom (web: FrontCharts in Hero).
                         val chartsLeft = FoodPrefs.fabSide == "left"
                         HomeFrontCharts(
                             Modifier
@@ -109,7 +109,8 @@ fun HomeScreen(args: RouteArgs) {
                                     end = if (chartsLeft) 0.dp else 13.dp,
                                     top = infoBoxTopY().dp,
                                 )
-                                .width(maxWidth / 3),
+                                .width(maxWidth / 3)
+                                .height(infoBoxHeight().dp),
                         )
                         HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
                     }

@@ -4,7 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,7 +49,6 @@ import kotlin.math.min
 
 private const val BUCKET_MIN = 15
 private const val GOAL_BAR_DP = 4
-private const val CHART_DP = 48
 private const val FLOOR_KCAL_FEMALE = 1200.0
 
 @Serializable
@@ -140,9 +139,9 @@ private const val PLOT_PAD = 6f
 
 /** A chart: max/min labels on the left, hour captions below; only the pulse has a title in the middle. */
 @Composable
-private fun ChartFrame(top: String, bottom: String, left: String, right: String, title: String, draw: DrawScope.() -> Unit) {
-    // Half as tall as the first charts (web: CHART_H = 48).
-    Column(Modifier.fillMaxWidth().height(CHART_DP.dp)) {
+private fun ColumnScope.ChartFrame(top: String, bottom: String, left: String, right: String, title: String, draw: DrawScope.() -> Unit) {
+    // The charts share the white box's height equally (web: chartH in FrontCharts).
+    Column(Modifier.fillMaxWidth().weight(1f)) {
         Row(Modifier.fillMaxWidth().weight(1f)) {
             Column(Modifier.fillMaxHeight().padding(end = 6.dp), verticalArrangement = Arrangement.SpaceBetween) {
                 HcText(top, HcTypeRoles.Caption, color = HcColors.TextSecondary)
@@ -192,7 +191,7 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
     val planCum = cumulative(shares.map { it * budget })
     val actualCum = cumulative(sums)
 
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(modifier) {
         // Pulse: one min/max stick per quarter hour.
         val filled = pulse.filterNotNull()
         val lo = filled.minOfOrNull { it.min } ?: 0.0
