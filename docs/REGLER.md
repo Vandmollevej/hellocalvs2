@@ -180,6 +180,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   brandet står ikke igen i undertitlen. Feltet `searchTitle` fra
   `GET /api/products` (`src/lib/search-result-title.ts`). Søgningen matcher
   stadig i alle tekstfelter, ikke kun titlen.
+- **Madvarer (bruger 2026-10-16)**: favoritter står øverst i listen før de mest
+  brugte; lydbølgen under mikrofonen må ikke fjernes; søgefeltet vokser i højden
+  med teksten; kameraet i søgefeltets venstre side åbner billedfunktionen (ingen
+  "Scan nyt produkt"-knap nederst). Web og native.
 
 ## UI
 

@@ -10,6 +10,14 @@ Besluttet:
 - Engangsreparation: varer fra de sidste 14 dage uden navn eller med 0 kcal genåbnes én gang (`repairedAt`). Deres registreringer med tomt navn/0 kcal følger med (som ved alkoholrobotten).
 - Råfotoet dækker hele cirklen (`object-cover`, native `ContentScale.Crop`), design.md §6.12 ændret. "∼" i mængdeboksen er nu inline med teksten (var et flex-element uden linjehøjde og svævede).
 
+## 2026-10-16: Madvarer — favoritter øverst, lydbølge, kamera i søgefeltet
+
+Brugerens krav: favoritter vises øverst; lydbølgen fra Tale-siden må ikke fjernes; søgefeltet vokser i højden, når teksten ikke kan stå på én linje; "Scan nyt produkt"-knappen nederst erstattes af et kamera i søgefeltets venstre side, der åbner billedfunktionen (`/camera?mode=product`).
+
+- `GET /api/products/most-used` sender alle profilens favoritter først (nyeste bogmærke først) og derefter op til 10 mest brugte, der ikke er favoritter. Web og native sorterer også favoritter først lokalt, så et nyt bogmærke rykker op med det samme.
+- Lydbølgen (`src/components/voice/LiveWaveform.tsx`, 28 grønne pinde efter mikrofonens niveau) vises under mikrofonen, mens der lyttes; native viser den samme bølge (`LiveWaveform` i `VoiceScreen.kt`).
+- Søgefeltet er en `textarea` med `.hf-search--grow` (mindst kontrolhøjden); linjeskift fjernes, Enter lukker tastaturet. Forstørrelsesglasset står nu i højre side.
+
 ## 2026-10-16: Faste designbilleder caches i et år
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.
@@ -5717,6 +5725,10 @@ Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning:
 Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Markeringerne vises under Admin → Kvalitetskontrol → Ufuldstændige billeder (op til 200, nyeste først); "Fjern markering" sætter `reviewedAt` og rører ikke varen.
 
 Brugeren bad om en lokal kørsel på pc'en. Nat-jobbet `image-screen-local` på NAS'en, fanen Ufuldstændige billeder i admin og tabellen `product_image_screenings` er fjernet igen (migration `20261016150000_drop_image_screenings`). Kun `scripts/image-screen` på pc'en er tilbage. Byg aldrig noget til NAS'en, når brugeren har bedt om en lokal kørsel.
+
+## 2026-10-16: Integrationshentning som eget job + ved åbning; én synk-popup
+
+Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook) var i realtid, og fik to forskellige "ikke synkroniseret"-popups efter hinanden. Beslutning: (1) baggrundshentningen af cloud-integrationer er sit eget job `integration-sync` (15 min., 2 min. tidsgrænse pr. integration) i stedet for et trin i Vedligehold; (2) `POST /api/integrations/app-open` henter alle forbundne cloud-integrationer (normal 15-min.-grænse), så data er friske, når appen åbnes; (3) `StaleSyncPrompt` (layout) genbruger vægt-popuppens bundark (`StaleSyncSheet`) og ignorerer integrationer, der læser vægt — dem ejer `WeighInPrompts`.
 
 ## 2026-10-16 — Admin: alle accordions i venstre menu lukket ved login
 
