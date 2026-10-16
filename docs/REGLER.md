@@ -364,7 +364,7 @@ Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color
 ## Mærker på produktcirklen (user rule 2026-10-10)
 
 Certifikater står nederst til venstre ud for cirklens bund (økologi altid nederst), advarsels-/kostikoner øverst ud for cirklens top; øverste har førsteret og æder certifikaterne, økologi sidst. Rækkefølge og allergen-tilstand sættes under Indstillinger → Visning → Prioritering af visning. Se `src/lib/circle-badges.ts`.
-- **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
+- **Undtagelse (bruger 2026-10-16): Opret ret er en rigtig side, ikke en popup**; de tre startvalg er kvadratiske felter midt på siden med teksten under. **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
 
 Økologimærker (Ø-mærket, EU-bladet, Bio-Siegel …) står ALDRIG i certifikater, kun i økologi-feltet `ProductFilters.organic` — kommasepareret (fx "Økologisk, EU-økologi"), med mærkets oprindelige navn, og kun mærker, der fremgår af varen: Ø-mærket og EU-bladet er to forskellige klassificeringer, og det ene giver aldrig automatisk det andet. Hvert vises med sit eget logo (user rule 2026-10-15). Se `src/lib/label-certifications.ts`.
 
