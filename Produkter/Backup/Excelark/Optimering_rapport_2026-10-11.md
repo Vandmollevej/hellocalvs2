@@ -323,6 +323,20 @@ Se `Produkter/Backup/Excelark/gengangere-fund.xlsx` (kun rapport — intet er sl
 - Vin hvor kun årgangen adskiller er behandlet som egen kategori; der er ikke slået noget sammen.
 - Samme stregkode i både DK- og DE-ark (14 grupper) og stregkoder med fejl i kontrolcifferet (36 rækker, mest Bilka) står i hver sin fane. Rækkenumre i rapporten er fra udtrækket 11/10 — brug Source URL til at finde rækken, fordi dyrefoder-rækker senere er fjernet.
 
+## 6a. Manglende stregkoder kopieret (16/10, efter dit ja)
+
+Du svarede ja til at flytte manglende stregkoder over på den række der mangler dem. **570 stregkoder er skrevet** i arkene (kun cellen EAN; ingen rækker slettet eller sammenlagt; backup før hvert ark i `Produkter/Backup/*_foer_ean-kopi.xlsx`; log celle for celle i `Produkter/Backup/ean_kopi_2026-10-16_0652.csv`):
+
+| Ark | Stregkoder skrevet | Kommer fra |
+|---|---|---|
+| Nemlig | 443 | Bilka 279, SPAR 86, REMA 78 |
+| Wolt | 58 | SPAR 47, REMA 6, Bilka 5 |
+| EDEKA | 64 | REWE 63, dm 1 |
+| DRK | 3 | Bilka 2, REMA 1 |
+| Årstiderne | 2 | Bilka 2 |
+
+Fordi en forkert stregkode er værre end en manglende, er kun de sikreste par brugt: AI-sikkerhed 5 (eller 4 med næsten identisk titel), titellighed ≥ 0,6, kun inden for samme land, kun gyldige GS1-stregkoder, aldrig en stregkode der allerede fandtes i arket, og ikke hvor flere forskellige stregkoder var mulige. **Ikke kopieret:** 124 par på tværs af lande (DK ↔ DE), 209 par med for svag titellighed (fx Kærgården Original ≠ Smørbar), 37 med lav sikkerhed, 15 tvetydige. Efterkontrol: 570 ændrede celler i alt — alle i kolonnen EAN — titelformler uændrede, ingen stregkode-dubletter opstået.
+
 ## 6b. Hændelser undervejs (ærlig status)
 
 - **Fejl i min slutoprydning:** ved en fejl blev et indledende "mit/ohne/aus/in" fjernet i 1.076 variationer ("ohne Knochen" blev til "Knochen"). Opdaget samme dag, funktionen er rettet, og alle 1076 celler er gendannet fra ændringslisten (`gendan_variation.py`). Efterkontrol: originalkolonner og titelformler uændrede.
