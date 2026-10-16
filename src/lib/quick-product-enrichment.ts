@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   analyzeBarcodePhotoLogo,
@@ -31,6 +31,10 @@ import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeh
 import { askProductType, findProductType } from "@/lib/product-type-name";
 import { parseAlcoholPercent } from "@/lib/alcohol-label";
 import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nutrition";
+import { productTypeFromText, readFrontText } from "@/lib/front-text-name";
+import { applyFridaEstimateTo } from "@/lib/frida-estimates";
+import { estimateNutritionFromType } from "@/lib/type-nutrition-estimate";
+import { MACRO_SOURCE_KEYS } from "@/lib/nutrients";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -57,6 +61,9 @@ export type QuickEnrichmentInput = {
   frontPhotoUrl?: string | null;
   nutritionPhotoUrl?: string | null;
   ingredientsPhotoUrl?: string | null;
+  // Telefonens tekstlæsning af forsiden — reserve til navn/brand, når
+  // OpenAI ikke kan læse forsiden (src/lib/front-text-name.ts).
+  frontOcrText?: string;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   ingredientsOcrText?: string;
@@ -116,6 +123,51 @@ async function refreshRegistrationSnapshots(
       },
     });
   }
+}
+
+// Forside-aflæsningen fejlede teknisk: navn og brand udledes af telefonens
+// tekstlæsning af forsiden (kendt brand i teksten + et varenavn, der findes i
+// databasen), ellers spørges "Hvilken produkttype er <brand>?". Udfylder kun
+// tomme felter og aldrig på en eksisterende vare.
+async function applyFrontTextFallback(input: QuickEnrichmentInput) {
+  if (input.existingProduct) return;
+  const { productId } = input;
+  const current = await prisma.product.findUnique({ where: { id: productId }, select: { name: true, brandId: true } });
+  if (!current) return;
+  const nameMissing = !current.name.trim() || isPlaceholderProductName(current.name);
+  if (!nameMissing && current.brandId) return;
+  const { brand, productType } = await readFrontText(input.frontOcrText);
+  const typeName =
+    productType ?? (brand ? await askProductType({ brand: brand.name }).catch(() => null) : null);
+  const name = nameMissing ? (typeName ?? brandProductName(brand?.name, null)) : "";
+  if (!name && !(brand && !current.brandId)) {
+    await debugLog({
+      category: "scan",
+      event: "enrich_front_fallback",
+      level: "warn",
+      message: "Forsiden kunne heller ikke navngives ud fra telefonens tekst — AI'en prøver igen",
+      productId,
+      data: { frontOcrText: input.frontOcrText?.slice(0, 300) ?? null },
+    });
+    return;
+  }
+  const product = await prisma.product.update({
+    where: { id: productId },
+    data: {
+      ...(name ? { name } : {}),
+      ...(brand && !current.brandId ? { brandId: brand.id } : {}),
+    },
+    select: { id: true, name: true, createdAt: true },
+  });
+  if (name) await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+  await debugLog({
+    category: "scan",
+    event: "enrich_front_fallback",
+    level: "warn",
+    message: `Forsiden navngivet ud fra telefonens tekst: ${brand ? `${brand.name} — ` : ""}${product.name || "(intet navn)"}`,
+    productId,
+    data: { brand: brand?.name ?? null, productType, name: product.name },
+  });
 }
 
 // Returnerer, om forsidefotoet blev genkendt som en vare (navn, logo eller
@@ -181,7 +233,16 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
           alcoholPercent: result.alcoholPercent,
           language: result.language,
         });
-    const productName = rawName || typeName || "";
+    // Sidste udvej uden AI: et kendt varenavn i forsidens tekst (telefonens
+    // læsning + det AI'en så), fx "LETMÆLK" → Letmælk (docs/DECISIONS.md 2026-10-16).
+    const textName =
+      rawName || typeName
+        ? null
+        : await productTypeFromText(
+            [input.frontOcrText, ...(result.visibleText ?? []), ...(result.claims ?? [])],
+            [brand?.name, subbrand].filter((part): part is string => Boolean(part)),
+          ).catch(() => null);
+    const productName = rawName || typeName || textName || "";
     recognized = Boolean(rawName || result.logoText?.trim() || result.productBox);
     const fallbackName = isPlaceholderProductName(input.fallbackName) ? "" : input.fallbackName;
     const name = productName
@@ -249,6 +310,12 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       productId,
       durationMs: Date.now() - startedAt,
     });
+    // Varen må ikke stå uden navn og brand: telefonens tekstlæsning af
+    // forsiden bruges, til AI'en har læst den (genforsøg i
+    // quick-enrichment-recovery, docs/DECISIONS.md 2026-10-16).
+    await applyFrontTextFallback(input).catch((fallbackError) =>
+      console.error("Front text fallback failed", productId, fallbackError),
+    );
   } finally {
     await clearPending(productId, ["name", "brand"]);
     // Navnet indgår i registreringernes titleSnapshot.
@@ -388,7 +455,41 @@ type Read<T> = { analysisId: string; result: T } | null;
 // - Ellers kun det kald, der mangler (to separate fotos kræver to kald).
 // Hvad der blev læst fra brugerens fotos — "Scan varen igen" bruger det til
 // at afgøre, om varen kan overtages som vores egen (src/lib/product-rescan.ts).
-export type LabelReadOutcome = { nutritionComplete: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
+export type LabelReadOutcome = { nutritionComplete: boolean; aiFailed: boolean; ingredientsRead: boolean; saturatedFatRead: boolean };
+
+// Uden komplet næringstabel er 0 kun en pladsholder: varen står som "næring
+// ukendt" (hasKnownNutrition = false i appen, aldrig "∼ 0 kalorier"), og de
+// skøn-kilder, recordNutrientSources satte på makroerne, fjernes.
+async function setNutritionKnown(productId: string, known: boolean) {
+  try {
+    if (known) {
+      // Et tidligere skøn (Frida/varetypen) er afløst af emballagens egne tal.
+      await prisma.product.update({ where: { id: productId }, data: { nutritionMissing: false, fridaEstimateId: null } });
+      return;
+    }
+    const product = await prisma.product.findUnique({ where: { id: productId }, select: { kcalPer100g: true, nutrientSources: true } });
+    if (!product || product.kcalPer100g > 0) return;
+    const sources = { ...((product.nutrientSources as Record<string, string> | null) ?? {}) };
+    for (const key of MACRO_SOURCE_KEYS) delete sources[key];
+    await prisma.product.update({
+      where: { id: productId },
+      data: { nutritionMissing: true, nutrientSources: Object.keys(sources).length ? sources : Prisma.DbNull },
+    });
+  } catch (error) {
+    console.error("Could not mark nutrition known/unknown", productId, error);
+  }
+}
+
+// Ny vare uden aflæst næring (docs/DECISIONS.md 2026-10-16): Fridas tal for
+// varetypen, ellers et skøn ud fra varetypen (∼). Kræver et navn — derfor
+// efter forsiden. Returnerer true, når et skøn blev gemt.
+async function estimateMissingNutrition(productId: string): Promise<boolean> {
+  if (await applyFridaEstimateTo(productId).catch(() => false)) {
+    await debugLog({ category: "scan", event: "frida_estimate", message: "Ingen næringstabel læst — Fridas tal for varetypen bruges (∼)", productId });
+    return true;
+  }
+  return estimateNutritionFromType(productId);
+}
 
 // Kvalitetskontrollens rettelser og tvivl i admin → Log (tvivl sætter også
 // aflæsningen på Usikkerheder → Indhold, src/lib/product-photo-analysis.ts).
@@ -549,15 +650,21 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   } catch (error) {
     console.error("Quick product label could not be saved", productId, error);
     labelErrors.push(`save: ${errorText(error)}`);
+  }
+  const read = nutrition?.result;
+  const nutritionComplete =
+    read != null && read.kcalPer100g != null && read.proteinPer100g != null && read.carbsPer100g != null && read.fatPer100g != null;
+  try {
+    if (nutrition) await recordNutrientSources(productId, nutrition.analysisId);
+    // En ny vare uden komplet næringstabel står med 0 som pladsholder: den
+    // markeres som "næring ukendt" (aldrig "∼ 0 kalorier"), så Frida/varetypen
+    // kan give et skøn (enrichQuickProduct, docs/DECISIONS.md 2026-10-16).
+    if (!input.existingProduct) await setNutritionKnown(productId, nutritionComplete);
   } finally {
-    if (nutrition || !input.existingProduct) await recordNutrientSources(productId, nutrition?.analysisId ?? null);
     await clearPending(productId, ["nutrition", "ingredients"]);
     await refreshRegistrationSnapshots(productId, input).catch(() => {});
   }
 
-  const read = nutrition?.result;
-  const nutritionComplete =
-    read != null && read.kcalPer100g != null && read.proteinPer100g != null && read.carbsPer100g != null && read.fatPer100g != null;
   const nutritionSource = nutrition ? (nutritionFromAi ? "OpenAI" : "telefonens OCR") : "ingen";
   const ingredientsSource = ingredients ? (ingredientsFromAi ? "OpenAI" : "telefonens OCR") : "ingen";
   await debugLog({
@@ -578,6 +685,9 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   });
   return {
     nutritionComplete,
+    // OpenAI-kaldet fejlede teknisk (ikke blot "ingen tabel på fotoet") —
+    // aflæsningen prøves igen af quick-enrichment-recovery.
+    aiFailed: !nutritionComplete && labelErrors.some((error) => !error.startsWith("save:")),
     ingredientsRead: Boolean(ingredients?.result.ingredientsText),
     saturatedFatRead:
       (read?.basis === "100g" || read?.basis === "100ml") &&
@@ -588,20 +698,32 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
 
 // Hvilke dele der køres. En genoptagelse (src/lib/quick-enrichment-jobs.ts)
 // kører kun de dele, hvis felter stadig står i Product.pendingFields.
-export type QuickEnrichmentParts = { front: boolean; label: boolean };
+// `barcodeLogo: false` ved et genforsøg, hvor stregkode-logoet allerede er læst.
+export type QuickEnrichmentParts = { front: boolean; label: boolean; barcodeLogo?: boolean };
+export type QuickEnrichmentRetry = { front: boolean; label: boolean };
 
 export async function enrichQuickProduct(
   input: QuickEnrichmentInput,
   parts: QuickEnrichmentParts = { front: true, label: true },
-) {
+): Promise<QuickEnrichmentRetry> {
   const startedAt = Date.now();
-  await Promise.all([
-    parts.front ? enrichFront(input).then(() => enrichBarcodeLogo(input)) : Promise.resolve(),
-    parts.label ? enrichLabel(input) : Promise.resolve(),
+  const [front, label] = await Promise.all([
+    parts.front
+      ? enrichFront(input).then(async (recognized) => {
+          if (parts.barcodeLogo !== false) await enrichBarcodeLogo(input);
+          return recognized;
+        })
+      : Promise.resolve(undefined),
+    parts.label ? enrichLabel(input) : Promise.resolve(undefined),
   ]);
   // Alkoholisk drik uden næringstabel: energien skønnes ud fra % vol og
   // varetypen, i stedet for at stå med 0 kcal (docs/DECISIONS.md 2026-10-15).
-  if (!input.existingProduct && (await estimateAlcoholNutrition(input.productId))) {
+  // Andre varer uden aflæst næring: Fridas tal eller et skøn ud fra
+  // varetypen (docs/DECISIONS.md 2026-10-16) — aldrig "∼ 0 kalorier".
+  if (
+    !input.existingProduct &&
+    ((await estimateAlcoholNutrition(input.productId)) || (await estimateMissingNutrition(input.productId)))
+  ) {
     await refreshRegistrationSnapshots(input.productId, input).catch(() => {});
   }
   // Varens sprog (docs/DECISIONS.md 2026-10-15): scanningslandet, eller
@@ -611,6 +733,10 @@ export async function enrichQuickProduct(
     cleanLanguageSignals(input.signals).locationCountry ?? input.marketRegion,
   ).catch((error) => console.error("Could not set product language", input.productId, error));
   await syncProductNutritionFeaturesSafely(input.productId);
+
+  // Dele, hvor OpenAI-kaldet fejlede teknisk: de prøves igen af
+  // quick-enrichment-recovery med de gemte fotos (docs/DECISIONS.md 2026-10-16).
+  const retry: QuickEnrichmentRetry = { front: front === null, label: label?.aiFailed === true };
 
   const product = await prisma.product
     .findUnique({
@@ -663,8 +789,9 @@ export async function enrichQuickProduct(
       : "Varen findes ikke længere",
     productId: input.productId,
     durationMs: Date.now() - startedAt,
-    data: product ? { pendingFields: product.pendingFields } : null,
+    data: product ? { pendingFields: product.pendingFields, retry } : { retry },
   });
+  return retry;
 }
 
 // Ingredienslisten igen på ét bestemt foto (src/lib/quick-enrichment-jobs.ts):

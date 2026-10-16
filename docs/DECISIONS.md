@@ -4,6 +4,26 @@
 - `src/lib/openai-usage.ts`: status = ét minimalt Responses-kald (gpt-4o-mini, 16 tokens, `store: false`, cachet 60 s) — det er den eneste måde at se, om kreditten er brugt op. Forbrug = `GET /v1/organization/costs` (dagsbuckets, `group_by=line_item`) med `OPENAI_ADMIN_KEY` (valgfri; den almindelige nøgle må ikke læse forbrug).
 - OpenAI har intet offentligt API til kreditsaldoen. Admin skriver saldoen fra Billing ind; den gemmes krypteret som `OPENAI_CREDIT_BALANCE_USD`/`_AT` (app_secrets), og forbruget fra døgnet efter (UTC) trækkes fra. Under 5 $ eller `insufficient_quota` vises advarsel.
 
+## 2026-10-16: Nye scannede varer må aldrig stå tomme (navn, brand, energi, billede)
+
+Brugerens test med Änglamark letmælk: indholdet blev læst straks (telefonens OCR), men varen fik intet navn, intet brand, "∼ 0 kalorier", intet fritlæg, og råfotoet stod som en firkant inde i cirklen. Årsag i koden: forside- og energi-aflæsningen er hver ét OpenAI-kald uden tidsgrænse og uden genforsøg. Fejlede kaldet (Änglamark er et fast kædemærke, så et svar havde givet brandet), blev felterne ryddet og jobbet markeret færdigt — navnet forblev tomt, intet fritlægningsjob blev oprettet (det oprettes kun efter et AI-svar), og `recordNutrientSources(null)` markerede 0 kcal som "skøn", deraf "∼ 0". Produktionens log kunne ikke læses herfra, så præcis hvilken OpenAI-fejl der ramte står i admin → Log (`OpenAI hello_cal_product_front … fejlede`).
+
+Besluttet:
+- `src/lib/product-ai.ts`: 90 s tidsgrænse pr. forsøg, to genforsøg ved 429/5xx/netværk/tomt svar (respekterer `retry-after`), og reservemodellen `gpt-4o`, når den valgte model afvises. API-nøgle-testen tjekker nu også standardmodellen.
+- Forsidens reserve uden AI: telefonen sender sin tekstlæsning af forsiden (`frontOcrText`); serveren finder et kendt brand i teksten og et varenavn, der findes på mindst to varer i databasen (længste vinder: Letmælk før Mælk), ellers `askProductType` (`src/lib/front-text-name.ts`). Bruges også, når AI'en svarer uden varenavn.
+- Teknisk fejlede dele (`retryParts`) prøves igen af `quick-enrichment-recovery` efter 10 min, højst 3 forsøg; giver forsiden aldrig svar, oprettes et fritlægningsjob for hele forsidefotoet.
+- Uden komplet næringstabel: `nutritionMissing = true` (appen viser "Næringsindhold ukendt"), derefter Fridas tal for varetypen, ellers et AI-skøn ud fra varetypen (`ESTIMATED`, ∼). `kcalEstimated` er aldrig sand ved 0 kcal. En senere aflæst tabel afløser skønnet.
+- Engangsreparation: varer fra de sidste 14 dage uden navn eller med 0 kcal genåbnes én gang (`repairedAt`). Deres registreringer med tomt navn/0 kcal følger med (som ved alkoholrobotten).
+- Råfotoet dækker hele cirklen (`object-cover`, native `ContentScale.Crop`), design.md §6.12 ændret. "∼" i mængdeboksen er nu inline med teksten (var et flex-element uden linjehøjde og svævede).
+
+## 2026-10-16: Madvarer — favoritter øverst, lydbølge, kamera i søgefeltet
+
+Brugerens krav: favoritter vises øverst; lydbølgen fra Tale-siden må ikke fjernes; søgefeltet vokser i højden, når teksten ikke kan stå på én linje; "Scan nyt produkt"-knappen nederst erstattes af et kamera i søgefeltets venstre side, der åbner billedfunktionen (`/camera?mode=product`).
+
+- `GET /api/products/most-used` sender alle profilens favoritter først (nyeste bogmærke først) og derefter op til 10 mest brugte, der ikke er favoritter. Web og native sorterer også favoritter først lokalt, så et nyt bogmærke rykker op med det samme.
+- Lydbølgen (`src/components/voice/LiveWaveform.tsx`, 28 grønne pinde efter mikrofonens niveau) vises under mikrofonen, mens der lyttes; native viser den samme bølge (`LiveWaveform` i `VoiceScreen.kt`).
+- Søgefeltet er en `textarea` med `.hf-search--grow` (mindst kontrolhøjden); linjeskift fjernes, Enter lukker tastaturet. Forstørrelsesglasset står nu i højre side.
+
 ## 2026-10-16: Faste designbilleder caches i et år
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.
@@ -5711,6 +5731,10 @@ Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning:
 Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Markeringerne vises under Admin → Kvalitetskontrol → Ufuldstændige billeder (op til 200, nyeste først); "Fjern markering" sætter `reviewedAt` og rører ikke varen.
 
 Brugeren bad om en lokal kørsel på pc'en. Nat-jobbet `image-screen-local` på NAS'en, fanen Ufuldstændige billeder i admin og tabellen `product_image_screenings` er fjernet igen (migration `20261016150000_drop_image_screenings`). Kun `scripts/image-screen` på pc'en er tilbage. Byg aldrig noget til NAS'en, når brugeren har bedt om en lokal kørsel.
+
+## 2026-10-16: Integrationshentning som eget job + ved åbning; én synk-popup
+
+Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook) var i realtid, og fik to forskellige "ikke synkroniseret"-popups efter hinanden. Beslutning: (1) baggrundshentningen af cloud-integrationer er sit eget job `integration-sync` (15 min., 2 min. tidsgrænse pr. integration) i stedet for et trin i Vedligehold; (2) `POST /api/integrations/app-open` henter alle forbundne cloud-integrationer (normal 15-min.-grænse), så data er friske, når appen åbnes; (3) `StaleSyncPrompt` (layout) genbruger vægt-popuppens bundark (`StaleSyncSheet`) og ignorerer integrationer, der læser vægt — dem ejer `WeighInPrompts`.
 
 ## 2026-10-16 — Admin: alle accordions i venstre menu lukket ved login
 
