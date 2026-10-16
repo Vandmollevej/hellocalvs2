@@ -3078,6 +3078,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Als Favorit speichern",
+    "removeFavorite": "Favorit entfernen",
+    "favoriteSaved": "Gespeichert",
     "favorite": "Favorit",
     "reportErrorAria": "Hast du einen Fehler gefunden?",
     "reportError": "Fehler",

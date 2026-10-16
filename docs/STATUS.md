@@ -4,6 +4,10 @@
 - Nederst en handlingsboks ("forbrænd X kcal", eller reducér indtag/forbrænd). Tryk åbner et ark med gåture (rolig/rask/hurtig ud fra vægt) og forslag til mad; Hello Fresh-link vises kun, når integrationen er slået til.
 - Ny graf-accent `--hf-color-chart-blue` (#5b9fcf). Regler i `src/lib/front-charts.ts` (+ test), native port i `HomeFrontCharts*.kt`.
 - Kendt: norsk/svensk tekst er foreløbigt dansk, tysk/fransk/hollandsk engelsk. Native er ikke kompileret lokalt (ingen Android SDK) — CI afgør.
+## 2026-10-16: Frida-skøn straks på varesiden
+
+- Varer uden energimærkning får Fridas tal, så snart varesiden åbnes (ikke først om natten). Se DECISIONS 2026-10-16. Ikke typetjekket/kørt lokalt (node_modules mangler).
+
 ## 2026-10-15: Kameraet direkte i opdater-banneret
 
 - Trækkes "Optjen X points …" ned, står kamerasøgeren nu i selve dropdownen (web: `UpdateCameraPanel`, automatisk udløsning + udløser), og fotoet læses på stedet; varen hentes igen bagefter. Ingen ny side og ingen gammel "Tag billede"-side længere. Native åbner telefonens kamera direkte fra boksen. Favoritikonet ligger ikke længere oven på dropdownen. På hjemmesiden (desktop) vises banneret ikke, da den ikke tager billeder. Ikke prøvet på telefon her; native-koden kompileres kun i CI. Se REGLER.md.

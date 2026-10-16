@@ -75,6 +75,7 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
     var copyingId by remember { mutableStateOf<String?>(null) }
     var confirmDelete by remember { mutableStateOf<DailyEntry?>(null) }
     var hasScans by remember { mutableStateOf(false) }
+    var favoriteIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     val status = FoodFamily.status
     // "Kopier til konto" only on own entries, only when controlling other profiles (docs/FAMILY.md).
     val copyTargets = if (status != null && status.activeProfile.id == status.me.id) {
@@ -109,6 +110,13 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
         }
     }
 
+    LaunchedEffect(Unit) {
+        runCatching {
+            favoriteIds = ApiJson.decodeFromJsonElement(FavoritesResponse.serializer(), Api.get("/api/favorites"))
+                .favorites.mapNotNull { it.product?.id }.toSet()
+        }
+    }
+
     LaunchedEffect(notice) {
         if (notice != null) {
             delay(2500)
@@ -118,7 +126,13 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
 
     fun favoriteEntry(productId: String?) {
         if (productId == null) return
-        scope.launch { runCatching { Api.post("/api/favorites", mapOf("productId" to productId)) } }
+        val next = productId !in favoriteIds
+        favoriteIds = if (next) favoriteIds + productId else favoriteIds - productId
+        scope.launch {
+            runCatching {
+                if (next) Api.post("/api/favorites", mapOf("productId" to productId)) else Api.delete("/api/favorites", mapOf("productId" to productId))
+            }
+        }
     }
 
     fun copyEntry(registrationId: String, target: FamilyProfile) {
@@ -157,6 +171,7 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
         copy = t.t("family.copy.action"),
         reportError = t.t("swipeableRow.reportError"),
         delete = t.t("swipeableRow.delete"),
+        favoriteSaved = t.t("swipeableRow.favoriteSaved"),
     )
 
     Box(modifier.fillMaxSize()) {
@@ -170,6 +185,7 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
                             texts = swipeTexts,
                             surface = HcColors.Tan,
                             onFavorite = if (entry.productId != null) ({ favoriteEntry(entry.productId) }) else null,
+                            isFavorite = entry.productId != null && entry.productId in favoriteIds,
                             onCopyToAccount = if (copyTargets.isNotEmpty()) ({ startCopy(entry.id) }) else null,
                             onReportError = { nav.push("/registration/${entry.id}/report-error") },
                             onDelete = { confirmDelete = entry },
