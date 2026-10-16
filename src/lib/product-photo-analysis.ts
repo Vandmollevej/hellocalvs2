@@ -29,8 +29,12 @@ import { LOCAL_OCR_MODEL, LOCAL_OCR_PROMPT_VERSION } from "@/lib/local-label";
 import { readStoredImageAsDataUrl, saveDataUrlImage } from "@/lib/qc-image-storage";
 import { matchBrand, matchBrandInTexts, type BrandMatch } from "@/lib/brand-match";
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
+import { loadKnownBrands, PINNED_BRANDS } from "@/lib/known-brands";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
+import { DOUBTFUL_INGREDIENTS_CONFIDENCE, reviewIngredientsText } from "@/lib/ingredient-text-quality";
+import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
+import type { SpellingDictionary } from "@/lib/spelling-engine";
 import type {
   BarcodeLogoAnalysis,
   IngredientsAiResult,
@@ -83,10 +87,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
   textBrandMatch: BrandMatch | null;
 }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const knownBrands = await prisma.brand.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  const { all: knownBrands, promptNames } = await loadKnownBrands();
 
   const { value: aiValue, model } = await callStructuredVision<ProductFrontAnalysis>({
     photo,
@@ -94,7 +95,7 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
     schema: FRONT_SCHEMA,
     // Samme prompt som den natlige genkørsel (src/lib/product-ai-tasks.ts).
     system: FRONT_SYSTEM,
-    text: frontText({ barcode, context, knownBrands: knownBrands.slice(0, 750).map((item) => item.name) }),
+    text: frontText({ barcode, context, knownBrands: promptNames }),
   });
 
   const value: ProductFrontAnalysis = {
@@ -109,7 +110,11 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals,
   const brandMatch = matchBrand(value.logoText ?? value.brand, knownBrands);
   const textBrandMatch = brandMatch
     ? null
-    : matchBrandInTexts([value.brand, value.subbrand, value.logoText, ...value.visibleText, ...value.claims], knownBrands);
+    : matchBrandInTexts(
+        [value.brand, value.subbrand, value.logoText, ...value.visibleText, ...value.claims],
+        knownBrands,
+        PINNED_BRANDS,
+      );
 
   // Fotoet gemmes, så image-agenten kan fritskrabe logo og produkt.
   // Fejl her må aldrig stoppe selve forsideanalysen.
@@ -164,13 +169,13 @@ export async function analyzeBarcodePhotoLogo({
   if (!row?.imageUrl || !photo) return null;
 
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const knownBrands = await prisma.brand.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  const { all: knownBrands, promptNames } = await loadKnownBrands();
   const { value, model } = await callStructuredVision<BarcodeLogoAnalysis>({
     photo,
     schemaName: "hello_cal_barcode_logo",
     schema: BARCODE_LOGO_SCHEMA,
     system: BARCODE_LOGO_SYSTEM,
-    text: barcodeLogoText({ barcode, context, knownBrands: knownBrands.slice(0, 750).map((item) => item.name) }),
+    text: barcodeLogoText({ barcode, context, knownBrands: promptNames }),
   });
   const result: BarcodeLogoAnalysis = { ...value, logoBox: cleanBox(value.logoBox) };
   const brandMatch = matchBrand(result.logoText, knownBrands);
@@ -233,18 +238,37 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
   return { analysisId: analysis.id, result: value };
 }
 
+// AI'ens liste gennem kvalitetskontrollen (src/lib/ingredient-text-quality.ts):
+// sikre rettelser laves, og ved tvivl sættes sikkerheden ned, så aflæsningen
+// står rødt på admin → Usikkerheder → Indhold (brugerens spørgsmål 2026-10-14:
+// "Bliver den meldt med fejl og stavefejl til admin?").
+function reviewedIngredients(
+  value: IngredientsAiResult,
+  dictionary: SpellingDictionary,
+): IngredientsAiResult & Pick<IngredientsAnalysis, "textReview"> {
+  const review = reviewIngredientsText(value.ingredientsText || "", value.language, dictionary);
+  if (!review.fixes.length && !review.doubts.length) return value;
+  return {
+    ...value,
+    ingredientsText: review.text,
+    confidence: review.doubts.length ? Math.min(value.confidence, DOUBTFUL_INGREDIENTS_CONFIDENCE) : value.confidence,
+    textReview: { fixes: review.fixes, doubts: review.doubts },
+  };
+}
+
 export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "", signals, storedImageUrl }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: IngredientsAnalysis;
 }> {
   const context = buildBarcodeContext(barcode, marketRegion, signals);
-  const { value: aiValue, model } = await callStructuredVision<IngredientsAiResult>({
+  const { value: aiRaw, model } = await callStructuredVision<IngredientsAiResult>({
     photo,
     schemaName: "hello_cal_ingredients",
     schema: INGREDIENTS_SCHEMA,
     system: INGREDIENTS_SYSTEM,
     text: ingredientsText({ barcode, context, ocrText }),
   });
+  const aiValue = reviewedIngredients(aiRaw, await loadSpellingDictionary());
   // Fuldkorn udledes deterministisk af selve varedeklarationen, ikke af
   // modellen (src/lib/whole-grain.ts, docs/DECISIONS.md 2026-09-23).
   const wholeGrain = parseWholeGrain({ ingredientsText: aiValue.ingredientsText || aiValue.rawText });
@@ -304,11 +328,12 @@ export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText 
     ...aiValue.nutrition,
     fiberPercent: deriveFiberPercent(aiValue.nutrition.basis, aiValue.nutrition.fiberPer100g),
   };
+  const reviewed = reviewedIngredients(aiValue.ingredients, await loadSpellingDictionary());
   const wholeGrain = parseWholeGrain({
-    ingredientsText: aiValue.ingredients.ingredientsText || aiValue.ingredients.rawText,
+    ingredientsText: reviewed.ingredientsText || reviewed.rawText,
   });
   const ingredients: IngredientsAnalysis = {
-    ...aiValue.ingredients,
+    ...reviewed,
     wholeGrainPercent: wholeGrain.wholeGrainPercent,
     isWholeGrain: wholeGrain.isWholeGrain,
     wholeGrainConfidence: wholeGrain.confidence,

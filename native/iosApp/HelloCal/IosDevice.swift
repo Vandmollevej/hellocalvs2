@@ -19,6 +19,7 @@ final class IosDevice: NSObject, DevicePlatform {
     private let work = DispatchQueue(label: "dk.packroff.hellocal.device", qos: .userInitiated)
     private var speech: SpeechSession?
     private var speechGeneration = 0
+    private let voice = VoiceSpeaker()
 
     // MARK: - Camera and photo library
 
@@ -257,6 +258,16 @@ final class IosDevice: NSObject, DevicePlatform {
             self.speechGeneration += 1
             self.speech?.stop()
         }
+    }
+
+    // MARK: - Voice (text to speech)
+
+    func speak(text: String, languageTag: String, onDone: @escaping (String?) -> Void) {
+        onMain { self.voice.speak(text, languageTag: languageTag, onDone: onDone) }
+    }
+
+    func stopSpeaking() {
+        onMain { self.voice.stop() }
     }
 
     // MARK: - Share and confirmation
@@ -571,6 +582,57 @@ private final class CodeScannerViewController: UIViewController, AVCaptureMetada
         guard let callback = done else { return }
         done = nil
         dismiss(animated: true) { callback(value) }
+    }
+}
+
+// MARK: - Voice (AVSpeechSynthesizer)
+
+/// Reads one text aloud at a time; a new text replaces the one being said.
+private final class VoiceSpeaker: NSObject, AVSpeechSynthesizerDelegate {
+    private let synthesizer = AVSpeechSynthesizer()
+    private var current: AVSpeechUtterance?
+    private var onDone: ((String?) -> Void)?
+
+    override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
+
+    func speak(_ text: String, languageTag: String, onDone: @escaping (String?) -> Void) {
+        finish(nil)
+        if synthesizer.isSpeaking { synthesizer.stopSpeaking(at: .immediate) }
+        // The speech recognizer leaves the session in .record — play through the speaker.
+        let audio = AVAudioSession.sharedInstance()
+        try? audio.setCategory(.playback, mode: .spokenAudio, options: .duckOthers)
+        try? audio.setActive(true)
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: languageTag)
+            ?? AVSpeechSynthesisVoice(language: String(languageTag.prefix(2)))
+        current = utterance
+        self.onDone = onDone
+        synthesizer.speak(utterance)
+    }
+
+    func stop() {
+        current = nil
+        synthesizer.stopSpeaking(at: .immediate)
+        finish(nil)
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async { if utterance === self.current { self.finish(nil) } }
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async { if utterance === self.current { self.finish(nil) } }
+    }
+
+    private func finish(_ error: String?) {
+        guard let done = onDone else { return }
+        onDone = nil
+        current = nil
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        done(error)
     }
 }
 

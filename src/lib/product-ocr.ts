@@ -273,8 +273,11 @@ const INGREDIENTS_HEADING =
   /(?:ingredienser|ingredients|ingrediensar|zutaten|ingrédients|ingrediënten|ingredienti|ingredientes|ainesosat|składniki)\s*:?/i;
 // Næringstabellens start. Tesseract læser tit "Ä" som "Å" ("NÅHRWERTE"), og
 // tyske tabeller starter med "Durchschnittliche Nährwerte".
+// Også selve tabelrækkerne, når overskriften mangler eller er fejllæst
+// (brugerens test 2026-10-14: "… £202. ee .06 kcal | ; :699k1 167 ; Fnergi"):
+// "Energi" med OCR-varianter ("Fnergi") og tal med kJ/kcal.
 const INGREDIENTS_END =
-  /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|n[äåa]hrwert|durchschnittliche|brennwert|valeurs nutritionnelles|voedingswaarde|valori nutrizionali|informaci[óo]n nutricional)/i;
+  /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|n[äåa]hrwert|durchschnittliche|brennwert|valeurs nutritionnelles|voedingswaarde|valori nutrizionali|informaci[óo]n nutricional|(?<![a-zæøå])[ef][nm]erg[iq1l](?![a-zæøå])|(?<![a-zæøå])energy(?![a-zæøå])|\d+(?:[.,]\d+)?\s?(?:kj|kcal)(?![a-z]))/i;
 
 export function hasIngredientsHeading(rawText: string): boolean {
   return INGREDIENTS_HEADING.test(rawText);

@@ -22,6 +22,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.Url
 import io.ktor.http.contentType
+import io.ktor.http.encodeURLParameter
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.date.GMTDate
@@ -134,6 +135,18 @@ object Api {
         pathOrUrl.startsWith("http") -> pathOrUrl
         else -> HelloCalConfig.BASE_URL + (if (pathOrUrl.startsWith("/")) pathOrUrl else "/$pathOrUrl")
     }
+
+    /**
+     * A small, compressed copy of one of our own images via /_next/image — the
+     * same rule as src/lib/image-thumb.ts (widths must be one of THUMB_WIDTHS
+     * there). Data URLs, foreign URLs, SVG and GIF are returned unchanged.
+     */
+    fun thumbUrl(pathOrUrl: String?, width: Int): String? {
+        if (pathOrUrl.isNullOrBlank() || !OPTIMIZABLE.matches(pathOrUrl)) return absoluteUrl(pathOrUrl)
+        return HelloCalConfig.BASE_URL + "/_next/image?url=" + pathOrUrl.encodeURLParameter() + "&w=$width&q=75"
+    }
+
+    private val OPTIMIZABLE = Regex("^/(?!/)[^?#]*\\.(png|jpe?g|webp)$", RegexOption.IGNORE_CASE)
 }
 
 /** Serialises Maps/Lists/primitives (screens build small request bodies as maps). */

@@ -60,11 +60,14 @@ export function matchBrand(text: string | null | undefined, brands: BrandCandida
 // Finder et kendt brand, der står ordret (normaliseret) i en af AI'ens
 // tekster på forsiden — subbrand, logotekst, synlig tekst eller claims.
 // Kun eksakt match (score 1), og kun navne på mindst 4 tegn, så et kort/
-// generisk ord aldrig matcher ved et tilfælde. Længste navn vinder.
+// generisk ord aldrig matcher ved et tilfælde — undtagen navnene i
+// `shortAllowed` (fx ØGO, 3 tegn). Længste navn vinder.
 export function matchBrandInTexts(
   texts: (string | null | undefined)[],
   brands: BrandCandidate[],
+  shortAllowed: string[] = [],
 ): BrandMatch | null {
+  const allowed = new Set(shortAllowed.map(normalizeBrandName));
   const haystack = new Set<string>();
   for (const text of texts) {
     if (!text) continue;
@@ -82,8 +85,32 @@ export function matchBrandInTexts(
   let best: BrandMatch | null = null;
   for (const brand of brands) {
     const normalized = normalizeBrandName(brand.name);
-    if (normalized.length < 4 || !haystack.has(normalized)) continue;
+    if ((normalized.length < 4 && !allowed.has(normalized)) || !haystack.has(normalized)) continue;
     if (!best || normalized.length > normalizeBrandName(best.name).length) best = { id: brand.id, name: brand.name, score: 1 };
   }
   return best;
+}
+
+// Et brandnavn, som Brand-tabellen ikke kender, oprettes kun ud fra et sikkert
+// og helt synligt logo (docs/DECISIONS.md 2026-10-15): Nettos ØGO-pose blev
+// læst som "DAGO", fordi logoet var skåret af ved billedkanten, og navnet blev
+// oprettet som nyt brand. Usikkert eller afskåret → varen får intet brand, og
+// et kendt brand (match) bruges altid uanset dette.
+export const NEW_BRAND_MIN_CONFIDENCE = 0.85;
+const LOGO_EDGE_MARGIN = 0.02;
+
+export type LogoBox = { x: number; y: number; width: number; height: number } | null | undefined;
+
+export function logoTouchesEdge(box: LogoBox): boolean {
+  if (!box) return false;
+  return (
+    box.x <= LOGO_EDGE_MARGIN ||
+    box.y <= LOGO_EDGE_MARGIN ||
+    box.x + box.width >= 1 - LOGO_EDGE_MARGIN ||
+    box.y + box.height >= 1 - LOGO_EDGE_MARGIN
+  );
+}
+
+export function newBrandAllowed(confidence: number | null | undefined, logoBox?: LogoBox): boolean {
+  return (confidence ?? 0) >= NEW_BRAND_MIN_CONFIDENCE && !logoTouchesEdge(logoBox);
 }

@@ -16,6 +16,7 @@ import {
   type OffImageSort,
   type OffImageTab,
 } from "@/lib/off-image-review-shared";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Admin "Open Food Facts → Billeder" (docs/DECISIONS.md 2026-10-11).
 // Billeder i et gitter med skydeknap for størrelsen (1 = ét billede i højden
@@ -79,7 +80,7 @@ function Card({ item, mark, single, compact, height, canEdit, onDecide }: CardPr
     >
       <div className={`relative bg-hf-white ${single ? "min-h-0 flex-1" : "aspect-square"}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.imageUrl} alt={item.name} loading="lazy" draggable={false} className="h-full w-full select-none object-contain p-2" />
+        <img src={imageThumb(item.imageUrl, 640)} alt={item.name} loading="lazy" draggable={false} className="h-full w-full select-none object-contain p-2" />
         {mark && (
           <span
             className={`hf-type-caption absolute left-2 top-2 rounded-full px-2 py-0.5 text-hf-white ${

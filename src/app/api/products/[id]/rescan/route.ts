@@ -5,6 +5,7 @@ import { rescanStepsFor } from "@/lib/product-rescan-offer";
 import { enrichRescan } from "@/lib/product-rescan";
 import type { PendingField } from "@/lib/quick-product-enrichment";
 import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
+import { linkBackPhotos } from "@/lib/product-back-photos";
 
 // POST /api/products/[id]/rescan — "Scan varen igen" fra banneret på
 // /add/[id] (docs/DECISIONS.md 2026-10-02). Kameraets fotos (som ved "opret
@@ -67,6 +68,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     if (claimed.count !== 1) {
       return NextResponse.json({ message: "Varen er allerede scannet igen" }, { status: 409 });
     }
+
+    // Flowets ubeskårne bagsidebilleder hører til varen (docs/DECISIONS.md 2026-10-15).
+    await linkBackPhotos(flowId, id, user.id).catch((error) => console.error("Could not link back photos", id, error));
 
     const barcode = product.barcodes[0].code;
     const debugContext = { flowId, userId: user.id, barcode, productId: id };

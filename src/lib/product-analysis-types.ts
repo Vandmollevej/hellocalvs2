@@ -25,6 +25,8 @@ export type ProductFrontAnalysis = {
   productName: string | null;
   variant: string | null;
   packageSizeText: string | null;
+  // Alkohol i % vol (front-v6). Mangler på analyser fra før 2026-10-15.
+  alcoholPercent?: number | null;
   claims: string[];
   // Mærkningslogoer (Ø-mærket, Nøglehullet, MSC …), fra front-v4. Mangler
   // på analyser fra før 2026-10-02.
@@ -65,6 +67,9 @@ export type IngredientsAiResult = {
 // recomputed later without new OCR (docs/DECISIONS.md 2026-09-23).
 // Percent is 0–100 of the WHOLE product; null = unknown, never guessed.
 export type IngredientsAnalysis = IngredientsAiResult & {
+  // Kvalitetskontrollen af listen (src/lib/ingredient-text-quality.ts):
+  // automatiske rettelser og tvivl, der sendes til admin.
+  textReview?: { fixes: string[]; doubts: string[] };
   wholeGrainPercent: number | null;
   isWholeGrain: boolean | null;
   wholeGrainConfidence: number;
@@ -91,6 +96,8 @@ export type NutritionAiResult = {
   sugarsPer100g: number | null;
   fiberPer100g: number | null;
   saltPer100g: number | null;
+  // Alkohol i % vol (nutrition-v4). Mangler på ældre og lokale aflæsninger.
+  alcoholPercent?: number | null;
   // Øvrige næringsstoffer fra tabellen (nøgler/enheder fra src/lib/nutrients.ts)
   // + producentens egen ± (docs/DECISIONS.md 2026-09-25). Mangler på
   // analyser fra før prompt-versionen nutrition-v2-2026-09-25-micros.

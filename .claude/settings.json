@@ -12,7 +12,6 @@
       "WebSearch",
       "mcp__github",
       "mcp__Claude_Code_Remote",
-      "mcp__claude-code-remote__archive_session",
       "mcp__Claude_Docs"
     ],
     "deny": [

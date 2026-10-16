@@ -1,6 +1,12 @@
 package dk.packroff.hellocal.screens.food
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -32,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -50,15 +57,18 @@ import dk.packroff.hellocal.api.HelloCalConfig
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.capture.CaptureHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.FoodScrollSheet
+import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.foodSelected
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Pieces of src/components/add/AddProductView.tsx and the hf/* components it uses.
@@ -204,7 +214,7 @@ fun IngredientsTextView(text: String, onAdditive: (String) -> Unit) {
     val nav = LocalNavigator.current
     val annotated = remember(text) {
         buildAnnotatedString {
-            for (part in splitENumbers(text)) {
+            for (part in splitENumbers(displayIngredientsText(text))) {
                 val code = part.code
                 if (code != null) {
                     withLink(
@@ -291,58 +301,172 @@ fun HandSizePickerRow(item: HandSizeItem, imageUrl: String?, amount: Double, onS
     }
 }
 
+/** One photo box in [UpdatePointsBanner]; [retake] = the unreadable ingredients are taken again. */
+data class UpdateTile(val kind: String, val label: String, val retake: Boolean = false)
+
+/**
+ * Opens the phone's camera for [tile] and sends the photo (web: UpdateCameraPanel):
+ * POST /api/products/[id]/update, or /ingredients-photo for a retake. Returns
+ * (outcome, points) — outcome "done" | "unreadable" | "error" — or null when the
+ * user cancelled the camera. [onStart] runs once a photo was taken.
+ */
+private suspend fun captureUpdatePhoto(productId: String, tile: UpdateTile, onStart: () -> Unit): Pair<String, Int>? {
+    // The front is also kept in full resolution (web: fullPhoto, DECISIONS 2026-10-15).
+    val takeFull = CaptureHooks.takeFullPhoto
+    var fullPhoto: FoodPhoto? = null
+    val photo = if (tile.kind == "FRONT" && takeFull != null) {
+        val full = runCatching { takeFull() }.getOrNull() ?: return null
+        fullPhoto = FoodPhoto(full)
+        FoodPhoto(CaptureHooks.scaleForUpload(full) ?: full)
+    } else {
+        FoodPlatform.photo(fromGallery = false) ?: return null
+    }
+    onStart()
+    return try {
+        if (tile.retake) {
+            val data = Api.post("/api/products/${encodeUri(productId)}/ingredients-photo", mapOf("photo" to photo.dataUrl()))
+            (if (data.bool("ingredientsFound") == true) "done" else "unreadable") to 0
+        } else {
+            val body = buildMap<String, Any> {
+                put("kind", tile.kind)
+                put("photo", photo.dataUrl())
+                fullPhoto?.let { put("fullPhoto", it.dataUrl()) }
+                put("photoTakenAt", photo.takenAtMillis ?: FoodTime.now().toEpochMilliseconds())
+            }
+            val data = Api.post("/api/products/${encodeUri(productId)}/update", body)
+            (if (data.bool("accepted") == true) "done" else "unreadable") to (data.num("pointsAwarded")?.toInt() ?: 0)
+        }
+    } catch (_: Exception) {
+        "error" to 0
+    }
+}
+
 /**
  * src/components/hf/UpdatePointsBanner.tsx — white overlay under the app bar
  * ("Optjen 20 points …"); it floats over the page and never pushes it. The grip
  * collapses it (drag up / tap) or pulls down an inverted popup with one camera
- * tile per missing item (drag down). Place it inside a Box over the content.
+ * tile per missing item (drag down, or tap the text). The closed strip is text
+ * only — the photo tiles appear only once it is pulled down (user rule
+ * 2026-10-15). A tile opens the phone's own camera right away and the photo is
+ * read in place — never a new page (user rule 2026-10-15; the web shows its live
+ * viewfinder in the panel, src/components/hf/UpdateCameraPanel.tsx). Place it
+ * inside a Box over the content.
+ * [scrollOffset] is the page's scroll position: scrolling down folds the banner
+ * to its grip, reaching the top again unfolds it to what it was — unless the
+ * user folded it themselves (user rule 2026-10-15).
  */
 @Composable
-fun UpdatePointsBanner(href: String, text: String, toggleLabel: String, tiles: List<String>, action: (@Composable () -> Unit)? = null) {
-    val nav = LocalNavigator.current
+fun UpdatePointsBanner(
+    productId: String,
+    text: String,
+    toggleLabel: String,
+    tiles: List<UpdateTile>,
+    onUpdated: () -> Unit,
+    scrollOffset: Int = 0,
+) {
+    val t = LocalTranslator.current
+    val scope = rememberCoroutineScope()
+    var workingKind by remember { mutableStateOf<String?>(null) }
+    var outcomes by remember { mutableStateOf(mapOf<String, String>()) }
+    var earned by remember { mutableStateOf(0) }
     // 0 = collapsed, 1 = banner, 2 = panel
     var stage by remember { mutableStateOf(1) }
+    // The stage before scrolling folded it; null when scrolling did not fold it.
+    var restoreTo by remember { mutableStateOf<Int?>(null) }
+    var lastOffset by remember { mutableStateOf(scrollOffset) }
+    val collapseAfterPx = with(LocalDensity.current) { 24.dp.roundToPx() }
+    LaunchedEffect(scrollOffset) {
+        if (scrollOffset > lastOffset && scrollOffset > collapseAfterPx) {
+            if (stage != 0) {
+                restoreTo = stage
+                stage = 0
+            }
+        } else if (scrollOffset <= 0) {
+            restoreTo?.let { stage = it }
+            restoreTo = null
+        }
+        lastOffset = scrollOffset
+    }
     val bannerShape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
     Column(Modifier.fillMaxWidth().shadow(4.dp, bannerShape).background(HcColors.White, bannerShape)) {
-        if (stage >= 1) {
+        // Text and tiles slide up and down instead of snapping (user rule 2026-10-15).
+        val enter = expandVertically(tween(300)) + fadeIn(tween(300))
+        val exit = shrinkVertically(tween(300)) + fadeOut(tween(300))
+        AnimatedVisibility(stage >= 1, enter = enter, exit = exit) {
             HcText(
                 text,
                 HcTypeRoles.Small,
-                Modifier.fillMaxWidth().clickable { nav.push(href) }.padding(start = 16.dp, end = 16.dp, top = 12.dp),
+                Modifier.fillMaxWidth().clickable {
+                    restoreTo = null
+                    stage = 2
+                }.padding(start = 16.dp, end = 16.dp, top = 12.dp),
                 color = HcColors.Black,
                 bold = true,
                 align = TextAlign.Center,
             )
         }
-        if (stage >= 1 && action != null) Box(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) { action() }
-        if (stage == 2) {
-            Row(
+        AnimatedVisibility(stage == 2, enter = enter, exit = exit) {
+            Column(
                 Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                tiles.forEach { label ->
-                    Column(
-                        Modifier.width(96.dp).clickable { nav.push(href) },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Box(
-                            Modifier.size(96.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Page),
-                            contentAlignment = Alignment.Center,
-                        ) { HcIcon("Camera", size = 32.dp, color = HcColors.Black) }
-                        HcText(label, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center)
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)) {
+                    tiles.forEach { tile ->
+                        val done = outcomes[tile.kind] == "done"
+                        Column(
+                            Modifier.width(96.dp).clickable(enabled = workingKind == null && !done) {
+                                scope.launch {
+                                    val result = captureUpdatePhoto(productId, tile, onStart = { workingKind = tile.kind }) ?: return@launch
+                                    workingKind = null
+                                    outcomes = outcomes + (tile.kind to result.first)
+                                    earned += result.second
+                                    if (tiles.all { outcomes[it.kind] == "done" }) {
+                                        delay(2500)
+                                        onUpdated()
+                                    }
+                                }
+                            },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Box(
+                                Modifier.size(96.dp).clip(RoundedCornerShape(16.dp)).background(HcColors.Page),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                when {
+                                    workingKind == tile.kind -> HcLoader(Modifier)
+                                    done -> HcIcon("Check", size = 32.dp, color = HcColors.Black)
+                                    else -> HcIcon("Camera", size = 32.dp, color = HcColors.Black)
+                                }
+                            }
+                            HcText(tile.label, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center)
+                        }
                     }
                 }
+                val caption = when {
+                    workingKind != null -> t.t("productUpdate.reading")
+                    earned > 0 -> t.t("productUpdate.earned", "points" to earned)
+                    outcomes.values.lastOrNull() == "done" -> t.t("productUpdate.done")
+                    outcomes.values.lastOrNull() == "unreadable" -> t.t("productUpdate.unreadable")
+                    outcomes.values.lastOrNull() == "error" -> t.t("productUpdate.error")
+                    else -> null
+                }
+                caption?.let { HcText(it, HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.Black, align = TextAlign.Center) }
             }
         }
         Box(
             Modifier.fillMaxWidth().height(20.dp)
-                .clickable { stage = if (stage == 1) 0 else 1 }
+                .clickable {
+                    restoreTo = null
+                    stage = if (stage == 1) 0 else 1
+                }
                 .pointerInput(Unit) {
                     var total = 0f
                     detectVerticalDragGestures(
                         onDragStart = { total = 0f },
                         onDragEnd = {
+                            restoreTo = null
                             if (total >= 16 * density) stage = if (stage == 0) 1 else 2
                             else if (total <= -16 * density) stage = if (stage == 2) 1 else 0
                         },

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IconArrowLeft, IconShare3 } from "@tabler/icons-react";
 import "./recipe-view.css";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Rammen om en opskrift i HelloFresh-stil (docs/DECISIONS.md 2026-09-27):
 // stort billede helt til kanten, tilbage/del som runde knapper over
@@ -65,7 +66,7 @@ export function RecipeViewScreen({
       <div ref={scroller} className="rv-scroll">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img ref={heroRef} src={imageUrl} alt="" className="rv-hero" />
+          <img ref={heroRef} src={imageThumb(imageUrl, 1200)} alt="" className="rv-hero" />
         ) : (
           <div className="rv-hero rv-hero--empty" />
         )}

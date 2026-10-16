@@ -25,6 +25,7 @@ import {
   type Calibration,
 } from "@/lib/energy-calibration";
 import { minimumHealthyKcal } from "@/lib/healthy-intake";
+import { pregnancyInfo, type PregnancyInfo } from "@/lib/pregnancy";
 import { localDayAsUtc } from "@/lib/daily-budget";
 import { computeTrendWeight } from "@/lib/weight-trend";
 import {
@@ -53,6 +54,10 @@ type ProfileFields = Pick<
   | "goalMode"
   | "goalPaceKgPerWeek"
   | "targetWeightKg"
+  | "pregnancyStatus"
+  | "pregnancyWeek"
+  | "breastfeedingWeeks"
+  | "pregnancyStatusUpdatedAt"
 >;
 
 function oneOf<T extends string>(values: readonly T[], value: unknown): T | null {
@@ -99,7 +104,9 @@ export type EnergySummary = {
   daily: DailyEnergyEstimate | null;
   /** Løbende kalibrering mod vægt (docs/ACTIVITY-PAL.md); null når den ikke er kørt. */
   calibration: Calibration | null;
-  /** Energibehovet budgettet bygger på: kalibreret når muligt, ellers dagsestimatet. */
+  /** Graviditet/amning (src/lib/pregnancy.ts) med dagens tillæg; null ellers. */
+  pregnancy: PregnancyInfo | null;
+  /** Energibehovet budgettet bygger på: kalibreret når muligt, ellers dagsestimatet — plus graviditets-/ammetillæg. */
   needKcal: number | null;
   budget: DailyBudget | null;
   /** Felter der mangler for at kunne regne (vises som opfordring i UI). */
@@ -123,7 +130,10 @@ export function energySummaryFor(user: ProfileFields, calibration: Calibration |
   const trainingAllowanceKcal = user.trainingAllowanceKcal ?? 0;
   const daily = bmr !== null && pal !== null ? estimateDailyEnergy({ bmr, pal, palUncertainty, trainingAllowanceKcal }) : null;
   const calibrated = calibration && calibration.reason === "OK" && calibration.weight > 0 ? Math.round(calibration.usedKcal / 10) * 10 : null;
-  const needKcal = calibrated ?? daily?.kcal ?? null;
+  // Gravid/ammende (EFSA-tillæg): lægges oven på behovet, og budgettet får aldrig et underskud.
+  const pregnancy = user.sex === "FEMALE" ? pregnancyInfo(user) : null;
+  const baseNeed = calibrated ?? daily?.kcal ?? null;
+  const needKcal = baseNeed === null ? null : baseNeed + (pregnancy?.extraKcal ?? 0);
   const budget = daily && needKcal !== null
     ? computeDailyBudget({
         tdeeKcal: needKcal,
@@ -135,6 +145,7 @@ export function energySummaryFor(user: ProfileFields, calibration: Calibration |
         mode: (user.goalMode ?? "MAINTAIN") as GoalMode,
         targetWeightKg: user.targetWeightKg,
         paceKgPerWeek: user.goalPaceKgPerWeek,
+        pregnancy: pregnancy !== null,
       })
     : null;
 
@@ -148,6 +159,7 @@ export function energySummaryFor(user: ProfileFields, calibration: Calibration |
     trainingAllowanceKcal,
     daily,
     calibration,
+    pregnancy,
     needKcal,
     budget,
     missing,
@@ -168,6 +180,9 @@ export async function calibrateUser(user: ProfileFields & { id: string; activity
   const age = computeAge(user.birthDate);
   const bmr = estimateBmr({ weightKg: user.weightKg, heightCm: user.heightCm, age, sex: user.sex });
   if (bmr === null || childPhysicalActivityLevel(age) !== null) return { calibration: null, user };
+  // Gravid/ammende: vægten ændrer sig af andre grunde end energibalancen, så
+  // kalibreringen mod vægttrenden holdes i ro (docs/DECISIONS.md 2026-10-14).
+  if (user.sex === "FEMALE" && pregnancyInfo(user) !== null) return { calibration: null, user };
   const palBase = user.palBase ?? (user.activityLevel ? representativePal(user.activityLevel) : null);
   if (palBase === null) return { calibration: null, user };
 

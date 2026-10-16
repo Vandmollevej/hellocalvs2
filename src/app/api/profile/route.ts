@@ -13,6 +13,7 @@ import type { Locale } from "@/i18n";
 import type { Prisma } from "@prisma/client";
 import { normalizeDisplayPrefs } from "@/lib/circle-badges";
 import { parseRecipeProviders } from "@/lib/meal-kit-providers";
+import { MAX_BREASTFEEDING_WEEKS, MAX_PREGNANCY_WEEK, MIN_PREGNANCY_WEEK, isPregnancyStatus } from "@/lib/pregnancy";
 
 export async function GET() {
   try {
@@ -36,6 +37,14 @@ export async function GET() {
   }
 }
 
+// undefined = feltet er ikke sendt (rør det ikke); null/ugyldigt = ryd feltet.
+function clampIntOrNull(value: unknown, min: number, max: number): number | null | undefined {
+  if (value === undefined) return undefined;
+  const n = typeof value === "number" ? value : Number(value);
+  if (value === null || value === "" || !Number.isFinite(n)) return null;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+
 // PATCH /api/profile — saves continuously, per the UI principle of no "Save" button.
 export async function PATCH(req: Request) {
   const body = await req.json();
@@ -51,6 +60,9 @@ export async function PATCH(req: Request) {
     goalMode,
     goalPaceKgPerWeek,
     cycleTrackingEnabled,
+    pregnancyStatus,
+    pregnancyWeek,
+    breastfeedingWeeks,
     sleepQualityPromptEnabled,
     averageCycleLengthDays,
     averagePeriodLengthDays,
@@ -72,6 +84,7 @@ export async function PATCH(req: Request) {
     showToxins,
     warnOnRecommendedLimits,
     autoExpandUncertainty,
+    translateForeignText,
     region,
     appLocale,
     photoDiaryRequiresPasscode,
@@ -92,6 +105,9 @@ export async function PATCH(req: Request) {
     goalMode?: unknown;
     goalPaceKgPerWeek?: number | null;
     cycleTrackingEnabled?: boolean;
+    pregnancyStatus?: unknown;
+    pregnancyWeek?: unknown;
+    breastfeedingWeeks?: unknown;
     sleepQualityPromptEnabled?: boolean;
     averageCycleLengthDays?: number;
     averagePeriodLengthDays?: number;
@@ -113,6 +129,7 @@ export async function PATCH(req: Request) {
     showToxins?: boolean;
     warnOnRecommendedLimits?: boolean;
     autoExpandUncertainty?: boolean;
+    translateForeignText?: boolean;
     region?: string;
     appLocale?: Locale;
     photoDiaryRequiresPasscode?: boolean;
@@ -202,6 +219,14 @@ export async function PATCH(req: Request) {
         goalPaceKgPerWeek:
           goalPaceKgPerWeek === undefined ? undefined : goalPaceKgPerWeek === null ? null : goalPaceKgPerWeek > 0 && goalPaceKgPerWeek <= 2 ? goalPaceKgPerWeek : undefined,
         cycleTrackingEnabled,
+        // Graviditet/amning (src/lib/pregnancy.ts): status, uge og ammede uger
+        // gælder fra nu og regnes frem i tid, så datoen sættes ved hver rettelse.
+        pregnancyStatus:
+          pregnancyStatus === undefined ? undefined : isPregnancyStatus(pregnancyStatus) ? pregnancyStatus : null,
+        pregnancyWeek: clampIntOrNull(pregnancyWeek, MIN_PREGNANCY_WEEK, MAX_PREGNANCY_WEEK),
+        breastfeedingWeeks: clampIntOrNull(breastfeedingWeeks, 0, MAX_BREASTFEEDING_WEEKS),
+        pregnancyStatusUpdatedAt:
+          pregnancyStatus !== undefined || pregnancyWeek !== undefined || breastfeedingWeeks !== undefined ? new Date() : undefined,
         sleepQualityPromptEnabled,
         averageCycleLengthDays,
         averagePeriodLengthDays,
@@ -233,6 +258,7 @@ export async function PATCH(req: Request) {
         showToxins,
         warnOnRecommendedLimits,
         autoExpandUncertainty,
+        translateForeignText,
         region,
         appLocale,
         photoDiaryRequiresPasscode,

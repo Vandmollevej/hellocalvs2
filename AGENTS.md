@@ -17,6 +17,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 7. Read `docs/REGLER.md` — the single lookup for global system rules (naming, generic products, logos, UI conventions). Search it FIRST before digging through STATUS/DECISIONS or old sessions, and add every new rule there.
 
+## Product text in the user's language (user rule 2026-10-15)
+
+Product columns hold the product's original language (`products.language`) and
+are never overwritten by a translation. Every new screen, list or API that shows
+a product name or product text to a user must show it in the user's app language:
+the product page uses `translationFor`, lists use `localizedProductNames`
+(`src/lib/product-translations.ts`). Never translate inside search, and never
+overwrite registration snapshots. Details: `docs/REGLER.md` → Varens sprog.
+
 ## Web and native must change together (user rule 2026-10-07)
 
 Hello Cal is also a fully native Android + iPhone app (`native/`, one Kotlin
@@ -60,11 +69,9 @@ fails when the web menu is behind. Details: `docs/REGLER.md`.
   them otherwise (user rule 2026-09-26); repeated 2026-10-09: plain-text questions give no yellow dot, so
   the user never sees them. Never interrupt a task with one).
 - Stop ikke midtvejs: færdiggør opgaven helt, med mindre det kan konflikte med andet arbejde (user rule 2026-10-05). Hvis der er noget at vente på (CI, review), så tjek PR'en med få minutters mellemrum og flet den ind, så snart det er muligt.
-- Afslut hver færdig opgave med teksten "arkiver mig" og ingen anden tekst (user rule 2026-10-05).
-- ALLE opgaver auto-arkiveres UMIDDELBART, så snart de melder klar (eller har meldt klar) til arkivering: kald `archive_session` i samme tur som "arkiver mig", uden at vente på svar, test eller bekræftelse. Er en tidligere session allerede meldt klar uden at være arkiveret, så arkivér den nu (user rule 2026-10-09, gentaget).
-- Auto-arkivering (user rule 2026-10-09): når opgaven er helt færdig og dens PR er flettet (eller der ingen PR er), skriv "arkiver mig" som sidste tekst og kald derefter selv `archive_session` på din egen session (claude-code-remote; brug dit eget session-id). Arkivér aldrig en session med åbent arbejde, rød CI, uflettet PR eller ubesvaret spørgsmål. At noget mangler at blive testet (manuelt, på enhed, i produktion) er ALDRIG en gyldig grund til ikke at arkivere (global regel, user rule 2026-10-09): nævn det kort i overleveringen/OPEN-TASKS, og arkivér alligevel. Stop-hooken `scripts/archive-reminder.mjs` minder om reglen, hvis en færdig session glemmer den.
+- Arkivér ALDRIG selv en session (user rule 2026-10-15, afløser auto-arkiveringsreglerne fra 2026-10-09): kald aldrig `archive_session` — heller ikke på andre sessioner. Brugeren arkiverer selv. Skriv aldrig "arkiver mig" (reglen er fjernet 2026-10-15).
 - Commit, push, flet PR'en og gør alt andet, der skal til for at få opgaven helt i mål, uden at spørge først (user rule 2026-10-09). Gælder ikke ting, reglerne ovenfor udtrykkeligt forbyder (fx hemmeligheder, større arkitekturændringer uden godkendelse).
-- Kan din ændring følge med en anden åben opgaves push/PR (samme filer eller gruppe, jf. `docs/handoffs/OPEN-TASKS.md`), så lad være med selv at pushe eller åbne en PR: læg den til den anden opgave, og arkivér blot (user rule 2026-10-09).
+- Kan din ændring følge med en anden åben opgaves push/PR (samme filer eller gruppe, jf. `docs/handoffs/OPEN-TASKS.md`), så lad være med selv at pushe eller åbne en PR: læg den til den anden opgave (user rule 2026-10-09).
 - Aldrig hænge (user rule 2026-10-10, global): se `docs/REGLER.md` → Proces. Slut aldrig en tur, mens CI/deploy/PR venter, uden et tidsbestemt tjek (`send_later`, højst 5 min.), og handl ved hvert tjek (flet, ret, løs konflikt, find årsag). Færdig = flettet OG deployet.
 - Brugeren er ligeglad med mellemstatus: meld ikke automatiske hændelser, ventende CI eller planlagte tjek; skriv kun ved resultat, blokering eller spørgsmål. Brugeren gider ikke høre om det — det skal bare komme til at virke (user rule 2026-10-10, global; se `docs/REGLER.md` → Proces).
 - Er der noget udestående, så fix det — generelt, ikke kun i den aktuelle opgave (user rule 2026-10-10; se `docs/REGLER.md` → Proces).

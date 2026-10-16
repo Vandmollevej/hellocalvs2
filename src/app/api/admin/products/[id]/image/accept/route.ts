@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
+import { resolveOpenSearches } from "@/lib/product-image-search";
 
 // Promotes the AI-suggested image (scripts/image-agent) to the live
 // imageUrl — the agent only ever writes pendingImageUrl, see docs/ADMIN.md.
@@ -18,5 +19,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     where: { id },
     data: { imageUrl: existing.pendingImageUrl, pendingImageUrl: null, imageStatus: "APPROVED" },
   });
+  await resolveOpenSearches(id);
   return NextResponse.json({ product });
 }

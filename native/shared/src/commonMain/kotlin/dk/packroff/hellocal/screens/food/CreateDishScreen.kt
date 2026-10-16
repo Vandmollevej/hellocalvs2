@@ -431,7 +431,7 @@ fun CreateDishScreen(args: RouteArgs) {
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     ) {
-                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp)) }
+                                        Box(Modifier.size(36.dp)) { if (product.imageUrl != null) FoodImage(product.imageUrl, Modifier.size(36.dp), thumbWidth = 128) }
                                         HcText(localizedDecimals(product.name), HcTypeRoles.Body, Modifier.weight(1f), color = HcColors.Black, bold = true)
                                     }
                                     if (index < shown.lastIndex) FoodDivider()
@@ -450,7 +450,7 @@ fun CreateDishScreen(args: RouteArgs) {
                     FoodListCard(radius = 16.dp) {
                         ingredients.forEachIndexed { index, ingredient ->
                             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                Box(Modifier.size(36.dp)) { if (ingredient.imageUrl != null) FoodImage(ingredient.imageUrl, Modifier.size(36.dp)) }
+                                Box(Modifier.size(36.dp)) { if (ingredient.imageUrl != null) FoodImage(ingredient.imageUrl, Modifier.size(36.dp), thumbWidth = 128) }
                                 Column(Modifier.weight(1f)) {
                                     HcText(ingredient.name, HcTypeRoles.Body, color = HcColors.Black, bold = true)
                                     HcText(
