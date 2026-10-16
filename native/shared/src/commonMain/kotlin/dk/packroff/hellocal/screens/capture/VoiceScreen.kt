@@ -84,6 +84,32 @@ import kotlin.math.sin
 @Serializable
 internal data class VoiceItem(val id: String, val item: InterpretedItem, val saved: Boolean, val batch: Int = 0)
 
+@Serializable
+private data class PersistedVoiceItems(val date: String, val items: List<VoiceItem>)
+
+private const val VOICE_ITEMS_STORAGE_KEY = "hf-voice-added-items"
+
+private fun voiceTodayKey() = CaptureDates.isoDate(CaptureDates.today())
+
+/** Items saved earlier today survive navigating away and back; older ones are dropped (Madvarer's microphone). */
+internal fun loadPersistedVoiceItems(): List<VoiceItem> {
+    val raw = NativeHooks.secureStorage.get(VOICE_ITEMS_STORAGE_KEY) ?: return emptyList()
+    val parsed = runCatching { ApiJson.decodeFromString(PersistedVoiceItems.serializer(), raw) }.getOrNull() ?: return emptyList()
+    if (parsed.date != voiceTodayKey()) {
+        NativeHooks.secureStorage.set(VOICE_ITEMS_STORAGE_KEY, null)
+        return emptyList()
+    }
+    return parsed.items
+}
+
+internal fun persistVoiceItems(items: List<VoiceItem>) {
+    val saved = items.filter { it.saved }
+    NativeHooks.secureStorage.set(
+        VOICE_ITEMS_STORAGE_KEY,
+        if (saved.isEmpty()) null else ApiJson.encodeToString(PersistedVoiceItems.serializer(), PersistedVoiceItems(voiceTodayKey(), saved)),
+    )
+}
+
 /** Tale-siden er flettet ind i Madvarer (2026-10-16): /voice åbner Madvarer med mikrofonen i gang. */
 @Composable
 fun VoiceScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {

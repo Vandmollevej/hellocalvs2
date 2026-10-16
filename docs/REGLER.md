@@ -9,6 +9,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
+- Listen er den globale `AccordionCard` + `ChevronRow` (native `HcAccordionCard` + `HcChevronRow`) med status-prik (`.hf-status-dot`) og "Aktiv/Inaktiv" i `value` — ingen hjemmelavede rækker (bruger 2026-10-16).
 
 ## Varens sprog og oversættelse (user rule 2026-10-15)
 
@@ -150,6 +151,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Flyt aldrig en funktion med ændret opførsel (bruger 2026-10-16)**: når en side
+  flettes ind i en anden, skal funktionen virke præcis som før. Er noget uklart,
+  så spørg i spørgsmålsboksen — gæt aldrig. Tale på Madvarer = Tale-sidens
+  AI-tolkning af hele sætninger, uændret (DECISIONS 2026-10-16).
 - **Talte sætninger søges som varen (2026-10-16)**: "Jeg har spist en bakke
   pomfritter" søges som "pomfritter" — indledning, mængde/enhed og tidsangivelse
   skrælles af i `/api/products` (`src/lib/spoken-food-query.ts`) på alle
@@ -187,6 +192,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
+- **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
+- **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
 - **Identiske elementstyles bruger samme klasse (Peter, 2026-10-12):** genbrug eksisterende klasser før nye oprettes. Mobil og desktop-online er bevidst forskelligt bygget op; deres menuer, geometri og sideopbygning bevares. Marketing bruger egne mk-type-* roller. Ingen faste font/radius/skygge i inline-style uden dokumenteret preview-undtagelse. Se design.md §13 og DECISIONS 2026-10-12.
 

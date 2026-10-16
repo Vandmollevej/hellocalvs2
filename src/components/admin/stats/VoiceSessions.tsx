@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { countryLabel } from "@/lib/admin-stats-range";
 import { matchWord, reasonList } from "@/lib/search-explain";
-import type { VoiceResult, VoiceStep } from "@/lib/voice-search-log";
+import type { VoiceAiStep, VoiceResult, VoiceStep } from "@/lib/voice-search-log";
 
 // Admin → Analyse → Søgning → Tale (docs/DECISIONS.md 2026-10-16): hver
 // mikrofon-session som en tidslinje — hvad telefonen hørte undervejs, hvad
-// der blev søgt på, og de viste varer med begrundelsen bag rækkefølgen.
+// der blev søgt på, og de viste varer med begrundelsen bag rækkefølgen, flettet
+// med AI'ens tolkning af hele sætningen og dens begrundelse pr. vare.
 
 type Session = {
   id: string;
@@ -13,6 +14,7 @@ type Session = {
   durationMs: number;
   region: string | null;
   steps: VoiceStep[];
+  ai: VoiceAiStep[];
 };
 
 const when = new Intl.DateTimeFormat("da-DK", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Copenhagen" });
@@ -39,6 +41,11 @@ function HowToInfluence() {
         <li>
           <span className="hf-type-strong text-text-primary">Søgt på</span> er det sagte uden indledning, mængde og
           tidspunkt (&quot;jeg har spist en bakke pomfritter&quot; → &quot;pomfritter&quot;), evt. stavekontrolleret.
+        </li>
+        <li>
+          <span className="hf-type-strong text-text-primary">AI-forslag</span> er AI&apos;ens tolkning af hele sætningen
+          (vare + mængde) med dens egen begrundelse. Hver vare slås op på navn i databasen; står der
+          &quot;skøn&quot;, fandt den ingen vare med det navn — så mangler varen, eller den hedder noget andet.
         </li>
         <li>
           <span className="hf-type-strong text-text-primary">Rækkefølgen</span> er point: tekstmatch (op til 100) plus
@@ -140,6 +147,58 @@ function StepRow({ step, previous, isLast }: { step: VoiceStep; previous: VoiceS
   );
 }
 
+function AiRow({ step }: { step: VoiceAiStep }) {
+  return (
+    <li className="flex gap-3 border-b border-hf-tan bg-hf-cream px-3 py-3 last:border-b-0">
+      <span className="hf-type-small w-14 shrink-0 text-right text-text-muted">{offset(step.at)}</span>
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <p className="hf-type-body text-text-primary">
+          <span className="hf-badge hf-badge--success mr-2">AI-forslag</span>
+          <span className="hf-type-caption">tolket: </span>
+          <span className="hf-type-strong">&quot;{step.heard}&quot;</span>
+        </p>
+        {step.items.length === 0 ? (
+          <p className="hf-type-caption">AI&apos;en fandt ingen madvarer i sætningen.</p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {step.items.map((item, index) => (
+              <li key={`${item.name}-${index}`} className="hf-surface flex flex-col gap-1 p-3">
+                <p className="hf-type-body text-text-primary">
+                  <span className="hf-type-strong">{item.name}</span>
+                  <span className="text-text-secondary">
+                    {" "}
+                    · {item.amountLabel} ({item.amountGrams} g) · {item.kcal} kcal
+                  </span>
+                  {item.match ? (
+                    <span className="hf-badge hf-badge--success ml-2">
+                      {"vare:\u00a0"}
+                      <Link href={`/product/${item.match.id}`} className="underline">
+                        {item.match.name}
+                      </Link>
+                    </span>
+                  ) : (
+                    <span className="hf-badge hf-badge--warning ml-2">skøn — ingen vare fundet</span>
+                  )}
+                </p>
+                {item.reason && <p className="hf-type-caption italic">Hvorfor: {item.reason}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </li>
+  );
+}
+
+type TimelineEntry = { kind: "search"; at: number; step: VoiceStep; index: number } | { kind: "ai"; at: number; step: VoiceAiStep };
+
+function timeline(session: Session): TimelineEntry[] {
+  return [
+    ...session.steps.map((step, index) => ({ kind: "search" as const, at: step.at, step, index })),
+    ...session.ai.map((step) => ({ kind: "ai" as const, at: step.at, step })),
+  ].sort((a, b) => a.at - b.at || (a.kind === "search" ? -1 : 1));
+}
+
 export function VoiceSessions({ sessions }: { sessions: Session[] }) {
   return (
     <>
@@ -150,28 +209,41 @@ export function VoiceSessions({ sessions }: { sessions: Session[] }) {
         <ul className="flex flex-col gap-3">
           {sessions.map((session) => {
             const last = session.steps[session.steps.length - 1];
+            const lastAi = session.ai[session.ai.length - 1];
+            const heard = lastAi && (!last || lastAi.at >= last.at) ? lastAi.heard : (last?.heard ?? "");
             return (
               <li key={session.id}>
                 <details className="hf-surface">
                   <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 p-3">
                     <span className="hf-type-small text-text-muted">{when.format(session.startedAt)}</span>
-                    <span className="hf-type-body hf-type-strong text-text-primary">&quot;{last?.heard ?? ""}&quot;</span>
-                    {last && last.total === 0 ? (
+                    <span className="hf-type-body hf-type-strong text-text-primary">&quot;{heard}&quot;</span>
+                    {lastAi && lastAi.items.length > 0 ? (
+                      <span className="hf-type-body text-text-secondary">
+                        → AI: {lastAi.items.map((item) => `${item.amountLabel} ${item.name}`).join(", ")}
+                      </span>
+                    ) : last && last.total === 0 ? (
                       <span className="hf-badge hf-badge--warning">ingen varer</span>
                     ) : (
                       last?.results[0] && <span className="hf-type-body text-text-secondary">→ {last.results[0].name}</span>
                     )}
                     <span className="hf-type-small text-text-muted">
-                      {session.steps.length} trin · {seconds.format(session.durationMs / 1000)} s
+                      {session.steps.length + session.ai.length} trin · {seconds.format(session.durationMs / 1000)} s
                       {session.region ? ` · ${countryLabel(session.region)}` : ""}
                     </span>
                   </summary>
                   <ol className="flex flex-col border-t border-hf-tan-dark">
-                    {session.steps.map((step, index) => (
-                      <StepRow key={`${step.at}-${index}`} step={step} previous={index > 0 ? session.steps[index - 1] : null}
-                        isLast={index === session.steps.length - 1}
-                      />
-                    ))}
+                    {timeline(session).map((entry) =>
+                      entry.kind === "ai" ? (
+                        <AiRow key={`ai-${entry.at}-${entry.step.heard}`} step={entry.step} />
+                      ) : (
+                        <StepRow
+                          key={`s-${entry.at}-${entry.index}`}
+                          step={entry.step}
+                          previous={entry.index > 0 ? session.steps[entry.index - 1] : null}
+                          isLast={entry.index === session.steps.length - 1}
+                        />
+                      ),
+                    )}
                   </ol>
                 </details>
               </li>

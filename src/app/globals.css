@@ -695,6 +695,19 @@ textarea::selection,
     gap: 12px;
   }
 
+  /* Status-prik foran en række: grøn = aktiv, ellers beige. */
+  .hf-status-dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: var(--hf-color-nav);
+  }
+
+  .hf-status-dot.is-active {
+    background: var(--hf-color-brand);
+  }
+
   /* Tæt stak (fx felt + hjælpetekst) inde i en blok. */
   .hf-stack {
     display: flex;

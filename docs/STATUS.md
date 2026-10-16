@@ -1,7 +1,11 @@
 ## 2026-10-16: Analyse → Søgning → Tale
 
-- Ny fane "Tale" på Admin → Analyse → Søgning: hver brug af mikrofonen på Madvarer som en tidslinje. Hvert trin (hver søgning, mens der tales) viser det hørte, det der blev søgt på (efter fyldord/stavning) og de 5 øverste varer med billede og begrundelse i point (tekstmatch + populær i landet, tidspunkt, stregkode fra landet osv., samme point som Søgealgoritmer). Øverst: sådan læses og påvirkes det (Synonymordbog, Søgealgoritmer, Stavekontrol). Mikrofonen søger løbende som før; ingen AI. Anonymt, gemmes 30 dage.
+- Ny fane "Tale" på Admin → Analyse → Søgning: hver brug af mikrofonen på Madvarer som en tidslinje. Hvert trin (hver søgning, mens der tales) viser det hørte, det der blev søgt på (efter fyldord/stavning) og de 5 øverste varer med billede og begrundelse i point (tekstmatch + populær i landet, tidspunkt, stregkode fra landet osv., samme point som Søgealgoritmer). Øverst: sådan læses og påvirkes det (Synonymordbog, Søgealgoritmer, Stavekontrol). AI-forslagene for hele sætningen vises i samme tidslinje med AI'ens egen begrundelse pr. vare (`reason` i `/api/ai/interpret-meal`) og om varen blev fundet i databasen eller er et skøn. Anonymt, gemmes 30 dage.
 - Web + native sender `&voice=<session>` til `/api/products`, så længe søgefeltet står med det sagte. `src/lib/voice-search-log.ts`, `src/lib/search-explain.ts` (+ test), `VoiceSessions.tsx`. Visningen er prøvet med eksempeldata (skærmbillede); ikke prøvet mod rigtig database eller på telefon. Se DECISIONS 2026-10-16.
+## 2026-10-16: Screeninger på det globale design
+
+- Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt).
+
 ## 2026-10-16: Energi-trinnet kræver aflæst energi
 
 - Rodårsagen til de tomme varer: OpenAI-kontoen har ingen kredit (429 `insufficient_quota`) — skal fyldes op af brugeren. Energi-trinnet klares nu først, når energien er læst (telefonen, ellers AI mens man venter); ellers tages billedet om. Intet energiskøn på scannede varer. Web + native. Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
@@ -53,6 +57,10 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale forstår hele sætninger
+
+- Madvarer: Tale-sidens funktion er tilbage uændret — det sagte tolkes af AI'en til forslag med mængde ("to skiver franskbrød med smør og marmelade" → tre forslag), Foreslået/Tilføjet, swipe, dagens liste huskes. Web + native. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Tale finder varen
 
 - "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).

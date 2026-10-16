@@ -27,63 +27,102 @@ export type VoiceStep = {
   results: VoiceResult[];
 };
 
-export type VoiceSessionData = { region: string | null; steps: VoiceStep[] };
+// AI-tolkningen af hele sætningen (/api/ai/interpret-meal), løbende mens der
+// tales: hver vare med mængde, om den ramte en vare i databasen, og AI'ens
+// egen korte begrundelse.
+export type VoiceAiItem = {
+  name: string;
+  amountLabel: string;
+  amountGrams: number;
+  reason: string;
+  match: { id: string; name: string } | null;
+  kcal: number;
+};
+
+export type VoiceAiStep = { at: number; heard: string; items: VoiceAiItem[] };
+
+export type VoiceSessionData = { region: string | null; steps: VoiceStep[]; ai?: VoiceAiStep[] };
 
 export type VoiceSearchLog = Omit<VoiceStep, "at" | "total"> & {
   sessionId: string;
   region: string | null;
 };
 
-// Mens man taler, kommer søgningerne tæt; de skrives én ad gangen pr.
-// session, så ingen trin går tabt, og sessionen ikke får to rækker.
+// Mens man taler, kommer søgninger og tolkninger tæt; de skrives én ad
+// gangen pr. session, så intet trin går tabt, og sessionen ikke får to rækker.
 const queues = new Map<string, Promise<void>>();
 
-export function logVoiceSearch(log: VoiceSearchLog): Promise<void> {
-  const next = (queues.get(log.sessionId) ?? Promise.resolve()).then(() => writeVoiceSearch(log));
-  queues.set(log.sessionId, next);
+function enqueue(sessionId: string, write: () => Promise<void>): Promise<void> {
+  const next = (queues.get(sessionId) ?? Promise.resolve()).then(write);
+  queues.set(sessionId, next);
   void next.then(() => {
-    if (queues.get(log.sessionId) === next) queues.delete(log.sessionId);
+    if (queues.get(sessionId) === next) queues.delete(sessionId);
   });
   return next;
 }
 
-async function writeVoiceSearch(log: VoiceSearchLog): Promise<void> {
+// Læser sessionens række, lader `change` bygge de nye data ud fra tiden siden
+// sessionens start, og skriver dem tilbage (eller opretter rækken).
+async function updateSession(
+  sessionId: string,
+  change: (data: VoiceSessionData, at: number) => VoiceSessionData,
+): Promise<void> {
   try {
-    if (!VOICE_SESSION_PATTERN.test(log.sessionId)) return;
+    if (!VOICE_SESSION_PATTERN.test(sessionId)) return;
     const existing = await prisma.debugLog.findFirst({
-      where: { category: "voice", flowId: log.sessionId },
+      where: { category: "voice", flowId: sessionId },
       select: { id: true, createdAt: true, data: true },
     });
     const at = existing ? Date.now() - existing.createdAt.getTime() : 0;
-    const step: VoiceStep = {
-      at,
-      heard: log.heard,
-      searched: log.searched,
-      ...(log.corrected ? { corrected: log.corrected } : {}),
-      ...(log.suggested ? { suggested: log.suggested } : {}),
-      total: log.results.length,
-      results: log.results.slice(0, MAX_RESULTS),
-    };
-    // Samme tekst søgt igen (fx efter "stop") giver ikke et nyt trin.
-    const previous = ((existing?.data as VoiceSessionData | null)?.steps ?? []).filter((item) => item.heard !== log.heard);
-    const steps = [...previous, step].slice(-MAX_STEPS);
-    const data = { region: log.region, steps };
+    const data = change((existing?.data as VoiceSessionData | null) ?? { region: null, steps: [] }, at);
+    const last = data.steps[data.steps.length - 1];
+    const lastAi = data.ai?.[data.ai.length - 1];
+    const heard = (lastAi && (!last || lastAi.at >= last.at) ? lastAi.heard : last?.heard) ?? "";
     const fields = {
       event: "voice_search",
-      level: step.total === 0 ? "warn" : "info",
-      message: log.heard.slice(0, 2000),
+      level: last && last.total === 0 && !lastAi?.items.length ? "warn" : "info",
+      message: heard.slice(0, 2000),
       data,
     };
     if (existing) {
       await prisma.debugLog.update({ where: { id: existing.id }, data: { ...fields, durationMs: at } });
     } else {
-      await prisma.debugLog.create({ data: { ...fields, category: "voice", flowId: log.sessionId } });
+      await prisma.debugLog.create({ data: { ...fields, category: "voice", flowId: sessionId } });
       const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
       await prisma.debugLog.deleteMany({ where: { category: "voice", createdAt: { lt: cutoff } } });
     }
   } catch (error) {
     console.error("[voice-search-log] could not write", error);
   }
+}
+
+export function logVoiceSearch(log: VoiceSearchLog): Promise<void> {
+  return enqueue(log.sessionId, () =>
+    updateSession(log.sessionId, (data, at) => {
+      const step: VoiceStep = {
+        at,
+        heard: log.heard,
+        searched: log.searched,
+        ...(log.corrected ? { corrected: log.corrected } : {}),
+        ...(log.suggested ? { suggested: log.suggested } : {}),
+        total: log.results.length,
+        results: log.results.slice(0, MAX_RESULTS),
+      };
+      // Samme tekst søgt igen (fx efter "stop") giver ikke et nyt trin.
+      const steps = [...data.steps.filter((item) => item.heard !== log.heard), step].slice(-MAX_STEPS);
+      return { ...data, region: log.region ?? data.region, steps };
+    }),
+  );
+}
+
+export function logVoiceInterpretation(log: { sessionId: string; heard: string; items: VoiceAiItem[] }): Promise<void> {
+  return enqueue(log.sessionId, () =>
+    updateSession(log.sessionId, (data, at) => {
+      const step: VoiceAiStep = { at, heard: log.heard, items: log.items };
+      const ai = [...(data.ai ?? []).filter((item) => item.heard !== log.heard), step].slice(-MAX_STEPS);
+      return { ...data, ai };
+    }),
+  );
 }
 
 export async function loadVoiceSessions({ from, to }: { from: Date; to: Date }, take = 50) {
@@ -97,6 +136,8 @@ export async function loadVoiceSessions({ from, to }: { from: Date; to: Date }, 
     id: row.id,
     startedAt: row.createdAt,
     durationMs: row.durationMs ?? 0,
-    ...((row.data as VoiceSessionData | null) ?? { region: null, steps: [] }),
+    region: (row.data as VoiceSessionData | null)?.region ?? null,
+    steps: (row.data as VoiceSessionData | null)?.steps ?? [],
+    ai: (row.data as VoiceSessionData | null)?.ai ?? [],
   }));
 }

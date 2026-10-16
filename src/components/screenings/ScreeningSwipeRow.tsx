@@ -74,7 +74,7 @@ export function ScreeningSwipeRow({
         </button>
       </div>
       <div
-        className="relative bg-hf-cream"
+        className="relative bg-hf-tan"
         style={{ transform: `translateX(${dragX}px)`, transition: dragging ? "none" : "transform 200ms ease", touchAction: "pan-y" }}
         onPointerDown={down}
         onPointerMove={move}

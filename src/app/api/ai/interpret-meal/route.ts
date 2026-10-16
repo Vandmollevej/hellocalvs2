@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logVoiceInterpretation } from "@/lib/voice-search-log";
 import { getMealInputLanguage, isMealInputLanguageCode, type MealInputLanguage } from "@/lib/meal-input-language";
 
 // POST /api/ai/interpret-meal — { transcript: string, language?: "da" | "sv" | … }
@@ -27,6 +28,7 @@ type AiItem = {
   estimatedProteinPer100g: number;
   estimatedCarbsPer100g: number;
   estimatedFatPer100g: number;
+  reason: string;
 };
 
 const RESPONSE_SCHEMA = {
@@ -46,6 +48,11 @@ const RESPONSE_SCHEMA = {
             estimatedProteinPer100g: { type: "number" },
             estimatedCarbsPer100g: { type: "number" },
             estimatedFatPer100g: { type: "number" },
+            reason: {
+              type: "string",
+              description:
+                "Én kort sætning på dansk: hvilke ord i teksten varen kommer fra, og hvorfor mængden blev sat sådan",
+            },
           },
           required: [
             "name",
@@ -55,6 +62,7 @@ const RESPONSE_SCHEMA = {
             "estimatedProteinPer100g",
             "estimatedCarbsPer100g",
             "estimatedFatPer100g",
+            "reason",
           ],
           additionalProperties: false,
         },
@@ -80,7 +88,9 @@ function systemPrompt(language: MealInputLanguage): string {
     ` Write each food name in ${name}, unless the food is normally called by its English name, then keep the English name. ` +
     "Split composite dishes into individual ingredients. Use typical portion sizes for vague amounts " +
     "(e.g. 'a little butter' ≈ 8 g, 'a thick layer of roast beef' ≈ 40 g). Write amountLabel in " +
-    `${name}. Also estimate realistic nutrition values per 100 g for each ingredient, as a fallback guess.`
+    `${name}. Also estimate realistic nutrition values per 100 g for each ingredient, as a fallback guess. ` +
+    "In reason, write one short sentence in Danish (whatever the input language) naming the words you read the food " +
+    "from and why you chose that amount (e.g. 'to skiver' -> 2 x 35 g)."
   );
 }
 
@@ -177,10 +187,33 @@ export async function POST(req: Request) {
   try {
     const aiItems = await callOpenAi(transcript, language);
 
+    const matches = await Promise.all(aiItems.map((aiItem) => findLocalMatch(aiItem.name)));
+
+    // Mikrofonen på Madvarer sender sin session med, så tolkningen og AI'ens
+    // begrundelse vises i Analyse → Søgning → Tale (docs/DECISIONS.md 2026-10-16).
+    if (typeof body?.voiceSession === "string") {
+      void logVoiceInterpretation({
+        sessionId: body.voiceSession,
+        heard: transcript,
+        items: aiItems.map((aiItem, index) => {
+          const match = matches[index];
+          const per100 = match ? match.kcalPer100g : aiItem.estimatedKcalPer100g;
+          return {
+            name: aiItem.name,
+            amountLabel: aiItem.amountLabel,
+            amountGrams: aiItem.amountGrams,
+            reason: aiItem.reason,
+            match: match ? { id: match.id, name: match.name } : null,
+            kcal: Math.round((per100 * aiItem.amountGrams) / 100),
+          };
+        }),
+      });
+    }
+
     const items = await Promise.all(
-      aiItems.map(async (aiItem) => {
+      aiItems.map(async (aiItem, index) => {
         const factor = aiItem.amountGrams / 100;
-        const localMatch = await findLocalMatch(aiItem.name);
+        const localMatch = matches[index];
 
         if (localMatch) {
           return {
