@@ -1,6 +1,10 @@
 ## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
 
-- Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen. Desuden rettet: `next.config.ts` (`:rest*` efter et præfiks brød `next build`), manglende side i sidetræet og en admin-knap uden fælles stil.
+- Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.
+## 2026-10-16: Forsidens grafer i infoboksens plads
+
+- Graferne fra 2026-10-14 (puls, kalorier, anbefalet mod indtag, målsætning og teksten "For at kunne holde dig inden for dagens mål …" nederst) står nu uden baggrund i præcis den plads, infoboksen havde, modsat tal-hjulet (`FrontCharts` i `Hero`). Resten af forsiden (topbar, tal-hjul, puls-linje, dagens liste, ingen rulning) er som før graferne. Graferne deler infoboksens højde ligeligt.
+- Vågne timer: rundet OP til venstre og NED til højre, som brugeren skrev. Web + native (`HomeFrontCharts` i hero-boksen). Native er ikke kompileret lokalt — CI afgør.
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
@@ -23,8 +27,7 @@
 
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
-- Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu. Markeringerne ses under Admin → Kvalitetskontrol → Ufuldstændige billeder ("Fjern markering" afviser en fejlmarkering). Ikke typetjekket lokalt (node_modules mangler) — CI afgør. Se DECISIONS 2026-10-16.
-
+- Kun pc-scriptet `scripts/image-screen` (CSV-rapport, intet på NAS'en). NAS-jobbet, admin-fanen og tabellen er fjernet igen. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Frida-skøn straks på varesiden
 

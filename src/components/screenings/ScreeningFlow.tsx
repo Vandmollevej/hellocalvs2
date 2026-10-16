@@ -128,7 +128,6 @@ export function ScreeningFlow({ existing }: { existing?: ScreeningDto }) {
               checked={draft.active}
               onChange={(value) => update({ active: value })}
               label={draft.active ? t("screenings.statusActive") : t("screenings.statusInactive")}
-              description={t("screenings.activeDesc")}
             />
             <h2 className="hf-type-section-title">{t("screenings.nameTitle")}</h2>
             <TextField
