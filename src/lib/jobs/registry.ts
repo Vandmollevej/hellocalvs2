@@ -291,6 +291,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Sammenligning af fritlægningsmotorer (docs/BRIA.md): kun "Kør nu".
+    key: "bria-compare",
+    name: "Bria: sammenlign med rembg",
+    description:
+      "Kører de 20 seneste fritlagte billeder gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
+    runtime: "agent",
+    container: "image-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: null,
+  },
+  {
     key: "logo-agent",
     name: "Logo-robot",
     description: "Finder logoer til brands uden logo via Google Vision; usikre fund lægges under Logoer.",

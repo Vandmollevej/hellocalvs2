@@ -16,11 +16,13 @@ import os
 import threading
 
 from job_control import run_forever
+import psycopg2
 import requests
 from PIL import Image
 from rembg import remove
 
 from cutout import run_cutouts
+from compare_engines import run_compare
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("image-agent")
@@ -170,6 +172,21 @@ def cutout_loop():
     )
 
 
+def bria_compare_loop():
+    # Sammenligning rembg mod Bria (admin → Robotter → "Kør nu"). Rækken
+    # oprettes slået fra og uden plan, så den kun kører på knappen og aldrig
+    # bruger Bria-opslag af sig selv.
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor() as cur:
+        cur.execute(
+            'INSERT INTO scheduled_jobs (key, enabled) VALUES (%s, false) ON CONFLICT (key) DO NOTHING',
+            ("bria-compare",),
+        )
+    conn.commit()
+    conn.close()
+    run_forever(DATABASE_URL, "bria-compare", run_compare)
+
+
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     log.info(
@@ -182,6 +199,7 @@ def main():
     # styres begge fra admin (job_control.py); POLL_INTERVAL_SECONDS er kun
     # billedsøgningens standard-interval.
     threading.Thread(target=cutout_loop, name="cutouts", daemon=True).start()
+    threading.Thread(target=bria_compare_loop, name="bria-compare", daemon=True).start()
     run_forever(DATABASE_URL, "image-agent", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
 
 

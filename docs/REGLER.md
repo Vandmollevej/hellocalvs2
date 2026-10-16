@@ -424,3 +424,9 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - **Antal personer (opskrifter): 0 = tag ikke højde for det (user rule 2026-10-16).** 0 er standard (web + native). Retten vises som gemt, uden skalering og uden "anbefalet servering"/"kcal pr. servering"; først ved ≥ 1 skaleres retten til brugerens anbefalede portion.
 
 - **Fritskrabede varebilleder på hjemmesiden har cirklen bagt ind (bruger 2026-10-16)**: varesiden (web) henter `/product-circle?src=…` i stedet for det rå fritlæg; cirklen skrumper aldrig, billedet vokser i stedet (`product-circle-layout.ts`). Gælder kun hjemmesiden, ikke native.
+## Slidere på alle talfelter + haptik (brugerregel 2026-10-16)
+
+- Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
+- Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
+- Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.

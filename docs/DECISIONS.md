@@ -1,3 +1,11 @@
+## 2026-10-16: Tale og Madvarer er én side
+
+Brugerens krav: Tale-siden og Madvarer flettes; mikrofonen er næsten lige så stor over søgefeltet og virker som før, og resultater søges og raffineres løbende, mens man taler.
+
+- Mikrofonen skriver det sagte (også foreløbige resultater) direkte i søgefeltet; den eksisterende søgning (debounce, cache, rettelser) kører så i realtid. Man kan stoppe mikrofonen eller begynde at skrive.
+- Den gamle AI-tolkning af hele måltider (flere varer, "Tilføj alle") findes ikke længere; man vælger varen i listen og tilføjer den på varesiden. Chat-siden (Indtast) er uændret og bruger stadig AI-tolkningen.
+- `/voice` er bevaret som omdirigering til `/foods?mic=1`, så gamle links, widgets og native-menuer virker.
+
 ## 2026-10-15: Billeder hentes som små, cachede udgaver
 
 - Problem: billederne loadede langsomt næsten hver gang. Alle `<img>` hentede originalen (logoer op til 15 MB, 124 af 134 logoer over 800 px; fritlægninger og fotos i fuld opløsning) — også til en 44 px række — over Cloudflare-tunnelen fra Synology. Og cachen var svag: Next serverer public-filer med `max-age=0` (browseren spurgte hver gang), og fallback-routen for billeder lagt op efter opstart havde ingen ETag (fuld download hver time).

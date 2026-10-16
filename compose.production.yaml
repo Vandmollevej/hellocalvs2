@@ -226,6 +226,11 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Set GOOGLE_API_KEY in .env.production}
       GOOGLE_CSE_ID: ${GOOGLE_CSE_ID:?Set GOOGLE_CSE_ID in .env.production}
       POLL_INTERVAL_SECONDS: ${IMAGE_AGENT_POLL_INTERVAL_SECONDS:-300}
+      # Fritlægningsmotor: rembg (standard) eller bria (kræver BRIA_API_TOKEN).
+      CUTOUT_ENGINE: ${CUTOUT_ENGINE:-rembg}
+      BRIA_API_TOKEN: ${BRIA_API_TOKEN:-}
+      # Til at læse Bria-nøglen gemt i admin (app_secrets), som appen gør.
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
     volumes:
       - ./data/product-images:/images
     depends_on:
