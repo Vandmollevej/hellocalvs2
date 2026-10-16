@@ -1,3 +1,9 @@
+## 2026-10-14: Forsidens grafer erstatter infoboksen
+
+- Den hvide infoboks er fjernet. Øverst vises fire grafer uden baggrund (`src/components/frontcharts/`): puls (pindediagram), kalorieindtag (pinde + anbefalet energifordeling som glat kurve), anbefalet mod faktisk indtag (grå statisk mod blå) og målsætningens tidslinje (pind pr. dag/uge, bredt anbefalet min–maks-bånd, grå målstreg). Kun vågne timer (sengetid/opvågning fra Søvn; ellers 07–23), rundet ned til venstre og op til højre.
+- Nederst en handlingsboks ("forbrænd X kcal", eller reducér indtag/forbrænd). Tryk åbner et ark med gåture (rolig/rask/hurtig ud fra vægt) og forslag til mad; Hello Fresh-link vises kun, når integrationen er slået til.
+- Ny graf-accent `--hf-color-chart-blue` (#5b9fcf). Regler i `src/lib/front-charts.ts` (+ test), native port i `HomeFrontCharts*.kt`.
+- Kendt: norsk/svensk tekst er foreløbigt dansk, tysk/fransk/hollandsk engelsk. Native er ikke kompileret lokalt (ingen Android SDK) — CI afgør.
 ## 2026-10-16: Frida-skøn straks på varesiden
 
 - Varer uden energimærkning får Fridas tal, så snart varesiden åbnes (ikke først om natten). Se DECISIONS 2026-10-16. Ikke typetjekket/kørt lokalt (node_modules mangler).
