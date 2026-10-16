@@ -12,6 +12,7 @@ import {
 import { createFallbackFrontCutoutJob } from "@/lib/image-cutout-jobs";
 import { debugLog, errorText, withDebugContext } from "@/lib/debug-log";
 import { orderIngredientCandidates } from "@/lib/ingredient-retry-candidates";
+import { probeKeyStatus } from "@/lib/openai-usage";
 
 // Genoptagelig "opret straks" (docs/DECISIONS.md 2026-10-02).
 //
@@ -61,7 +62,12 @@ export type QuickEnrichmentStoredInput = {
   retryParts?: RetryPart[];
   // Engangsreparationen af varer, der blev færdige uden navn/energi.
   repairedAt?: string;
+  // Reparationsrunde: runde 1 kørte, mens OpenAI-kreditten var tom, og brændte
+  // forsøgene af. Varer under REPAIR_ROUND genåbnes én gang til.
+  repairRound?: number;
 };
+
+const REPAIR_ROUND = 2;
 
 type RetryPart = "front" | "label";
 
@@ -456,11 +462,11 @@ async function reopenBrokenProducts(now: Date): Promise<number> {
   let reopened = 0;
   for (const job of jobs) {
     const stored = asStoredInput(job.input);
-    if (!stored || stored.repairedAt) continue;
+    if (!stored || (stored.repairRound ?? (stored.repairedAt ? 1 : 0)) >= REPAIR_ROUND) continue;
     const parts: RetryPart[] = [];
     if (stored.frontPhotoUrl && !job.product.name.trim()) parts.push("front");
     if (stored.nutritionPhotoUrl && job.product.kcalPer100g === 0) parts.push("label");
-    const input = { ...stored, repairedAt: now.toISOString(), retryParts: parts };
+    const input = { ...stored, repairedAt: now.toISOString(), repairRound: REPAIR_ROUND, retryParts: parts };
     await prisma.quickEnrichmentJob.update({
       where: { id: job.id },
       data: parts.length
@@ -481,6 +487,13 @@ async function reopenBrokenProducts(now: Date): Promise<number> {
 
 // Job "quick-enrichment-recovery" (src/lib/jobs/registry.ts).
 export async function recoverQuickEnrichments(now: Date = new Date()): Promise<string | null> {
+  // Uden OpenAI-kredit (eller med afvist/manglende nøgle) fejler hvert forsøg:
+  // jobbene står stille i stedet for at brænde forsøgene af og blive opgivet.
+  // De gemte fotos læses, så snart kreditten er tilbage (bruger 2026-10-16).
+  const ai = await probeKeyStatus();
+  if (ai.state === "quota" || ai.state === "invalid" || ai.state === "missing") {
+    return `Venter på OpenAI (${ai.state}) — ingen aflæsninger prøvet`;
+  }
   const reopened = await reopenBrokenProducts(now);
   const adopted = await adoptProductsWithoutJob(now);
   const { resumed, givenUp } = await resumeStalledJobs(now);

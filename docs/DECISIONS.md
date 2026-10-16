@@ -1,3 +1,6 @@
+## 2026-10-16: Genlæsning af scannede varer venter på OpenAI-kredit
+
+- Brugeren: "Havde du ikke originalbillederne gemt?" Jo — fotos og OCR ligger i `quick_enrichment_jobs`, men med tom kredit blev de 3 forsøg og engangsreparationen brugt op på fejlende kald, og varen blev opgivet. `recoverQuickEnrichments` tjekker nu `probeKeyStatus` (cachet 60 s) og springer hele kørslen over ved `quota`/`invalid`/`missing`. Reparationen har fået runder (`repairRound`); runde 2 genåbner varer, der blev "repareret" uden kredit. Vagt i `scan-energy-guard.test.mjs`.
 ## 2026-10-16: Mikrofonens søgninger vises i Analyse → Søgning → Tale
 
 - Brugeren vil kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev, for at kunne forbedre dem. Mikrofonen på Madvarer er telefonens talegenkendelse + almindelig søgning, løbende mens der tales; brugeren afviste en OpenAI-tolkning som for tung og langsom.
