@@ -39,7 +39,7 @@
     "src/components/family/ProfileSwitcher.tsx": "25b2d318dea9674a",
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
     "src/components/frontcharts/FrontChartSvgs.tsx": "cd8ec44932e6b2d0",
-    "src/components/frontcharts/FrontCharts.tsx": "19ad95d633831ca0",
+    "src/components/frontcharts/FrontCharts.tsx": "6c343c332226ff02",
     "src/components/hf/AccordionCard.tsx": "e91c58d64765328e",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
     "src/components/hf/EntryDetailsSheet.tsx": "f2434e44767670af",
