@@ -2,13 +2,14 @@
 
 import { useRef, useState } from "react";
 import { IconAlertTriangle, IconCopy } from "@tabler/icons-react";
-import { IconFavorite } from "@/components/icons/Favorite";
+import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
 
 export function SwipeableRow({
   onFavorite,
+  isFavorite = false,
   onCopyToAccount,
   onReportError,
   onDelete,
@@ -16,6 +17,8 @@ export function SwipeableRow({
   children,
 }: {
   onFavorite?: () => void;
+  // Varen er allerede favorit: udfyldt ikon, "Gemt", og tryk fjerner favoritten.
+  isFavorite?: boolean;
   // Familieabonnement (docs/FAMILY.md): kun når man styrer en anden profil.
   // Ligger til venstre ved siden af Favorit.
   onCopyToAccount?: () => void;
@@ -71,17 +74,18 @@ export function SwipeableRow({
   return (
     <div className="relative overflow-hidden">
       {onFavorite && (
-        <div className="absolute inset-y-0 left-0 flex w-20 items-center justify-center bg-hf-green">
+        <div className={`absolute inset-y-0 left-0 flex w-20 items-center justify-center ${isFavorite ? "bg-hf-black" : "bg-hf-green"}`}>
           <button
             onClick={() => {
               onFavorite();
               setDragX(0);
             }}
-            aria-label={t("swipeableRow.saveAsFavorite")}
+            aria-label={t(isFavorite ? "swipeableRow.removeFavorite" : "swipeableRow.saveAsFavorite")}
+            aria-pressed={isFavorite}
             className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-hf-white"
           >
-            <IconFavorite size={18} />
-            {t("swipeableRow.favorite")}
+            {isFavorite ? <IconFavoriteFilled size={18} /> : <IconFavorite size={18} />}
+            {t(isFavorite ? "swipeableRow.favoriteSaved" : "swipeableRow.favorite")}
           </button>
         </div>
       )}

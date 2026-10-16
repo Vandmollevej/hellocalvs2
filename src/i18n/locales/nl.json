@@ -3078,6 +3078,8 @@
   },
   "swipeableRow": {
     "saveAsFavorite": "Opslaan als favoriet",
+    "removeFavorite": "Favoriet verwijderen",
+    "favoriteSaved": "Opgeslagen",
     "favorite": "Favoriet",
     "reportErrorAria": "Een fout gevonden?",
     "reportError": "Fout",
