@@ -3,6 +3,11 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { LiveMicButton } from "@/components/voice/LiveMicButton";
+import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
+import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
+import { useLiveSpeech } from "@/lib/use-live-speech";
+import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
 import { IconApple, IconSearch } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
@@ -113,6 +118,26 @@ function MadvarerContent() {
   const [exactFor, setExactFor] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Mikrofonen (tidligere Tale-siden): det sagte skrives løbende i søgefeltet,
+  // så listen søges og raffineres, mens man taler.
+  const { language, region, setLanguage } = useMealInputLanguage();
+  const speech = useLiveSpeech(setQuery);
+  const autoStartMic = searchParams.get("mic") === "1";
+  const regionRef = useRef<string | null>(null);
+  useEffect(() => {
+    regionRef.current = region;
+  }, [region]);
+  function speechLang() {
+    const code: MealInputLanguageCode = readStoredMealInputLanguage() ?? defaultMealInputLanguage(regionRef.current);
+    return speechLangFor(code, regionRef.current);
+  }
+  const startMic = speech.start;
+  useEffect(() => {
+    if (autoStartMic) startMic(speechLang());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
+  }, []);
+  const isListening = speech.phase === "listening";
+
   // Sidste liste for den aktive profil tegnes med det samme (også ved klik i
   // bundmenuen), og den friske fra serveren erstatter den stille — ingen
   // skelet-bokse før indholdet ved hvert besøg.
@@ -196,7 +221,8 @@ function MadvarerContent() {
   }
 
   useEffect(() => {
-    searchInputRef.current?.focus();
+    if (!autoStartMic) searchInputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
   }, []);
 
   const normalizedQuery = query.trim();
@@ -298,14 +324,56 @@ function MadvarerContent() {
     : favorites;
 
   return (
-    <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
+    <HfScreen
+      title={t("foods.title")}
+      icon={<IconApple size={20} stroke={2} />}
+      leading={
+        <MealLanguagePicker
+          language={language}
+          region={region}
+          onChange={(code) => {
+            if (code === language) return;
+            setLanguage(code);
+            if (isListening) speech.start(speechLangFor(code, region));
+          }}
+        />
+      }
+    >
       <div className="hf-page">
+        <section className="flex flex-col items-center" aria-live="polite">
+          <LiveMicButton
+            listening={isListening}
+            unsupported={speech.phase === "unsupported"}
+            label={t(isListening ? "voice.stopMic" : "voice.startMic")}
+            onClick={() => (isListening ? speech.stop() : speech.start(speechLang()))}
+          />
+          <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
+            {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
+          </p>
+          {speech.error && (
+            <p className="hf-type-small mt-2 max-w-[310px] text-center text-hf-red-dark">
+              {t(
+                speech.error === "denied"
+                  ? "voice.error.micDenied"
+                  : speech.error === "noSpeech"
+                    ? "voice.error.noSpeechCloser"
+                    : speech.error === "couldNotStart"
+                      ? "voice.error.micCouldNotStart"
+                      : "voice.error.recognitionInterrupted",
+              )}
+            </p>
+          )}
+        </section>
+
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
             ref={searchInputRef}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              if (isListening) speech.stop();
+              setQuery(event.target.value);
+            }}
             placeholder={t("foods.searchPlaceholder")}
           />
         </div>

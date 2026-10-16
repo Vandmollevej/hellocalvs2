@@ -1,3 +1,7 @@
+## 2026-10-16: Tale-siden flettet ind i Madvarer
+
+- Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Frida-skøn straks på varesiden
 
 - Varer uden energimærkning får Fridas tal, så snart varesiden åbnes (ikke først om natten). Se DECISIONS 2026-10-16. Ikke typetjekket/kørt lokalt (node_modules mangler).
