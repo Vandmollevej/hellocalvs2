@@ -356,7 +356,10 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 // The front: the full photo is stored as the product image, the
                 // AI gets the scaled copy (web: frontPhotoFull).
                 val bytes = if (fullStep) {
-                    if (labelStep) uploadBackPhoto(current, taken) else frontFull = jpegDataUrl(taken)
+                    // Every original is kept (user 2026-10-16: "Jeg skal have original
+                    // af det hele"), the front too — web: uploadFullPhoto.
+                    uploadBackPhoto(current, taken)
+                    if (!labelStep) frontFull = jpegDataUrl(taken)
                     CaptureHooks.scaleForUpload(taken) ?: taken
                 } else {
                     taken

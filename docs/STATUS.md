@@ -1,3 +1,7 @@
+## 2026-10-16: Originalbilleder af alle trin
+
+- Stregkode, forside, energi og indhold: hver optagelse gemmes ubeskåret (op til 4096 px) og kobles til varen (web; native alle undtagen stregkoden). Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Scannede fotos læses igen, når OpenAI-kreditten er tilbage
 
 - Fotoene fra scanningen var gemt, men genlæsningen (`quick-enrichment-recovery`) brugte sine 3 forsøg og engangsreparationen, mens kreditten var tom, og opgav så varen (fx Änglamark-letmælken: intet navn, 0 kcal, råfoto). Nu står jobbet stille, så længe OpenAI melder tom kredit/afvist nøgle, og varer, hvis reparation blev brændt af, genåbnes én gang til (`repairRound` 2) og læses fra de gemte fotos, så snart kreditten er fyldt op. Ikke prøvet mod rigtig database herfra.

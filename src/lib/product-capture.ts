@@ -192,7 +192,7 @@ export const BACK_PHOTO_TIMEOUT_MS = 60_000;
 
 export async function uploadBackPhoto(
   photo: { url: string; width: number; height: number },
-  step: "nutrition" | "ingredients",
+  step: "barcode" | "front" | "nutrition" | "ingredients",
   flowId: string,
 ): Promise<boolean> {
   try {

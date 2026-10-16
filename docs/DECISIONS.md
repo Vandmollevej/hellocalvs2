@@ -1,3 +1,7 @@
+## 2026-10-16: Originalbilleder af alle trin gemmes
+
+Brugeren: "Jeg skal have original af det hele" — ellers kan de planlagte jobs ikke køre. Før blev kun energi/indhold gemt som hele kamerabilleder; forsiden kun som søgerens kvadrat (og kun sidste optagelse), stregkoden kun som et 1920 px-videobillede. Nu uploades originalen (ubeskåret, op til 4096 px) af hver optagelse på alle fire trin til `POST /api/products/back-photos` (trin `barcode`/`front`/`nutrition`/`ingredients`) og kobles til varen ved oprettelse, genscanning og 2-års tjek (sidstnævnte som arkiv uden analyse). `back-photo-scan` og `back_local.py` analyserer kun energi/indhold. Begrænsninger: billederne gentegnes som JPEG (kvalitet 0,9) i browseren og får fjernet metadata (privatlivsreglen); native-stregkodelæseren leverer intet billede. Den natlige robot, der skulle tjekke farverne omkring stregkoden mod varen, findes ikke i koden — den er aldrig bygget.
+
 ## 2026-10-16: Genlæsning af scannede varer venter på OpenAI-kredit
 
 - Brugeren: "Havde du ikke originalbillederne gemt?" Jo — fotos og OCR ligger i `quick_enrichment_jobs`, men med tom kredit blev de 3 forsøg og engangsreparationen brugt op på fejlende kald, og varen blev opgivet. `recoverQuickEnrichments` tjekker nu `probeKeyStatus` (cachet 60 s) og springer hele kørslen over ved `quota`/`invalid`/`missing`. Reparationen har fået runder (`repairRound`); runde 2 genåbner varer, der blev "repareret" uden kredit. Vagt i `scan-energy-guard.test.mjs`.

@@ -200,7 +200,10 @@ export async function captureStill(video: HTMLVideoElement | null, crop: StillCr
 // SAMME billede (docs/DECISIONS.md 2026-10-15): energi/indhold sender
 // kvadratet til oprettelsens AI og gemmer det hele, ubeskårne billede til
 // nattens engangsanalyse (mærkninger på bagsiden, finlæsning).
-export type StillPair = { still: Still; full: Still };
+// `original`: hele, ubeskårne kamerabillede af samme billede i op til
+// sensorens opløsning — gemmes ved hver optagelse (brugerens krav 2026-10-16:
+// alle originalbilleder skal gemmes, så de planlagte jobs kan bruge dem).
+export type StillPair = { still: Still; full: Still; original: Still };
 
 function renderPair(
   image: CanvasImageSource,
@@ -214,7 +217,11 @@ function renderPair(
   if (!cropped) return null;
   const still = toStill(cropped, source);
   const whole = render(image, width, height, fullCrop, FULL_MAX_SIDE);
-  return whole ? { still, full: toStill(whole, source) } : null;
+  if (!whole) return null;
+  const full = toStill(whole, source);
+  if (fullCrop === "none") return { still, full, original: full };
+  const uncropped = render(image, width, height, "none", FULL_MAX_SIDE);
+  return { still, full, original: uncropped ? toStill(uncropped, source) : full };
 }
 
 // Det skarpeste af tre videobilleder; billederne holdes som ImageBitmap, så
@@ -242,10 +249,16 @@ async function sharpestVideoFramePair(video: HTMLVideoElement, crop: StillCrop, 
   }
   if (!best) return null;
   try {
-    const whole = best.bitmap
-      ? render(best.bitmap, best.bitmap.width, best.bitmap.height, fullCrop, FULL_MAX_SIDE)
-      : render(video, video.videoWidth, video.videoHeight, fullCrop, FULL_MAX_SIDE);
-    return whole ? { still: best.still, full: toStill(whole, "video") } : null;
+    const draw = (crop: StillCrop) =>
+      best!.bitmap
+        ? render(best!.bitmap, best!.bitmap.width, best!.bitmap.height, crop, FULL_MAX_SIDE)
+        : render(video, video.videoWidth, video.videoHeight, crop, FULL_MAX_SIDE);
+    const whole = draw(fullCrop);
+    if (!whole) return null;
+    const full = toStill(whole, "video");
+    if (fullCrop === "none") return { still: best.still, full, original: full };
+    const uncropped = draw("none");
+    return { still: best.still, full, original: uncropped ? toStill(uncropped, "video") : full };
   } finally {
     best.bitmap?.close();
   }
