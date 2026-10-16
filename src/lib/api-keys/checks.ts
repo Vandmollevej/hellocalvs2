@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { importPKCS8 } from "jose";
 import { getAccessToken, listWebhooks, MobilePayError } from "@/lib/payments/mobilepay-client";
 import { retrieveAccount, StripeError } from "@/lib/payments/stripe-client";
+import { FALLBACK_VISION_MODEL, getProductVisionModel } from "@/lib/product-ai";
 
 // Live-test af API-nøgler (admin → API-nøgler → "Test"). Hver test kalder
 // udbyderen med de nøgler, serveren bruger lige nu, uden at logge nogen
@@ -160,10 +161,15 @@ async function checkOpenAI(): Promise<CheckResult> {
   const headers = { Authorization: `Bearer ${env("OPENAI_API_KEY")}` };
   const res = await request("https://api.openai.com/v1/models", { headers });
   if (!res.ok) return { status: "fail", message: `OpenAI afviser nøglen (${res.status}).` };
-  const model = env("OPENAI_PRODUCT_VISION_MODEL");
-  if (model) {
-    const modelRes = await request(`https://api.openai.com/v1/models/${encodeURIComponent(model)}`, { headers });
-    if (!modelRes.ok) return { status: "warn", message: `Nøglen virker, men modellen “${model}” findes ikke på kontoen.` };
+  // Også standardmodellen i koden tjekkes (src/lib/product-ai.ts) — før blev
+  // kun en udfyldt model tjekket, så en standardmodel uden adgang aldrig blev opdaget.
+  const model = env("OPENAI_PRODUCT_VISION_MODEL") || getProductVisionModel();
+  const modelRes = await request(`https://api.openai.com/v1/models/${encodeURIComponent(model)}`, { headers });
+  if (!modelRes.ok) {
+    return {
+      status: "warn",
+      message: `Nøglen virker, men modellen “${model}” findes ikke på kontoen — varer aflæses med reservemodellen ${FALLBACK_VISION_MODEL}.`,
+    };
   }
   return { status: "ok", message: "Nøglen virker." };
 }

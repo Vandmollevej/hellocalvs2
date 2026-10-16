@@ -1,3 +1,16 @@
+## 2026-10-16: Nye scannede varer må aldrig stå tomme (navn, brand, energi, billede)
+
+Brugerens test med Änglamark letmælk: indholdet blev læst straks (telefonens OCR), men varen fik intet navn, intet brand, "∼ 0 kalorier", intet fritlæg, og råfotoet stod som en firkant inde i cirklen. Årsag i koden: forside- og energi-aflæsningen er hver ét OpenAI-kald uden tidsgrænse og uden genforsøg. Fejlede kaldet (Änglamark er et fast kædemærke, så et svar havde givet brandet), blev felterne ryddet og jobbet markeret færdigt — navnet forblev tomt, intet fritlægningsjob blev oprettet (det oprettes kun efter et AI-svar), og `recordNutrientSources(null)` markerede 0 kcal som "skøn", deraf "∼ 0". Produktionens log kunne ikke læses herfra, så præcis hvilken OpenAI-fejl der ramte står i admin → Log (`OpenAI hello_cal_product_front … fejlede`).
+
+Besluttet:
+- `src/lib/product-ai.ts`: 90 s tidsgrænse pr. forsøg, to genforsøg ved 429/5xx/netværk/tomt svar (respekterer `retry-after`), og reservemodellen `gpt-4o`, når den valgte model afvises. API-nøgle-testen tjekker nu også standardmodellen.
+- Forsidens reserve uden AI: telefonen sender sin tekstlæsning af forsiden (`frontOcrText`); serveren finder et kendt brand i teksten og et varenavn, der findes på mindst to varer i databasen (længste vinder: Letmælk før Mælk), ellers `askProductType` (`src/lib/front-text-name.ts`). Bruges også, når AI'en svarer uden varenavn.
+- Teknisk fejlede dele (`retryParts`) prøves igen af `quick-enrichment-recovery` efter 10 min, højst 3 forsøg; giver forsiden aldrig svar, oprettes et fritlægningsjob for hele forsidefotoet.
+- Uden komplet næringstabel: `nutritionMissing = true` (appen viser "Næringsindhold ukendt"), derefter Fridas tal for varetypen, ellers et AI-skøn ud fra varetypen (`ESTIMATED`, ∼). `kcalEstimated` er aldrig sand ved 0 kcal. En senere aflæst tabel afløser skønnet.
+- Engangsreparation: varer fra de sidste 14 dage uden navn eller med 0 kcal genåbnes én gang (`repairedAt`). Deres registreringer med tomt navn/0 kcal følger med (som ved alkoholrobotten).
+- Råfotoet dækker hele cirklen (`object-cover`, native `ContentScale.Crop`), design.md §6.12 ændret. "∼" i mængdeboksen er nu inline med teksten (var et flex-element uden linjehøjde og svævede).
+- Samtidig rettet: `next.config.ts` fra #475 (`/favicon:rest*`) stoppede `next build` på master; nu ét regex-parameter.
+
 ## 2026-10-16: Faste designbilleder caches i et år
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.

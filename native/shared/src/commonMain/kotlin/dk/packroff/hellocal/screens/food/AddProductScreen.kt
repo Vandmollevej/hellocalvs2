@@ -833,7 +833,8 @@ private fun ProductCircle(
     Box(modifier.size(180.dp)) {
         Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
             when {
-                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp).padding(12.dp), ContentScale.Fit, thumbWidth = 640)
+                // Råfotoet dækker hele cirklen (brugerens krav 2026-10-16, design.md §6.12).
+                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp), ContentScale.Crop, thumbWidth = 640)
                 imageUrl == null && showSkeleton -> FoodSkeleton(Modifier.size(180.dp), CircleShape)
             }
         }

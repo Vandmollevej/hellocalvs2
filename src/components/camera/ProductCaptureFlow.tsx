@@ -958,6 +958,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
           ? {
               ...read,
               textLength: Math.max(read.textLength, previous.read.textLength),
+              // Den længste tekst gemmes som reserve til navn/brand (frontOcrText).
+              text: read.text.length >= previous.read.text.length ? read.text : previous.read.text,
               duplicateId: read.duplicateId ?? previous.read.duplicateId,
               duplicateName: read.duplicateId ? read.duplicateName : previous.read.duplicateName,
               brand: read.brand ?? previous.read.brand,
@@ -1108,6 +1110,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     });
     const textRead = fresh ? Promise.resolve(fresh) : readFrontPhoto(live.url, languages, flowId);
     const logged = textRead.then((front) => {
+      // Reserve, hvis AI'en ikke kan læse forsiden (docs/DECISIONS.md 2026-10-16).
+      if (current() && front.text) data.frontOcrText = front.text;
       scanLog(flowId, "front_photo", {
         level: front.lookupFailed || front.ocrFailed ? "warn" : "info",
         message: front.textLength
@@ -1118,7 +1122,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         barcode: data.barcode,
         productId: front.duplicateId,
         durationMs: Date.now() - pressedAt,
-        data: { ...front, languages, source: fresh ? "preRead" : "shutter", preReads: pre?.reads ?? 0 },
+        data: { ...front, text: front.text.slice(0, 500), languages, source: fresh ? "preRead" : "shutter", preReads: pre?.reads ?? 0 },
       });
       return front;
     });
