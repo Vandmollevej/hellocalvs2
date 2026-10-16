@@ -234,6 +234,16 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Admin → API-forbrug (docs/DECISIONS.md 2026-10-16).
+    key: "api-alerts",
+    name: "API-forbrug: varsler",
+    description:
+      "Mailer modtagerne under admin → API-forbrug, når en betalt tjeneste (OpenAI, Google Places, Bria, Passio, SMS, Mailjet) fejler, OpenAI-kreditten er lav, eller månedens budget når 80 % eller 100 %. Hvert varsel sendes kun én gang (fejl højst én gang i døgnet).",
+    runtime: "app",
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "search-miss-review",
     name: "Søgninger uden resultat: vurdering",
     description:

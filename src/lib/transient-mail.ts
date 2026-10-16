@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { NO_TRACKING_HEADERS, defaultFrom } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
+import { recordApiCall } from "@/lib/api-usage-record";
 
 // docs/PRIVACY.md "Login og e-mail": mails til almindelige brugere sendes
 // direkte til den adresse, brugeren netop har tastet, og adressen gemmes
@@ -58,4 +59,5 @@ export async function sendTransientMail({
     html: wrapEmailHtml(html),
     text: htmlToText(html),
   });
+  recordApiCall("smtp", true);
 }

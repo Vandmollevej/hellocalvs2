@@ -51,7 +51,43 @@ def available():
     return bool(get_token())
 
 
+def record_api_call(service_id, ok, error=None, count=1):
+    """Tæller et kald til admin → API-forbrug (api_usage_months, som recordApiCall i appen)."""
+    database_url = os.environ.get("DATABASE_URL", "").split("?")[0]
+    if not database_url:
+        return
+    message = None if ok else (error or "Ukendt fejl")[:300]
+    try:
+        with psycopg2.connect(database_url, connect_timeout=10) as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO api_usage_months ("serviceId", month, calls, errors, "lastOkAt", "lastErrorAt", "lastError")
+                VALUES (%s, to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM'), %s, %s,
+                        CASE WHEN %s THEN now() END, CASE WHEN %s THEN NULL ELSE now() END, %s)
+                ON CONFLICT ("serviceId", month) DO UPDATE SET
+                  calls = api_usage_months.calls + EXCLUDED.calls,
+                  errors = api_usage_months.errors + EXCLUDED.errors,
+                  "lastOkAt" = COALESCE(EXCLUDED."lastOkAt", api_usage_months."lastOkAt"),
+                  "lastErrorAt" = COALESCE(EXCLUDED."lastErrorAt", api_usage_months."lastErrorAt"),
+                  "lastError" = COALESCE(EXCLUDED."lastError", api_usage_months."lastError")
+                """,
+                (service_id, count, 0 if ok else 1, ok, ok, message),
+            )
+    except Exception as exc:  # noqa: BLE001
+        log.debug("Kunne ikke tælle %s-kaldet: %s", service_id, exc)
+
+
 def remove_background_bria(image_bytes):
+    try:
+        result = _remove_background_bria(image_bytes)
+    except Exception as exc:
+        record_api_call("bria", False, str(exc))
+        raise
+    record_api_call("bria", True)
+    return result
+
+
+def _remove_background_bria(image_bytes):
     token = get_token()
     if not token:
         raise RuntimeError("Bria-nøgle mangler (admin → API-nøgler → Bria)")

@@ -4,6 +4,8 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { loadAdminDashboard } from "@/lib/admin-dashboard";
 import { loadPetFoodStrikeSummary } from "@/lib/pet-food-strikes";
 import { loadFailedMigrations } from "@/lib/deploy-health";
+import { getApiUsageOverview, type ApiUsageOverview } from "@/lib/api-usage";
+import { STATE_BAR, STATE_LABEL, formatMoney } from "@/lib/api-usage-format";
 import { PetFoodIncidentActions } from "@/components/admin/PetFoodIncidentActions";
 import { isSupportOverdue } from "@/lib/support-inbox";
 import { formatAdminTime, formatWaiting, SUPPORT_PRIORITY_LABELS } from "@/lib/support-labels";
@@ -94,6 +96,11 @@ export default async function AdminDashboardPage() {
   const petFood = await loadPetFoodStrikeSummary(now).catch(() => null);
   // En fejlet migrering blokerer alle senere deploys (docs/DECISIONS.md 2026-10-07).
   const failedMigrations = await loadFailedMigrations().catch(() => []);
+  // API-forbrug (docs/DECISIONS.md 2026-10-16): må aldrig forsinke forsiden mere end 8 s.
+  const apiUsage = await Promise.race<ApiUsageOverview | null>([
+    getApiUsageOverview(now).catch(() => null),
+    new Promise((resolve) => setTimeout(() => resolve(null), 8000)),
+  ]);
 
   const otherTasks = [
     { href: "/admin/images", label: "Billedforslag", value: counts.pendingImages },
@@ -383,6 +390,46 @@ export default async function AdminDashboardPage() {
                 </li>
               ))}
             </ul>
+          )}
+        </Widget>
+
+        <Widget title="API-forbrug" href="/admin/api-usage">
+          {apiUsage ? (
+            <ul className="divide-y divide-border-strong">
+              {apiUsage.services
+                .filter((service) => service.state !== "missing")
+                .map((service) => (
+                  <li key={service.id}>
+                    <Link href={`/admin/api-usage#usage-${service.id}`} className="flex flex-col gap-1 px-4 py-2.5 hover:bg-hf-tan">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="hf-type-body flex min-w-0 items-center gap-2 text-hf-black">
+                          <span className={`h-2 w-2 shrink-0 rounded-full ${STATE_BAR[service.state]}`} aria-hidden />
+                          <span className="truncate">{service.name}</span>
+                        </span>
+                        <span
+                          className={`hf-type-small shrink-0 ${
+                            service.state === "fail" ? "text-hf-red-dark" : service.state === "warn" ? "text-hf-warning" : "text-text-muted"
+                          }`}
+                        >
+                          {service.state === "fail" || service.state === "warn"
+                            ? STATE_LABEL[service.state]
+                            : `${formatMoney(service.spent, service.currency)}${service.budget ? ` / ${formatMoney(service.budget, service.currency)}` : ""}`}
+                        </span>
+                      </div>
+                      {service.budgetUse !== null && (
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
+                          <div
+                            className={`h-full rounded-full ${STATE_BAR[service.state]}`}
+                            style={{ width: `${Math.max(2, Math.min(100, Math.round(service.budgetUse * 100)))}%` }}
+                          />
+                        </div>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <Empty text="Forbruget kunne ikke hentes." />
           )}
         </Widget>
 

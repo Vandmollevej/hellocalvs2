@@ -1,3 +1,10 @@
+## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
+
+- Brugerens ønske: se budget og status for alle API'er, der koster penge, hver for sig og samlet på admin-forsiden, og få varsler på mail (til/fra + modtagerliste).
+- Kun OpenAI har et forbrugs-API, vi kan bruge. De øvrige tælles, hvor appen/robotterne kalder dem (`recordApiCall` i `src/lib/api-usage-record.ts`; i Python `record_api_call` i `scripts/image-agent/bria.py` og `scripts/logo-agent/agent.py`) i `api_usage_months` (tjeneste × måned). Forbrug = kald × pris pr. kald; standardpriserne står i `PAID_SERVICES` (`src/lib/api-usage.ts`) og kan rettes pr. tjeneste sammen med månedsbudgettet (`api_budgets`). Google Vision tælles pr. billede.
+- Status: OpenAI = testkaldet; de øvrige = seneste kald lykkedes/fejlede. Budget ≥ 80 % = advarsel, ≥ 100 % = fejl.
+- Varsler (`api_alert_settings`, job `api-alerts` hvert kvarter): fejl højst én gang i døgnet pr. tjeneste, budgetvarsler én gang pr. måned; sendes direkte til modtagerne via SMTP. Lidl/Aldi-scriptet på brugerens pc (Google Vision) tælles ikke — det har ingen adgang til databasen.
+
 ## 2026-10-16: Admin → OpenAI-forbrug
 
 - Brugerens ønske: se live, hvad OpenAI koster, og om kreditten er ved at slippe op. Løber den tør, svarer OpenAI 429 `insufficient_quota` på alle kald; appen virker ellers, men al AI-aflæsning, stemme/foto-måltider, chatbot, oversættelser og AI-robotter fejler, indtil der fyldes op (anbefaling: Auto recharge under Billing).

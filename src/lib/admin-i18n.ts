@@ -39,7 +39,7 @@ const DICTIONARY = {
   nav_search_analytics: { DA: "Søgning", EN: "Search" },
   nav_integrations: { DA: "Integrationer", EN: "Integrations" },
   nav_economy: { DA: "Economy", EN: "Economy" },
-  nav_openai: { DA: "OpenAI-forbrug", EN: "OpenAI usage" },
+  nav_api_usage: { DA: "API-forbrug", EN: "API usage" },
   nav_log: { DA: "Log", EN: "Log" },
   nav_hello_doc: { DA: "Hello Doc", EN: "Hello Doc" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },

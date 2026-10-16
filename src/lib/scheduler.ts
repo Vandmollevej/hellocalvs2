@@ -21,6 +21,7 @@ import { assessOffProducts } from "@/lib/off-quality-job";
 import { runFridaEstimates } from "@/lib/frida-estimates";
 import { syncProductIndex } from "@/lib/search-engine/product-index";
 import { reviewSearchMisses } from "@/lib/search-miss-review";
+import { runApiAlerts } from "@/lib/api-alerts";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
@@ -163,6 +164,7 @@ export function startScheduler() {
       "search-miss-review": reviewSearchMisses,
       "product-translations": translateProductsAhead,
       "alcohol-nutrition": backfillAlcoholNutrition,
+      "api-alerts": () => runApiAlerts(),
     }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });

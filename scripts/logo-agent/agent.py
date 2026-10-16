@@ -138,12 +138,41 @@ def vision_auth():
     return {}, {"key": VISION_API_KEY}
 
 
+def record_api_call(service_id, ok, error=None, count=1):
+    """Tæller et kald til admin → API-forbrug (api_usage_months, som recordApiCall i appen)."""
+    message = None if ok else (error or "Ukendt fejl")[:300]
+    try:
+        with psycopg2.connect(DATABASE_URL, connect_timeout=10) as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO api_usage_months ("serviceId", month, calls, errors, "lastOkAt", "lastErrorAt", "lastError")
+                VALUES (%s, to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM'), %s, %s,
+                        CASE WHEN %s THEN now() END, CASE WHEN %s THEN NULL ELSE now() END, %s)
+                ON CONFLICT ("serviceId", month) DO UPDATE SET
+                  calls = api_usage_months.calls + EXCLUDED.calls,
+                  errors = api_usage_months.errors + EXCLUDED.errors,
+                  "lastOkAt" = COALESCE(EXCLUDED."lastOkAt", api_usage_months."lastOkAt"),
+                  "lastErrorAt" = COALESCE(EXCLUDED."lastErrorAt", api_usage_months."lastErrorAt"),
+                  "lastError" = COALESCE(EXCLUDED."lastError", api_usage_months."lastError")
+                """,
+                (service_id, count, 0 if ok else 1, ok, ok, message),
+            )
+    except Exception as exc:  # noqa: BLE001
+        log.debug("Kunne ikke tælle %s-kaldet: %s", service_id, exc)
+
+
 def vision(requests_payload):
     headers, params = vision_auth()
-    response = requests.post(
-        VISION_URL, params=params, headers=headers, json={"requests": requests_payload}, timeout=60
-    )
-    response.raise_for_status()
+    try:
+        response = requests.post(
+            VISION_URL, params=params, headers=headers, json={"requests": requests_payload}, timeout=60
+        )
+        response.raise_for_status()
+    except Exception as exc:
+        record_api_call("google-vision", False, str(exc))
+        raise
+    # Google tager betaling pr. billede (én post i requests).
+    record_api_call("google-vision", True, count=len(requests_payload))
     return response.json().get("responses", [])
 
 
