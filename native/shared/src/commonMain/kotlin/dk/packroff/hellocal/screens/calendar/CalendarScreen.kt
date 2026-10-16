@@ -352,6 +352,13 @@ fun CalendarScreen(args: RouteArgs) {
                             runCatching { Api.delete("/api/health-metrics", mapOf("ids" to ids)) }.onFailure { metrics = before }
                         }
                     },
+                    onDeleteRegistration = { id ->
+                        val before = registrations
+                        registrations = registrations.filter { it.id != id }
+                        scope.launch {
+                            runCatching { Api.delete("/api/registrations/$id") }.onFailure { registrations = before }
+                        }
+                    },
                     goals = goalsByDate[day] ?: emptyList(),
                     weighIns = weighInsByDate[day] ?: emptyList(),
                     loading = registrationsLoading,
