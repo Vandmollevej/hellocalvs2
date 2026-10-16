@@ -79,6 +79,7 @@ import { HandSizePicker } from "@/components/hf/HandSizePicker";
 import { findHandSizeItem, mediumHandSizeGrams } from "@/lib/hand-sizes";
 import { UpdatePointsBanner } from "@/components/hf/UpdatePointsBanner";
 import { imageThumb } from "@/lib/image-thumb";
+import { CIRCLE_DIAMETER } from "@/lib/product-circle-layout";
 import { UpdateCameraPanel } from "@/components/hf/UpdateCameraPanel";
 import { useDesktopViewport } from "@/lib/use-desktop-viewport";
 
@@ -377,6 +378,8 @@ export function AddProductView({
   // med 10 % overskud: stående varer rager 10 % op over cirklen, liggende
   // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
   const [imageLandscape, setImageLandscape] = useState(false);
+  const [compositeWidth, setCompositeWidth] = useState<number | null>(null);
+  const [compositeFailed, setCompositeFailed] = useState<string | null>(null);
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
   const [brandLogoRatio, setBrandLogoRatio] = useState<number | null>(null);
@@ -861,6 +864,8 @@ export function AddProductView({
     return [...badges.filter((b) => !ORGANIC_KINDS.has(b.kind)), ...badges.filter((b) => ORGANIC_KINDS.has(b.kind))];
   })();
   const isCutoutImage = Boolean(displayImageUrl && displayImageUrl.includes("/cutouts/"));
+  // Cirklen er bagt ind i billedet, når det er hentet (ellers CSS-cirklen).
+  const bakedCircle = isCutoutImage && compositeWidth !== null && compositeFailed !== displayImageUrl;
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
   const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
@@ -1011,7 +1016,7 @@ export function AddProductView({
               <div ref={circleColumnRef} className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
                 <ProductCircleBadges topBadges={topBadges} certificates={circleCertificates} />
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
-                  <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
+                  <div className={`flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full ${bakedCircle ? "" : "bg-hf-tan"}`}>
                     {displayImageUrl && !isCutoutImage ? (
                       // Det rå forsidefoto (før fritskrabningen): hele varen
                       // skal kunne ses, så det tilpasses inde i cirklen —
@@ -1028,23 +1033,38 @@ export function AddProductView({
                       <div aria-hidden="true" className="h-full w-full" />
                     )}
                   </div>
-                  {displayImageUrl && isCutoutImage && (
-                    // Fritskrabet vare: 110 % af cirklen, stående med bunden i
-                    // cirklens bund (toppen 10 % over), liggende fra venstre
-                    // kant (10 % ud over højre). Hele varen er altid synlig.
+                  {displayImageUrl && isCutoutImage && compositeFailed !== displayImageUrl && (
+                    // Fritskrabet vare med cirklen bagt ind i selve billedet
+                    // (kun hjemmesiden, bruger 2026-10-16): cirklen er altid
+                    // 180 px, varen 110 % af den, stående med bunden i cirklens
+                    // bund, liggende fra venstre kant. Billedet er større end
+                    // cirklen, så cirklen aldrig skrumper. Se
+                    // src/lib/product-circle-layout.ts.
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={displayImageUrl}
-                      src={imageThumb(displayImageUrl, 640)}
+                      src={`/product-circle?src=${encodeURIComponent(displayImageUrl)}`}
                       alt=""
-                      onLoad={(event) =>
-                        setImageLandscape(event.currentTarget.naturalWidth > event.currentTarget.naturalHeight)
-                      }
+                      onLoad={(event) => {
+                        const { naturalWidth, naturalHeight } = event.currentTarget;
+                        setImageLandscape(naturalWidth > naturalHeight);
+                        setCompositeWidth((naturalWidth * 180) / CIRCLE_DIAMETER);
+                      }}
+                      onError={() => setCompositeFailed(displayImageUrl)}
+                      style={compositeWidth ? { width: compositeWidth } : { opacity: 0 }}
                       className={
                         imageLandscape
-                          ? "pointer-events-none absolute left-0 top-1/2 z-[5] w-[198px] max-w-none -translate-y-1/2 object-contain"
-                          : "pointer-events-none absolute bottom-0 left-1/2 z-[5] h-[198px] max-h-none -translate-x-1/2 object-contain"
+                          ? "pointer-events-none absolute left-0 top-1/2 z-[5] h-auto max-w-none -translate-y-1/2"
+                          : "pointer-events-none absolute bottom-0 left-1/2 z-[5] h-auto max-w-none -translate-x-1/2"
                       }
+                    />
+                  )}
+                  {displayImageUrl && isCutoutImage && compositeFailed === displayImageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageThumb(displayImageUrl, 640)}
+                      alt=""
+                      className="pointer-events-none absolute bottom-0 left-1/2 z-[5] h-[198px] max-h-none -translate-x-1/2 object-contain"
                     />
                   )}
                   {circleLogo && (
