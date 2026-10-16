@@ -100,16 +100,6 @@ const DICTIONARY = {
   quality_control_empty: { DA: "Intet afventer gennemgang.", EN: "Nothing awaiting review." },
   quality_control_tab_products: { DA: "Varer", EN: "Products" },
   quality_control_tab_activities: { DA: "Aktiviteter", EN: "Activities" },
-  quality_control_tab_incomplete_images: { DA: "Ufuldstændige billeder", EN: "Incomplete images" },
-  incomplete_images_hint: {
-    DA: "Billeder, som nat-jobbet har markeret som afskåret, med hånd over eller åben/halvfuld vare (screenet / markeret)",
-    EN: "Images the nightly job marked as cropped, with a hand over them or an open/half-full product (screened / flagged)",
-  },
-  incomplete_images_job: { DA: "Se jobbet under Cron-jobs", EN: "See the job under Cron jobs" },
-  incomplete_images_dismiss: { DA: "Fjern markering", EN: "Dismiss" },
-  incomplete_flag_cropped: { DA: "Afskåret", EN: "Cropped" },
-  incomplete_flag_hand: { DA: "Hånd over billedet", EN: "Hand over the image" },
-  incomplete_flag_open: { DA: "Åben eller halvfuld", EN: "Open or half full" },
   activities_title: { DA: "Aktiviteter", EN: "Activities" },
   activities_hint: {
     DA: "Aktiviteter, brugere selv har tilføjet. Brugeren kan bruge sin egen straks; andre ser den først, når den er godkendt.",
