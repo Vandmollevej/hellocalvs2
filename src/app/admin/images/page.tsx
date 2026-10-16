@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { PendingImageBoard } from "@/components/admin/PendingImageBoard";
 import { ImagesTabs } from "@/components/admin/ImagesTabs";
+import { briaVariantUrl } from "@/lib/bria-variant";
 
 const pct = (value: number) => `${Math.round(value * 100)} %`;
 
@@ -45,8 +46,10 @@ export default async function AdminImagesPage() {
       <PendingImageBoard
         items={products.map((product) => {
           const candidates = product.imageSearches[0]?.candidates ?? [];
+          const briaUrl = briaVariantUrl(product.pendingImageUrl);
           const alternatives = [
             ...(product.pendingImageUrl ? [{ key: "pending", src: product.pendingImageUrl, label: "Forslag (udklip)" }] : []),
+            ...(briaUrl ? [{ key: "pending-bria", src: briaUrl, label: "Forslag (Bria)" }] : []),
             ...candidates.map((candidate) => ({
               key: candidate.id,
               src: candidate.imageUrl,
@@ -57,13 +60,13 @@ export default async function AdminImagesPage() {
             id: product.id,
             title: product.name,
             subtitle: product.brand?.name ?? null,
-            slides: candidates.length
-              ? [{ src: product.imageUrl, label: "Nuværende (kamerafoto)" }]
+            slides: candidates.length || briaUrl
+              ? [{ src: product.imageUrl, label: candidates.length ? "Nuværende (kamerafoto)" : "Nuværende" }]
               : [
                   { src: product.imageUrl, label: "Nuværende" },
                   { src: product.pendingImageUrl, label: "Forslag" },
                 ],
-            alternatives: candidates.length ? alternatives : undefined,
+            alternatives: candidates.length || briaUrl ? alternatives : undefined,
           };
         })}
       />

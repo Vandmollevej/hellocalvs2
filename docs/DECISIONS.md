@@ -5747,3 +5747,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
 - `AdminShell` starter med et tomt sæt åbne grupper, og den automatiske udfoldning af den aktive sides gruppe ved sideskift er fjernet (den åbnede en gruppe lige efter login). Gruppens overskrift markeres stadig som aktiv. Egne klik huskes i `sessionStorage` og ryddes ved login/logout som før.
+
+## 2026-10-16 — Bria ved siden af rembg, med cache og kreditloft
+- Bria RMBG er valgfri fritlægningsmotor (`CUTOUT_ENGINE`, nøgle i admin → API-nøgler). rembg er stadig standard og det, der godkendes uden valg.
+- Bria-svar caches på disken efter billedets hash og tælles mod `BRIA_MAX_CREDITS`, så credits ikke spildes. Nye PRODUCT_FRONT-fritlægninger får en `_bria.png`-udgave, som admin kan sammenligne og vælge under Billedforslag. Detaljer: `docs/BRIA.md`.

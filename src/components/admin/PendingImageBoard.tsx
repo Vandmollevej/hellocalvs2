@@ -21,6 +21,16 @@ export function PendingImageBoard({ items }: { items: ReviewItem[] }) {
     const item = items.find((entry) => entry.id === id);
     const key = alternativeKey ?? item?.alternatives?.[0]?.key;
     if (!key || key === "pending") return call(id, "accept");
+    // Bria-udgaven af udklippet (docs/BRIA.md): godkendes som udklippet, men med _bria-filen.
+    if (key === "pending-bria") {
+      const res = await fetch(`/api/admin/products/${id}/image/accept`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ variant: "bria" }),
+      });
+      if (res.ok) router.refresh();
+      return res.ok;
+    }
     const res = await fetch(`/api/admin/products/${id}/image/web`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
