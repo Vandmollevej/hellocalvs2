@@ -1,0 +1,25 @@
+name: Diag scan failures (temporary, read-only)
+
+on:
+  push:
+    branches:
+      - claude/diag-scan-failures
+
+jobs:
+  diag:
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - name: Read recent quick-created products and their logs (read-only)
+        run: |
+          set -uo pipefail
+          cd /deploy
+          q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
+          echo "=== Latest 10 user-created products ==="
+          q "SELECT p.id, to_char(p.\"createdAt\",'MM-DD HH24:MI') t, left(p.name,30) AS name, p.\"kcalPer100g\" kcal, p.\"nutritionMissing\" nm, p.\"pendingFields\" pf, p.\"imageUrl\" IS NOT NULL img FROM products p WHERE p.\"createdByUserId\" IS NOT NULL ORDER BY p.\"createdAt\" DESC LIMIT 10"
+          echo "=== AI/scan errors+warnings last 2 days ==="
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, left(coalesce(\"productId\",'-'),8) pid, event, level, \"durationMs\" ms, left(message,700) msg FROM debug_logs WHERE level IN ('error','warn') AND category IN ('ai','scan') AND \"createdAt\" > now() - interval '2 days' ORDER BY \"createdAt\" DESC LIMIT 80"
+          echo "=== All logs for the 3 newest user-created products ==="
+          q "WITH prods AS (SELECT id FROM products WHERE \"createdByUserId\" IS NOT NULL ORDER BY \"createdAt\" DESC LIMIT 3), flows AS (SELECT DISTINCT \"flowId\" FROM debug_logs WHERE \"productId\" IN (SELECT id FROM prods) AND \"flowId\" IS NOT NULL) SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, left(coalesce(\"productId\",'-'),8) pid, category, event, level, \"durationMs\" ms, left(message,500) msg, left(data::text,600) data FROM debug_logs WHERE \"productId\" IN (SELECT id FROM prods) OR \"flowId\" IN (SELECT \"flowId\" FROM flows) ORDER BY \"createdAt\" LIMIT 300"
+          echo "=== Quick enrichment jobs (newest 6) ==="
+          q "SELECT left(\"productId\",8) pid, attempts, \"finishedAt\", left(\"lastError\",400) err FROM quick_enrichment_jobs ORDER BY \"createdAt\" DESC LIMIT 6"
