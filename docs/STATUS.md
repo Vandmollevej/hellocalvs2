@@ -1,3 +1,6 @@
+## 2026-10-16: Scannede fotos læses igen, når OpenAI-kreditten er tilbage
+
+- Fotoene fra scanningen var gemt, men genlæsningen (`quick-enrichment-recovery`) brugte sine 3 forsøg og engangsreparationen, mens kreditten var tom, og opgav så varen (fx Änglamark-letmælken: intet navn, 0 kcal, råfoto). Nu står jobbet stille, så længe OpenAI melder tom kredit/afvist nøgle, og varer, hvis reparation blev brændt af, genåbnes én gang til (`repairRound` 2) og læses fra de gemte fotos, så snart kreditten er fyldt op. Ikke prøvet mod rigtig database herfra.
 ## 2026-10-16: Analyse → Søgning → Tale
 
 - Ny fane "Tale" på Admin → Analyse → Søgning: hver brug af mikrofonen på Madvarer som en tidslinje. Hvert trin (hver søgning, mens der tales) viser det hørte, det der blev søgt på (efter fyldord/stavning) og de 5 øverste varer med billede og begrundelse i point (tekstmatch + populær i landet, tidspunkt, stregkode fra landet osv., samme point som Søgealgoritmer). Øverst: sådan læses og påvirkes det (Synonymordbog, Søgealgoritmer, Stavekontrol). AI-forslagene for hele sætningen vises i samme tidslinje med AI'ens egen begrundelse pr. vare (`reason` i `/api/ai/interpret-meal`) og om varen blev fundet i databasen eller er et skøn. Anonymt, gemmes 30 dage.
