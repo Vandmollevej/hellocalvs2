@@ -6,6 +6,7 @@ import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
 import { PulseEventsProvider, PulseHeartMark } from "@/components/activity/PulseEventsProvider";
+import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { WeightEntryDetailsSheet } from "@/components/weight/WeightEntryDetailsSheet";
 import { useRouter } from "next/navigation";
 import {
@@ -544,6 +545,17 @@ function CalendarPageContent() {
       stripTime(date).getTime() < stripTime(today).getTime(),
     ),
   );
+
+  async function deleteRegistration(id: string) {
+    const previous = registrations;
+    setRegistrations((current) => current.filter((registration) => registration.id !== id));
+    try {
+      const response = await fetch(`/api/registrations/${id}`, { method: "DELETE" });
+      if (!response.ok) setRegistrations(previous);
+    } catch {
+      setRegistrations(previous);
+    }
+  }
 
   function deleteMetrics(ids: string[]) {
     const removed = healthMetrics;
@@ -1107,6 +1119,7 @@ function CalendarPageContent() {
           waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
           measurements={measurementsForDay(weighIns, healthMetrics, (time) => isSameDay(time, selectedDate))}
           onDeleteMetrics={deleteMetrics}
+          onDeleteRegistration={deleteRegistration}
           goals={goalsForDate(goalsByDate, selectedDate)}
           weighIns={weighInsForDate(weighInsByDate, selectedDate)}
           loading={registrationsLoading}
@@ -2075,6 +2088,7 @@ function DayDetails({
   waterEntries,
   measurements,
   onDeleteMetrics,
+  onDeleteRegistration,
   goals,
   weighIns,
   loading,
@@ -2098,6 +2112,7 @@ function DayDetails({
   /** Dagens vejninger og kropsmålinger (Withings m.fl. eller manuelle). */
   measurements: CalendarMeasurement[];
   onDeleteMetrics: (ids: string[]) => void;
+  onDeleteRegistration: (id: string) => void;
   goals: GoalDTO[];
   weighIns: WeightEntry[];
   loading: boolean;
@@ -2587,6 +2602,7 @@ function DayDetails({
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           onDeleteMetrics={onDeleteMetrics}
+          onDeleteRegistration={onDeleteRegistration}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2954,6 +2970,7 @@ function HourEntriesOverlay({
   waterEntries,
   measurements,
   onDeleteMetrics,
+  onDeleteRegistration,
   goals,
   onClose,
 }: {
@@ -2962,6 +2979,7 @@ function HourEntriesOverlay({
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
   onDeleteMetrics: (ids: string[]) => void;
+  onDeleteRegistration: (id: string) => void;
   goals: GoalDTO[];
   onClose: () => void;
 }) {
@@ -2988,6 +3006,8 @@ function HourEntriesOverlay({
   // fuldt udfoldet under tidsangivelsen. Kollapset viser tid + samlet kcal +
   // HfChevron, magen til den kollapsede time-række i selve dagsvisningen.
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
+  const [confirmDelete, setConfirmDelete] = useState<Registration | null>(null);
+  const router = useRouter();
   function toggleGroup(key: string) {
     setOpenKeys((prev) => {
       const next = new Set(prev);
@@ -3110,25 +3130,39 @@ function HourEntriesOverlay({
                     const { registration } = item;
                     const isWater = isWaterRegistration(registration);
                     return (
-                      <Link key={item.id} href={`/registration/${registration.id}`} className={rowClass}>
-                        <FoodRow
-                          image={isWater ? undefined : registration.product?.imageUrl}
-                          thumbnail={
-                            isWater && !registration.product?.imageUrl ? (
-                              <IconWaterGlass size={22} className="text-hf-black" />
-                            ) : undefined
-                          }
-                          title={registration.titleSnapshot}
-                          right={
-                            <EnergyChip
-                              kind={isWater ? "water" : "intake"}
-                              value={isWater ? waterRegistrationMl(registration) : registration.kcalSnapshot}
-                              iconSize={18}
-                              className="hf-type-body hf-type-strong text-hf-black"
+                      <div key={item.id} className={rowClass}>
+                        <SwipeableRow
+                          onReportError={() => router.push(`/registration/${registration.id}/report-error`)}
+                          onDelete={() => setConfirmDelete(registration)}
+                        >
+                          <Link href={`/registration/${registration.id}`} className="block">
+                            <FoodRow
+                              image={isWater ? undefined : registration.product?.imageUrl}
+                              thumbnail={
+                                isWater && !registration.product?.imageUrl ? (
+                                  <IconWaterGlass size={22} className="text-hf-black" />
+                                ) : undefined
+                              }
+                              title={registration.titleSnapshot}
+                              subtitle={
+                                !isWater && registration.amountGrams > 0 ? (
+                                  <p className="hf-type-caption mt-1">
+                                    {Math.round((registration.kcalSnapshot / registration.amountGrams) * 100)} kcal / 100 g
+                                  </p>
+                                ) : undefined
+                              }
+                              right={
+                                <EnergyChip
+                                  kind={isWater ? "water" : "intake"}
+                                  value={isWater ? waterRegistrationMl(registration) : registration.kcalSnapshot}
+                                  iconSize={18}
+                                  className="hf-type-body hf-type-strong text-hf-black"
+                                />
+                              }
                             />
-                          }
-                        />
-                      </Link>
+                          </Link>
+                        </SwipeableRow>
+                      </div>
                     );
                   })}
                 </div>
@@ -3137,6 +3171,23 @@ function HourEntriesOverlay({
           );
         })}
       </div>
+      {confirmDelete && (
+        <EntryDetailsSheet
+          title={confirmDelete.titleSnapshot}
+          subtitle={t("dailyList.atTime", {
+            time: new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(new Date(confirmDelete.createdAt)),
+          })}
+          rows={[
+            { label: t("entrySheet.amount"), value: `${Math.round(confirmDelete.amountGrams)} g` },
+            { label: t("entrySheet.energy"), value: `${Math.round(confirmDelete.kcalSnapshot)} kcal` },
+          ]}
+          onDelete={() => {
+            onDeleteRegistration(confirmDelete.id);
+            setConfirmDelete(null);
+          }}
+          onClose={() => setConfirmDelete(null)}
+        />
+      )}
       <BottomNav />
     </div>
   );

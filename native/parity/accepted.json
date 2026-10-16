@@ -259,7 +259,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "ca04aafe336cd3b9",
+    "src/app/calendar/page.tsx": "d14f342e6137079c",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "fc63c1a077a687a1",
@@ -290,6 +290,7 @@
     "src/components/hf/AccordionCard.tsx": "8cab6c407d964400",
     "src/components/hf/ActionButton.tsx": "c70a6e85a68ad4fe",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
+    "src/components/hf/EntryDetailsSheet.tsx": "f2434e44767670af",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/IconBathScale.tsx": "5313c88fe0912b00",
     "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",

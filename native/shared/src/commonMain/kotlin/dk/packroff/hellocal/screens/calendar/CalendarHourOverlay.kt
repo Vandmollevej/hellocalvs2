@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.ui.CaptureSwipeableRow
+import dk.packroff.hellocal.ui.CaptureDetailRow
+import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.app.BackHandler
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
@@ -54,6 +56,7 @@ import dk.packroff.hellocal.ui.HcToggle
 import dk.packroff.hellocal.ui.VSpace
 import dk.packroff.hellocal.ui.formatNumber
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -75,6 +78,7 @@ internal fun HourEntriesOverlay(
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
     onDeleteMetrics: (List<String>) -> Unit,
+    onDeleteRegistration: (String) -> Unit,
     goals: List<CalGoal>,
     onClose: () -> Unit,
 ) {
@@ -153,7 +157,7 @@ internal fun HourEntriesOverlay(
                     if (isOpen) {
                         Column(Modifier.fillMaxWidth().background(HcColors.Cream).padding(horizontal = 16.dp)) {
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics)
+                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics, onDeleteRegistration = onDeleteRegistration)
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -183,9 +187,15 @@ private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement)
 }
 
 @Composable
-private fun HourItemRow(item: HourItem, hideWeight: Boolean = false, onDeleteMetrics: (List<String>) -> Unit = {}) {
+private fun HourItemRow(
+    item: HourItem,
+    hideWeight: Boolean = false,
+    onDeleteMetrics: (List<String>) -> Unit = {},
+    onDeleteRegistration: (String) -> Unit = {},
+) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
+    var confirmDelete by remember { mutableStateOf<CalRegistration?>(null) }
     when (item) {
         is HourItem.Water -> CalendarFoodRow(
             title = t.t("calendar.waterTitle"),
@@ -201,19 +211,39 @@ private fun HourItemRow(item: HourItem, hideWeight: Boolean = false, onDeleteMet
             } else {
                 null
             }
-            Box(Modifier.fillMaxWidth().clickable { nav.push("/registration/${registration.id}") }) {
-                CalendarFoodRow(
-                    title = registration.title,
-                    image = if (isWater) null else registration.imageUrl,
-                    thumbnail = glass,
-                    right = {
-                        EnergyChip(
-                            if (isWater) EnergyChipKind.Water else EnergyChipKind.Intake,
-                            if (isWater) waterRegistrationMl(registration) else registration.kcal,
-                            iconSize = 18.dp,
-                            role = HcTypeRoles.Body,
-                        )
-                    },
+            CaptureSwipeableRow(
+                onReportError = { nav.push("/registration/${registration.id}/report-error") },
+                onDelete = { confirmDelete = registration },
+            ) {
+                Box(Modifier.fillMaxWidth().clickable { nav.push("/registration/${registration.id}") }) {
+                    CalendarFoodRow(
+                        title = registration.title,
+                        image = if (isWater) null else registration.imageUrl,
+                        thumbnail = glass,
+                        subtitle = registration.amountGrams?.takeIf { !isWater && it > 0 }?.let { grams ->
+                            { HcText("${(registration.kcal / grams * 100).roundToInt()} kcal / 100 g", HcTypeRoles.Small, color = HcColors.TextSecondary) }
+                        },
+                        right = {
+                            EnergyChip(
+                                if (isWater) EnergyChipKind.Water else EnergyChipKind.Intake,
+                                if (isWater) waterRegistrationMl(registration) else registration.kcal,
+                                iconSize = 18.dp,
+                                role = HcTypeRoles.Body,
+                            )
+                        },
+                    )
+                }
+            }
+            confirmDelete?.let { entry ->
+                CaptureEntryDetailsSheet(
+                    title = entry.title,
+                    subtitle = t.t("dailyList.atTime", "time" to clock(entry.at)),
+                    rows = listOf(
+                        CaptureDetailRow(t.t("entrySheet.amount"), "${(entry.amountGrams ?: 0.0).roundToInt()} g"),
+                        CaptureDetailRow(t.t("entrySheet.energy"), "${entry.kcal.roundToInt()} kcal"),
+                    ),
+                    onDelete = { onDeleteRegistration(entry.id) },
+                    onClose = { confirmDelete = null },
                 )
             }
         }
