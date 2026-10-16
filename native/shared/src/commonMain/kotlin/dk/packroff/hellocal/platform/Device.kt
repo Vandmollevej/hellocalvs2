@@ -106,6 +106,16 @@ interface DevicePlatform {
     /** Stops listening early; the final transcript then arrives in onFinished. */
     fun stopSpeech()
 
+    /**
+     * Reads [text] aloud in [languageTag] (web: speechSynthesis). [onDone] when
+     * the voice has finished, was stopped or failed (error as for the others).
+     * Speaking again replaces what is being said.
+     */
+    fun speak(text: String, languageTag: String, onDone: (error: String?) -> Unit)
+
+    /** Stops the voice at once; the running [speak] then reports onDone. */
+    fun stopSpeaking()
+
     /** System share sheet. False when it cannot be shown. */
     fun share(title: String, text: String, url: String?): Boolean
 
@@ -251,6 +261,18 @@ object Device {
 
     fun stopSpeech() {
         platform?.stopSpeech()
+    }
+
+    /**
+     * Reads [text] aloud and returns when the voice is done. Cancelling the
+     * coroutine stops the voice. Without a voice on the phone it simply returns.
+     */
+    suspend fun speak(text: String, languageTag: String) {
+        val p = platform ?: return
+        suspendCancellableCoroutine { cont ->
+            cont.invokeOnCancellation { p.stopSpeaking() }
+            p.speak(text, languageTag) { if (cont.isActive) cont.resume(Unit) }
+        }
     }
 
     /** Share sheet; false when unavailable (the screens then copy/show a notice like the web). */

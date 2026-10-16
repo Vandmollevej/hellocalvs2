@@ -41,6 +41,23 @@ function ScreeningsContent() {
     load();
   }, [load]);
 
+  // Søvn-rækken viser, om "Oplevelse af søvn" er slået til (standard: til).
+  const [sleepActive, setSleepActive] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then(async (response) =>
+        response.ok ? ((await response.json()) as { user: { sleepQualityPromptEnabled?: boolean } }) : null,
+      )
+      .then((data) => {
+        if (!cancelled && data) setSleepActive(data.user.sleepQualityPromptEnabled !== false);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function toggleActive(screening: ScreeningDto) {
     setScreenings((list) => list?.map((s) => (s.id === screening.id ? { ...s, active: !s.active } : s)) ?? null);
     await patchScreening(screening.id, { active: !screening.active });
@@ -76,12 +93,23 @@ function ScreeningsContent() {
 
         {screenings && (
           <div className="hf-card overflow-hidden !p-0">
-            {/* Søvn er en fast række, der peger på søvnmønsteret (altid aktiv). */}
-            <Link href="/profile/sleep" className="flex items-center gap-3 border-b border-hf-tan-dark px-4 py-3">
-              <span className="size-2.5 shrink-0 rounded-full bg-hf-green" aria-hidden="true" />
+            {/* Søvn er en fast række (kan ikke slettes): "Oplevelse af søvn" til/fra
+                (bruger 2026-10-16, flyttet fra Visning). Søvnmønsteret ligger på Profil. */}
+            <Link
+              href="/settings/display/sleep-quality"
+              className="flex items-center gap-3 border-b border-hf-tan-dark px-4 py-3"
+            >
+              <span
+                className={`size-2.5 shrink-0 rounded-full ${sleepActive ? "bg-hf-green" : "bg-hf-tan-dark"}`}
+                aria-hidden="true"
+              />
               <IconMoon size={20} />
-              <span className="hf-type-body flex-1 text-hf-black">{t("screenings.sleep")}</span>
-              <span className="hf-type-small text-hf-green-dark">{t("screenings.statusActive")}</span>
+              <span className={`hf-type-body flex-1 ${sleepActive ? "text-hf-black" : "text-text-secondary"}`}>
+                {t("screenings.sleep")}
+              </span>
+              <span className={`hf-type-small ${sleepActive ? "text-hf-green-dark" : "text-text-secondary"}`}>
+                {sleepActive ? t("screenings.statusActive") : t("screenings.statusInactive")}
+              </span>
               <IconChevronRight size={18} />
             </Link>
             {screenings.map((screening, index) => (

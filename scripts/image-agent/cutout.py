@@ -9,9 +9,9 @@ resultatet videre:
 
 - PRODUCT_FRONT -> products.pendingImageUrl (imageStatus=PENDING), så den
   eksisterende admin-godkendelse afgør om det bliver det officielle billede.
-- BRAND_LOGO -> brands.logoUrl, men kun når brandet intet logo har, og både
-  AI'ens sikkerhed på logonavnet og matchet mod brandet er høje. Ellers bliver
-  jobbet liggende som logo-kandidat for brandet.
+- BRAND_LOGO -> kun admin "Genkør logo". Brandets logo søges først online af
+  logo-robotten (brugerens regel 2026-10-15); scanningens udsnit sættes kun
+  selv som logo med LOGO_AUTO_APPLY_FROM_SCAN=true.
 - PRODUCT_LABEL -> product_labels.imageUrl (mærkater fra det natlige job
   "label-scan", docs/DECISIONS.md 2026-10-02). Behandles som et logo: ingen
   opretning, ingen løft af mellemtoner.
@@ -35,6 +35,10 @@ CUTOUT_DIR = "cutouts"
 CUTOUT_BATCH_SIZE = int(os.environ.get("CUTOUT_BATCH_SIZE", "10"))
 LOGO_AUTO_APPLY_MIN_CONFIDENCE = float(os.environ.get("LOGO_AUTO_APPLY_MIN_CONFIDENCE", "0.9"))
 LOGO_AUTO_APPLY_MIN_MATCH = float(os.environ.get("LOGO_AUTO_APPLY_MIN_MATCH", "0.9"))
+# Brugerens regel (docs/DECISIONS.md 2026-10-15): logoet søges først online
+# (logo-robotten); kun findes intet fritlagt logo, rentegner AI det. Scanningens
+# fritlagte udsnit sættes derfor ikke længere selv som brandets logo.
+LOGO_AUTO_APPLY_FROM_SCAN = os.environ.get("LOGO_AUTO_APPLY_FROM_SCAN", "false").lower() == "true"
 
 
 def local_path(public_url):
@@ -371,6 +375,11 @@ def fetch_pending_jobs(conn):
             SELECT id, "sourceUrl", "cropBox", kind
             FROM image_cutout_jobs
             WHERE status = 'PENDING'
+              -- Originalen søges online, før kamerafotoet fritlægges (brugerens
+              -- regel 2026-10-15, logo-agent product_images.py). Svarer
+              -- søgningen ikke inden for 30 min, fritlægges der alligevel.
+              AND (kind <> 'PRODUCT_FRONT' OR "webSearchedAt" IS NOT NULL
+                   OR "createdAt" < now() - interval '30 minutes')
             ORDER BY "createdAt" ASC
             LIMIT %s
             """,
@@ -472,36 +481,37 @@ def apply_finished_jobs(conn):
               AND j."brandId" = b.id AND split_part(b."logoUrl", '?', 1) = j."resultUrl"
             """
         )
-        cur.execute(
-            """
-            UPDATE brands b
-            SET "logoUrl" = j."resultUrl"
-            FROM (
-              SELECT DISTINCT ON ("brandId") "brandId", "resultUrl"
-              FROM image_cutout_jobs
-              WHERE kind = 'BRAND_LOGO' AND status = 'DONE' AND "appliedAt" IS NULL
-                AND "brandId" IS NOT NULL
-                AND confidence >= %s AND "matchScore" >= %s
-              ORDER BY "brandId", confidence DESC
-            ) j
-            WHERE j."brandId" = b.id AND b."logoUrl" IS NULL
-            RETURNING b.id
-            """,
-            (LOGO_AUTO_APPLY_MIN_CONFIDENCE, LOGO_AUTO_APPLY_MIN_MATCH),
-        )
-        applied_brands = [row[0] for row in cur.fetchall()]
-        if applied_brands:
+        if LOGO_AUTO_APPLY_FROM_SCAN:
             cur.execute(
                 """
-                UPDATE image_cutout_jobs
-                SET "appliedAt" = now()
-                WHERE kind = 'BRAND_LOGO' AND status = 'DONE' AND "appliedAt" IS NULL
-                  AND "brandId" = ANY(%s) AND "resultUrl" IN (
-                    SELECT "logoUrl" FROM brands WHERE id = ANY(%s)
-                  )
+                UPDATE brands b
+                SET "logoUrl" = j."resultUrl"
+                FROM (
+                  SELECT DISTINCT ON ("brandId") "brandId", "resultUrl"
+                  FROM image_cutout_jobs
+                  WHERE kind = 'BRAND_LOGO' AND status = 'DONE' AND "appliedAt" IS NULL
+                    AND "brandId" IS NOT NULL
+                    AND confidence >= %s AND "matchScore" >= %s
+                  ORDER BY "brandId", confidence DESC
+                ) j
+                WHERE j."brandId" = b.id AND b."logoUrl" IS NULL
+                RETURNING b.id
                 """,
-                (applied_brands, applied_brands),
+                (LOGO_AUTO_APPLY_MIN_CONFIDENCE, LOGO_AUTO_APPLY_MIN_MATCH),
             )
+            applied_brands = [row[0] for row in cur.fetchall()]
+            if applied_brands:
+                cur.execute(
+                    """
+                    UPDATE image_cutout_jobs
+                    SET "appliedAt" = now()
+                    WHERE kind = 'BRAND_LOGO' AND status = 'DONE' AND "appliedAt" IS NULL
+                      AND "brandId" = ANY(%s) AND "resultUrl" IN (
+                        SELECT "logoUrl" FROM brands WHERE id = ANY(%s)
+                      )
+                    """,
+                    (applied_brands, applied_brands),
+                )
     conn.commit()
 
 

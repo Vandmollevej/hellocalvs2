@@ -9,7 +9,8 @@ import type { LabelRegions } from "@/lib/label-text-regions";
 
 export type LabelNeed = "nutrition" | "ingredients";
 
-// Så mange billeder med læsbar tekst læses højst, før det bedste bruges.
+// Så mange billeder med læsbar tekst læses højst, før det bedste bruges
+// (bruges ikke længere af Tilføj-kameraet, som tager ét foto pr. tryk).
 export const MAX_LABEL_ATTEMPTS = 10;
 // Fra denne sikkerhed er den lokale aflæsning god nok til at stoppe.
 export const LABEL_DONE_CONFIDENCE = 70;

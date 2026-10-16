@@ -419,6 +419,7 @@
     "helpCenter": "Hjælpecenter",
     "learnTheApp": "Kontoopsætning",
     "integrations": "Integrationer",
+    "import": "Import",
     "terms": "Betingelser",
     "privacyPolicy": "Privatlivspolitik",
     "dataTracking": "Datasporing",
@@ -437,6 +438,7 @@
     "frontPage": "Forside",
     "recommendedLimits": "Anbefalede grænser",
     "menstrualCycle": "Menstruationscyklus",
+    "pregnancy": "Graviditet og amning",
     "sleepQuality": "Oplevelse af søvn",
     "calendarView": "Kalendervisning",
     "displayHelpTip": "Her bestemmer du, hvordan forsiden, kalenderen og advarsler ser ud på denne enhed.",
@@ -445,7 +447,8 @@
     "showTooltips": "Vis tooltips",
     "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
     "showStartupTips": "Vis start-up tips",
-    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt."
+    "showStartupTipsDescription": "Viser korte tips, guider og hint-bannere om funktioner, du endnu ikke har brugt.",
+    "translation": "Oversættelse"
   },
   "guide": {
     "back": "Tilbage",
@@ -514,7 +517,9 @@
     "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke.",
     "uncertainty": "Usikkerhed",
     "autoExpandUncertainty": "Fold usikkerhed ud automatisk",
-    "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke."
+    "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke.",
+    "translateForeignText": "Oversæt fremmedsprog til dansk",
+    "translateForeignTextDescription": "Varer på et andet sprog end dansk vises oversat. Over varens navn står, hvilket sprog den er oversat fra, med et link til originalen. Slår du det fra, vises varen på sit originalsprog."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Spørg om nattens søvn",
@@ -533,6 +538,26 @@
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
     "toggleLabel": "Vis menstruationscyklus",
     "toggleDescription": "Tilføjer \"Menstruation\" til tilføj-menuen, så du kan logge cyklussens start."
+  },
+  "pregnancySettings": {
+    "intro": "Er du gravid eller ammer, lægger vi det officielle tillæg (EFSA) oven på dit energibehov, og vi sætter aldrig et kalorieunderskud. Ugen regnes selv frem, så du skal kun rette her, hvis noget ændrer sig.",
+    "question": "Er du gravid, eller ammer du?"
+  },
+  "pregnancy": {
+    "none": "Nej",
+    "status": {
+      "PREGNANT": "Gravid",
+      "BREASTFEEDING": "Ammer"
+    },
+    "weekLabel": "Hvilken uge er du i?",
+    "weekPlaceholder": "fx 20",
+    "weekHint": "Trimester 1 er uge 1–13, trimester 2 uge 14–27 og trimester 3 fra uge 28. Ugen tæller selv op.",
+    "trimester": "{trimester}. trimester",
+    "extraKcal": "+{kcal} kcal om dagen",
+    "breastfeedingWeeksLabel": "Hvor mange uger har du ammet?",
+    "breastfeedingWeeksPlaceholder": "fx 8",
+    "breastfeedingHint": "De første 26 uger regner vi med fuld amning (+500 kcal om dagen), derefter delvis amning (+300 kcal). Ugerne tæller selv op.",
+    "noDeficit": "Vi sætter aldrig et kalorieunderskud, mens du er gravid eller ammer. Følg altid rådene fra jordemoder eller læge."
   },
   "customMeasure": {
     "add": "Tilføj egen måling",
@@ -1005,9 +1030,9 @@
     "labelTextFound": "Næringsindhold eller ingredienser læst",
     "frontCaptured": "Forsiden er scannet",
     "scanBarcode": "Scan stregkode",
-    "scanFront": "Scan billede",
-    "scanNutrition": "Scan energi",
-    "scanIngredients": "Scan indholdsfortegnelse",
+    "scanFront": "Tag billede af forsiden",
+    "scanNutrition": "Tag billede af energi",
+    "scanIngredients": "Tag billede af indholdsfortegnelsen",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",
     "comparingKnownItems": "Sammenligner med kendte varer...",
@@ -1031,7 +1056,15 @@
     "stepDone": "{step}: taget og aflæst",
     "bothFound": "Energi og indhold fundet på samme billede",
     "chooseObject": "Tryk på den vare, der skal være i fokus",
-    "useWholePhoto": "Brug hele billedet"
+    "useWholePhoto": "Brug hele billedet",
+    "frontNoProduct": "Ingen vare i billedet — hold forsiden af varen i rammen, eller tryk på billedet for at bruge det alligevel.",
+    "retakeHint": "Tryk på et trin med flueben for at tage det om. Stregkode starter forfra.",
+    "skipIngredients": "Spring over",
+    "shutter": "Tag billede",
+    "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet.",
+    "creating": "Opretter varen …",
+    "sendingPhotos": "Sender billederne …",
+    "processingPhotos": "Behandler billeder: {steps} …"
   },
   "foods": {
     "title": "Madvarer",
@@ -1849,7 +1882,51 @@
     "noEntriesYet": "Ingen kropsmål registreret endnu.",
     "chooseSexHint": "Vælg køn under Profil → Redigér profil for at se tegningerne af, hvor du måler.",
     "deleteAria": "Slet måling",
-    "delete": "Slet"
+    "delete": "Slet",
+    "voice": {
+      "start": "Indtal målene",
+      "startHint": "Tryk, og jeg guider dig gennem målene ét ad gangen.",
+      "stop": "Stop stemmeguiden",
+      "speaking": "Taler…",
+      "listening": "Lytter…",
+      "youSaid": "Du sagde: {text}",
+      "unsupported": "Din enhed kan ikke genkende tale her. Indtast målene i felterne.",
+      "micDenied": "Appen har ikke adgang til mikrofonen. Giv adgang i telefonens indstillinger.",
+      "unitCm": "centimeter",
+      "unitIn": "tommer",
+      "intro": "Jeg guider dig gennem dine kropsmål. Sig tallet efter hvert mål. Sig spring over for at springe et mål over, tilbage for at gå et mål tilbage, eller stop for at slutte.",
+      "ask": "Nu skal jeg bruge målet om {target}.",
+      "next": "Nu skal du give mig målet om {target}.",
+      "recorded": "Jeg har registreret {value} {unit}.",
+      "skipped": "Det springer vi over.",
+      "notHeard": "Jeg hørte ikke noget. Sig målet om {target}.",
+      "notUnderstood": "Det fangede jeg ikke. Sig målet om {target} som et tal, fx 82 komma 5.",
+      "outOfRange": "{value} lyder ikke rigtigt. Sig målet om {target} igen.",
+      "done": "Tak, så er alle dine mål registreret.",
+      "stopped": "Okay, jeg stopper her. Det, du har sagt, er gemt.",
+      "giveUp": "Jeg stopper, fordi jeg ikke kunne høre dig. Tryk på mikrofonen for at fortsætte.",
+      "noFields": "Der er ingen mål at udfylde. Vælg mål under Indstillinger, Visning, Kropsmål.",
+      "target": {
+        "chestCm": "brystet",
+        "waistCm": "taljen",
+        "hipCm": "hoften",
+        "upperArmCm": "overarmen",
+        "thighCm": "låret",
+        "buttockCm": "bagdelen",
+        "calfCm": "læggen",
+        "ankleCm": "anklen"
+      },
+      "how": {
+        "chestCm": "Mål rundt om brystet, hvor det er bredest, med målebåndet under armene.",
+        "waistCm": "Mål rundt om livet, hvor du er smallest, typisk lige over navlen. Pust stille ud først.",
+        "hipCm": "Mål rundt om hofterne, hvor de er bredest.",
+        "upperArmCm": "Mål rundt om overarmen midt mellem skulder og albue, med armen hængende afslappet.",
+        "thighCm": "Mål rundt om låret midt mellem hofte og knæ.",
+        "buttockCm": "Mål rundt om bagdelen, hvor den er bredest, med samlede fødder.",
+        "calfCm": "Mål rundt om læggen på midten, hvor den er tykkest.",
+        "ankleCm": "Mål rundt om anklen lige over ankelknoen, hvor den er smallest."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",
@@ -2272,7 +2349,13 @@
       "vitaminB9": "Vitamin B9 (folat)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Skift mellem rumfang og gram"
+    "swapLiquidUnit": "Skift mellem rumfang og gram",
+    "translatedFrom": "Oversat til {target} fra {source}.",
+    "translatedTo": "Oversat til {target}.",
+    "originalLanguage": "Original på {source}.",
+    "originalText": "Originaltekst.",
+    "showOriginal": "Vis original",
+    "showTranslation": "Vis oversættelse"
   },
   "photoAward": {
     "bannerSingle": "Du kan optjene {points} points ved at tage et nyt billede af {photoType}.",
@@ -2289,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Optjen {points} points ved at opdatere varen",
+    "bannerPhoto": "Optjen {points} points ved at opdatere med et flot nyt billede",
     "toggle": "Vis eller skjul banner",
     "tileFront": "Forside",
     "tileNutrition": "Energi",
@@ -2848,11 +2932,17 @@
     "stepProgress": "Trin {current} af {total} gennemført",
     "sleepPatternQuestion": "Har du et fast søvnmønster?",
     "shiftWorkQuestion": "Skyldes det varierende arbejdstider eller natarbejde?",
+    "pregnancyQuestion": "Er du gravid, eller ammer du?",
+    "pregnancyHint": "Så lægger vi det officielle tillæg til dit energibehov. Kan altid rettes under Indstillinger → Visning.",
     "dailyLogQuestion": "Vil du registrere arbejdstider eller søvntider dagligt?",
     "workHours": "Arbejdstider",
     "sleepTimes": "Søvntider",
     "healthImportQuestion": "Vil du importere data fra din smartwatch eller sundhedsapp?",
     "healthImportHint": "Kan altid sættes op senere under personlige oplysninger.",
+    "migrationImportQuestion": "Har du allerede en konto hos en anden udbyder?",
+    "migrationImportHint": "Så kan du måske importere dine data, så din historik følger med.",
+    "importNow": "Importér nu",
+    "importLater": "Senere",
     "setUpNow": "Opsæt nu",
     "next": "Næste",
     "remindLater": "Påmind mig senere",
@@ -2927,6 +3017,8 @@
     "rest": "Hvile (dit stofskifte)",
     "everyday": "Din hverdag",
     "training": "Din motion",
+    "pregnancy": "Graviditet",
+    "breastfeeding": "Amning",
     "need": "Dit energibehov",
     "goal": "Dit vægtmål",
     "budget": "Dit daglige budget",
@@ -2942,6 +3034,8 @@
     "whyRest": "Det, kroppen bruger, hvis du lå stille hele dagen. Regnet ud fra vægt, højde, alder og køn (Mifflin-St Jeor).",
     "whyEveryday": "Arbejde, gang, stående tid og transport — uden motion. Dine svar svarer til niveauet \"{level}\" (PAL {pal}).",
     "whyTraining": "Din typiske motion fordelt over ugen, regnet netto, så hvilestofskiftet ikke tælles to gange. Logger du en træning, erstatter den tillægget den dag.",
+    "whyPregnancy": "Officielt tillæg (EFSA): 70 kcal om dagen i 1. trimester, 260 i 2. og 500 i 3. Du er i {trimester}. trimester (uge {week}).",
+    "whyBreastfeeding": "Officielt tillæg (EFSA): 500 kcal om dagen ved fuld amning de første 6 måneder, derefter ca. 300 ved delvis amning. Du har ammet i {weeks} uger.",
     "whyGoal": "Forskellen mellem det, du bruger, og det, du bør spise for at nå dit mål i et sundt tempo.",
     "disclaimer": "Alle tal er estimater, ikke målinger. De erstatter ikke rådgivning fra læge eller diætist.",
     "missingData": "For at regne dit energibehov mangler vi:",
@@ -2953,6 +3047,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Under 18 år sætter vi ikke et kalorieunderskud — kroppen vokser stadig.",
+      "PREGNANCY_NO_DEFICIT": "Du er gravid eller ammer, så vi sætter intet kalorieunderskud — tal med jordemoder eller læge om vægten.",
       "UNDERWEIGHT_NO_LOSS": "Din vægt er under det, vi regner som sundt, så vi foreslår ikke vægttab.",
       "TARGET_RAISED_TO_MIN_BMI": "Dit vægtmål er hævet til den laveste vægt, vi regner som sund for din højde.",
       "PACE_CAPPED": "Tempoet er sat ned til det, der er sundt at tabe om ugen.",
@@ -3540,8 +3635,13 @@
   },
   "migrationImport": {
     "title": "Flyt fra MyFitnessPal eller Lifesum",
+    "landingTitle": "Import",
+    "landingIntro": "Benytter du allerede MyFitnessPal eller Lifesum, kan du importere dine data automatisk.",
+    "otherProvider": "Benytter du en anden udbyder og ønsker at importere dine gamle data, så kontakt os.",
+    "contactUs": "Kontakt os",
+    "contactSubject": "Import fra en anden udbyder",
+    "providerTitle": "Import fra {provider}",
     "intro": "Optag skærmen, mens du bladrer i din dagbog i den anden app. Hello Cal aflæser varer, mængder og kalorier og lægger dem ind i din kalender.",
-    "fromApp": "Fra appen",
     "step1": "Start skærmoptagelse på telefonen (eller tag skærmbilleder).",
     "step2": "Åbn dagbogen i den anden app, og bladr roligt dag for dag tilbage i tiden.",
     "step3": "Stop optagelsen, og vælg videoen her.",

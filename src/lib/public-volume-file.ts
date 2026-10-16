@@ -17,7 +17,11 @@ const TYPES: Record<string, string> = {
   ".svg": "image/svg+xml",
 };
 
-export async function servePublicVolumeFile(folder: "product-images" | "hellofresh-images", segments: string[]) {
+export async function servePublicVolumeFile(
+  folder: "product-images" | "hellofresh-images",
+  segments: string[],
+  request?: Request,
+) {
   const root = path.join(process.cwd(), "public", folder);
   const target = path.resolve(root, ...segments);
   const type = TYPES[path.extname(target).toLowerCase()];
@@ -25,12 +29,16 @@ export async function servePublicVolumeFile(folder: "product-images" | "hellofre
   try {
     const info = await stat(target);
     if (!info.isFile()) return new Response("Not found", { status: 404 });
+    // Efter en time spørger browseren igen; uændret fil => 304 uden billedet.
+    const etag = `W/"${info.size.toString(16)}-${Math.floor(info.mtimeMs).toString(16)}"`;
+    const cache = { ETag: etag, "Last-Modified": info.mtime.toUTCString(), "Cache-Control": "private, max-age=3600" };
+    if (request?.headers.get("if-none-match") === etag) return new Response(null, { status: 304, headers: cache });
     const body = await readFile(target);
     return new Response(new Uint8Array(body), {
       headers: {
+        ...cache,
         "Content-Type": type,
         "Content-Length": String(info.size),
-        "Cache-Control": "private, max-age=3600",
         // SVG kan indeholde scripts; vis den aldrig som et aktivt dokument.
         "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'",
         "X-Content-Type-Options": "nosniff",

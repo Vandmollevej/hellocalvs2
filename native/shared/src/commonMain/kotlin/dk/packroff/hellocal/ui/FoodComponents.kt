@@ -84,11 +84,14 @@ fun FoodImage(
     contentScale: ContentScale = ContentScale.Fit,
     colorFilter: ColorFilter? = null,
     contentDescription: String? = null,
+    /** Fetch a downscaled copy this wide (px) instead of the original; see Api.thumbUrl. */
+    thumbWidth: Int? = null,
 ) {
-    val model: Any? = remember(src) {
+    val model: Any? = remember(src, thumbWidth) {
         when {
             src.isNullOrBlank() -> null
             src.startsWith("data:") -> runCatching { Base64.Default.decode(src.substringAfter(",")) }.getOrNull()
+            thumbWidth != null -> Api.thumbUrl(src, thumbWidth)
             else -> Api.absoluteUrl(src)
         }
     }
@@ -173,7 +176,7 @@ fun FoodRow(
             contentAlignment = Alignment.Center,
         ) {
             if (thumbnail != null) thumbnail()
-            else if (!image.isNullOrBlank()) FoodImage(image, Modifier.size(44.dp).padding(4.dp))
+            else if (!image.isNullOrBlank()) FoodImage(image, Modifier.size(44.dp).padding(4.dp), thumbWidth = 128)
         }
         Column(Modifier.weight(1f)) {
             overline?.invoke()

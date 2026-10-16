@@ -18,6 +18,7 @@ import {
   type LogoUploadItem,
 } from "@/lib/brand-logo-upload-types";
 import { StepList } from "@/components/admin/BrandLogoSteps";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Oversigt over alle uploadede logoer, ét afsnit pr. parti med tidsstempel
 // (admin → Varedatabase → Logo-upload, docs/DECISIONS.md 2026-10-04). Pr. fil:
@@ -284,7 +285,7 @@ function Thumb({ item }: { item: LogoUploadItem }) {
   return (
     <div className="hf-surface flex h-12 w-16 items-center justify-center overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={item.imageUrl} alt={item.brandName ?? item.fileName} loading="lazy" className="h-full w-full object-contain p-1" />
+      <img src={imageThumb(item.imageUrl, 256)} alt={item.brandName ?? item.fileName} loading="lazy" className="h-full w-full object-contain p-1" />
     </div>
   );
 }

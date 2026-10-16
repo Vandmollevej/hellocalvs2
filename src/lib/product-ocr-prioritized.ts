@@ -92,11 +92,22 @@ export async function extractTextPrioritized(
     const { PSM } = await import("tesseract.js");
     const languages = [...new Set(primaryLanguages.length ? primaryLanguages : ["dan", "eng"])].join("+");
     const worker = await getWorker(languages);
-    // Segmenteringen sættes hver gang — arbejderen husker ellers sidste kald.
-    await worker.setParameters({ tessedit_pageseg_mode: options.tableLayout ? PSM.SINGLE_COLUMN : PSM.AUTO });
-    const result = options.layout
-      ? await worker.recognize(imageDataUrl, {}, { text: true, blocks: true })
-      : await worker.recognize(imageDataUrl);
+    let result;
+    try {
+      // Segmenteringen sættes hver gang — arbejderen husker ellers sidste kald.
+      await worker.setParameters({ tessedit_pageseg_mode: options.tableLayout ? PSM.SINGLE_COLUMN : PSM.AUTO });
+      result = options.layout
+        ? await worker.recognize(imageDataUrl, {}, { text: true, blocks: true })
+        : await worker.recognize(imageDataUrl);
+    } catch (error) {
+      // En arbejder, der er gået i stykker (fx efter hukommelsespres på
+      // telefonen), ville ellers fejle på alle følgende billeder: smid den
+      // væk, så næste kald starter en ny (bruger 2026-10-14: "ville slet ikke
+      // læse teksten anden gang").
+      if (cachedWorker?.languages === languages) cachedWorker = null;
+      void worker.terminate().catch(() => {});
+      throw error;
+    }
     const text = (result.data.text as string | undefined)?.trim() ?? "";
     const confidence = Number(result.data.confidence ?? 0);
     const meaningfulChars = text.replace(/[^\p{L}\p{N}]/gu, "").length;

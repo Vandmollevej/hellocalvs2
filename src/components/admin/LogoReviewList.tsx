@@ -11,6 +11,7 @@ type Candidate = {
   confidence: number;
   pageUrl: string;
   brandInPage: boolean;
+  aiGenerated: boolean;
   width: number;
   height: number;
 };
@@ -19,8 +20,8 @@ type Search = { id: string; brandName: string; originalUrl: string; candidates: 
 
 const pct = (value: number) => `${Math.round(value * 100)} %`;
 
-// Logoer til gennemsyn: originalen fra varefotoet ved siden af det valgte
-// fund, med pile midt på billedet og en række af 6 alternativer under. "Vælg"
+// Logoer til gennemsyn: originaludklippet fra varefotoet ved siden af det
+// valgte fund (hentet online eller AI-rentegnet, docs/DECISIONS.md 2026-10-15), med pile midt på billedet og en række af 6 alternativer under. "Vælg"
 // gemmer det viste fund; "Ingen passer" lukker sagen.
 export function LogoReviewList({ searches }: { searches: Search[] }) {
   const router = useRouter();
@@ -30,12 +31,18 @@ export function LogoReviewList({ searches }: { searches: Search[] }) {
       searches.map((search) => ({
         id: search.id,
         title: search.brandName,
-        subtitle: search.candidates[0] ? `Bedste fund: ${pct(search.candidates[0].confidence)}` : "Ingen fund",
-        slides: [{ src: search.originalUrl, label: "Original fra varefoto" }],
+        subtitle: search.candidates[0]
+          ? search.candidates[0].aiGenerated
+            ? "Intet fritlagt logo online — AI-rentegnet"
+            : `Bedste fund: ${pct(search.candidates[0].confidence)}`
+          : "Ingen fund",
+        slides: [{ src: search.originalUrl, label: "Originaludklip fra varefoto" }],
         alternatives: search.candidates.map((candidate, index) => ({
           key: candidate.id,
           src: candidate.imageUrl,
-          label: `${index === 0 ? "Bedste fund" : `Alternativ ${index + 1}`} · ${pct(candidate.confidence)} · ${candidate.width}×${candidate.height}`,
+          label: candidate.aiGenerated
+            ? `AI-rentegnet · ${candidate.width}×${candidate.height}`
+            : `${index === 0 ? "Bedste fund" : `Alternativ ${index + 1}`} · ${pct(candidate.confidence)} · ${candidate.width}×${candidate.height}`,
         })),
       })),
     [searches],

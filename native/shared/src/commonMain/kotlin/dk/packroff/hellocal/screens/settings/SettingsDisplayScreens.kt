@@ -67,11 +67,11 @@ private class SettingsProfileFlag(initialLoading: Boolean) {
 }
 
 @Composable
-private fun rememberProfileFlag(field: String): Pair<SettingsProfileFlag, (Boolean) -> Unit> {
+private fun rememberProfileFlag(field: String, default: Boolean = false): Pair<SettingsProfileFlag, (Boolean) -> Unit> {
     val scope = rememberCoroutineScope()
     val flag = remember { SettingsProfileFlag(initialLoading = true) }
     LaunchedEffect(field) {
-        flag.value = runCatching { settingsLoadProfile() }.getOrNull()?.let { it.settingsBool(field) ?: false }
+        flag.value = runCatching { settingsLoadProfile() }.getOrNull()?.let { it.settingsBool(field) ?: default }
         flag.loading = false
     }
     val save: (Boolean) -> Unit = { next ->
@@ -92,6 +92,49 @@ fun DisplaySettingsScreen(args: RouteArgs) {
     HcScreen(title = t.t("settings.display"), contentPadding = SettingsPagePadding) {
         SettingsPage {
             SettingsDisplayRows(isFemale, includeResults = false)
+        }
+    }
+}
+
+/**
+ * Native port of src/app/settings/display/pregnancy/page.tsx (User.pregnancyStatus,
+ * pregnancyWeek, breastfeedingWeeks): the stored week is counted forward to today,
+ * and every change applies from today again (pregnancyStatusUpdatedAt on the server).
+ */
+@Composable
+fun PregnancySettingsScreen(args: RouteArgs) {
+    val t = LocalTranslator.current
+    val scope = rememberCoroutineScope()
+    var value by remember { mutableStateOf<PregnancyValue?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        value = runCatching { settingsLoadProfile() }.getOrNull()?.let { user ->
+            val status = user.settingsStr("pregnancyStatus")
+            val updatedAt = user.settingsStr("pregnancyStatusUpdatedAt")
+            PregnancyValue(
+                status = status,
+                week = if (status == "PREGNANT") PregnancyRules.currentPregnancyWeek(user.settingsInt("pregnancyWeek"), updatedAt) else null,
+                breastfeedingWeeks = if (status == "BREASTFEEDING") PregnancyRules.currentBreastfeedingWeeks(user.settingsInt("breastfeedingWeeks"), updatedAt) else null,
+            )
+        }
+        loading = false
+    }
+    HcScreen(title = t.t("settings.pregnancy"), contentPadding = SettingsPagePadding) {
+        SettingsPage {
+            SettingsBrandCard(t.t("pregnancySettings.intro"))
+            val current = value
+            if (loading || current == null) {
+                HcLoader()
+            } else {
+                PregnancyFields(current, t.t("pregnancySettings.question")) { patch ->
+                    value = current.copy(
+                        status = if ("pregnancyStatus" in patch) patch["pregnancyStatus"] as String? else current.status,
+                        week = if ("pregnancyWeek" in patch) patch["pregnancyWeek"] as Int? else current.week,
+                        breastfeedingWeeks = if ("breastfeedingWeeks" in patch) patch["breastfeedingWeeks"] as Int? else current.breastfeedingWeeks,
+                    )
+                    scope.launch { runCatching { settingsPatchProfile(patch) } }
+                }
+            }
         }
     }
 }
@@ -235,6 +278,28 @@ fun TipsSettingsScreen(args: RouteArgs) {
                 label = "Tips til at nå dine mål",
                 description = "Foreslår fx en gåtur eller flere gulerødder, hvis du plejer at spise mere end dagens mål.",
             )
+        }
+    }
+}
+
+/** Native port of src/app/settings/display/translation/page.tsx (User.translateForeignText, DECISIONS 2026-10-15). */
+@Composable
+fun TranslationSettingsScreen(args: RouteArgs) {
+    val t = LocalTranslator.current
+    val (flag, save) = rememberProfileFlag("translateForeignText", default = true)
+    HcScreen(title = t.t("settings.translation"), contentPadding = SettingsDisplayP4) {
+        val value = flag.value
+        when {
+            flag.loading -> HcLoader()
+            value == null -> SettingsLoadErrorText(t.t("settings.loadError"))
+            else -> SettingsPage {
+                HcToggle(
+                    checked = value,
+                    onChange = save,
+                    label = t.t("displaySettings.translateForeignText"),
+                    description = t.t("displaySettings.translateForeignTextDescription"),
+                )
+            }
         }
     }
 }

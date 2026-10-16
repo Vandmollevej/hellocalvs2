@@ -16,6 +16,7 @@ import {
   type WidgetPlatform,
   type WidgetSnapshot,
 } from "@/lib/widgets";
+import { imageThumb } from "@/lib/image-thumb";
 
 type Size = { width: number; height: number };
 
@@ -346,7 +347,7 @@ export function RecentEntriesWidget({
           >
             {entry.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={entry.imageUrl} alt="" className="h-6 w-6 shrink-0 rounded object-contain" />
+              <img src={imageThumb(entry.imageUrl, 64)} alt="" className="h-6 w-6 shrink-0 rounded object-contain" />
             ) : (
               <span className="h-6 w-6 shrink-0 rounded bg-hf-tan" />
             )}

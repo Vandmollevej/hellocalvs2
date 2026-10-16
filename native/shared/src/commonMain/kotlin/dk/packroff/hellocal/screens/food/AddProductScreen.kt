@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,7 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -175,6 +181,7 @@ fun AddProductView(
     var openMicronutrient by remember { mutableStateOf<String?>(null) }
     var uncertaintyToggled by remember { mutableStateOf(setOf<String>()) }
     var additiveNames by remember { mutableStateOf(mapOf<String, String>()) }
+    var reloadKey by remember { mutableStateOf(0) }
     var isFavorite by remember { mutableStateOf(false) }
     var favoritePending by remember { mutableStateOf(false) }
     var photoAwards by remember { mutableStateOf<List<PhotoAward>>(emptyList()) }
@@ -184,6 +191,16 @@ fun AddProductView(
     val openedAt = remember { FoodTime.now() }
     val scrollState = rememberScrollState()
     var detailsY by remember { mutableStateOf(0f) }
+    // "Vis original"/"Vis oversættelse": the user's choice on the page, so polling doesn't switch back.
+    var textChoice by remember { mutableStateOf<String?>(null) }
+    val toggleOriginalText: () -> Unit = {
+        val current = (state as? LoadState.Loaded)?.product
+        if (current?.translation != null) {
+            val swapped = swapProductTexts(current)
+            textChoice = swapped.translation?.showing
+            state = LoadState.Loaded(swapped)
+        }
+    }
 
     LaunchedEffect(id, registration) {
         profile = FoodProfile.refresh()
@@ -216,6 +233,16 @@ fun AddProductView(
         }
     }
 
+    // After a photo in the update banner: fetch the product again (the banner
+    // disappears once nothing is missing).
+    LaunchedEffect(reloadKey) {
+        if (reloadKey == 0 || id.isEmpty()) return@LaunchedEffect
+        runCatching {
+            val product = ApiJson.decodeFromJsonElement(ProductResponse.serializer(), Api.get("/api/products/$id")).product
+            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(withTextChoice(product, textChoice), registration))
+        }
+    }
+
     LaunchedEffect(id) {
         if (id.isEmpty()) return@LaunchedEffect
         isFavorite = runCatching {
@@ -242,7 +269,7 @@ fun AddProductView(
         delay(PENDING_POLL_MS)
         runCatching {
             val product = ApiJson.decodeFromJsonElement(ProductResponse.serializer(), Api.get("/api/products/$id")).product
-            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(product, registration))
+            if (product != null && state is LoadState.Loaded) state = LoadState.Loaded(applyRegistrationSnapshot(withTextChoice(product, textChoice), registration))
         }
     }
 
@@ -442,7 +469,9 @@ fun AddProductView(
                 Box(Modifier.fillMaxWidth().padding(16.dp)) {
                     Column(Modifier.fillMaxWidth()) {
                         Column(Modifier.fillMaxWidth().padding(top = 46.dp), verticalArrangement = Arrangement.spacedBy(33.dp)) {
+                            BoxWithConstraints(Modifier.fillMaxWidth()) {
                             ProductCircle(
+                                columnWidthDp = maxWidth.value,
                                 imageUrl = displayImageUrl,
                                 isCutout = isCutout,
                                 landscape = imageLandscape,
@@ -452,16 +481,31 @@ fun AddProductView(
                                 isFavorite = isFavorite,
                                 favoriteLabel = t.t(if (isFavorite) "search.removeFavorite" else "search.addFavorite"),
                                 onToggleFavorite = ::toggleFavorite,
+                                brandPending = isPending("brand"),
                                 brand = view.brand,
                                 subbrand = displayedSubbrand(view.brand?.name, view.subbrand),
                                 subbrandLogoUrl = view.subbrandLogoUrl,
                                 certifications = certifications,
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                modifier = Modifier.align(Alignment.TopCenter),
                             )
+                            }
                             Column(Modifier.fillMaxWidth()) {
+                                // The translated-from line sits above the title without moving it or the image (DECISIONS 2026-10-15).
+                                val translation = view.translation
+                                if (translation != null && translation.placement != "ingredients" && !isPending("name")) {
+                                    TranslationNote(translation, onToggle = toggleOriginalText)
+                                }
                                 if (isPending("name")) FoodSkeleton(Modifier.width(200.dp).height(36.dp))
-                                else HcText(localizedDecimals(productTitle), HcTypeRoles.Hero, color = HcColors.Black)
-                                HcText(localizedDecimals(subtitle).ifEmpty { " " }, HcTypeRoles.Hero, color = HcColors.Green)
+                                // Without a green line the name takes at least two hero lines:
+                                // a short name keeps the empty line, a two-line name gets no extra space.
+                                else Text(
+                                    localizedDecimals(productTitle),
+                                    style = HcTypeRoles.Hero.style(HcColors.Black),
+                                    minLines = if (subtitle.isEmpty()) 2 else 1,
+                                )
+                                // Size and variant are read together with the name.
+                                if (isPending("name")) FoodSkeleton(Modifier.padding(vertical = 4.dp).width(150.dp).height(28.dp))
+                                else if (subtitle.isNotEmpty()) HcText(localizedDecimals(subtitle), HcTypeRoles.Hero, color = HcColors.Green)
                             }
                         }
 
@@ -657,6 +701,11 @@ fun AddProductView(
                     if (isPending("ingredients") || !view.ingredientsText.isNullOrEmpty()) {
                         Column {
                             HcText(t.t("createDish.ingredients"), HcTypeRoles.Body, Modifier.padding(bottom = 8.dp), color = HcColors.Black, bold = true)
+                            // Only the ingredients are translated: the note sits above the list instead of the title (DECISIONS 2026-10-15).
+                            val translation = view.translation
+                            if (translation != null && translation.placement == "ingredients" && !isPending("ingredients")) {
+                                TranslationNote(translation, inFlow = true, onToggle = toggleOriginalText)
+                            }
                             when {
                                 isPending("ingredients") -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     listOf(0.94f, 0.82f, 0.88f, 0.46f).forEach { FoodSkeleton(Modifier.fillMaxWidth(it).height(16.dp)) }
@@ -679,33 +728,33 @@ fun AddProductView(
                         )
                     }
 
-                    if (view.barcodes.isNotEmpty() && view.createdByUserId != profile?.id) {
-                        HcButton(
-                            t.t("addProduct.reportBug"),
-                            onClick = { nav.push("/profile/report-bug?productId=$id") },
-                            leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
-                        )
-                    }
+                    // På alle varer — generiske, uden stregkode og egne
+                    // (brugerens regel 2026-10-15).
+                    HcButton(
+                        t.t("addProduct.reportBug"),
+                        onClick = { nav.push("/profile/report-bug?productId=$id") },
+                        leading = { HcIcon("Message", size = 18.dp, color = HcColors.White) },
+                    )
                 }
             }
         }
         if (!isLoading && !forDish && !isEditing && id.isNotEmpty() && offer != null) {
             val tileKeys = mapOf("FRONT" to "productUpdate.tileFront", "NUTRITION" to "productUpdate.tileNutrition", "INGREDIENTS" to "productUpdate.tileIngredients")
             UpdatePointsBanner(
-                "/add/${encodeUri(id)}/update",
-                t.t("productUpdate.banner", "points" to offer.points),
-                t.t("productUpdate.toggle"),
-                offer.kinds.mapNotNull { k -> tileKeys[k]?.let { t.t(it) } },
-            ) {
-                if (product?.ingredientsUnreadable == true) {
-                    HcButton(
-                        t.t("addProduct.retakeIngredients"),
-                        onClick = { nav.push("/camera?mode=product&retake=ingredients&product=${encodeUri(id)}") },
-                        kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary,
-                        leading = { HcIcon("Camera", size = 19.dp, color = HcColors.Action) },
-                    )
-                }
-            }
+                productId = id,
+                // "… with a great new photo" only on Open Food Facts products (user rule 2026-10-15).
+                text = t.t(if (product?.externalSource == "OPEN_FOOD_FACTS") "productUpdate.bannerPhoto" else "productUpdate.banner", "points" to offer.points),
+                toggleLabel = t.t("productUpdate.toggle"),
+                tiles = offer.kinds.mapNotNull { k ->
+                    tileKeys[k]?.let { key ->
+                        // Unreadable ingredients: the creator retakes them with the camera from
+                        // the pulled-down panel, never a button in the closed strip.
+                        UpdateTile(k, t.t(key), retake = k == "INGREDIENTS" && product?.ingredientsUnreadable == true)
+                    }
+                },
+                onUpdated = { reloadKey++ },
+                scrollOffset = scrollState.value,
+            )
         }
         }
 
@@ -755,22 +804,41 @@ private fun ProductCircle(
     isFavorite: Boolean,
     favoriteLabel: String,
     onToggleFavorite: () -> Unit,
+    brandPending: Boolean,
     brand: ProductBrand?,
     subbrand: String?,
     subbrandLogoUrl: String?,
     certifications: List<NameCertification>,
+    columnWidthDp: Float,
     modifier: Modifier = Modifier,
 ) {
+    // Brand and subbrand names wrap onto more lines instead of running past the page edge; their measured
+    // height moves them out from the circle (src/lib/brand-logo-layout.ts).
+    val density = LocalDensity.current
+    var brandNameHeight by remember { mutableStateOf(BRAND_NAME_HEIGHT_DP) }
+    var subbrandNameHeight by remember { mutableStateOf(BRAND_NAME_HEIGHT_DP) }
+    // Without a product photo a logo stands big in the circle: the subbrand's if it has one, else the brand's
+    // (docs/DECISIONS.md 2026-10-14). That logo is then not shown beside the circle as well.
+    val noImage = imageUrl == null && !showSkeleton
+    val subbrandHasLogo = subbrand != null && !subbrandLogoUrl.isNullOrEmpty()
+    val circleLogoUrl: String? = when {
+        !noImage -> null
+        subbrandHasLogo -> subbrandLogoUrl
+        brand != null && !brand.logoUrl.isNullOrEmpty() -> brand.logoUrl
+        else -> null
+    }
+    val subbrandInCircle = circleLogoUrl != null && subbrandHasLogo
+    val brandInCircle = circleLogoUrl != null && !subbrandHasLogo
     Box(modifier.size(180.dp)) {
         Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
             when {
-                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp).padding(12.dp), ContentScale.Fit)
+                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp).padding(12.dp), ContentScale.Fit, thumbWidth = 640)
                 imageUrl == null && showSkeleton -> FoodSkeleton(Modifier.size(180.dp), CircleShape)
             }
         }
         if (imageUrl != null && isCutout) {
             // Cut-out product: 110 % of the circle — standing items rise 10 % above it, lying items 10 % to the right.
-            val model = Api.absoluteUrl(imageUrl)
+            val model = Api.thumbUrl(imageUrl, 640)
             AsyncImage(
                 model = model,
                 contentDescription = null,
@@ -780,6 +848,20 @@ private fun ProductCircle(
                 else Modifier.align(Alignment.BottomCenter).height(198.dp),
             )
         }
+        if (circleLogoUrl != null) {
+            // The logo may stand out of the circle in height OR width, never cropped (src/lib/brand-logo-layout.ts).
+            var logoRatio by remember(circleLogoUrl) { mutableStateOf<Float?>(null) }
+            val (logoWidth, logoHeight) = circleLogoSizeDp(logoRatio)
+            AsyncImage(
+                model = Api.thumbUrl(circleLogoUrl, 640),
+                contentDescription = if (subbrandInCircle) subbrand else brand?.name,
+                contentScale = ContentScale.Fit,
+                onState = { s ->
+                    if (s is AsyncImagePainter.State.Success) logoRatio = s.result.image.width.toFloat() / s.result.image.height.coerceAtLeast(1)
+                },
+                modifier = Modifier.align(Alignment.Center).requiredSize(logoWidth.dp, logoHeight.dp),
+            )
+        }
         if (showFavorite) {
             Box(
                 Modifier.align(Alignment.TopEnd).offset(x = (-8).dp, y = 8.dp).size(44.dp).clip(CircleShape)
@@ -787,30 +869,37 @@ private fun ProductCircle(
                 contentAlignment = Alignment.Center,
             ) { FoodFavoriteIcon(isFavorite, 24.dp, HcColors.White) }
         }
-        if (brand != null) {
-            Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
-                if (!brand.logoUrl.isNullOrEmpty()) {
-                    FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name)
-                } else {
-                    Text(brand.name, style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
-                }
+        if (brandPending) {
+            // While the brand is read, a shimmering box stands in the brand's place (REGLER 2026-10-15).
+            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_NAME_HEIGHT_DP, 0).dp)) {
+                FoodSkeleton(Modifier.size(88.dp, BRAND_NAME_HEIGHT_DP.dp), RoundedCornerShape(50))
             }
         }
-        if (subbrand != null) {
+        if (!brandPending && brand != null && !brandInCircle) {
+            if (!brand.logoUrl.isNullOrEmpty()) {
+                Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
+                    FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name, thumbWidth = 384)
+                }
+            } else {
+                val left = logoLeftDp(brandNameHeight, 0)
+                BrandNameText(brand.name, left, 0, columnWidthDp) { brandNameHeight = with(density) { it.toDp().value.roundToInt() } }
+            }
+        }
+        if (!brandPending && subbrand != null && !subbrandInCircle) {
             // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
             val brandHeight = when {
-                brand == null -> 0
+                brand == null || brandInCircle -> 0
                 !brand.logoUrl.isNullOrEmpty() -> BRAND_LOGO_HEIGHT_DP
-                else -> BRAND_NAME_HEIGHT_DP
+                else -> brandNameHeight
             }
             val bottom = if (brandHeight > 0) brandHeight + SUBBRAND_GAP_DP else 0
-            val height = if (!subbrandLogoUrl.isNullOrEmpty()) BRAND_LOGO_HEIGHT_DP else BRAND_NAME_HEIGHT_DP
-            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(height, bottom).dp, y = (-bottom).dp)) {
-                if (!subbrandLogoUrl.isNullOrEmpty()) {
-                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand)
-                } else {
-                    Text(subbrand, style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+            if (!subbrandLogoUrl.isNullOrEmpty()) {
+                Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_LOGO_HEIGHT_DP, bottom).dp, y = (-bottom).dp)) {
+                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand, thumbWidth = 384)
                 }
+            } else {
+                val left = logoLeftDp(subbrandNameHeight, bottom)
+                BrandNameText(subbrand, left, bottom, columnWidthDp) { subbrandNameHeight = with(density) { it.toDp().value.roundToInt() } }
             }
         }
         if (certifications.isNotEmpty()) {
@@ -821,9 +910,43 @@ private fun ProductCircle(
     }
 }
 
+/**
+ * A brand/subbrand name in bold green beside the circle, [leftDp] from the circle's left and [bottomDp] above its
+ * bottom. It wraps within the room to the page edge (brandNameMaxWidthPx in src/lib/brand-logo-layout.ts).
+ */
+@Composable
+private fun BoxScope.BrandNameText(
+    name: String,
+    leftDp: Int,
+    bottomDp: Int,
+    columnWidthDp: Float,
+    onHeightPx: (Int) -> Unit,
+) {
+    val maxWidth = max(BRAND_NAME_MIN_WIDTH_DP, (columnWidthDp / 2 + 90 - leftDp).toInt())
+    Text(
+        name,
+        style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold),
+        modifier = Modifier.align(Alignment.BottomStart).offset(x = leftDp.dp, y = (-bottomDp).dp)
+            .wrapContentWidth(Alignment.Start, unbounded = true).widthIn(max = maxWidth.dp)
+            .onSizeChanged { onHeightPx(it.height) },
+    )
+}
+
+private const val BRAND_NAME_MIN_WIDTH_DP = 60
 private const val BRAND_LOGO_HEIGHT_DP = 66
 private const val BRAND_NAME_HEIGHT_DP = 22
 private const val SUBBRAND_GAP_DP = 6
+private const val CIRCLE_LOGO_LONG_DP = 216f
+private const val CIRCLE_LOGO_SHORT_DP = 150f
+
+/** Size (dp) of a logo with width/height [ratio] standing big in the circle — circleLogoSize in src/lib/brand-logo-layout.ts. */
+private fun circleLogoSizeDp(ratio: Float?): Pair<Int, Int> {
+    val r = if (ratio != null && ratio.isFinite() && ratio > 0f) ratio else 1f
+    val maxWidth = if (r >= 1f) CIRCLE_LOGO_LONG_DP else CIRCLE_LOGO_SHORT_DP
+    val maxHeight = if (r >= 1f) CIRCLE_LOGO_SHORT_DP else CIRCLE_LOGO_LONG_DP
+    val width = min(maxWidth, maxHeight * r)
+    return width.roundToInt() to (width / r).roundToInt()
+}
 
 /** The subbrand to show above the brand — null when empty or just the brand again (src/lib/subbrand-names.ts). */
 private fun displayedSubbrand(brandName: String?, subbrand: String?): String? {
@@ -1029,5 +1152,31 @@ private fun ExtendedNutritionSection(
                 }
             }
         }
+    }
+}
+
+/** Small grey line above the product title: "Oversat til dansk fra kinesisk. Vis original" — takes no layout space. */
+@Composable
+private fun TranslationNote(translation: ProductTranslationInfo, inFlow: Boolean = false, onToggle: () -> Unit) {
+    val t = LocalTranslator.current
+    val source = translation.sourceLanguageName
+    val note = if (translation.showing == "original") {
+        if (source != null) t.t("addProduct.originalLanguage", "source" to source) else t.t("addProduct.originalText")
+    } else {
+        if (source != null) t.t("addProduct.translatedFrom", "target" to translation.targetLanguageName, "source" to source)
+        else t.t("addProduct.translatedTo", "target" to translation.targetLanguageName)
+    }
+    val link = t.t(if (translation.showing == "translated") "addProduct.showOriginal" else "addProduct.showTranslation")
+    Row(
+        if (inFlow) Modifier.padding(bottom = 4.dp)
+        else Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            // Zero height: drawn in the gap above the title (web: absolute bottom-full mb-1).
+            layout(placeable.width, 0) { placeable.place(0, -placeable.height - 4.dp.roundToPx()) }
+        },
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        HcText(note, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+        HcText(link, HcTypeRoles.Caption, Modifier.clickable(onClick = onToggle), color = HcColors.TextSecondary, underline = true)
     }
 }
