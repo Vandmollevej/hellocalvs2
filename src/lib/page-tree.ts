@@ -412,6 +412,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/admin-users", label: "Admin-brugere", note: "Via profil-ikonet øverst: adgang, invitationer, 2-faktor, IP-begrænsning og login-log" },
           { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
+          { path: "/admin/openai", label: "OpenAI-forbrug", note: "Status på nøglen, forbrug i dollar og resterende kredit" },
           {
             path: "/admin/chatbot",
             label: "Chatbot",

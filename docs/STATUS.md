@@ -1,3 +1,8 @@
+## 2026-10-16: Admin → OpenAI-forbrug
+
+- Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
+- Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
+
 ## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
 - Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
 

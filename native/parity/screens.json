@@ -372,6 +372,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/openai",
+      "web": "src/app/admin/openai/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/page-tree",
       "web": "src/app/admin/page-tree/page.tsx",
       "status": "web-only",
