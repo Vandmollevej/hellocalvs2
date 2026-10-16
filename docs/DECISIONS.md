@@ -5700,14 +5700,17 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 
 Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.
 
-### 2026-10-16 — Screeningen kører som nat-job på NAS'en (afløser pc-løsningen ovenfor som standard)
+### 2026-10-16 — Screeningen kører kun på brugerens pc (afløser NAS-jobbet)
 
 Brugeren skal ikke køre noget: `image-screen-local` (quality-control-agent, 03:20, `image_screen_local.py`) screener 300 billeder pr. nat, indtil alle danske/tyske OFF-varer fra Lidl/Aldi (mærke/butik, inkl. egenmærker som Milbona, Pilos, Milsani) er gennemgået, og gemmer flag `CROPPED` / `HAND` / `OPEN` plus delscorer i `product_image_screenings` (migration `20261016100000_image_screenings`). Kun markering — varer og billeder ændres aldrig. `scripts/image-screen` er den samme logik som pc-kørsel. Migrationen skal med deployet, og quality-control-agent skal genbygges (CLIP-vægte hentes første nat). Markeringerne vises under Admin → Kvalitetskontrol → Ufuldstændige billeder (op til 200, nyeste først); "Fjern markering" sætter `reviewedAt` og rører ikke varen.
+
+Brugeren bad om en lokal kørsel på pc'en. Nat-jobbet `image-screen-local` på NAS'en, fanen Ufuldstændige billeder i admin og tabellen `product_image_screenings` er fjernet igen (migration `20261016150000_drop_image_screenings`). Kun `scripts/image-screen` på pc'en er tilbage. Byg aldrig noget til NAS'en, når brugeren har bedt om en lokal kørsel.
 
 ## 2026-10-16: Integrationshentning som eget job + ved åbning; én synk-popup
 
 Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook) var i realtid, og fik to forskellige "ikke synkroniseret"-popups efter hinanden. Beslutning: (1) baggrundshentningen af cloud-integrationer er sit eget job `integration-sync` (15 min., 2 min. tidsgrænse pr. integration) i stedet for et trin i Vedligehold; (2) `POST /api/integrations/app-open` henter alle forbundne cloud-integrationer (normal 15-min.-grænse), så data er friske, når appen åbnes; (3) `StaleSyncPrompt` (layout) genbruger vægt-popuppens bundark (`StaleSyncSheet`) og ignorerer integrationer, der læser vægt — dem ejer `WeighInPrompts`.
 
-## 2026-10-16: Talte sætninger søges som varen
+## 2026-10-16 — Admin: alle accordions i venstre menu lukket ved login
 
-- Mikrofonen på Madvarer skriver hele sætningen i søgefeltet ("Jeg har spist en bakke pomfritter"), og den gav ingen træffere. `/api/products` skræller nu indledning ("jeg har spist", "I just had", "ich habe … gegessen" …), mængde/enhed ("en bakke", "2 skiver") og tidsangivelse ("til frokost") af på alle mikrofonens sprog (`src/lib/spoken-food-query.ts` + test) og søger på varen. Uden talt indledning prøves den skrællede tekst kun, hvis originalen intet finder, så "Tre Stjerner" ikke mister "Tre". Ikke ved `?exact=1` eller `?source=`. Søgestatistikken gemmer det sagte. Sker på serveren, så web og native får det samme.
+- Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
+- `AdminShell` starter med et tomt sæt åbne grupper, og den automatiske udfoldning af den aktive sides gruppe ved sideskift er fjernet (den åbnede en gruppe lige efter login). Gruppens overskrift markeres stadig som aktiv. Egne klik huskes i `sessionStorage` og ryddes ved login/logout som før.
