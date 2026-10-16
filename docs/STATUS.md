@@ -1,7 +1,7 @@
-## 2026-10-16: Forsidens grafer i infoboksens plads
+## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
 
-- Graferne fra 2026-10-14 (puls, kalorier, anbefalet mod indtag, målsætning og teksten "For at kunne holde dig inden for dagens mål …" nederst) står nu uden baggrund i præcis den plads, infoboksen havde, modsat tal-hjulet (`FrontCharts` i `Hero`). Resten af forsiden (topbar, tal-hjul, puls-linje, dagens liste, ingen rulning) er som før graferne. Graferne deler infoboksens højde ligeligt.
-- Vågne timer: rundet OP til venstre og NED til højre, som brugeren skrev. Web + native (`HomeFrontCharts` i hero-boksen). Native er ikke kompileret lokalt — CI afgør.
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, 48 px høje hver (halvt så høje som første udgave), fra boksens gamle top. Heroens højde (top til skillelinjen) er uændret.
+- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
