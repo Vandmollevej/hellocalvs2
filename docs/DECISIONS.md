@@ -2,6 +2,20 @@
 
 - Brugeren vil kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev, for at kunne forbedre dem. Mikrofonen på Madvarer er telefonens talegenkendelse + almindelig søgning, løbende mens der tales; brugeren afviste en OpenAI-tolkning som for tung og langsom.
 - "Rationalet" er derfor søgningens egen rangering: pointene pr. signal (tekstmatch × 100 + signal × vægt fra Søgealgoritmer) gemmes for de 5 øverste varer i hvert trin. Én række pr. mikrofon-session (`debug_logs`, kategori `voice`), anonymt, 30 dage, uafhængigt af Log-kontakten. Visningen ligger under Analyse → Søgning (brugerens valg), ikke i Log. Skriver brugeren selv, logges intet.
+## 2026-10-16: Rodårsagen var tom OpenAI-kredit — energi-trinnet kræver nu en aflæsning, ingen skøn
+
+Produktionens log (læst med brugerens tilladelse): alle AI-aflæsninger siden mindst 15/10 08:56 fejlede med 429 `insufficient_quota` ("You have no credits remaining") — letmælken, Verpoorten m.fl. Kreditten skal fyldes op på platform.openai.com → Billing (admin → OpenAI-forbrug viser status).
+
+Brugeren afviste energiskønnet ("Skønner energien? Dette er ikke ok") og bestemte: energi-trinnet må ikke kunne klares, hvis energien ikke er læst. Derfor:
+- `POST /api/products/read-energy`: AI'en læser energifotoet, mens brugeren står på trinnet, når telefonens egen aflæsning ikke var komplet. Kun komplet pr. 100 g/ml eller alkohol over 1,2 % vol (`energyReadOk`, `src/lib/energy-read.ts`) klarer trinnet; ellers tages billedet om. Web (`verifyEnergy`) + native.
+- Aflæsningen sendes med oprettelsen (`nutritionAnalysisId`) og bruges direkte af `enrichLabel`.
+- Skønnet fra samme dag (Frida/varetype på nye scannede varer, `type-nutrition-estimate.ts`) er fjernet, og Frida-robotten springer varer fra kameraflowet over (`quickEnrichmentJob: null`).
+- Manglende kredit prøves ikke igen med det samme (kun de øvrige 429/5xx).
+- Alarm: `/api/health?deep=1` melder OpenAI-status (`ai`: ok/quota/invalid/missing/low …), og Uptime-overvågningen fejler — og mailer — ved tom kredit, afvist nøgle eller lav saldo (højst i timens første 10 minutter). Vagt: `src/lib/scan-energy-guard.test.mjs` fejler, hvis energi-porten, skøn-forbuddet eller alarmen fjernes.
+
+## 2026-10-16: Beløbsgrænse for varsler (admin → API-forbrug)
+
+- Brugerens ønske: selv bestemme, hvornår der advares. Hver tjeneste har nu "Advar mig, når månedens forbrug når …" (`api_budgets.alertAt`), og OpenAI har også "Advar mig, når kreditsaldoen er under …" (`balanceAlertAt`, standard 5 $). Beløbsgrænsen giver advarsel på kortet og én mail pr. måned; 80 %/100 % af budgettet varsles stadig. Migration `20261016180000_api_alert_amount`.
 
 ## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
 
@@ -5752,3 +5766,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
 - `AdminShell` starter med et tomt sæt åbne grupper, og den automatiske udfoldning af den aktive sides gruppe ved sideskift er fjernet (den åbnede en gruppe lige efter login). Gruppens overskrift markeres stadig som aktiv. Egne klik huskes i `sessionStorage` og ryddes ved login/logout som før.
+
+## 2026-10-16 — Bria ved siden af rembg, med cache og kreditloft
+- Bria RMBG er valgfri fritlægningsmotor (`CUTOUT_ENGINE`, nøgle i admin → API-nøgler). rembg er stadig standard og det, der godkendes uden valg.
+- Bria-svar caches på disken efter billedets hash og tælles mod `BRIA_MAX_CREDITS`, så credits ikke spildes. Nye PRODUCT_FRONT-fritlægninger får en `_bria.png`-udgave, som admin kan sammenligne og vælge under Billedforslag. Detaljer: `docs/BRIA.md`.

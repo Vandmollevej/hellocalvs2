@@ -32,6 +32,8 @@ export type CaptureData = {
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   localNutrition?: ParsedNutrition | null;
+  // Energien læst af AI under flowet (readEnergyPhoto) — bruges af oprettelsen.
+  nutritionAnalysisId?: string;
   ingredientsPhoto?: string;
   ingredientsOcrText?: string;
   ingredientsOcrConfidence?: number;
@@ -206,6 +208,43 @@ export async function uploadBackPhoto(
   }
 }
 
+// Energi-trinnet (brugerens krav 2026-10-16): kunne telefonen ikke læse
+// næringstabellen, læser AI'en fotoet, mens brugeren står på trinnet.
+// Trinnet klares kun med ok = true; ellers tages billedet om.
+export const ENERGY_READ_TIMEOUT_MS = 60_000;
+export type EnergyReadResult =
+  | { ok: true; analysisId: string }
+  | { ok: false; reason: "unreadable" | "ai_unavailable" | "error" };
+
+export async function readEnergyPhoto(
+  photo: string,
+  data: CaptureData,
+  marketRegion: string,
+): Promise<EnergyReadResult> {
+  try {
+    const response = await fetch("/api/products/read-energy", {
+      method: "POST",
+      signal: AbortSignal.timeout(ENERGY_READ_TIMEOUT_MS),
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
+      body: JSON.stringify({
+        photo,
+        barcode: data.barcode,
+        marketRegion,
+        signals: data.languageSignals,
+        ocrText: data.nutritionOcrText ?? "",
+      }),
+    });
+    const body = (await response.json().catch(() => null)) as
+      | { ok?: boolean; analysisId?: string; reason?: string }
+      | null;
+    if (body?.ok && typeof body.analysisId === "string") return { ok: true, analysisId: body.analysisId };
+    const reason = body?.reason === "unreadable" || body?.reason === "ai_unavailable" ? body.reason : "error";
+    return { ok: false, reason };
+  } catch {
+    return { ok: false, reason: "error" };
+  }
+}
+
 // Uden tidsgrænse stod en hængende upload som et sort, låst kamera, mens
 // serveren allerede havde oprettet varen (bruger 2026-10-14).
 export const CREATE_TIMEOUT_MS = 60_000;
@@ -227,6 +266,7 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
       nutritionOcrText: data.nutritionOcrText,
       nutritionOcrConfidence: data.nutritionOcrConfidence,
       localNutrition: data.localNutrition ?? null,
+      nutritionAnalysisId: data.nutritionAnalysisId,
       ingredientsPhoto: data.ingredientsOnNutritionPhoto ? undefined : data.ingredientsPhoto,
       ingredientsOcrText: data.ingredientsOcrText,
       ingredientsOcrConfidence: data.ingredientsOcrConfidence,

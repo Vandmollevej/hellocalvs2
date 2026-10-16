@@ -1064,7 +1064,10 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Création du produit …",
     "sendingPhotos": "Envoi des photos …",
-    "processingPhotos": "Traitement des photos : {steps} …"
+    "processingPhotos": "Traitement des photos : {steps} …",
+    "readingEnergy": "Lecture de l'énergie …",
+    "energyUnreadable": "L'énergie n'a pas pu être lue. Reprends la photo, au plus près du tableau nutritionnel.",
+    "energyAiUnavailable": "L'énergie ne peut pas être lue pour le moment. Réessaie dans un instant."
   },
   "foods": {
     "title": "Aliments",
@@ -3886,6 +3889,7 @@
     "noPulse": "No pulse data yet",
     "intake": "Calories",
     "planVsActual": "Recommended vs. intake",
+    "clockLeft": "{hour}",
     "goalDays": "Goal · days",
     "goalWeeks": "Goal · weeks",
     "actionOpen": "See suggestions for staying within today's goal",

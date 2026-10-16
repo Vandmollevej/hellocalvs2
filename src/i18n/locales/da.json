@@ -1064,7 +1064,10 @@
     "shutterHint": "Tryk på udløseren, når varen står skarpt i billedet.",
     "creating": "Opretter varen …",
     "sendingPhotos": "Sender billederne …",
-    "processingPhotos": "Behandler billeder: {steps} …"
+    "processingPhotos": "Behandler billeder: {steps} …",
+    "readingEnergy": "Læser energien …",
+    "energyUnreadable": "Energien kunne ikke læses. Tag billedet igen, tæt på næringstabellen.",
+    "energyAiUnavailable": "Energien kan ikke læses lige nu. Prøv igen om lidt."
   },
   "foods": {
     "title": "Madvarer",
@@ -3886,6 +3889,7 @@
     "noPulse": "Ingen pulsdata endnu",
     "intake": "Kalorier",
     "planVsActual": "Anbefalet mod indtag",
+    "clockLeft": "kl. {hour}",
     "goalDays": "Målsætning · dage",
     "goalWeeks": "Målsætning · uger",
     "actionOpen": "Se forslag til at holde dagens mål",

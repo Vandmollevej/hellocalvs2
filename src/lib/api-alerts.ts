@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { APP_BASE_URL, sendTransientMail } from "@/lib/transient-mail";
 import { getApiUsageOverview, type ServiceOverview } from "@/lib/api-usage";
+import { formatMoney } from "@/lib/api-usage-format";
 
 // Varsler om API-forbrug (docs/DECISIONS.md 2026-10-16): job `api-alerts`
 // mailer modtagerne, når en betalt tjeneste fejler, kreditten slipper op,
@@ -40,12 +41,18 @@ function alertsFor(service: ServiceOverview, month: string, day: string): Alert[
     alerts.push({ key: `${service.id}:fail:${day}`, text: `${service.name}: ${service.stateText}` });
   }
   if (service.budgetUse !== null && service.budget) {
-    const spent = `${service.spent?.toFixed(2)} af ${service.budget.toFixed(2)} ${service.currency}`;
+    const spent = `${formatMoney(service.spent, service.currency)} af ${formatMoney(service.budget, service.currency)}`;
     if (service.budgetUse >= 1) {
       alerts.push({ key: `${service.id}:budget100:${month}`, text: `${service.name}: budgettet er brugt op (${spent}).` });
     } else if (service.budgetUse >= 0.8) {
       alerts.push({ key: `${service.id}:budget80:${month}`, text: `${service.name}: 80 % af budgettet er brugt (${spent}).` });
     }
+  }
+  if (service.alertReached && service.alertAt !== null) {
+    alerts.push({
+      key: `${service.id}:amount:${service.alertAt}:${month}`,
+      text: `${service.name}: forbruget har nået ${formatMoney(service.spent, service.currency)} (din varselsgrænse er ${formatMoney(service.alertAt, service.currency)}).`,
+    });
   }
   if (service.id === "openai" && service.state === "warn" && /saldo/i.test(service.stateText)) {
     alerts.push({ key: `openai:low:${day}`, text: `OpenAI: ${service.stateText}.` });

@@ -3,8 +3,8 @@
 import type { GoalBar, StickBucket } from "@/lib/front-charts";
 
 // Forsidens fire grafer (bruger 2026-10-14) i infoboksens plads: uden
-// baggrund, kun min/maks til venstre og timetal i siderne under x-aksen. Kun
-// pulsen har en titel ("Puls") i midten; de andre viser grafen i midten. Farven er den
+// baggrund, kun min/maks til venstre, timetal i siderne under x-aksen ("kl."
+// foran det venstre) og titlen i midten. Farven er den
 // nye graf-accent (--hf-color-chart-blue).
 
 // Højden følger pladsen i infoboksens felt (bruger 2026-10-16).
@@ -78,8 +78,8 @@ function plotX(width: number, count: number, i: number) {
 
 /** Pulsen over dagen som pindediagram (én min/maks-pind pr. kvarter). */
 export function PulseSticks({
-  width, height, buckets, startHour, endHour, title,
-}: { width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string }) {
+  width, height, leftLabel, buckets, startHour, endHour, title,
+}: { leftLabel: (hour: string) => string; width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string }) {
   const filled = buckets.filter((b): b is NonNullable<StickBucket> => b !== null);
   const lo = filled.length ? Math.min(...filled.map((b) => b.min)) : 0;
   const hi = filled.length ? Math.max(...filled.map((b) => b.max)) : 0;
@@ -89,7 +89,7 @@ export function PulseSticks({
   return (
     <Frame
       width={width} height={height} title={title} ariaLabel={title}
-      left={hourLabel(startHour)} right={hourLabel(endHour)}
+      left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
       top={filled.length ? String(Math.round(hi)) : ""} bottom={filled.length ? String(Math.round(lo)) : ""}
     >
       {filled.map((b) => (
@@ -106,8 +106,8 @@ export function PulseSticks({
 
 /** Kalorieindtag som pinde, med den anbefalede energifordeling som glat kurve i midten. */
 export function KcalSticks({
-  width, height, sums, shares, budgetKcal, startHour, endHour, title,
-}: { width: number; height: number; sums: number[]; shares: number[]; budgetKcal: number; startHour: number; endHour: number; title: string }) {
+  width, height, leftLabel, sums, shares, budgetKcal, startHour, endHour, title,
+}: { leftLabel: (hour: string) => string; width: number; height: number; sums: number[]; shares: number[]; budgetKcal: number; startHour: number; endHour: number; title: string }) {
   const peakPlan = Math.max(...shares.map((s) => s * budgetKcal), 1);
   const top = Math.max(...sums, peakPlan, 1);
   const PLOT_H = plotH(height);
@@ -115,8 +115,8 @@ export function KcalSticks({
   const plan = shares.map((s, i) => ({ x: plotX(width, shares.length, i), y: y(s * budgetKcal) }));
   return (
     <Frame
-      width={width} height={height} title="" ariaLabel={title}
-      left={hourLabel(startHour)} right={hourLabel(endHour)}
+      width={width} height={height} title={title} ariaLabel={title}
+      left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
       {sums.map((v, i) => v > 0 && (
@@ -130,8 +130,8 @@ export function KcalSticks({
 
 /** Statisk grå anbefalet kurve mod den faktiske kalorie-status i blå. */
 export function PlanVsActual({
-  width, height, planCumulative, actualCumulative, elapsed, startHour, endHour, title,
-}: { width: number; height: number; planCumulative: number[]; actualCumulative: number[]; elapsed: number; startHour: number; endHour: number; title: string }) {
+  width, height, leftLabel, planCumulative, actualCumulative, elapsed, startHour, endHour, title,
+}: { leftLabel: (hour: string) => string; width: number; height: number; planCumulative: number[]; actualCumulative: number[]; elapsed: number; startHour: number; endHour: number; title: string }) {
   const count = planCumulative.length;
   const top = Math.max(planCumulative[count - 1] ?? 0, actualCumulative[Math.max(0, elapsed - 1)] ?? 0, 1);
   const PLOT_H = plotH(height);
@@ -140,8 +140,8 @@ export function PlanVsActual({
   const actual = actualCumulative.slice(0, Math.max(0, elapsed)).map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
   return (
     <Frame
-      width={width} height={height} title="" ariaLabel={title}
-      left={hourLabel(startHour)} right={hourLabel(endHour)}
+      width={width} height={height} title={title} ariaLabel={title}
+      left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
       <path d={smoothPath(plan)} fill="none" className="stroke-hf-line" strokeWidth={2.5} strokeLinecap="round" />
@@ -173,7 +173,7 @@ export function GoalTimeline({
   const barW = Math.max(1.5, Math.min(6, ((width - PAD_L - PAD_R) / slots) * 0.6));
   return (
     <Frame
-      width={width} height={height} title="" ariaLabel={title}
+      width={width} height={height} title={title} ariaLabel={title}
       left={startLabel} right={endLabel}
       top={String(Math.round(top))} bottom={String(Math.round(bottom))}
     >

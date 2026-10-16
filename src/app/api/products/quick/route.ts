@@ -45,6 +45,9 @@ export async function POST(req: Request) {
   // ikke kan læse forsiden (docs/DECISIONS.md 2026-10-16).
   const frontOcrText = typeof body?.frontOcrText === "string" ? body.frontOcrText.slice(0, 4000) : "";
   const nutritionPhoto = body?.nutritionPhoto;
+  // Energien læst af AI under flowet (POST /api/products/read-energy) — bruges
+  // direkte, i stedet for at læse fotoet igen (docs/DECISIONS.md 2026-10-16).
+  const nutritionAnalysisId = typeof body?.nutritionAnalysisId === "string" ? body.nutritionAnalysisId : null;
   const ingredientsPhoto = isPhoto(body?.ingredientsPhoto) ? body.ingredientsPhoto : undefined;
   const nutritionOcrText = typeof body?.nutritionOcrText === "string" ? body.nutritionOcrText.slice(0, 8000) : "";
   const ingredientsOcrText = typeof body?.ingredientsOcrText === "string" ? body.ingredientsOcrText.slice(0, 8000) : "";
@@ -272,6 +275,7 @@ export async function POST(req: Request) {
       nutritionPhotoUrl,
       ingredientsPhotoUrl,
       frontOcrText,
+      nutritionAnalysisId,
       nutritionOcrText,
       nutritionOcrConfidence,
       ingredientsOcrText,
@@ -294,6 +298,7 @@ export async function POST(req: Request) {
           nutritionPhoto,
           ingredientsPhoto,
           frontOcrText,
+          nutritionAnalysisId,
           nutritionOcrText,
           nutritionOcrConfidence,
           ingredientsOcrText,
