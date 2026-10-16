@@ -1,3 +1,7 @@
+## 2026-10-16: Frida-skøn straks på varesiden
+
+- Varer uden energimærkning får Fridas tal, så snart varesiden åbnes (ikke først om natten). Se DECISIONS 2026-10-16. Ikke typetjekket/kørt lokalt (node_modules mangler).
+
 ## 2026-10-12: Adminadgang tilgængelig — visuel opfølgning i gang
 
 - Brugeren melder "Nu virker det"; admin.hellocal.io/admin er indlogget, så den tidligere adgangsblokering er væk.

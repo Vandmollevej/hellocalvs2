@@ -10,6 +10,7 @@ import {
   updateKindsFor,
 } from "@/lib/product-update";
 import { findSubbrandLogoUrl } from "@/lib/subbrand-logo";
+import { applyFridaEstimateTo } from "@/lib/frida-estimates";
 
 export async function GET(
   _req: Request,
@@ -18,7 +19,7 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const product = await prisma.product.findUnique({
+    const load = () => prisma.product.findUnique({
       where: { id },
       include: {
         brand: true,
@@ -64,6 +65,12 @@ export async function GET(
         },
       },
     });
+    let product = await load();
+    // Vare uden energimærkning: Fridas tal hentes straks, når produkttypen
+    // passer, i stedet for først ved natrobotten (DECISIONS 2026-10-16).
+    if (product?.nutritionMissing && (await applyFridaEstimateTo(product.id).catch(() => false))) {
+      product = await load();
+    }
     // En privat ingrediens vises kun for ejeren.
     if (product && product.privateOwnerId) {
       const user = await getSessionUser();
