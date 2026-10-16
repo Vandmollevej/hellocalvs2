@@ -276,3 +276,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Seneste produktregler på master går forud for gamle efterladte implementationer. Samlingsgennemgang: `docs/handoffs/2026-10-11-github-samling.md`.
 - Ental/flertal uden artikel: når søgeordet kun findes i den ene titelform, vises denne. Fælles ord og delord beholder standardtitlen (`displayNameForQuery`).
 - Labels i Varedatabase bruger de eksisterende certifikatlogoer; ingen tegnede erstatningslogoer.
+
+- **Vin: brand er producenten (bruger 2026-10-16)**: vintype (Rosso, Rosé), drue, appellation og kvalitetstrin (Riesling, Bourgogne, Qba, Chianti Riserva …) er aldrig brand — de står i variant. "S.C." = Santa Carolina. REMA 1000-vinene i `scripts/rema1000-import/data/rema1000_products.json` er rettet (fx Grande Alberone: brand "Grande Alberone", variant "Rosso"). Uafklaret: række 1960 (brand "Assamblage", titel "CAROLINA GRAN RESERVA") — producenten kendes ikke sikkert. Databasen skal have samme rettelse ved næste REMA-import.
