@@ -1018,14 +1018,14 @@ export function AddProductView({
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className={`flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full ${bakedCircle ? "" : "bg-hf-tan"}`}>
                     {displayImageUrl && !isCutoutImage ? (
-                      // Det rå forsidefoto (før fritskrabningen): hele varen
-                      // skal kunne ses, så det tilpasses inde i cirklen —
-                      // aldrig zoomet ind (design.md §6.12).
+                      // Det rå forsidefoto (før fritskrabningen) dækker HELE
+                      // cirklen (brugerens krav 2026-10-16: et firkantet foto
+                      // inde i cirklen "ligner lort"), design.md §6.12.
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={imageThumb(displayImageUrl, 640)}
                         alt=""
-                        className="block h-full w-full max-h-full max-w-full object-contain p-3"
+                        className="block h-full w-full object-cover"
                       />
                     ) : displayImageUrl ? null : shouldPoll || isLoading ? (
                       <Skeleton type="circle" width="100%" height="100%" />
@@ -1343,10 +1343,13 @@ export function AddProductView({
                     ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : (
-                        <>
+                        // Ét inline-element: i flex-rækken blev "∼" sit eget
+                        // flex-element uden linjehøjde og svævede op mellem
+                        // linjerne (bruger 2026-10-16).
+                        <span>
                           {view.kcalEstimated && <UncertaintyTilde small />}
                           {t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
-                        </>
+                        </span>
                       )}
                   </p>
                 </div>

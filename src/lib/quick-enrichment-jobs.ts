@@ -7,7 +7,9 @@ import {
   retryIngredients,
   type PendingField,
   type QuickEnrichmentInput,
+  type QuickEnrichmentRetry,
 } from "@/lib/quick-product-enrichment";
+import { createFallbackFrontCutoutJob } from "@/lib/image-cutout-jobs";
 import { debugLog, errorText, withDebugContext } from "@/lib/debug-log";
 import { orderIngredientCandidates } from "@/lib/ingredient-retry-candidates";
 
@@ -44,6 +46,7 @@ export type QuickEnrichmentStoredInput = {
   nutritionPhotoUrl: string | null;
   // null, når ingredienslisten stod på næringsfotoet.
   ingredientsPhotoUrl: string | null;
+  frontOcrText?: string;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
   ingredientsOcrText?: string;
@@ -52,7 +55,35 @@ export type QuickEnrichmentStoredInput = {
   barcodeAnalysisId?: string | null;
   // "quick" = gemt ved oprettelsen; "history" = genskabt af AI-analyserne.
   source: "quick" | "history";
+  // Dele, hvor OpenAI-kaldet fejlede teknisk, og som prøves igen, selv om
+  // felterne er ryddet (docs/DECISIONS.md 2026-10-16).
+  retryParts?: RetryPart[];
+  // Engangsreparationen af varer, der blev færdige uden navn/energi.
+  repairedAt?: string;
 };
+
+type RetryPart = "front" | "label";
+
+function retryPartsOf(retry: QuickEnrichmentRetry): RetryPart[] {
+  return [...(retry.front ? (["front"] as const) : []), ...(retry.label ? (["label"] as const) : [])];
+}
+
+// En aflæsning med teknisk fejl: jobbet åbnes igen og genoptages efter
+// STALE_MINUTES (resumeStalledJobs), højst MAX_ATTEMPTS forsøg i alt.
+async function scheduleRetry(productId: string, parts: RetryPart[]) {
+  const job = await prisma.quickEnrichmentJob.findUnique({ where: { productId }, select: { input: true } });
+  const stored = job ? asStoredInput(job.input) : null;
+  if (!stored) return;
+  await prisma.quickEnrichmentJob.update({
+    where: { productId },
+    data: {
+      input: { ...stored, retryParts: parts } as unknown as Prisma.InputJsonValue,
+      finishedAt: null,
+      startedAt: new Date(),
+      lastError: `Teknisk fejl i AI-aflæsningen — prøves igen: ${parts.join(", ")}`,
+    },
+  });
+}
 
 const minutesAgo = (now: Date, minutes: number) => new Date(now.getTime() - minutes * 60 * 1000);
 
@@ -79,8 +110,9 @@ async function markFinished(productId: string, lastError: string | null = null) 
 // Første kørsel (after() i ruten), med fotoene stadig i hukommelsen.
 export async function runQuickEnrichment(input: QuickEnrichmentInput) {
   try {
-    await enrichQuickProduct(input);
-    await markFinished(input.productId);
+    const parts = retryPartsOf(await enrichQuickProduct(input));
+    if (parts.length) await scheduleRetry(input.productId, parts);
+    else await markFinished(input.productId);
   } catch (error) {
     await prisma.quickEnrichmentJob
       .updateMany({ where: { productId: input.productId }, data: { lastError: errorText(error).slice(0, 1000) } })
@@ -204,6 +236,7 @@ function toEnrichmentInput(
     frontPhotoUrl: stored.frontPhotoUrl,
     nutritionPhotoUrl: stored.nutritionPhotoUrl,
     ingredientsPhotoUrl: stored.ingredientsPhotoUrl,
+    frontOcrText: stored.frontOcrText,
     nutritionOcrText: stored.nutritionOcrText,
     nutritionOcrConfidence: stored.nutritionOcrConfidence,
     ingredientsOcrText: stored.ingredientsOcrText,
@@ -227,21 +260,34 @@ async function resumeStalledJobs(now: Date): Promise<{ resumed: number; givenUp:
   for (const job of jobs) {
     const pending = job.product.pendingFields as PendingField[];
     const debugContext = { productId: job.productId };
-    if (pending.length === 0) {
+    const stored = asStoredInput(job.input);
+    const retryParts = stored?.retryParts ?? [];
+    if (pending.length === 0 && retryParts.length === 0) {
       await markFinished(job.productId);
       continue;
     }
-    const stored = asStoredInput(job.input);
     if (!stored || job.attempts >= MAX_ATTEMPTS) {
-      await clearPending(job.productId, pending);
+      if (pending.length) await clearPending(job.productId, pending);
+      // Forsiden blev aldrig læst af AI'en, så der kom intet fritlægningsjob:
+      // hele forsidefotoet fritlægges i stedet (brugerens krav 2026-10-16).
+      if (stored && retryParts.includes("front")) {
+        await createFallbackFrontCutoutJob(job.productId, stored.frontPhotoUrl).catch((error) =>
+          console.error("Could not queue fallback cutout", job.productId, error),
+        );
+      }
       await markFinished(job.productId, stored ? "Opgivet efter flere forsøg" : "Ugyldigt job-input");
       await withDebugContext(debugContext, () =>
         debugLog({
           category: "scan",
           event: "enrichment_recovery",
           level: "error",
-          message: `Aflæsningen blev opgivet efter ${job.attempts} forsøg — ventende felter ryddet: ${pending.join(", ")}`,
-          data: { attempts: job.attempts, pendingFields: pending },
+          message: `Aflæsningen blev opgivet efter ${job.attempts} forsøg — ${[
+            pending.length ? `ventende felter ryddet: ${pending.join(", ")}` : "",
+            retryParts.length ? `AI-aflæsning fejlede stadig: ${retryParts.join(", ")}` : "",
+          ]
+            .filter(Boolean)
+            .join(" · ")}`,
+          data: { attempts: job.attempts, pendingFields: pending, retryParts },
         }),
       );
       givenUp += 1;
@@ -255,8 +301,8 @@ async function resumeStalledJobs(now: Date): Promise<{ resumed: number; givenUp:
     });
     if (claimed.count !== 1) continue;
 
-    const wantFront = pending.includes("name") || pending.includes("brand");
-    const wantLabel = pending.includes("nutrition") || pending.includes("ingredients");
+    const wantFront = pending.includes("name") || pending.includes("brand") || retryParts.includes("front");
+    const wantLabel = pending.includes("nutrition") || pending.includes("ingredients") || retryParts.includes("label");
     const [front, nutrition, ingredients] = await Promise.all([
       loadPhoto(stored.frontPhotoUrl),
       loadPhoto(stored.nutritionPhotoUrl),
@@ -275,25 +321,44 @@ async function resumeStalledJobs(now: Date): Promise<{ resumed: number; givenUp:
         category: "scan",
         event: "enrichment_recovery",
         level: "warn",
-        message: `Aflæsningen stod stille — genoptager (forsøg ${job.attempts + 1}): ${pending.join(", ")}${
+        message: `${retryParts.length ? "AI-aflæsningen fejlede — prøver igen" : "Aflæsningen stod stille — genoptager"} (forsøg ${job.attempts + 1}): ${[...pending, ...retryParts].join(", ")}${
           missing.length ? ` · intet foto til ${missing.join(", ")}` : ""
         }`,
-        data: { pendingFields: pending, parts, missing, source: stored.source },
+        data: { pendingFields: pending, retryParts, parts, missing, source: stored.source },
       });
       if (!parts.front && !parts.label) {
         await markFinished(job.productId, "Ingen gemte fotos at genoptage fra");
         return;
       }
       try {
-        await enrichQuickProduct(
-          toEnrichmentInput(job.productId, stored, {
-            front: front ?? "",
-            nutrition: nutrition ?? "",
-            ingredients,
-          }),
-          parts,
+        const again = retryPartsOf(
+          await enrichQuickProduct(
+            toEnrichmentInput(job.productId, stored, {
+              front: front ?? "",
+              nutrition: nutrition ?? "",
+              ingredients,
+            }),
+            // Stregkode-logoet blev læst ved første forsøg.
+            { ...parts, barcodeLogo: retryParts.length === 0 },
+          ),
         );
-        await markFinished(job.productId);
+        if (again.length) {
+          await prisma.quickEnrichmentJob.update({
+            where: { id: job.id },
+            data: {
+              input: { ...stored, retryParts: again } as unknown as Prisma.InputJsonValue,
+              lastError: `Teknisk fejl i AI-aflæsningen — prøves igen: ${again.join(", ")}`,
+            },
+          });
+        } else {
+          if (retryParts.length) {
+            await prisma.quickEnrichmentJob.update({
+              where: { id: job.id },
+              data: { input: { ...stored, retryParts: [] } as unknown as Prisma.InputJsonValue },
+            });
+          }
+          await markFinished(job.productId);
+        }
       } catch (error) {
         await prisma.quickEnrichmentJob
           .update({ where: { id: job.id }, data: { lastError: errorText(error).slice(0, 1000) } })
@@ -362,11 +427,62 @@ async function retryMissingIngredients(now: Date): Promise<{ tried: number; foun
   return { tried, found };
 }
 
+// 5. Engangsreparation (docs/DECISIONS.md 2026-10-16): varer, hvis aflæsning
+// blev "færdig" uden navn eller uden energi, fordi OpenAI-kaldet fejlede, før
+// genforsøgene fandtes (fx Änglamark-letmælken). Jobbet åbnes igen med de
+// dele, der mangler, og genoptages straks.
+async function reopenBrokenProducts(now: Date): Promise<number> {
+  const since = new Date(now.getTime() - ADOPT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
+  const jobs = await prisma.quickEnrichmentJob.findMany({
+    where: {
+      finishedAt: { not: null },
+      product: {
+        createdAt: { gt: since },
+        pendingFields: { isEmpty: true },
+        OR: [{ name: "" }, { kcalPer100g: 0 }],
+      },
+    },
+    select: {
+      id: true,
+      input: true,
+      product: { select: { name: true, kcalPer100g: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    // Allerede reparerede springes over herunder; de er få (kun varer uden navn eller med 0 kcal).
+    take: 300,
+  });
+  let reopened = 0;
+  for (const job of jobs) {
+    const stored = asStoredInput(job.input);
+    if (!stored || stored.repairedAt) continue;
+    const parts: RetryPart[] = [];
+    if (stored.frontPhotoUrl && !job.product.name.trim()) parts.push("front");
+    if (stored.nutritionPhotoUrl && job.product.kcalPer100g === 0) parts.push("label");
+    const input = { ...stored, repairedAt: now.toISOString(), retryParts: parts };
+    await prisma.quickEnrichmentJob.update({
+      where: { id: job.id },
+      data: parts.length
+        ? {
+            input: input as unknown as Prisma.InputJsonValue,
+            finishedAt: null,
+            attempts: 1,
+            // Genoptages i samme kørsel (resumeStalledJobs).
+            startedAt: minutesAgo(now, STALE_MINUTES + 1),
+            lastError: `Genåbnet: ${parts.join(", ")} manglede`,
+          }
+        : { input: input as unknown as Prisma.InputJsonValue },
+    });
+    if (parts.length) reopened += 1;
+  }
+  return reopened;
+}
+
 // Job "quick-enrichment-recovery" (src/lib/jobs/registry.ts).
 export async function recoverQuickEnrichments(now: Date = new Date()): Promise<string | null> {
+  const reopened = await reopenBrokenProducts(now);
   const adopted = await adoptProductsWithoutJob(now);
   const { resumed, givenUp } = await resumeStalledJobs(now);
   const { tried, found } = await retryMissingIngredients(now);
-  if (!adopted && !resumed && !givenUp && !tried) return null;
-  return `Adopteret ${adopted} · genoptaget ${resumed} · opgivet ${givenUp} · ingrediens-forsøg ${tried} (fundet ${found})`;
+  if (!reopened && !adopted && !resumed && !givenUp && !tried) return null;
+  return `Genåbnet ${reopened} · adopteret ${adopted} · genoptaget ${resumed} · opgivet ${givenUp} · ingrediens-forsøg ${tried} (fundet ${found})`;
 }

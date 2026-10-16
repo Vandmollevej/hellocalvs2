@@ -182,7 +182,9 @@ export async function GET(
           hasKnownNutrition: !product.nutritionMissing,
           // Frida-skøn (∼, docs/DECISIONS.md 2026-10-10): ∼ ved kalorietallet og
           // Fridas kildeangivelse nederst i næringsfeltet, når en værdi er fra Frida.
-          kcalEstimated: isEstimatedSource((product.nutrientSources as Record<string, string> | null)?.kcal),
+          // Aldrig "∼ 0": et skøn på 0 kcal er ingen værdi (bruger 2026-10-16).
+          kcalEstimated:
+            product.kcalPer100g > 0 && isEstimatedSource((product.nutrientSources as Record<string, string> | null)?.kcal),
           fridaSource: !!product.fridaEstimateId || nutrients.some((n) => n.frida),
         },
       });

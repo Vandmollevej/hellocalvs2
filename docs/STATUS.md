@@ -3,6 +3,10 @@
 
 ## 2026-10-16: Forsidens grafer i infoboksens plads
 
+## 2026-10-16: Nye scannede varer står aldrig tomme
+
+- Fejler OpenAI-aflæsningen af forside/energi, prøves den igen (straks og efter 10 min), med reservemodel; navn og brand udledes imens af telefonens tekst ("LETMÆLK" → Letmælk); ukendt energi vises som ukendt og får Frida-/varetype-skøn i stedet for "∼ 0"; råfotoet fylder hele cirklen (web + native). Varer fra de sidste 14 dage uden navn/med 0 kcal repareres én gang. Ikke prøvet mod OpenAI/rigtig database eller telefon herfra — produktionens log viser den præcise OpenAI-fejl. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
 
 - Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.

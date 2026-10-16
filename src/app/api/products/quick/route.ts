@@ -41,6 +41,9 @@ export async function POST(req: Request) {
   // Hele forsidebilledet i fuld opløsning (brugerens krav 2026-10-15): gemmes
   // som varens billede; `frontPhoto` er kopien til AI'en.
   const frontPhotoFull = isPhoto(body?.frontPhotoFull) ? body.frontPhotoFull : undefined;
+  // Telefonens tekstlæsning af forsiden: reserve til navn/brand, hvis AI'en
+  // ikke kan læse forsiden (docs/DECISIONS.md 2026-10-16).
+  const frontOcrText = typeof body?.frontOcrText === "string" ? body.frontOcrText.slice(0, 4000) : "";
   const nutritionPhoto = body?.nutritionPhoto;
   const ingredientsPhoto = isPhoto(body?.ingredientsPhoto) ? body.ingredientsPhoto : undefined;
   const nutritionOcrText = typeof body?.nutritionOcrText === "string" ? body.nutritionOcrText.slice(0, 8000) : "";
@@ -268,6 +271,7 @@ export async function POST(req: Request) {
       frontPhotoUrl: imageUrl ?? null,
       nutritionPhotoUrl,
       ingredientsPhotoUrl,
+      frontOcrText,
       nutritionOcrText,
       nutritionOcrConfidence,
       ingredientsOcrText,
@@ -289,6 +293,7 @@ export async function POST(req: Request) {
           frontPhoto,
           nutritionPhoto,
           ingredientsPhoto,
+          frontOcrText,
           nutritionOcrText,
           nutritionOcrConfidence,
           ingredientsOcrText,
