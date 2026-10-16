@@ -37,3 +37,11 @@ test("scannede varer får aldrig et energiskøn", () => {
 test("overvågningen slår alarm, når OpenAI-kreditten er brugt op", () => {
   assert.match(uptime, /quota\) echo "::error::OpenAI/);
 });
+
+test("gemte scan-fotos opgives ikke, mens OpenAI-kreditten er tom", () => {
+  const recovery = read("./quick-enrichment-jobs.ts");
+  const gate = recovery.indexOf('ai.state === "quota"');
+  const first = recovery.indexOf("await reopenBrokenProducts(now)");
+  assert.ok(gate > 0 && gate < first, "genoptagelsen skal vente på kredit, før den bruger forsøg");
+  assert.match(recovery, /repairRound/);
+});
