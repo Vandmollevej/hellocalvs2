@@ -79,8 +79,6 @@ object HcColors {
     val Overlay = Color(0x66232323)
     /** --hf-color-watch */
     val Watch = Color(0xFF2F80ED)
-    /** --hf-color-chart-blue */
-    val ChartBlue = Color(0xFF5B9FCF)
     /** --hf-color-faceid */
     val Faceid = Color(0xFF0A7AFF)
     /** --hf-color-faceid-spin */
