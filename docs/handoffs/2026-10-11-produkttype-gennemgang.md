@@ -1,5 +1,33 @@
 # Overlevering 2026-10-11 — produkttype-gennemgang (DRK, Årstiderne, Wolt, SPAR, DM, EDEKA, REWE)
 
+## Opdatering 2026-10-16 — udført (læs denne først; resten af filen er historik fra 11/10)
+
+**Status:** gennemgangen er gjort om efter reglerne og skrevet ind i arbejdsarkene. Alt er markeret med **gul baggrund**; ingen original­kolonner er rørt.
+
+- **Arbejdsarkene ligger nu i `Produkter\`** (Excelark/ findes ikke mere): `drk.xlsx`, `aarstiderne.xlsx`, `DK\wolt.xlsx`, `dm.xlsx`, `edeka.xlsx`, `rewe.xlsx` (+ Bilka/REMA/SPAR/Nemlig som før). Ark er nu 46 kolonner (Co-brand = kol 38). `Produkter\` er ikke i git.
+- **Det mekaniske var allerede på plads** (min rensning 11/10 overlevede andre sessioners arbejde): Quantity uden stk, Pack Count ens, MHD/datoer, certifikater, dyremad. Kontrolleret igen 16/10: 0 afvigelser.
+- **Udtræk 16/10:** kontrol (`rule_check.py`, V1–V16) valgte 7.628 rækker (rækker der brød en regel + tom type/brand). Hver batch à 90 rækker blev læst af en agent efter `AGENT_RULES.md`, derefter kontrolleret af en uafhængig agent; resultaterne er flettet med `merge_apply.py` (rører kun egne kolonner, aldrig brand/produkttype → tom, flag/land kun hvor tomt, opfundet land/alkohol-% droppes, ægte subbrand ryddes aldrig) og skrevet med `apply_mech2.ps1` (egen Excel-instans, titel-vagt pr. række, backup først).
+  | Ark | Celler skrevet | Rækker slettet (dyremad/ikke mad) |
+  |---|---|---|
+  | EDEKA | 4.148 | 24 |
+  | REWE | 3.970 | 4 |
+  | dm | 885 | 9 |
+  | Wolt | 1.392 (+388 lille begyndelsesbogstav) | 6 |
+  | DRK | 386 | 2 |
+  | Årstiderne | 145 (+50 lille begyndelsesbogstav) | 0 |
+  Slettede rækker: `Produkter\Blacklistede produkter\fjernede_raekker_ikke_mad_2026-10-16.xlsx` (også i Peters regel: dyremad **slettes**, markeres ikke).
+- **Backups før hver skrivning:** `Produkter\Backup\<ark>_2026-10-16_foer_produkttype-udtraek.xlsx` og `…_foer_lille-begyndelsesbogstav.xlsx` (Wolt, Årstiderne). Før/efter pr. felt: `Produkter\Backup\produkttype_udtraek_aendringer_2026-10-16.csv` (9.995 linjer, kolonne «sikkerhed»/«note»).
+- **Regler tilføjet efter 11/10 som agenterne fulgte** (`AGENT_RULES.md`): Subbrand = brandets egne produktlinjer, aldrig almindelige ord/flag (EDEKA + «Bio» → subbrand fjernet); Co-brand = lånt brand (Milka + Biscoff); «Excel ruler» for brandstavning; tyske ark har bevidst **tomt flertal**; danske variationer med lille begyndelsesbogstav (rettet mekanisk med `lower_var.py`, egennavne som Cheddar/Teriyaki/Bolognese undtaget).
+- **Resultat af lint efter skrivning** (`sheetlint.py`): dubletter på tværs (L9), certifikater (L15), MHD, oprindelsesadjektiver i variation og tomme produkttyper er stort set væk (Wolt 47→0 dubletter, EDEKA 91→0, REWE 22→0; EDEKA certifikat 29→0, REWE 90→0).
+- **Rest / næste tråd** (alt er enten falske alarmer eller kræver Peters øje):
+  1. De gule celler med sikkerhed «low» i CSV-loggen (EDEKA ca. 320, REWE ca. 180, Wolt ca. 105, dm ca. 56) — mest vin/spiritus (ejes af vin-sessionen) og tvivlsomme mærker.
+  2. Kontrollens `V2` («produkttype = butikskategori») rammer ca. 200 EDEKA-rækker, hvor kategorien faktisk er den rigtige varebetegnelse (Eistee, Bier, Rotwein) — ikke fejl. `V5` (titelord ikke fordelt) rammer ca. 100 pr. ark, mest stavevarianter/anførselstegn.
+  3. 35 af de 87 batches nåede ikke «fixer»-trinnet (forbrugsgrænsen) — udtræk og uafhængig kontrol er kørt for alle 87, kun den sidste ekstra oprydning mangler; resterende fejl ses som de samme falske alarmer. Genkør evt. `make_batches.py` (vælger kun rækker der stadig fejler) og Workflow med de batches.
+  4. Bilka `Quantity` har 59 rækker med «5 L.B»/«2.5 L.B» (bag-in-box, ejes af Bilka-sessionen), SPAR 4 rækker med intervaller («190-220 g») — ikke rørt.
+  5. Ikke-mad/dyremad: kun title-baserede træffere slettet. dm/EDEKA/REWE har falske lint-træffere («Studentenfutter», «Katzenbeisser», «Katjes Hundebanden») der IKKE er dyremad.
+- **Genkør/værktøj:** `scripts/produkttype-forslag/pipeline-2026-10-16/` (README i samme mappe). Scratchpad slettes, så scripts er kopieret hertil; `clean_mech.py` forventer pet-food-listerne `src/data/pet-food-*.json` (hent fra origin/master).
+- **Faldgruber:** brug egen Excel-instans (`New-Object -ComObject`) — brugerens åbne Excel røres ikke; `Copy-Item` bevarer kildens LastWriteTime (backupfilens tidsstempel er ikke kopitidspunktet); forbrugsgrænsen ramte flere gange (kør ≤ 4 workflows ad gangen, brug `resumeFromRunId` — færdige agenter caches).
+
 Skrevet af sessionen "Frida-ark / produkttype" (konto med Sonnet 5.5). Brugeren fortsætter i en ny tråd og vil have
 alt markeret, så nogen kan følge op. **Brugeren er MEGET utilfreds**: de fleste automatiske ændringer er forkerte.
 Regler: se `Excelark/NAVNEREGLER.md`, afsnit "Brugerens regler 2026-10-11" (20 punkter). Læs dem først.
