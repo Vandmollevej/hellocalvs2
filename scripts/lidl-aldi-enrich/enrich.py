@@ -1,4 +1,4 @@
-"""
+﻿"""
 Lidl/Aldi-varer: find flere detaljer end vi har (docs/LIDL-ALDI-ENRICH.md).
 
 Kører lokalt på brugerens pc om natten (run-nightly.ps1). For hver vare i
@@ -386,21 +386,26 @@ def write_sheet(path, products, cache):
     found = [(p, cache[p["key"]]) for p in products if p["key"] in cache and cache[p["key"]]["facts"]]
     missing = [(p, cache[p["key"]]) for p in products if p["key"] in cache and not cache[p["key"]]["facts"]]
     used = [label for label in FACT_ORDER if any(label in row["facts"] for _p, row in found)]
+    from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+
+    def clean(values):
+        return [ILLEGAL_CHARACTERS_RE.sub("", v) if isinstance(v, str) else v for v in values]
+
     workbook = openpyxl.Workbook()
     sheet = workbook.active
     sheet.title = "Nye fakta"
     sheet.append(["Butik", "Vores titel", "Stregkode", "Kilde", "Link"] + used)
     for product, row in found:
-        sheet.append([product["store"].capitalize(), product["title"], product["barcode"], row["source"], row["link"]]
-                     + [row["facts"].get(label, "") for label in used])
+        sheet.append(clean([product["store"].capitalize(), product["title"], product["barcode"], row["source"], row["link"]]
+                           + [row["facts"].get(label, "") for label in used]))
     for cell in sheet[1]:
         cell.font = Font(bold=True)
     sheet.freeze_panes = "C2"
     none_sheet = workbook.create_sheet("Intet nyt")
     none_sheet.append(["Butik", "Vores titel", "Stregkode", "Kilde", "Bemærkning"])
     for product, row in missing:
-        none_sheet.append([product["store"].capitalize(), product["title"], product["barcode"], row["source"],
-                           row["note"] or "Open Food Facts har intet, vi ikke allerede har"])
+        none_sheet.append(clean([product["store"].capitalize(), product["title"], product["barcode"], row["source"],
+                                 row["note"] or "Open Food Facts har intet, vi ikke allerede har"]))
     for cell in none_sheet[1]:
         cell.font = Font(bold=True)
     workbook.save(path)
