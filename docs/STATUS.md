@@ -208,6 +208,11 @@
 
 Last updated: 2026-10-14
 
+## 2026-10-16: «Oplevelse af søvn» flyttet til Screeninger → Søvn (web + native)
+
+- Rækken er væk fra Indstillinger → Visning (app + web); den faste Søvn-række under Screeninger åbner nu til/fra-siden og viser Aktiv/Inaktiv. Webbens sidebjælke: Screeninger → Søvn. Se DECISIONS 2026-10-16.
+- Ikke prøvet i browser/på enhed (ingen lokal login); Kotlin kompileres kun i CI (native.yml) — tjek, at «Web ↔ native»-jobbet er grønt.
+
 ## 2026-10-14: Graviditet og amning — officielle tillæg til kaloriebehovet
 
 - Nyt trin i oprettelsesguiden ("Er du gravid, eller ammer du?", kun for kvinder) og ny side Indstillinger → Visning → Graviditet og amning (`/settings/display/pregnancy`, web + native + webmenu). Kun for `sex = FEMALE` (brugerens rettelse). Gravid: uge → trimester → +70/260/500 kcal (EFSA 2013); ammer: uger → +500 kcal (første 26 uger) / +300. Ugen regnes selv frem. Intet kalorieunderskud (`PREGNANCY_NO_DEFICIT`); kalibrering og kaloriemål-forslag på pause. Egen linje i regnestykket.

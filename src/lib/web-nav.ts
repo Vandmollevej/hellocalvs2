@@ -136,7 +136,18 @@ export const WEB_PROFILE: WebNavItem[] = [
   { key: "kropsmaal", href: "/profile/body-measurements", labelKey: "profile.row.bodyMeasurements", icon: IconWaistMeasure },
   { key: "soevnmoenster", href: "/profile/sleep", labelKey: "profile.row.sleep", icon: IconMoon },
   { key: "cardio", href: "/profile/cardio", labelKey: "profile.row.cardio", icon: IconHeartbeat },
-  { key: "screeninger", href: "/profile/screenings", labelKey: "profile.row.screenings", icon: IconClipboardHeart },
+  {
+    key: "screeninger",
+    href: "/profile/screenings",
+    labelKey: "profile.row.screenings",
+    icon: IconClipboardHeart,
+    // "Oplevelse af søvn" (til/fra) ligger under Screeninger → Søvn, ikke under
+    // Visning (bruger 2026-10-16). Siden bevarer sin adresse.
+    children: [
+      { key: "screeninger-alle", href: "/profile/screenings", labelKey: "profile.row.screenings", icon: IconClipboardHeart },
+      { key: "screeninger-soevn", href: "/settings/display/sleep-quality", labelKey: "screenings.sleep", icon: IconMoon },
+    ],
+  },
   { key: "viden", href: "/viden-om", labelKey: "profile.row.knowledge", icon: IconBook },
   { key: "hello-doc", href: "/settings/hello-doc", labelKey: "settings.helloDoc", icon: IconStethoscope },
 ];
@@ -170,7 +181,6 @@ export const WEB_SETTINGS: WebNavItem[] = [
       { key: "usikkerhed", href: "/settings/display/uncertainty", labelKey: "displaySettings.uncertainty", icon: IconTilde },
       { key: "oversaettelse", href: "/settings/display/translation", labelKey: "settings.translation", icon: IconLanguage },
       { key: "kalendervisning", href: "/settings/display/calendar-view", labelKey: "settings.calendarView", icon: IconCalendarWeek },
-      { key: "soevn", href: "/settings/display/sleep-quality", labelKey: "settings.sleepQuality", icon: IconMoon },
       { key: "tips", href: "/settings/display/tips", labelKey: "settings.tipsTitle", icon: IconBulb },
       { key: "cyklus", href: "/settings/display/menstrual-cycle", labelKey: "settings.menstrualCycle", icon: IconCalendarHeart, requires: "female" },
       { key: "graviditet", href: "/settings/display/pregnancy", labelKey: "settings.pregnancy", icon: IconBabyCarriage, requires: "female" },

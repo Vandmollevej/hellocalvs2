@@ -5654,3 +5654,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Native har ingen indlejret live-søger i fælleskoden: boksen åbner telefonens eget kamera og sender fotoet direkte, uden at skifte side.
 - Banneret har z-40 (favoritikonet z-30).
 - Hjemmesiden (desktop-skallen, `useDesktopViewport`) tager ikke billeder (brugerens regel 2026-10-15): opdater-banneret vises kun i webappen på telefonen og i native.
+
+## 2026-10-16: «Oplevelse af søvn» flyttet fra Visning til Screeninger → Søvn
+
+Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsmål ligger under Screeninger → Søvn, ikke under Indstillinger → Visning — i appen og i webversionen.
+- Rækken er fjernet fra Visning (`/settings`, `/settings/display`, native `SettingsDisplayRows`, webbens sidebjælke). Settings-søgningen finder den stadig.
+- Screeninger-siden (`/profile/screenings`, web + native `ScreeningsScreen`): den faste Søvn-række åbner nu `/settings/display/sleep-quality` (adressen er uændret, så "Slå fra" i søvnspørgsmålet virker som før) og viser Aktiv/Inaktiv efter `User.sleepQualityPromptEnabled` — som de øvrige screeninger. Før pegede rækken på søvnmønsteret (DECISIONS 2026-10-09); søvnmønsteret ligger fortsat under Profil → Søvnmønster.
+- Webbens sidebjælke: Screeninger er en gruppe med Screeninger og Søvn.

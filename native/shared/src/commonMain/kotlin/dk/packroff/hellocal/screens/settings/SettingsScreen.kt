@@ -242,7 +242,6 @@ internal fun SettingsDisplayRows(isFemale: Boolean, includeResults: Boolean = tr
         SettingsChevronRow(t.t("displaySettings.uncertainty"), { nav.push("/settings/display/uncertainty") }, iconContent = { SettingsTildeRowIcon() })
         SettingsChevronRow(t.t("settings.translation"), { nav.push("/settings/display/translation") }, icon = "Language")
         SettingsChevronRow(t.t("settings.calendarView"), { nav.push("/settings/display/calendar-view") }, icon = "CalendarWeek")
-        SettingsChevronRow(t.t("settings.sleepQuality"), { nav.push("/settings/display/sleep-quality") }, icon = "Moon")
         SettingsChevronRow(t.t("settings.tipsTitle"), { nav.push("/settings/display/tips") }, icon = "Bulb", divider = isFemale)
         if (isFemale) {
             SettingsChevronRow(t.t("settings.menstrualCycle"), { nav.push("/settings/display/menstrual-cycle") }, icon = "CalendarHeart")
