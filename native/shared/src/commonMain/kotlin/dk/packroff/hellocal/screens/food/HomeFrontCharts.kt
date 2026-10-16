@@ -49,6 +49,7 @@ import kotlin.math.min
 
 private const val BUCKET_MIN = 15
 private const val GOAL_BAR_DP = 4
+private const val FALLBACK_DAYS = 30
 private const val FLOOR_KCAL_FEMALE = 1200.0
 
 @Serializable
@@ -238,11 +239,13 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
             if (actual.size > 1) drawPath(smoothPath(actual), HcColors.ChartBlue, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
         }
 
-        // Goal timeline: one stick per day/week from the goal's start to its target date.
+        // Goal timeline: one stick per day/week from the goal's start to its target date;
+        // without a dated weight goal the last 30 days (web: FALLBACK_DAYS).
         val weightGoal = data.goals.firstOrNull { g -> g.targetDate != null && g.targets.any { it.type == "weight" } }
+        val goalEnd = weightGoal?.targetDate?.let { runCatching { LocalDate.parse(it.take(10)) }.getOrNull() } ?: today
         val goalStart = weightGoal?.let { FoodTime.parse(it.createdAt)?.let { i -> FoodTime.local(i).date } }
-        val goalEnd = weightGoal?.targetDate?.let { runCatching { LocalDate.parse(it.take(10)) }.getOrNull() }
-        if (weightGoal != null && goalStart != null && goalEnd != null) {
+            ?: goalEnd.plus(-(FALLBACK_DAYS - 1), DateTimeUnit.DAY)
+        run {
             val totalDays = max(1, goalStart.daysUntil(goalEnd) + 1)
             val perDay = HashMap<LocalDate, Double>()
             for (r in data.registrations) {

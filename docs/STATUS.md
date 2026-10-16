@@ -25,6 +25,10 @@
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
 - Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
 
+## 2026-10-16: Forsidens grafer smallere, målgrafen altid med
+
+- Graferne slutter 36 px før skærmens midte (før 12 px), så de holder sig fri af tal-hjulets tekst. Målgrafen (kalorier pr. dag med den grå tværbar for målet og anbefalet min–maks) vises nu altid: uden et vægtmål med dato viser den de seneste 30 dage. Den tredje graf hedder "Kaloriestatus" (brugerens ord: anbefalet kalorieforbrug i grå mod den faktiske kaloriestatus i blå), og målgrafen hedder "Mål · dage/uger". Web + native; native kompileres kun i CI. Skærmbilledet fra brugerens iPhone så ud som om siden var zoomet ind (ca. 110 %), hvilket ikke kunne genskabes i Chromium.
+
 ## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
 - Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
 
