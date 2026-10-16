@@ -1,6 +1,7 @@
 package dk.packroff.hellocal.screens.food
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
 import dk.packroff.hellocal.api.ApiJson
 import dk.packroff.hellocal.i18n.LocalTranslator
+import dk.packroff.hellocal.nav.LocalNavigator
+import dk.packroff.hellocal.ui.HcSheetSize
+import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.HcText
@@ -168,7 +172,9 @@ private fun DrawScope.plotX(count: Int, i: Int) = (i + 0.5f) / count * size.widt
 @Composable
 fun HomeFrontCharts(modifier: Modifier = Modifier) {
     val t = LocalTranslator.current
+    val navigator = LocalNavigator.current
     var data by remember { mutableStateOf(ChartData()) }
+    var open by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { data = loadChartData() }
 
     val now = FoodTime.local(FoodTime.now())
@@ -190,12 +196,20 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
     val nowHour = now.hour + now.minute / 60.0
     val elapsed = max(0, min(shares.size, kotlin.math.ceil((nowHour - start) * 60 / BUCKET_MIN).toInt()))
     val budget = data.budgetKcal
+    val surplus = aheadOfPlan(sums, budget, shares, elapsed)
+    val (reduceKcal, burnKcal) = splitSurplus(surplus)
+    val eatenNow = todays.sumOf { it.kcalSnapshot }
+    val kg = data.weights.maxByOrNull { it.weighedAt }?.weightKg
+    // The calorie chart sums per hour so the recommended curve shows next to the meals (web: KCAL_BUCKET_MIN).
+    val hourShares = recommendedShares(start, end, 60)
+    val hourSums = sumBuckets(intake, start, end, 60)
     // "kl." in front of the left hour under the x axis (web: frontCharts.clockLeft).
     fun clock(hour: String) = t.t("frontCharts.clockLeft", "hour" to hour)
     val planCum = cumulative(shares.map { it * budget })
     val actualCum = cumulative(sums)
 
     Column(modifier) {
+      Column(Modifier.fillMaxWidth().weight(1f)) {
         // Pulse: one min/max stick per quarter hour.
         val filled = pulse.filterNotNull()
         val lo = filled.minOfOrNull { it.min } ?: 0.0
@@ -214,17 +228,17 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
             }
         }
 
-        // Calories: sticks per quarter hour with the recommended distribution as a smooth curve.
-        val topKcal = max(sums.maxOrNull() ?: 0.0, max((shares.maxOrNull() ?: 0.0) * budget, 1.0))
+        // Calories: sticks per hour with the recommended distribution as a smooth curve.
+        val topKcal = max(hourSums.maxOrNull() ?: 0.0, max((hourShares.maxOrNull() ?: 0.0) * budget, 1.0))
         ChartFrame(topKcal.toInt().toString(), "0", clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.intake")) {
             baseline()
-            sums.forEachIndexed { i, v ->
+            hourSums.forEachIndexed { i, v ->
                 if (v > 0) {
-                    val x = plotX(sums.size, i)
+                    val x = plotX(hourSums.size, i)
                     drawLine(HcColors.ChartBlue, Offset(x, size.height), Offset(x, size.height - (v / topKcal).toFloat() * (size.height - PLOT_PAD)), strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
                 }
             }
-            val plan = shares.mapIndexed { i, s -> Offset(plotX(shares.size, i), size.height - (s * budget / topKcal).toFloat() * (size.height - PLOT_PAD)) }
+            val plan = hourShares.mapIndexed { i, s -> Offset(plotX(hourShares.size, i), size.height - (s * budget / topKcal).toFloat() * (size.height - PLOT_PAD)) }
             drawPath(smoothPath(plan), HcColors.TextSecondary, style = Stroke(width = 1.25.dp.toPx(), cap = StrokeCap.Round))
         }
 
@@ -273,6 +287,38 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
                     val high = b.highKcal ?: return@forEachIndexed
                     val x = plotX(slots, i)
                     drawLine(HcColors.ChartBlue, Offset(x, y(low)), Offset(x, min(y(low) - 1f, y(high))), strokeWidth = barW, cap = StrokeCap.Round)
+                }
+            }
+        }
+      }
+
+        // The user's text under the charts; tapping anywhere opens the suggestions sheet.
+        Column(Modifier.fillMaxWidth().padding(top = 8.dp).clickable { open = true }) {
+            HcText(t.t("frontCharts.actionLead"), HcTypeRoles.Micro, color = HcColors.TextSecondary)
+            HcText(t.t("frontCharts.burnBig", "kcal" to surplus), HcTypeRoles.PageTitle, color = HcColors.Text)
+            HcText(t.t("frontCharts.orSplit", "reduce" to reduceKcal, "burn" to burnKcal), HcTypeRoles.Micro, color = HcColors.TextSecondary)
+        }
+    }
+
+    if (open) {
+        val limit = max(0.0, budget - max(0.0, eatenNow - budget)).toInt()
+        HcBottomSheet(onDismiss = { open = false }, title = t.t("frontCharts.sheetTitle"), size = HcSheetSize.Full, scrollable = true) {
+            Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    HcText(t.t("frontCharts.walkTitle"), HcTypeRoles.CardTitle)
+                    HcText(t.t("frontCharts.walkIntro", "kcal" to surplus), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                    for (w in walkOptions(surplus, kg)) HcText(t.t("frontCharts.walk.${w.key}", "minutes" to w.minutes), HcTypeRoles.Body)
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    HcText(t.t("frontCharts.eatTitle"), HcTypeRoles.CardTitle)
+                    HcText(t.t("frontCharts.eatIntro", "limit" to limit, "reduce" to reduceKcal), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                    for (key in listOf("veg", "protein", "soup", "fruit")) HcText("• " + t.t("frontCharts.food.$key"), HcTypeRoles.Body)
+                    if (data.hasHelloFresh) {
+                        HcText(
+                            t.t("frontCharts.helloFresh"), HcTypeRoles.Body, color = HcColors.Green, underline = true,
+                            modifier = Modifier.padding(top = 8.dp).clickable { open = false; navigator.push("/profile/recipes") },
+                        )
+                    }
                 }
             }
         }
