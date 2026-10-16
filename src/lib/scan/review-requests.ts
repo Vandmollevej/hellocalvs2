@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { reassessOffProduct } from "@/lib/off-quality-job";
 import { OFF_QUALITY_CATEGORY_LABELS, type OffQualityCategory } from "@/lib/off-quality";
+import { FRONT_CROPPED_CATEGORY, FRONT_CROPPED_LABEL } from "@/lib/front-image-check";
 
 // "Send til scan-appen" (docs/DECISIONS.md 2026-10-11): admin sender
 // Open Food Facts-varer, der ikke lever op til kvaliteten, til Oprettelses-
@@ -62,7 +63,7 @@ export async function listOpenScanRequests(take = 300): Promise<ScanRequestItem[
     requestedAt: row.scanRequestedAt as Date,
     categories: row.categories.map((key) => ({
       key,
-      label: OFF_QUALITY_CATEGORY_LABELS[key as OffQualityCategory] ?? key,
+      label: key === FRONT_CROPPED_CATEGORY ? FRONT_CROPPED_LABEL : (OFF_QUALITY_CATEGORY_LABELS[key as OffQualityCategory] ?? key),
     })),
     comments: commentsOf(row.findings),
   }));

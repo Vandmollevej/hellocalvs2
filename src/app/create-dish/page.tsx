@@ -14,7 +14,6 @@ import {
   IconSoup,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { AccordionCard } from "@/components/hf/AccordionCard";
 import {
   BottomSheet,
   BottomSheetCloseButton,
@@ -61,34 +60,40 @@ function round(value: number, decimals = 0) {
   return Math.round(value * factor) / factor;
 }
 
-// Start-valgene som vandrette felter i stil med ikonfelterne i Tilføj-menuen
-// (AddMenuList). Ikonpladsen er tom, indtil ejerens ikoner kommer (2026-10-10).
+// Start-valgene som tre kvadratiske felter midt på siden, med teksten under
+// feltet som under felterne i Tilføj-menuen (AddMenuList). Ikonpladsen er tom,
+// indtil ejerens ikoner kommer (2026-10-10).
 function StartOptionTiles<T extends { key: string; label: string }>({
   options,
   onPick,
+  centered = false,
 }: {
   options: T[];
   onPick: (option: T) => void;
+  centered?: boolean;
 }) {
   return (
-    <AccordionCard>
-      <div
-        className="grid gap-2 p-3"
-        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
-      >
-        {options.map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            onClick={() => onPick(option)}
-            className="rounded-card flex flex-col items-center gap-0 border border-transparent p-2 text-center"
-          >
-            <span aria-hidden className="h-24 w-24" />
-            <span className="hf-type-body">{option.label}</span>
-          </button>
-        ))}
-      </div>
-    </AccordionCard>
+    <div
+      className={`grid items-start gap-3 ${
+        centered ? "m-auto w-full max-w-md" : ""
+      }`}
+      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+    >
+      {options.map((option) => (
+        <button
+          key={option.key}
+          type="button"
+          onClick={() => onPick(option)}
+          className="flex flex-col items-center gap-1 text-center"
+        >
+          <span
+            aria-hidden
+            className="rounded-card aspect-square w-full bg-hf-tan"
+          />
+          <span className="hf-type-body">{option.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -420,13 +425,10 @@ export default function CreateDishPage() {
       title={t("createDish.title")}
       icon={<IconSoup size={20} stroke={2} />}
     >
-      {/* Alle flows er helsides popups (docs/REGLER.md). */}
-      <BottomSheet
-        size="full"
-        title={t("createDish.title")}
-        onClose={() => router.back()}
-        headerAction={
-          started ? (
+      {/* Opret ret er en rigtig side, ikke en popup (bruger 2026-10-16). */}
+      <div className="flex min-h-[calc(100dvh-8rem)] flex-col">
+        {started && (
+          <div className="flex justify-end px-[var(--hf-gutter)] pt-3">
             <button
               type="button"
               onClick={handleSave}
@@ -435,52 +437,13 @@ export default function CreateDishPage() {
             >
               {saving ? t("createDish.saving") : t("createDish.done")}
             </button>
-          ) : undefined
-        }
-        footer={
-          started ? (
-            <>
-              {saveError && (
-                <p className="hf-type-body text-text-secondary mb-2 text-center">
-                  {saveError}
-                </p>
-              )}
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => goTo(page - 1)}
-                  disabled={page === 0}
-                  aria-label={t("createDish.pageBack")}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
-                >
-                  <IconChevronLeft size={22} />
-                </button>
-                <BottomSheetDots
-                  count={totalPages}
-                  active={page}
-                  label={t("createDish.pageDots", {
-                    current: page + 1,
-                    total: totalPages,
-                  })}
-                  onSelect={goTo}
-                />
-                <button
-                  type="button"
-                  onClick={() => goTo(page + 1)}
-                  disabled={page === totalPages - 1}
-                  aria-label={t("createDish.pageNext")}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
-                >
-                  <IconChevronRight size={22} />
-                </button>
-              </div>
-            </>
-          ) : undefined
-        }
-      >
+          </div>
+        )}
+        <div className="flex flex-1 flex-col">
         {!started ? (
-          <div className="hf-page">
+          <div className="hf-page flex flex-1 items-center">
             <StartOptionTiles
+              centered
               options={startOptions}
               onPick={(option) => {
                 setImportMode(option.sheet !== "none");
@@ -848,7 +811,48 @@ export default function CreateDishPage() {
             )}
           </div>
         )}
-      </BottomSheet>
+        </div>
+        {started && (
+          <div className="px-[var(--hf-gutter)] pb-4">
+            <>
+              {saveError && (
+                <p className="hf-type-body text-text-secondary mb-2 text-center">
+                  {saveError}
+                </p>
+              )}
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => goTo(page - 1)}
+                  disabled={page === 0}
+                  aria-label={t("createDish.pageBack")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
+                >
+                  <IconChevronLeft size={22} />
+                </button>
+                <BottomSheetDots
+                  count={totalPages}
+                  active={page}
+                  label={t("createDish.pageDots", {
+                    current: page + 1,
+                    total: totalPages,
+                  })}
+                  onSelect={goTo}
+                />
+                <button
+                  type="button"
+                  onClick={() => goTo(page + 1)}
+                  disabled={page === totalPages - 1}
+                  aria-label={t("createDish.pageNext")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-tan text-hf-black disabled:opacity-30"
+                >
+                  <IconChevronRight size={22} />
+                </button>
+              </div>
+            </>
+          </div>
+        )}
+      </div>
       {sheet === "paste" && (
         <PasteTextSheet
           onClose={() => setSheet("none")}

@@ -43,20 +43,35 @@ function classify(label: string): { field: keyof LabelCertificationFilters; valu
   return null;
 }
 
+// Økologimærker står alle i organic, adskilt af ", " (fx "Økologisk,
+// EU-økologisk"), så Ø-mærket og EU-bladet vises som hvert sit logo. Kun mærker,
+// der er fundet på varen, og i den rækkefølge de blev fundet.
+export const ORGANIC_SEPARATOR = ", ";
+
+export function organicMarks(value: string | null | undefined): string[] {
+  return (value ?? "").split(",").map((mark) => mark.trim()).filter(Boolean);
+}
+
+export function joinOrganicMarks(marks: readonly string[]): string | null {
+  const unique = Array.from(new Set(marks.map((mark) => mark.trim()).filter(Boolean)));
+  return unique.length ? unique.join(ORGANIC_SEPARATOR) : null;
+}
+
 export function certificationFiltersFromLabels(labels: readonly string[]): LabelCertificationFilters {
   const out: LabelCertificationFilters = { organic: null, keyhole: null, wholeGrain: null, animalWelfare: [], certifications: [] };
+  const organic: string[] = [];
   for (const label of labels) {
     const hit = classify(label);
     if (!hit) continue;
     if (hit.field === "animalWelfare" || hit.field === "certifications") {
       if (!out[hit.field].includes(hit.value)) out[hit.field].push(hit.value);
     } else if (hit.field === "organic") {
-      // Det danske Ø-mærke vinder over EU-bladet (begge står ofte på varen).
-      if (!out.organic || hit.value === ORGANIC) out.organic = hit.value;
+      organic.push(hit.value);
     } else {
       out[hit.field] = hit.value;
     }
   }
+  out.organic = joinOrganicMarks(organic);
   return out;
 }
 

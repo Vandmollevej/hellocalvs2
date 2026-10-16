@@ -91,6 +91,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     newUsersWeek,
     approvedProducts,
     registrationsToday,
+    rechecks,
   ] = await Promise.all([
     safe(countSupportInbox(), { unanswered: 0, overdue: 0 }),
     safe(prisma.product.count({ where: { status: "PENDING", privateOwnerId: null } }), 0),
@@ -182,6 +183,8 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     safe(prisma.user.count({ where: { role: "USER", createdAt: { gte: weekAgo } } }), 0),
     safe(prisma.product.count({ where: { status: "APPROVED", privateOwnerId: null } }), 0),
     safe(prisma.registration.count({ where: { createdAt: { gte: startOfToday } } }), 0),
+    // 2-års tjek med ændringer (docs/DECISIONS.md 2026-10-15) — vises som nye varer.
+    safe(prisma.productRecheck.count({ where: { status: "AWAITING_ADMIN" } }), 0),
   ]);
 
   const nightRuns = night
@@ -224,6 +227,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
     counts: {
       support,
       pendingProducts,
+      rechecks,
       uncertainties,
       bugReports,
       pendingImages,

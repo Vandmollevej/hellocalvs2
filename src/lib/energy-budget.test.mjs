@@ -81,3 +81,14 @@ test("vægtøgning højst 0,25 kg/uge", () => {
   assert.equal(gain.deltaKcal, 275);
   assert.ok(gain.adjustments.includes("GAIN_PACE_CAPPED"));
 });
+
+test("gravid eller ammende: intet underskud, vægtøgning stadig muligt", () => {
+  const woman = { ...adult, sex: "FEMALE", weightKg: 70, heightCm: 168, tdeeKcal: 2500, bmrKcal: 1450 };
+  const lose = computeDailyBudget({ ...woman, mode: "LOSE", paceKgPerWeek: 0.5, pregnancy: true });
+  assert.equal(lose.budgetKcal, 2500);
+  assert.equal(lose.deltaKcal, 0);
+  assert.deepEqual(lose.adjustments, ["PREGNANCY_NO_DEFICIT"]);
+  const gain = computeDailyBudget({ ...woman, mode: "GAIN", paceKgPerWeek: 0.1, pregnancy: true });
+  assert.ok(gain.deltaKcal > 0);
+  assert.deepEqual(gain.adjustments, []);
+});

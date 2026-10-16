@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClose } from "@/components/hf/BottomSheet";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -15,6 +16,7 @@ import { ACTIVITY_PAGES, ActivityStep, EMPTY_ACTIVITY_ANSWERS, type ActivityPage
 import type { EnergySummary } from "@/lib/activity-profile";
 import type { EnergyGoalUser } from "@/components/EnergyGoalEditor";
 import type { ActivityAnswers, ActivityLevelKey } from "@/lib/pal-model";
+import { PregnancyFields, type PregnancyPatch, type PregnancyValue } from "@/components/PregnancyFields";
 
 // Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
 // animationen er færdig. Træk ned/scrim/Escape tæller som "Påmind mig senere".
@@ -22,7 +24,8 @@ type ExitReason = "remind" | "dismiss" | "complete";
 
 type DailyLogPreference = "WORK_HOURS" | "SLEEP_TIMES";
 
-type OnboardingUser = {
+type OnboardingUser = PregnancyValue & {
+  sex: "FEMALE" | "MALE" | null;
   goalMode: EnergyGoalUser["goalMode"];
   goalPaceKgPerWeek: number | null;
   targetWeightKg: number | null;
@@ -41,15 +44,20 @@ type OnboardingUser = {
 // The order of steps the user can actually encounter. "Shift work" and
 // "daily logging" are automatically skipped if the user answers that they
 // have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
-// these steps are specified today (+ "calendar-view", user request 2026-09-29); more can be added to the wizard later.
+// these steps are specified today (+ "calendar-view", user request 2026-09-29; + "pregnancy",
+// user request 2026-10-14, only for sex = FEMALE; + "migration-import", user request
+// 2026-10-15: "Har du allerede en konto hos en anden udbyder?" Importér nu / senere);
+// more can be added to the wizard later.
 type StepId =
   | "units"
   | "sleep-pattern"
   | "shift-work"
   | "daily-log-preference"
   | "calendar-view"
+  | "pregnancy"
   | "activity"
-  | "health-import";
+  | "health-import"
+  | "migration-import";
 
 const ALL_STEPS: StepId[] = [
   "units",
@@ -57,8 +65,10 @@ const ALL_STEPS: StepId[] = [
   "shift-work",
   "daily-log-preference",
   "calendar-view",
+  "pregnancy",
   "activity",
   "health-import",
+  "migration-import",
 ];
 
 // Aktivitetstrinnet har egne sider (docs/ACTIVITY-PAL.md). Intensitet
@@ -67,10 +77,12 @@ function visibleActivityPages(answers: ActivityAnswers): ActivityPage[] {
   return ACTIVITY_PAGES.filter((page) => page !== "intensity" || Boolean(answers.training));
 }
 
-function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null): StepId[] {
+function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null, sex: OnboardingUser["sex"]): StepId[] {
   return ALL_STEPS.filter((step) => {
     if (step === "shift-work") return hasRegularSleep === false;
     if (step === "daily-log-preference") return hasRegularSleep === false && shiftWork === true;
+    // Graviditet/amning spørges før energibehovet, så tillægget er med i regnestykket. Kun for kvinder.
+    if (step === "pregnancy") return sex === "FEMALE";
     return true;
   });
 }
@@ -80,6 +92,9 @@ export function OnboardingWizard({
   onClose,
 }: { forceVisible?: boolean; onClose?: () => void } = {}) {
   const { t } = useTranslation();
+  const router = useRouter();
+  // Side, der åbnes, når arket er gledet ud (fx "Importér nu" → /settings/import).
+  const openAfterCloseRef = useRef<string | null>(null);
   const [user, setUser] = useState<OnboardingUser | null>(null);
   const [visible, setVisible] = useState(false);
   const [hasRegularSleep, setHasRegularSleep] = useState<boolean | null>(null);
@@ -95,6 +110,7 @@ export function OnboardingWizard({
   const [activitySummary, setActivitySummary] = useState<EnergySummary | null>(null);
   const [suggestedLevel, setSuggestedLevel] = useState<ActivityLevelKey | null>(null);
   const [goalUser, setGoalUser] = useState<EnergyGoalUser | null>(null);
+  const [pregnancy, setPregnancy] = useState<PregnancyValue>({ pregnancyStatus: null, pregnancyWeek: null, breastfeedingWeeks: null });
 
   useEffect(() => {
     let cancelled = false;
@@ -112,6 +128,11 @@ export function OnboardingWizard({
           weightKg: user.weightKg ?? null,
           heightCm: user.heightCm ?? null,
         });
+        setPregnancy({
+          pregnancyStatus: user.pregnancyStatus ?? null,
+          pregnancyWeek: user.pregnancyWeek ?? null,
+          breastfeedingWeeks: user.breastfeedingWeeks ?? null,
+        });
         setShiftWork(user.shiftWorkEnabled || null);
         setDailyLogPreference(user.dailyLogPreference);
         setCanDismissPermanently(Boolean(user.onboardingRemindLaterAt));
@@ -128,7 +149,7 @@ export function OnboardingWizard({
 
   if (!visible || !user) return null;
 
-  const steps = visibleSteps(hasRegularSleep, shiftWork);
+  const steps = visibleSteps(hasRegularSleep, shiftWork, user.sex);
   const currentStep = steps[stepIndex];
   const totalSteps = steps.length;
 
@@ -148,6 +169,9 @@ export function OnboardingWizard({
     else save({ onboardingRemindLaterAt: new Date().toISOString() });
     setVisible(false);
     onClose?.();
+    const href = openAfterCloseRef.current;
+    openAfterCloseRef.current = null;
+    if (href) router.push(href);
   }
 
   const activityPages = visibleActivityPages(activityAnswers);
@@ -169,6 +193,11 @@ export function OnboardingWizard({
         setSuggestedLevel(data.summary.level);
       })
       .catch(() => {});
+  }
+
+  function updatePregnancy(patch: PregnancyPatch) {
+    setPregnancy((current) => ({ ...current, ...patch }));
+    save(patch);
   }
 
   function pickActivityLevel(level: ActivityLevelKey) {
@@ -334,6 +363,12 @@ export function OnboardingWizard({
           </div>
         )}
 
+        {currentStep === "pregnancy" && (
+          <div className="flex flex-col gap-4">
+            <PregnancyFields headingId="onboarding-title" question={t("onboarding.pregnancyQuestion")} value={pregnancy} onChange={updatePregnancy} />
+            <p className="hf-type-body text-text-secondary">{t("onboarding.pregnancyHint")}</p>
+          </div>
+        )}
         {currentStep === "activity" && (
           <ActivityStep
             page={activityPage}
@@ -366,6 +401,34 @@ export function OnboardingWizard({
                 else goNext();
               }}
             />
+          </div>
+        )}
+
+        {currentStep === "migration-import" && (
+          <div className="flex flex-col gap-4">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
+              {t("onboarding.migrationImportQuestion")}
+            </h2>
+            <p className="hf-type-body text-text-secondary">{t("onboarding.migrationImportHint")}</p>
+            {/* Importér nu: guiden fuldføres, og Import åbner, når arket er gledet ud. */}
+            <BottomSheetCloseButton
+              onClick={() => {
+                exitRef.current = "complete";
+                openAfterCloseRef.current = "/settings/import";
+              }}
+              className="hf-control hf-btn-secondary w-full"
+            >
+              {t("onboarding.importNow")}
+            </BottomSheetCloseButton>
+            {isLastStep ? (
+              <BottomSheetCloseButton onClick={() => (exitRef.current = "complete")} className="hf-control hf-btn-text w-full">
+                {t("onboarding.importLater")}
+              </BottomSheetCloseButton>
+            ) : (
+              <button type="button" onClick={goNext} className="hf-control hf-btn-text w-full">
+                {t("onboarding.importLater")}
+              </button>
+            )}
           </div>
         )}
       </div>

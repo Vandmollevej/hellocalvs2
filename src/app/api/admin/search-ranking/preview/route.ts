@@ -92,7 +92,7 @@ export async function POST(req: Request) {
         orderBy: { createdAt: "desc" },
       }),
       prisma.genericIngredient.findMany({
-        where: { name: { contains: query, mode: "insensitive" } },
+        where: { name: { contains: query, mode: "insensitive" }, archivedAt: null },
         include: { regionSearchStats: true, regionHourStats: true },
         take: CANDIDATE_TAKE,
         orderBy: { createdAt: "desc" },

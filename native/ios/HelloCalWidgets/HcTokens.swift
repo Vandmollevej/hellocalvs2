@@ -88,7 +88,7 @@ enum HcColors {
     /// --hf-color-skeleton
     static let skeleton = Color(.sRGB, red: 0.8863, green: 0.8549, blue: 0.7961, opacity: 1.0000)
     /// --hf-color-skeleton-highlight
-    static let skeletonHighlight = Color(.sRGB, red: 0.9490, green: 0.9333, blue: 0.9020, opacity: 1.0000)
+    static let skeletonHighlight = Color(.sRGB, red: 0.9843, green: 0.9765, blue: 0.9608, opacity: 1.0000)
     /// --hf-green
     static let green = Color(.sRGB, red: 0.0235, green: 0.4784, blue: 0.2745, opacity: 1.0000)
     /// --hf-green-dark

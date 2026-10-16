@@ -15,7 +15,7 @@ const ALLERGEN_STEMS = [
   // Nuts, peanuts, seeds
   "jordnød", "peanut", "nød", "nødde", "nut", "mandel", "mandler", "almond", "hasselnød", "hazelnut", "valnød", "walnut",
   "cashew", "pekan", "pecan", "pistacie", "pistachio", "paranød", "macadamia",
-  "soja", "soy", "selleri", "celery", "sennep", "mustard", "sesam", "sesame", "lupin",
+  "soja", "soya", "soy", "selleri", "celery", "sennep", "mustard", "sesam", "sesame", "lupin",
   "sulfit", "sulphit", "sulfite", "svovldioxid", "sulphur dioxide", "sulfur dioxide",
 ];
 

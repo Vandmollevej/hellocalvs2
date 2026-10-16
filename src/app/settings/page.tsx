@@ -8,6 +8,7 @@ import {
   IconWorld,
   IconRefresh,
   IconPlugConnected,
+  IconFileImport,
   IconCreditCard,
   IconBell,
   IconEye,
@@ -15,6 +16,7 @@ import {
   IconRuler,
   IconHome2,
   IconCalendarHeart,
+  IconBabyCarriage,
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
@@ -25,6 +27,7 @@ import {
   IconHistory,
   IconTrashOff,
   IconBulb,
+  IconLanguage,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -112,6 +115,7 @@ export default function SettingsPage() {
       },
     },
     { icon: <IconPlugConnected size={20} />, label: t("settings.integrations"), href: "/settings/integrations" },
+    { icon: <IconFileImport size={20} />, label: t("settings.import"), href: "/settings/import" },
     { icon: <IconBell size={20} />, label: t("settings.notifications"), href: "/profile/notifications" },
     { icon: <IconArrowsSort size={20} />, label: t("circleBadges.priorityTitle"), href: "/settings/display/priority" },
     { icon: <IconHome2 size={20} />, label: t("settings.frontPage"), href: "/settings/display/front-page" },
@@ -119,11 +123,15 @@ export default function SettingsPage() {
     { icon: <IconRuler size={20} />, label: t("settings.bodyMeasurementsDisplay"), href: "/settings/display/body-measurements" },
     { icon: <IconAlertTriangle size={20} />, label: t("settings.recommendedLimits"), href: "/settings/display/limits" },
     { icon: <IconAdjustments size={20} />, label: t("displaySettings.uncertainty"), href: "/settings/display/uncertainty" },
+    { icon: <IconLanguage size={20} />, label: t("settings.translation"), href: "/settings/display/translation" },
     { icon: <IconCalendarWeek size={20} />, label: t("settings.calendarView"), href: "/settings/display/calendar-view" },
     { icon: <IconMoon size={20} />, label: t("settings.sleepQuality"), href: "/settings/display/sleep-quality" },
     { icon: <IconBulb size={20} />, label: t("settings.tipsTitle"), href: "/settings/display/tips" },
     ...(isFemale
       ? [{ icon: <IconCalendarHeart size={20} />, label: t("settings.menstrualCycle"), href: "/settings/display/menstrual-cycle" }]
+      : []),
+    ...(isFemale
+      ? [{ icon: <IconBabyCarriage size={20} />, label: t("settings.pregnancy"), href: "/settings/display/pregnancy" }]
       : []),
     { icon: <IconHelp size={20} />, label: t("settings.helpCenter"), onClick: () => window.location.assign(helpPagePath(locale)) },
     { icon: <IconBug size={20} />, label: t("profile.row.reportBug"), href: "/profile/report-bug" },
@@ -229,6 +237,12 @@ export default function SettingsPage() {
             icon={<IconPlugConnected size={20} />}
             label={t("settings.integrations")}
             href="/settings/integrations"
+          />
+          {/* Import: flyt data fra MyFitnessPal / Lifesum (docs/DECISIONS.md 2026-10-15). */}
+          <ChevronRow
+            icon={<IconFileImport size={20} />}
+            label={t("settings.import")}
+            href="/settings/import"
             divider={false}
           />
         </AccordionCard>
@@ -284,15 +298,15 @@ export default function SettingsPage() {
               divider
             />
             <ChevronRow
-              icon={<IconCalendarWeek size={20} />}
-              label={t("settings.calendarView")}
-              href="/settings/display/calendar-view"
+              icon={<IconLanguage size={20} />}
+              label={t("settings.translation")}
+              href="/settings/display/translation"
               divider
             />
             <ChevronRow
-              icon={<IconMoon size={20} />}
-              label={t("settings.sleepQuality")}
-              href="/settings/display/sleep-quality"
+              icon={<IconCalendarWeek size={20} />}
+              label={t("settings.calendarView")}
+              href="/settings/display/calendar-view"
               divider
             />
             <ChevronRow
@@ -306,6 +320,14 @@ export default function SettingsPage() {
                 icon={<IconCalendarHeart size={20} />}
                 label={t("settings.menstrualCycle")}
                 href="/settings/display/menstrual-cycle"
+                divider
+              />
+            )}
+            {isFemale && (
+              <ChevronRow
+                icon={<IconBabyCarriage size={20} />}
+                label={t("settings.pregnancy")}
+                href="/settings/display/pregnancy"
                 divider={false}
               />
             )}

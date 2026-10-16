@@ -90,7 +90,7 @@ object HcColors {
     /** --hf-color-skeleton */
     val Skeleton = Color(0xFFE2DACB)
     /** --hf-color-skeleton-highlight */
-    val SkeletonHighlight = Color(0xFFF2EEE6)
+    val SkeletonHighlight = Color(0xFFFBF9F5)
     /** --hf-green */
     val Green = Color(0xFF067A46)
     /** --hf-green-dark */

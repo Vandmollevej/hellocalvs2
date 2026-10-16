@@ -8,9 +8,11 @@ export type FractionRect = { left: number; top: number; right: number; bottom: n
 
 // The on-screen guide box a user must align a barcode inside, as a fraction
 // of the (square) camera viewfinder — 2.2:1, per the user's measured
-// barcode-aspect brief.
+// barcode-aspect brief. Smaller since 2026-10-14 (user): a barcode-sized
+// field with the rest of the picture dimmed, not a frame around everything;
+// the decoder still reads the whole centre square.
 export const BARCODE_GUIDE_ASPECT = 2.2;
-export const BARCODE_GUIDE_WIDTH_FRACTION = 0.78;
+export const BARCODE_GUIDE_WIDTH_FRACTION = 0.56;
 
 // Whether the guide box is laid out for a barcode held normally
 // ("horizontal", long side across) or on its side ("vertical", long side

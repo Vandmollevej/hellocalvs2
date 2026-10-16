@@ -109,7 +109,7 @@ export async function enrichRescan(input: RescanInput) {
     const enrichment: QuickEnrichmentInput = {
       ...input,
       nutritionPhoto: input.nutritionPhoto!,
-      fallbackName: current?.name ?? `Vare ${input.barcode}`,
+      fallbackName: current?.name ?? "",
       existingProduct: true,
     };
     const [front, label] = await Promise.all([enrichFront(enrichment), enrichLabel(enrichment)]);

@@ -27,10 +27,21 @@ export function HfLoader({
 // Scanningseffekt, mens et foto arbejder (kameraflowet under Tilføj,
 // docs/DECISIONS.md 2026-09-28): en bred hvid/lys gradientstribe fejer hen
 // over billedet i stedet for en load-cirkel, så varen ser ud til at blive scannet.
-export function PhotoWorkingOverlay({ label }: { label: string }) {
+// Teksten står synligt nederst (brugeren 2026-10-15: "der står ikke nogen
+// steder, at billedet behandles"); `showLabel={false}`, når kalderen selv
+// skriver teksten.
+export function PhotoWorkingOverlay({ label, showLabel = true }: { label: string; showLabel?: boolean }) {
   return (
     <div className="absolute inset-0 overflow-hidden" role="status" aria-label={label}>
       <div className="hf-scan-sweep" />
+      {showLabel && (
+        <div className="pointer-events-none absolute inset-x-3 bottom-3 flex justify-center" aria-hidden>
+          <p className="hf-type-small hf-type-strong flex items-center gap-2 bg-hf-black/60 px-3 py-1.5 text-hf-white rounded-card">
+            <HfLoader size={14} className="text-hf-white" />
+            {label}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

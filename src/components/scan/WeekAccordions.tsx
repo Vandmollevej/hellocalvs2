@@ -1,5 +1,6 @@
 import { HfChevron } from "@/components/hf/HfChevron";
 import { formatKroner, formatWeekPeriod, type IsoWeek } from "@/lib/scan/weeks";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Ugevise accordions til Historik og Ikke afregnet (docs/OPRETTELSES-APP.md):
 // ugenummer til venstre + perioden mandag–søndag; øverste uge er altid
@@ -50,7 +51,7 @@ export function WeekAccordions({ groups, showStore, emptyText }: { groups: WeekG
               <li key={row.id} className="flex items-center gap-3 border-t px-4 py-2 border-hf-line">
                 {row.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={row.imageUrl} alt="" className="h-12 w-12 bg-hf-white object-contain rounded-card" />
+                  <img src={imageThumb(row.imageUrl, 128)} alt="" className="h-12 w-12 bg-hf-white object-contain rounded-card" />
                 ) : (
                   <span className="h-12 w-12 bg-hf-white rounded-card" />
                 )}
