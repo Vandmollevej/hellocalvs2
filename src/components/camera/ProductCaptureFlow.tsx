@@ -138,6 +138,8 @@ const ENERGY_LOCAL_WAIT_MS = 4000;
 const PENDING_PHOTOS_WAIT_MS = 10000;
 // Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
 const BARCODE_PHOTO_MAX_SIDE = 1920;
+// Originalbilleder: hele kamerabilledet op til sensorens opløsning.
+const ORIGINAL_MAX_SIDE = 4096;
 
 const STEP_ICONS: Record<CaptureStep, ComponentType<{ size?: number; stroke?: number }>> = {
   barcode: IconBarcodeCard,
@@ -713,6 +715,20 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         // En vare over to år (2-års tjek) går samme vej uden stregkodefotoet.
         qualityCheckProductIdRef.current = known?.product.id ?? null;
         const frame = known ? null : captureVideoFrame(videoRef.current, BARCODE_PHOTO_MAX_SIDE);
+        // Originalbilledet af stregkoden: hele kamerabilledet i fuld opløsning
+        // (brugerens krav 2026-10-16), også ved 2-års tjekket.
+        const original = captureVideoFrame(videoRef.current, ORIGINAL_MAX_SIDE);
+        if (original) {
+          void uploadBackPhoto(original, "barcode", flowId).then((ok) =>
+            scanLog(flowId, ok ? "back_photo_uploaded" : "back_photo_failed", {
+              level: ok ? "info" : "warn",
+              message: ok
+                ? `Originalbillede uploadet (barcode, ${original.width}×${original.height})`
+                : "Originalbilledet kunne ikke uploades (barcode)",
+              barcode: code,
+            }),
+          );
+        }
         dataRef.current.barcode = code;
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
@@ -920,6 +936,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       const pair = await captureStillWithFull(videoRef.current, PHOTO_CROP, PHOTO_CROP);
       captured = pair?.still ?? null;
       frontFullRef.current = pair ? { shot, url: pair.full.url } : null;
+      // Hele, ubeskårne originalbillede gemmes også (brugerens krav 2026-10-16).
+      if (pair) trackProcessing(step, shot, uploadFullPhoto("front", pair.original));
     } else {
       captured = await captureStill(videoRef.current, PHOTO_CROP);
     }
@@ -933,14 +951,16 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     return still;
   }
 
-  async function uploadFullPhoto(step: "nutrition" | "ingredients", full: Still) {
+  // Originalbilledet af hver optagelse (brugerens krav 2026-10-16: "Jeg skal
+  // have original af det hele"): stregkode, forside, energi og indhold.
+  async function uploadFullPhoto(step: "barcode" | "front" | "nutrition" | "ingredients", full: Still) {
     const startedAt = Date.now();
     const ok = await uploadBackPhoto(full, step, flowId);
     scanLog(flowId, ok ? "back_photo_uploaded" : "back_photo_failed", {
       level: ok ? "info" : "warn",
       message: ok
-        ? `Ubeskåret bagsidebillede uploadet (${step}, ${full.width}×${full.height})`
-        : `Det ubeskårne bagsidebillede kunne ikke uploades (${step})`,
+        ? `Originalbillede uploadet (${step}, ${full.width}×${full.height})`
+        : `Originalbilledet kunne ikke uploades (${step})`,
       barcode: dataRef.current.barcode,
       durationMs: Date.now() - startedAt,
       data: { step, width: full.width, height: full.height, bytes: Math.round(full.url.length * 0.75) },

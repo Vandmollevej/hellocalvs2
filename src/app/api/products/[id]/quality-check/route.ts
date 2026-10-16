@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/session";
 import { submitProductRecheck } from "@/lib/product-recheck";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
+import { linkBackPhotos } from "@/lib/product-back-photos";
 
 // POST /api/products/[id]/quality-check — 2-års kvalitetstjek
 // (docs/DECISIONS.md 2026-10-15). Kameraets fotos af en vare, der har ligget i
@@ -44,6 +45,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       ingredientsOcrText: cleanText(body?.ingredientsOcrText),
       ingredientsOcrConfidence: cleanNumber(body?.ingredientsOcrConfidence),
     });
+    // Flowets originalbilleder (stregkode, forside, energi, indhold) gemmes på
+    // varen som arkiv — uden analyse (brugerens krav 2026-10-16).
+    await linkBackPhotos(flowId, id, user.id, { archiveOnly: true }).catch((error) =>
+      console.error("Could not link original photos", id, error),
+    );
     void debugLog({
       category: "scan",
       event: "product_recheck_submitted",

@@ -1,3 +1,7 @@
+## 2026-10-16: Originalbilleder af alle trin
+
+- Stregkode, forside, energi og indhold: hver optagelse gemmes ubeskåret (op til 4096 px) og kobles til varen (web; native alle undtagen stregkoden). Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Ingen tekst under forsidens grafer
 
 - Brugeren vil ikke have teksten "For at kunne holde dig inden for dagens mål anbefaler vi at du …" eller forslagsarket under graferne. Fjernet i web (`FrontCharts.tsx`) og native (`HomeFrontCharts.kt`); graferne fylder pladsen. Gentag den ikke.

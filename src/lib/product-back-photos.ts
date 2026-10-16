@@ -41,8 +41,13 @@ import {
 // lokalt (localResult); OpenAI læser kun billedet uden lokale mærkefund, og
 // stavningen afgøres af ordbogen med AI kun ved tvivl.
 
-export const BACK_PHOTO_STEPS = ["nutrition", "ingredients"] as const;
+// Originalbilleder fra ALLE trin (brugerens krav 2026-10-16: "Jeg skal have
+// original af det hele"): stregkode, forside, energi og indhold — hver
+// optagelse, hele kamerabilledet, koblet til varen, så de planlagte jobs kan
+// bruge dem. Kun energi/indhold analyseres af "back-photo-scan".
+export const BACK_PHOTO_STEPS = ["barcode", "front", "nutrition", "ingredients"] as const;
 export type BackPhotoStep = (typeof BACK_PHOTO_STEPS)[number];
+export const ANALYZED_BACK_PHOTO_STEPS = ["nutrition", "ingredients"] as const;
 
 // Et helt 4K-kamerabillede som JPEG; større afvises.
 export const BACK_PHOTO_MAX_BYTES = 15 * 1024 * 1024;
@@ -98,11 +103,20 @@ export async function saveBackPhoto(input: {
 }
 
 // Kaldes, når varen er oprettet/genscannet: flowets bagsidebilleder hører til den.
-export async function linkBackPhotos(flowId: string | null, productId: string, userId: string | null): Promise<number> {
+// `archiveOnly` (2-års tjekket): billederne gemmes som originaler på varen,
+// men analyseres ikke — varens data ændres først efter admins vurdering.
+export async function linkBackPhotos(
+  flowId: string | null,
+  productId: string,
+  userId: string | null,
+  options: { archiveOnly?: boolean } = {},
+): Promise<number> {
   if (!flowId) return 0;
   const result = await prisma.productBackPhoto.updateMany({
     where: { flowId, productId: null, ...(userId ? { OR: [{ userId }, { userId: null }] } : {}) },
-    data: { productId },
+    data: options.archiveOnly
+      ? { productId, analyzedAt: new Date(), result: { archiveOnly: true, reason: "quality-check" } }
+      : { productId },
   });
   return result.count;
 }
@@ -300,7 +314,12 @@ export async function runBackPhotoScan(): Promise<JobResult> {
   const startedAt = Date.now();
   const orphans = await settleOrphans();
   const rows = await prisma.productBackPhoto.findMany({
-    where: { analyzedAt: null, productId: { not: null }, attempts: { lt: MAX_ATTEMPTS } },
+    where: {
+      analyzedAt: null,
+      productId: { not: null },
+      attempts: { lt: MAX_ATTEMPTS },
+      step: { in: [...ANALYZED_BACK_PHOTO_STEPS] },
+    },
     orderBy: { createdAt: "asc" },
     take: MAX_PER_RUN,
     select: { id: true, productId: true, step: true, imageUrl: true, attempts: true, localResult: true, localScannedAt: true, createdAt: true },

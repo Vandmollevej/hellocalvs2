@@ -36,6 +36,7 @@ def fetch_pending(conn, limit):
             """
             SELECT id, "imageUrl" FROM product_back_photos
             WHERE "localScannedAt" IS NULL AND "analyzedAt" IS NULL
+              AND step IN ('nutrition', 'ingredients')
             ORDER BY "createdAt" ASC
             LIMIT %s
             """,
