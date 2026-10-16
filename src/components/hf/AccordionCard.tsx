@@ -15,6 +15,7 @@ export function ChevronRow({
   onClick,
   badgeCount,
   centerText,
+  value,
   trailing,
 }: {
   icon: React.ReactNode;
@@ -27,6 +28,8 @@ export function ChevronRow({
   badgeCount?: number;
   // Mørkegrøn tekst midt mellem labelen og pilen (fx "50%" på Kontoopsætning).
   centerText?: string;
+  // Kort status yderst til højre før pilen (fx "Aktiv" på Screeninger).
+  value?: React.ReactNode;
   // Knap yderst til højre uden for rækkens tryk-område (fx favorit-bookmark).
   trailing?: React.ReactNode;
 }) {
@@ -48,6 +51,7 @@ export function ChevronRow({
           {badgeCount > 99 ? "99+" : badgeCount}
         </span>
       )}
+      {value}
       <HfChevron className="text-hf-black" />
     </>
   );

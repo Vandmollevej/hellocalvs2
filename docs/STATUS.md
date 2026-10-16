@@ -1,3 +1,7 @@
+## 2026-10-16: Screeninger på det globale design
+
+- Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt). Rettet samtidig: ugyldige `:rest*`-mønstre i `next.config.ts` (#475 brød `next build`), admin-knap i `IncompleteImageList` (lint) og manglende side i `page-tree.ts`.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.

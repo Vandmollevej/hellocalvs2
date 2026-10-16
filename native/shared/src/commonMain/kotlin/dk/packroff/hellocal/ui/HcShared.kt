@@ -82,7 +82,8 @@ fun HcAccordionCard(modifier: Modifier = Modifier, content: @Composable ColumnSc
 /**
  * ChevronRow from AccordionCard.tsx — 48 px row: 20 px icon (Tabler [icon] or
  * [iconContent]), label, optional green unread badge, chevron; a tan-dark line
- * below unless [divider] is false. [wrapLabel] lets a long label wrap.
+ * below unless [divider] is false. [wrapLabel] lets a long label wrap. [value] is a
+ * short status right before the chevron ("Aktiv" on Screeninger).
  */
 @Composable
 fun HcChevronRow(
@@ -94,6 +95,7 @@ fun HcChevronRow(
     wrapLabel: Boolean = false,
     iconContent: (@Composable () -> Unit)? = null,
     centerText: String? = null,
+    value: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     Column(Modifier.fillMaxWidth()) {
@@ -117,6 +119,7 @@ fun HcChevronRow(
                     HcText(if (badgeCount > 99) "99+" else badgeCount.toString(), HcTypeRoles.Caption, color = HcColors.White, align = TextAlign.Center)
                 }
             }
+            value?.invoke()
             HcChevron(color = HcColors.Black)
             trailing?.invoke()
         }

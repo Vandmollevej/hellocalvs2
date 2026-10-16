@@ -2,14 +2,15 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 
 // Fælles handlingsknap (design.md §6.2): almindelige primære og sekundære
-// handlinger fylder altid hele indholdsbredden — ingen smalle, centrerede
-// knapper. Ikonknapper, +/−, luk/tilbage og små inline-kontroller bruger ikke
-// denne komponent. Udseendet (højde, kant, radius, typografi) er uændret og
+// handlinger fylder altid hele indholdsbredden og er mindst 48 px høje
+// (.hf-btn--large) — ingen smalle, centrerede eller sammenklemte knapper.
+// Ikonknapper, +/−, luk/tilbage og små inline-kontroller bruger ikke denne
+// komponent. Udseendet (højde, kant, radius, typografi) er uændret og
 // kommer fra .hf-btn-primary/.hf-btn-secondary/.hf-btn-danger samt `className`.
 type Variant = "primary" | "secondary" | "danger";
 
 function actionClass(variant: Variant, className?: string) {
-  return `hf-btn-${variant} w-full ${className ?? ""}`.trim();
+  return `hf-btn-${variant} hf-btn--large w-full ${className ?? ""}`.trim();
 }
 
 export function ActionButton({
