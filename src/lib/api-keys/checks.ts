@@ -182,6 +182,20 @@ async function checkUsda(): Promise<CheckResult> {
   return res.ok ? { status: "ok", message: "Nøglen virker." } : { status: "fail", message: `USDA afviser nøglen (${res.status}).` };
 }
 
+// Et lille testbillede (ét opslag): afvises nøglen, svarer Bria 401/403.
+async function checkBria(): Promise<CheckResult> {
+  const png =
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  const res = await request("https://engine.prod.bria-api.com/v2/image/edit/remove_background", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", api_token: env("BRIA_API_TOKEN") },
+    body: JSON.stringify({ image: png, sync: true }),
+  });
+  if (res.status === 401 || res.status === 403) return { status: "fail", message: `Bria afviser nøglen (${res.status}).` };
+  if (res.ok) return { status: "ok", message: "Nøglen virker." };
+  return { status: "fail", message: `Bria svarede ${res.status}: ${(await res.text()).slice(0, 150)}` };
+}
+
 async function checkPlaces(): Promise<CheckResult> {
   const res = await request("https://places.googleapis.com/v1/places:searchText", {
     method: "POST",
@@ -316,6 +330,8 @@ export async function runCheck(serviceId: string, requiredKeys: string[], redire
         return await checkPassio();
       case "usda":
         return await checkUsda();
+      case "bria":
+        return await checkBria();
       case "google-places":
         return await checkPlaces();
       case "smtp":

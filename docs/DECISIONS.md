@@ -4,6 +4,14 @@
 - Valg: Google har ingen officiel tekstsøgning på nettet (Custom Search lukker 1. januar 2027), så tekstopslag går mod Open Food Facts (stregkode, derefter titel), og Vision (`WEB_DETECTION`) bruges kun ved 0 resultater. Se `docs/LIDL-ALDI-ENRICH.md`.
 - Jobbet har ny `defaultEnabled: false` i `src/lib/jobs/registry.ts`; rækken oprettes slået fra.
 
+## 2026-10-16: Tale og Madvarer er én side
+
+Brugerens krav: Tale-siden og Madvarer flettes; mikrofonen er næsten lige så stor over søgefeltet og virker som før, og resultater søges og raffineres løbende, mens man taler.
+
+- Mikrofonen skriver det sagte (også foreløbige resultater) direkte i søgefeltet; den eksisterende søgning (debounce, cache, rettelser) kører så i realtid. Man kan stoppe mikrofonen eller begynde at skrive.
+- Den gamle AI-tolkning af hele måltider (flere varer, "Tilføj alle") findes ikke længere; man vælger varen i listen og tilføjer den på varesiden. Chat-siden (Indtast) er uændret og bruger stadig AI-tolkningen.
+- `/voice` er bevaret som omdirigering til `/foods?mic=1`, så gamle links, widgets og native-menuer virker.
+
 ## 2026-10-15: Billeder hentes som små, cachede udgaver
 
 - Problem: billederne loadede langsomt næsten hver gang. Alle `<img>` hentede originalen (logoer op til 15 MB, 124 af 134 logoer over 800 px; fritlægninger og fotos i fuld opløsning) — også til en 44 px række — over Cloudflare-tunnelen fra Synology. Og cachen var svag: Next serverer public-filer med `max-age=0` (browseren spurgte hver gang), og fallback-routen for billeder lagt op efter opstart havde ingen ETag (fuld download hver time).
@@ -5680,3 +5688,10 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 - Rækken er fjernet fra Visning (`/settings`, `/settings/display`, native `SettingsDisplayRows`, webbens sidebjælke). Settings-søgningen finder den stadig.
 - Screeninger-siden (`/profile/screenings`, web + native `ScreeningsScreen`): den faste Søvn-række åbner nu `/settings/display/sleep-quality` (adressen er uændret, så "Slå fra" i søvnspørgsmålet virker som før) og viser Aktiv/Inaktiv efter `User.sleepQualityPromptEnabled` — som de øvrige screeninger. Før pegede rækken på søvnmønsteret (DECISIONS 2026-10-09); søvnmønsteret ligger fortsat under Profil → Søvnmønster.
 - Webbens sidebjælke: Screeninger er en gruppe med Screeninger og Søvn.
+
+## 2026-10-16: Cirklen bagt ind i fritskrabede varebilleder (kun hjemmesiden)
+
+- Alle billeder på en hjemmeside kan hentes, så varesidens fritskrabede billede hentes nu som ét billede med cirklen bagt ind (`/product-circle?src=…`, `src/lib/product-circle-layout.ts` + `product-circle-composite.ts`, sharp, WebP, cachet). Cirklen er altid 540 px i billedet (vist som 180 px) og bliver aldrig mindre: stående vare = 110 % af cirklen med bunden i cirklens bund; liggende = fra venstre kant, 10 % ud over højre; lærredet vokser, så varen aldrig beskæres. Fejler hentningen, vises den gamle CSS-cirkel + billede. Native er uændret (bruger-regel 2026-10-16: kun hjemmesiden).
+## 2026-10-16 — Screening af ufuldstændige produktbilleder (Lidl/Aldi, da/de, OFF)
+
+Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.

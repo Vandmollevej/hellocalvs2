@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconActivity } from "@tabler/icons-react";
@@ -192,6 +193,8 @@ function ActivityCreateContent() {
                   +
                 </button>
               </div>
+              <FieldSlider value={hours} min={0} max={23} onChange={setHours} aria-label={t("activity.hours")} />
+              <FieldSlider value={mins} min={0} max={59} onChange={setMins} aria-label={t("activity.minutesShort")} />
             </div>
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.intensity")}</span>
@@ -218,6 +221,7 @@ function ActivityCreateContent() {
               <label className="flex flex-col gap-1">
                 <span className="hf-type-caption">{t("activity.distanceKm")}</span>
                 <input className={FIELD} type="number" inputMode="decimal" min={0} step={0.1} value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} />
+                <FieldSlider value={distanceKm} min={0} max={100} step={0.1} onChange={setDistanceKm} aria-label={t("activity.distanceKm")} />
               </label>
             )}
             <label className="flex flex-col gap-1">
@@ -229,6 +233,14 @@ function ActivityCreateContent() {
                 min={1}
                 value={kcal !== "" ? kcal : estimate?.kcal ? String(estimate.kcal) : ""}
                 onChange={(e) => setKcal(e.target.value)}
+              />
+              <FieldSlider
+                value={kcal !== "" ? kcal : estimate?.kcal ? String(estimate.kcal) : ""}
+                min={0}
+                max={3000}
+                step={10}
+                onChange={setKcal}
+                aria-label={t("activity.kcal")}
               />
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}

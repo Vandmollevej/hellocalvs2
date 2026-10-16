@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useState } from "react";
 import { IconScale } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -57,6 +58,7 @@ export default function KitchenConversionsPage() {
             </button>
           ))}
         </div>
+        <FieldSlider value={amountText} min={0} max={1000} step={5} onChange={setAmountText} aria-label="Mængde" />
         <SearchField value={query} onChange={setQuery} placeholder="Søg fx mælk, olie, honning eller mel" />
         {groups.length === 0 && <p className="hf-type-body text-text-secondary">Ingen resultater.</p>}
         {groups.map((group) => (

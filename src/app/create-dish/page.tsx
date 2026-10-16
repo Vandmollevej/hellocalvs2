@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -560,6 +561,14 @@ export default function CreateDishPage() {
                       <IconPlus size={16} />
                     </button>
                   </div>
+                  <FieldSlider
+                    value={details.durationMinutes}
+                    min={0}
+                    max={480}
+                    step={5}
+                    onChange={(raw) => updateDetails({ durationMinutes: Number(raw) > 0 ? Number(raw) : null })}
+                    aria-label={t("createDish.durationLabel")}
+                  />
                 </div>
               </>
             )}

@@ -84,6 +84,10 @@ export function ScreeningInput({
         />
       )}
 
+      {inputType === "INPUT" && !readOnly && (
+        <HfSlider value={current} min={min} max={max} step={step} onChange={onChange} aria-label={`${min}–${max}`} />
+      )}
+
       {inputType === "STEPPER" && (
         <div className="flex items-center justify-center gap-6">
           <button
