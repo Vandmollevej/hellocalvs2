@@ -137,22 +137,24 @@ private fun smoothPath(points: List<Offset>): Path {
 
 private const val PLOT_PAD = 6f
 
-/** A chart: max/min labels on the left, hour captions below; only the pulse has a title in the middle. */
+/** A chart: max/min labels on the left, hour captions below ("kl." on the left) and the title in the middle. */
 @Composable
 private fun ColumnScope.ChartFrame(top: String, bottom: String, left: String, right: String, title: String, draw: DrawScope.() -> Unit) {
-    // The charts share the white box's height equally (web: chartH in FrontCharts).
-    Column(Modifier.fillMaxWidth().weight(1f)) {
-        Row(Modifier.fillMaxWidth().weight(1f)) {
-            Column(Modifier.fillMaxHeight().padding(end = 6.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                HcText(top, HcTypeRoles.Caption, color = HcColors.TextSecondary)
-                HcText(bottom, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+    // Each chart is lower than its share of the white box, leaving air between them (web: chartH = 72 %).
+    Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+        Column(Modifier.fillMaxWidth().fillMaxHeight(0.72f)) {
+            Row(Modifier.fillMaxWidth().weight(1f)) {
+                Column(Modifier.fillMaxHeight().padding(end = 6.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                    HcText(top, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+                    HcText(bottom, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+                }
+                Canvas(Modifier.fillMaxSize()) { draw() }
             }
-            Canvas(Modifier.fillMaxSize()) { draw() }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            HcText(left, HcTypeRoles.Caption, color = HcColors.TextSecondary)
-            HcText(title, HcTypeRoles.Caption, color = HcColors.Text)
-            HcText(right, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                HcText(left, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+                HcText(title, HcTypeRoles.Caption, color = HcColors.Text)
+                HcText(right, HcTypeRoles.Caption, color = HcColors.TextSecondary)
+            }
         }
     }
 }
@@ -188,6 +190,8 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
     val nowHour = now.hour + now.minute / 60.0
     val elapsed = max(0, min(shares.size, kotlin.math.ceil((nowHour - start) * 60 / BUCKET_MIN).toInt()))
     val budget = data.budgetKcal
+    // "kl." in front of the left hour under the x axis (web: frontCharts.clockLeft).
+    fun clock(hour: String) = t.t("frontCharts.clockLeft", "hour" to hour)
     val planCum = cumulative(shares.map { it * budget })
     val actualCum = cumulative(sums)
 
@@ -198,7 +202,7 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
         val hi = filled.maxOfOrNull { it.max } ?: 0.0
         ChartFrame(
             if (filled.isEmpty()) "" else hi.toInt().toString(), if (filled.isEmpty()) "" else lo.toInt().toString(),
-            hourLabel(start), hourLabel(end), t.t("frontCharts.pulse"),
+            clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.pulse"),
         ) {
             baseline()
             val span = max(1.0, hi - lo).toFloat()
@@ -212,7 +216,7 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
 
         // Calories: sticks per quarter hour with the recommended distribution as a smooth curve.
         val topKcal = max(sums.maxOrNull() ?: 0.0, max((shares.maxOrNull() ?: 0.0) * budget, 1.0))
-        ChartFrame(topKcal.toInt().toString(), "0", hourLabel(start), hourLabel(end), "") {
+        ChartFrame(topKcal.toInt().toString(), "0", clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.intake")) {
             baseline()
             sums.forEachIndexed { i, v ->
                 if (v > 0) {
@@ -226,7 +230,7 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
 
         // Recommended (grey, static) vs. actual intake (blue).
         val topCum = max(planCum.lastOrNull() ?: 0.0, max(actualCum.getOrElse(max(0, elapsed - 1)) { 0.0 }, 1.0))
-        ChartFrame(topCum.toInt().toString(), "0", hourLabel(start), hourLabel(end), "") {
+        ChartFrame(topCum.toInt().toString(), "0", clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.planVsActual")) {
             baseline()
             val plan = planCum.mapIndexed { i, v -> Offset(plotX(planCum.size, i), size.height - (v / topCum).toFloat() * (size.height - PLOT_PAD)) }
             drawPath(smoothPath(plan), HcColors.Line, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
@@ -256,7 +260,7 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
             val span = max(1.0, top - bottom).toFloat()
             ChartFrame(
                 top.toInt().toString(), bottom.toInt().toString(),
-                "${goalStart.dayOfMonth}/${goalStart.monthNumber}", "${goalEnd.dayOfMonth}/${goalEnd.monthNumber}", "",
+                "${goalStart.dayOfMonth}/${goalStart.monthNumber}", "${goalEnd.dayOfMonth}/${goalEnd.monthNumber}", t.t(if (per >= 7) "frontCharts.goalWeeks" else "frontCharts.goalDays"),
             ) {
                 baseline()
                 fun y(v: Double) = size.height - PLOT_PAD - ((v - bottom).toFloat() / span) * (size.height - 2 * PLOT_PAD)
