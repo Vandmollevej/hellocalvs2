@@ -1,3 +1,8 @@
+## 2026-10-16: Faste designbilleder caches i et år
+
+- Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.
+- Uændret: adgangsmur-billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`, `/icons/animals`, `/icons/body-measurements`) bliver ved 1 time, fordi admin kan erstatte dem under samme sti.
+
 ## 2026-10-15: Billeder hentes som små, cachede udgaver
 
 - Problem: billederne loadede langsomt næsten hver gang. Alle `<img>` hentede originalen (logoer op til 15 MB, 124 af 134 logoer over 800 px; fritlægninger og fotos i fuld opløsning) — også til en 44 px række — over Cloudflare-tunnelen fra Synology. Og cachen var svag: Next serverer public-filer med `max-age=0` (browseren spurgte hver gang), og fallback-routen for billeder lagt op efter opstart havde ingen ETag (fuld download hver time).
