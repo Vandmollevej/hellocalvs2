@@ -5678,3 +5678,6 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 ## 2026-10-16: Cirklen bagt ind i fritskrabede varebilleder (kun hjemmesiden)
 
 - Alle billeder på en hjemmeside kan hentes, så varesidens fritskrabede billede hentes nu som ét billede med cirklen bagt ind (`/product-circle?src=…`, `src/lib/product-circle-layout.ts` + `product-circle-composite.ts`, sharp, WebP, cachet). Cirklen er altid 540 px i billedet (vist som 180 px) og bliver aldrig mindre: stående vare = 110 % af cirklen med bunden i cirklens bund; liggende = fra venstre kant, 10 % ud over højre; lærredet vokser, så varen aldrig beskæres. Fejler hentningen, vises den gamle CSS-cirkel + billede. Native er uændret (bruger-regel 2026-10-16: kun hjemmesiden).
+## 2026-10-16 — Screening af ufuldstændige produktbilleder (Lidl/Aldi, da/de, OFF)
+
+Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.
