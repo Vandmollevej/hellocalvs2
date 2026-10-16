@@ -27,7 +27,23 @@ import numpy as np
 from PIL import Image
 from rembg import remove
 
+from bria import remove_background_bria
+
 log = logging.getLogger("image-agent.cutout")
+
+# Motor til baggrundsfjernelse: "rembg" (standard, lokal) eller "bria"
+# (Bria RMBG via API, kræver BRIA_API_TOKEN). Bria-fejl falder tilbage til rembg.
+CUTOUT_ENGINE = os.environ.get("CUTOUT_ENGINE", "rembg").lower()
+
+
+def remove_background_bytes(image_bytes, engine=None):
+    engine = engine or CUTOUT_ENGINE
+    if engine == "bria":
+        try:
+            return remove_background_bria(image_bytes)
+        except Exception as exc:  # noqa: BLE001 - fall back so the job still finishes
+            log.warning("bria failed, falling back to rembg: %s", exc)
+    return remove(image_bytes)
 
 OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/product-images")
@@ -351,7 +367,7 @@ def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
         cropped = crop(source.convert("RGB"), box)
     buffer = io.BytesIO()
     cropped.save(buffer, format="PNG")
-    cutout = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
+    cutout = Image.open(io.BytesIO(remove_background_bytes(buffer.getvalue()))).convert("RGBA")
     if kind in ("BRAND_LOGO", "PRODUCT_LABEL"):
         cutout = drop_edge_fragments(cutout)
         if kind == "BRAND_LOGO" and is_solid_block_logo(cropped, cutout):

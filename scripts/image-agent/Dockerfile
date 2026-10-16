@@ -14,6 +14,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV U2NET_HOME=/models
 RUN python -c "from rembg import new_session; new_session('u2net')"
 
-COPY agent.py cutout.py job_control.py ./
+COPY agent.py cutout.py bria.py compare_engines.py job_control.py ./
 
 CMD ["python", "agent.py"]
