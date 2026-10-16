@@ -150,6 +150,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Flyt aldrig en funktion med ændret opførsel (bruger 2026-10-16)**: når en side
+  flettes ind i en anden, skal funktionen virke præcis som før. Er noget uklart,
+  så spørg i spørgsmålsboksen — gæt aldrig. Tale på Madvarer = Tale-sidens
+  AI-tolkning af hele sætninger, uændret (DECISIONS 2026-10-16).
 - **Talte sætninger søges som varen (2026-10-16)**: "Jeg har spist en bakke
   pomfritter" søges som "pomfritter" — indledning, mængde/enhed og tidsangivelse
   skrælles af i `/api/products` (`src/lib/spoken-food-query.ts`) på alle

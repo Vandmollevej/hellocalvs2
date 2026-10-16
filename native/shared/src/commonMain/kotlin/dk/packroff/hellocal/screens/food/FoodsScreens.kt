@@ -74,6 +74,12 @@ import dk.packroff.hellocal.screens.capture.InterpretedResponse
 import dk.packroff.hellocal.screens.capture.VoiceItem
 import dk.packroff.hellocal.screens.capture.VoiceItemRow
 import dk.packroff.hellocal.screens.capture.registrationBody
+import dk.packroff.hellocal.screens.capture.loadPersistedVoiceItems
+import dk.packroff.hellocal.screens.capture.persistVoiceItems
+import dk.packroff.hellocal.ui.CaptureDetailRow
+import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
+import dk.packroff.hellocal.ui.HcLine
+import kotlin.math.roundToInt
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.coroutines.Job
@@ -122,21 +128,28 @@ fun FoodsScreen(args: RouteArgs) {
     var micUnsupported by remember { mutableStateOf(false) }
     var micError by remember { mutableStateOf<String?>(null) }
     var micSession by remember { mutableStateOf<Job?>(null) }
-    // Hele sætninger (DECISIONS 2026-10-16): det sagte tolkes af AI'en til forslag med mængde,
-    // løbende mens man taler og en sidste gang, når mikrofonen stopper. Intet gemmes uden Tilføj.
+    // Tale-sidens funktion, uændret (DECISIONS 2026-10-16): det sagte tolkes af AI'en til forslag med
+    // mængde, løbende mens man taler og en sidste gang, når mikrofonen stopper. Forslag fra tidligere
+    // optagelser bliver stående; intet gemmes uden Tilføj; dagens tilføjede varer huskes.
     var micSpoken by remember { mutableStateOf(false) }
     var micFinished by remember { mutableStateOf(0) }
-    var suggestions by remember { mutableStateOf<List<VoiceItem>>(emptyList()) }
+    var voiceItems by remember { mutableStateOf(loadPersistedVoiceItems()) }
+    var voiceBatch by remember { mutableStateOf(0) }
     var interpreting by remember { mutableStateOf(false) }
-    var interpretFailed by remember { mutableStateOf(false) }
+    var voiceError by remember { mutableStateOf<String?>(null) }
     var adding by remember { mutableStateOf(false) }
-    var saveFailed by remember { mutableStateOf(false) }
     var interpretSeq by remember { mutableStateOf(0) }
-    fun clearPendingSuggestions() {
+    var confirmDelete by remember { mutableStateOf<VoiceItem?>(null) }
+    fun updateVoiceItems(next: List<VoiceItem>) {
+        voiceItems = next
+        persistVoiceItems(next)
+    }
+    fun keepOther(batch: Int) = voiceItems.filter { it.saved || it.batch != batch }
+    fun newRecording() {
+        voiceBatch++
         interpretSeq++
         interpreting = false
-        interpretFailed = false
-        suggestions = suggestions.filter { it.saved }
+        voiceError = null
     }
     var searchResults by remember { mutableStateOf<List<ProductListItem>>(emptyList()) }
     var loadedSnapshot by remember { mutableStateOf<FoodsSnapshot?>(null) }
@@ -176,7 +189,7 @@ fun FoodsScreen(args: RouteArgs) {
         }
         micSession?.cancel()
         CaptureHooks.stopSpeech()
-        clearPendingSuggestions()
+        newRecording()
         micError = null
         micListening = true
         val tag = MealInputLanguages.speechLangFor(lang.language, lang.region)
@@ -218,9 +231,17 @@ fun FoodsScreen(args: RouteArgs) {
     LaunchedEffect(Unit) { if (args.opt("mic") == "1") startMic() }
 
     LaunchedEffect(query, micListening, micFinished) {
+        if (!micSpoken) return@LaunchedEffect
         val transcript = query.trim()
-        if (!micSpoken || transcript.length < 2) return@LaunchedEffect
         val final = !micListening
+        val batch = voiceBatch
+        if (final && transcript.isEmpty()) {
+            val remaining = keepOther(batch)
+            updateVoiceItems(remaining)
+            if (remaining.isEmpty()) voiceError = t.t("voice.error.noSpeech")
+            return@LaunchedEffect
+        }
+        if (transcript.isEmpty()) return@LaunchedEffect
         if (!final) delay(700)
         val seq = ++interpretSeq
         interpreting = true
@@ -230,31 +251,67 @@ fun FoodsScreen(args: RouteArgs) {
                 Api.post("/api/ai/interpret-meal", mapOf("transcript" to transcript, "language" to lang.language)),
             )
             if (seq != interpretSeq) return@LaunchedEffect
-            interpretFailed = false
-            suggestions = suggestions.filter { it.saved } + data.items.mapIndexed { index, item -> VoiceItem("pending-$seq-$index", item, saved = false) }
+            val interpreted = data.items.mapIndexed { index, item -> VoiceItem("pending-$batch-$seq-$index", item, saved = false, batch = batch) }
+            val others = keepOther(batch)
+            if (final && interpreted.isEmpty()) {
+                updateVoiceItems(others)
+                if (others.isEmpty()) voiceError = t.t("voice.error.noFoodRecognized")
+            } else {
+                updateVoiceItems(others + interpreted)
+                if (final) voiceError = null
+            }
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (_: Exception) {
-            if (seq == interpretSeq && final) interpretFailed = true
+            // The live interpretation is preliminary; only the final one reports an error.
+            if (seq == interpretSeq && final) {
+                updateVoiceItems(keepOther(batch))
+                voiceError = t.t("voice.error.aiInterpretFailed")
+            }
         } finally {
             if (seq == interpretSeq) interpreting = false
         }
     }
 
-    fun addSuggestions(pending: List<VoiceItem>) {
+    // Nothing is saved without the user asking (docs/AI.md).
+    fun addVoiceItems(pending: List<VoiceItem>) {
         if (pending.isEmpty()) return
         adding = true
+        voiceError = null
         scope.launch {
-            val ids = pending.mapNotNull { entry ->
+            val newlySaved = pending.mapNotNull { entry ->
                 runCatching {
                     val res = Api.post("/api/registrations", registrationBody(entry.item)).jsonObject
-                    entry.id to res["registration"]!!.jsonObject["id"]!!.jsonPrimitive.content
+                    val id = res["registration"]?.jsonObject?.get("id")?.jsonPrimitive?.content ?: return@runCatching null
+                    entry.copy(id = id, saved = true)
                 }.getOrNull()
-            }.toMap()
-            suggestions = suggestions.map { entry -> ids[entry.id]?.let { entry.copy(id = it, saved = true) } ?: entry }
-            saveFailed = ids.size < pending.size
+            }
+            val pendingIds = pending.map { it.id }.toSet()
+            updateVoiceItems(voiceItems.filter { it.id !in pendingIds } + newlySaved)
             adding = false
+            if (newlySaved.isNotEmpty()) NativeHooks.onRegistrationChanged()
+            if (newlySaved.size < pending.size) voiceError = t.t("voice.error.couldNotSaveRegistrations")
         }
+    }
+
+    fun deleteVoiceItem(entry: VoiceItem) {
+        if (entry.saved) {
+            confirmDelete = entry
+            return
+        }
+        updateVoiceItems(voiceItems.filter { it.id != entry.id })
+    }
+
+    fun deleteSavedVoiceItem(entry: VoiceItem) {
+        updateVoiceItems(voiceItems.filter { it.id != entry.id })
+        scope.launch {
+            runCatching { Api.delete("/api/registrations/${entry.id}") }
+            NativeHooks.onRegistrationChanged()
+        }
+    }
+
+    fun favoriteVoiceItem(productId: String) {
+        scope.launch { runCatching { Api.post("/api/favorites", mapOf("productId" to productId)) } }
     }
 
     var correction by remember { mutableStateOf(SearchCorrection()) }
@@ -351,50 +408,53 @@ fun FoodsScreen(args: RouteArgs) {
                 query,
                 {
                     if (micListening) stopMic()
-                    if (micSpoken) {
-                        micSpoken = false
-                        clearPendingSuggestions()
-                    }
+                    micSpoken = false
                     query = it.replace(Regex("\\s*\n\\s*"), " ")
                 },
                 t.t("foods.searchPlaceholder"),
                 cameraLabel = t.t("foods.scanNewProduct"),
                 onCamera = { nav.push("/camera?mode=product") },
             )
-            if (suggestions.isNotEmpty() || interpreting || interpretFailed) {
+            voiceError?.let { HcText(it, HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.RedDark, align = TextAlign.Center) }
+            val suggestedVoice = voiceItems.filter { !it.saved }
+            val savedVoice = voiceItems.filter { it.saved }
+            if (suggestedVoice.isNotEmpty()) {
                 Column {
-                    HcText(t.t("voice.suggested").uppercase() + if (interpreting) " …" else "", HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
-                    if (interpretFailed && suggestions.isEmpty()) {
-                        HcText(t.t("voice.error.aiInterpretFailed"), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp, vertical = 4.dp), color = HcColors.RedDark)
+                    HcText(t.t("voice.suggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    suggestedVoice.forEachIndexed { index, entry ->
+                        VoiceItemRow(
+                            entry,
+                            onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
+                            onReportError = null,
+                            onDelete = { deleteVoiceItem(entry) },
+                            onAdd = { addVoiceItems(listOf(entry)) },
+                            adding = adding,
+                        )
+                        if (index < suggestedVoice.lastIndex) HcLine()
                     }
-                    if (suggestions.isNotEmpty()) {
-                        FoodListCard {
-                            suggestions.forEachIndexed { index, entry ->
-                                Box(Modifier.padding(horizontal = 16.dp)) {
-                                    VoiceItemRow(
-                                        entry,
-                                        onFavorite = null,
-                                        onReportError = null,
-                                        onDelete = { suggestions = suggestions.filter { it.id != entry.id } },
-                                        onAdd = { addSuggestions(listOf(entry)) },
-                                        adding = adding,
-                                        onOpen = { nav.push("/registration/${entry.id}") },
-                                    )
-                                }
-                                if (index < suggestions.lastIndex) FoodDivider()
-                            }
-                        }
-                    }
-                    val pending = suggestions.filter { !it.saved }
-                    if (pending.size > 1) {
+                    if (suggestedVoice.size > 1) {
                         HcButton(
                             if (adding) t.t("voice.adding") else t.t("voice.addShownItems"),
-                            onClick = { addSuggestions(pending) },
-                            modifier = Modifier.padding(top = 12.dp),
+                            onClick = { addVoiceItems(voiceItems.filter { !it.saved }) },
+                            modifier = Modifier.padding(top = 16.dp),
                             enabled = !adding,
                         )
                     }
-                    if (saveFailed) HcText(t.t("voice.error.couldNotSaveRegistrations"), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp, vertical = 8.dp), color = HcColors.RedDark)
+                }
+            }
+            if (savedVoice.isNotEmpty()) {
+                Column {
+                    HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    savedVoice.forEachIndexed { index, entry ->
+                        VoiceItemRow(
+                            entry,
+                            onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
+                            onReportError = { nav.push("/registration/${entry.id}/report-error") },
+                            onDelete = { deleteVoiceItem(entry) },
+                            onOpen = { nav.push("/registration/${entry.id}") },
+                        )
+                        if (index < savedVoice.lastIndex) HcLine()
+                    }
                 }
             }
             if (!isSearching && ready && favorites.isNotEmpty()) {
@@ -441,7 +501,7 @@ fun FoodsScreen(args: RouteArgs) {
                             if (index < visible.lastIndex) FoodDivider()
                         }
                     }
-                    if (visible.isEmpty() && suggestions.isEmpty() && !interpreting) {
+                    if (visible.isEmpty() && voiceItems.none { !it.saved } && !interpreting) {
                         HcText(
                             t.t(if (isSearching) "foods.noSearchMatches" else "foods.noFavoritesYet"),
                             HcTypeRoles.Body,
@@ -453,6 +513,17 @@ fun FoodsScreen(args: RouteArgs) {
                 }
             }
         }
+    }
+    confirmDelete?.let { entry ->
+        CaptureEntryDetailsSheet(
+            title = entry.item.title,
+            rows = listOf(
+                CaptureDetailRow(t.t("entrySheet.amount"), entry.item.amountLabel.ifEmpty { "${entry.item.amountGrams.roundToInt()} g" }),
+                CaptureDetailRow(t.t("entrySheet.energy"), "${entry.item.kcal.roundToInt()} kcal"),
+            ),
+            onDelete = { deleteSavedVoiceItem(entry) },
+            onClose = { confirmDelete = null },
+        )
     }
 }
 

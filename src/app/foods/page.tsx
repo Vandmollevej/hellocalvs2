@@ -150,9 +150,8 @@ function MadvarerContent() {
   }, []);
   const isListening = speech.phase === "listening";
   const meal = useMealInterpretation({ text: query, listening: isListening, spoken, language: currentMealLanguage });
-  const clearPendingSuggestions = meal.clearPending;
   function startSpeech(lang: string) {
-    clearPendingSuggestions();
+    meal.newRecording();
     speech.start(lang);
   }
 
@@ -411,10 +410,7 @@ function MadvarerContent() {
             value={query}
             onChange={(event) => {
               if (isListening) speech.stop();
-              if (spoken) {
-                setSpoken(false);
-                clearPendingSuggestions();
-              }
+              setSpoken(false);
               setQuery(event.target.value.replace(/\s*\n\s*/g, " "));
             }}
             onKeyDown={(event) => {
@@ -430,11 +426,10 @@ function MadvarerContent() {
         </div>
 
         <VoiceMealSuggestions
-          suggestions={meal.suggestions}
-          interpreting={meal.interpreting}
-          failed={meal.failed}
+          items={meal.items}
+          error={meal.error}
           adding={meal.adding}
-          onAdd={meal.add}
+          onAdd={(items) => void meal.add(items)}
           onRemove={meal.remove}
         />
 
@@ -475,7 +470,7 @@ function MadvarerContent() {
                 onOpen={isSearching ? trackSearchClick : undefined}
               />
             ))}
-          {ready && visibleProducts.length === 0 && meal.suggestions.length === 0 && !meal.interpreting && (
+          {ready && visibleProducts.length === 0 && !meal.items.some((item) => !item.saved) && !meal.interpreting && (
             <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
               {isSearching ? t("foods.noSearchMatches") : t("foods.noFavoritesYet")}
             </p>

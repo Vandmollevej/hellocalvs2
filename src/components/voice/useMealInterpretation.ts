@@ -4,14 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { mealShareBody } from "@/lib/meal-share";
 import type { MealInputLanguageCode } from "@/lib/meal-input-language";
 
-// Hele sætninger på Madvarer (docs/DECISIONS.md 2026-10-16): det sagte tolkes
-// af AI'en (/api/ai/interpret-meal) til varer med mængde — "to skiver
-// franskbrød med smør og marmelade" giver tre forslag. Tolkningen kører løbende,
-// mens man taler (700 ms efter sidste ord), og en sidste gang, når mikrofonen
-// stopper. Intet gemmes, før brugeren trykker Tilføj (docs/AI.md).
+// Tale-sidens funktion, uændret, på Madvarer (docs/DECISIONS.md 2026-10-16):
+// det sagte tolkes af AI'en (/api/ai/interpret-meal) til varer med mængde —
+// "to skiver franskbrød med smør og marmelade" giver tre forslag. Tolkningen
+// kører løbende, mens man taler (700 ms efter sidste ord), og en sidste gang,
+// når mikrofonen stopper. Forslag fra tidligere optagelser bliver stående, til
+// de tilføjes eller slettes. Intet gemmes uden Tilføj (docs/AI.md). Dagens
+// tilføjede varer huskes, når man går væk og tilbage.
 
-export type MealSuggestion = {
-  key: string;
+export type VoiceItem = {
+  id: string;
   title: string;
   kcal: number;
   amountGrams: number;
@@ -19,16 +21,56 @@ export type MealSuggestion = {
   protein: number;
   carbs: number;
   fat: number;
-  image: string | null;
-  productId: string | null;
-  estimated: boolean;
-  /** Registreringens id, når forslaget er tilføjet. */
-  registrationId?: string;
+  image?: string | null;
+  productId?: string | null;
+  estimated?: boolean;
+  /** Gemt registrering (id = registreringens id) eller forslag. */
+  saved: boolean;
+  /** Hvilken optagelse et forslag kom fra; en optagelse erstatter kun sine egne forslag. */
+  batch?: number;
 };
 
-type InterpretedItem = Omit<MealSuggestion, "key" | "registrationId">;
+type InterpretedItem = Omit<VoiceItem, "id" | "saved" | "batch">;
+
+export type VoiceMealError = "noSpeech" | "noFoodRecognized" | "aiInterpretFailed" | "couldNotSaveRegistrations";
 
 const LIVE_DELAY_MS = 700;
+const VOICE_ITEMS_STORAGE_KEY = "hf-voice-added-items";
+
+function todayKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function loadPersistedItems(): VoiceItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(VOICE_ITEMS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as { date: string; items: VoiceItem[] };
+    if (parsed.date !== todayKey()) {
+      window.localStorage.removeItem(VOICE_ITEMS_STORAGE_KEY);
+      return [];
+    }
+    return parsed.items;
+  } catch {
+    return [];
+  }
+}
+
+function mapInterpretedItems(interpreted: InterpretedItem[], batch: number): VoiceItem[] {
+  return interpreted.map((item, index) => ({
+    ...item,
+    id: `pending-${batch}-${Date.now()}-${index}`,
+    saved: false,
+    batch,
+  }));
+}
+
+/** Alt, der ikke er forslag fra den givne optagelse: gemte rækker og andre optagelsers forslag. */
+function keepOtherItems(items: VoiceItem[], batch: number) {
+  return items.filter((item) => item.saved || item.batch !== batch);
+}
 
 export function useMealInterpretation({
   text,
@@ -43,23 +85,50 @@ export function useMealInterpretation({
   spoken: boolean;
   language: () => MealInputLanguageCode;
 }) {
-  const [suggestions, setSuggestions] = useState<MealSuggestion[]>([]);
-  const [interpreting, setInterpreting] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // Dagens gemte varer huskes, når man går væk og tilbage (som på Tale-siden).
+  const [items, setItems] = useState<VoiceItem[]>(() => loadPersistedItems());
+  const [error, setError] = useState<VoiceMealError | null>(null);
   const [adding, setAdding] = useState(false);
+  const [interpreting, setInterpreting] = useState(false);
+  const itemsRef = useRef<VoiceItem[]>([]);
+  const batchRef = useRef(0);
   const requestIdRef = useRef(0);
   const languageRef = useRef(language);
+  const wasListeningRef = useRef(false);
+
   useEffect(() => {
     languageRef.current = language;
   }, [language]);
-  const wasListeningRef = useRef(false);
+
+  useEffect(() => {
+    itemsRef.current = items;
+    const savedItems = items.filter((item) => item.saved);
+    try {
+      if (savedItems.length > 0) {
+        window.localStorage.setItem(VOICE_ITEMS_STORAGE_KEY, JSON.stringify({ date: todayKey(), items: savedItems }));
+      } else {
+        window.localStorage.removeItem(VOICE_ITEMS_STORAGE_KEY);
+      }
+    } catch {
+      // Uden localStorage (privat tilstand) huskes listen bare ikke.
+    }
+  }, [items]);
 
   useEffect(() => {
     const stopped = wasListeningRef.current && !listening;
     wasListeningRef.current = listening;
-    const transcript = text.trim();
-    if (!spoken || transcript.length < 2) return;
+    if (!spoken) return;
     if (!listening && !stopped) return;
+    const transcript = text.trim();
+    const batch = batchRef.current;
+
+    if (stopped && !transcript) {
+      const remaining = keepOtherItems(itemsRef.current, batch);
+      setItems(remaining);
+      if (remaining.length === 0) setError("noSpeech");
+      return;
+    }
+    if (!transcript) return;
 
     const requestId = ++requestIdRef.current;
     const timer = window.setTimeout(
@@ -71,17 +140,23 @@ export function useMealInterpretation({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ transcript, language: languageRef.current() }),
           });
-          if (!response.ok) throw new Error("interpret failed");
-          const data = (await response.json()) as { items: InterpretedItem[] };
+          const data = (await response.json()) as { items?: InterpretedItem[]; message?: string };
+          if (!response.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
           if (requestId !== requestIdRef.current) return;
-          setFailed(false);
-          // Allerede tilføjede forslag bliver stående; resten erstattes.
-          setSuggestions((current) => [
-            ...current.filter((item) => item.registrationId),
-            ...data.items.map((item, index) => ({ ...item, key: `${requestId}-${index}` })),
-          ]);
+          const interpreted = mapInterpretedItems(data.items ?? [], batch);
+          const others = keepOtherItems(itemsRef.current, batch);
+          if (stopped && interpreted.length === 0) {
+            setItems(others);
+            if (others.length === 0) setError("noFoodRecognized");
+            return;
+          }
+          setItems([...others, ...interpreted]);
+          if (stopped) setError(null);
         } catch {
-          if (requestId === requestIdRef.current && stopped) setFailed(true);
+          // Den løbende tolkning er foreløbig; kun den sidste melder fejl.
+          if (requestId !== requestIdRef.current || !stopped) return;
+          setItems(keepOtherItems(itemsRef.current, batch));
+          setError("aiInterpretFailed");
         } finally {
           if (requestId === requestIdRef.current) setInterpreting(false);
         }
@@ -91,19 +166,20 @@ export function useMealInterpretation({
     return () => window.clearTimeout(timer);
   }, [text, listening, spoken]);
 
-  /** Ny optagelse eller håndskrevet søgning: forslag, der ikke er tilføjet, ryddes. */
-  function clearPending() {
+  /** En ny optagelse = et nyt hold forslag; tidligere forslag bliver stående. */
+  function newRecording() {
+    batchRef.current += 1;
     requestIdRef.current += 1;
     setInterpreting(false);
-    setFailed(false);
-    setSuggestions((current) => current.filter((item) => item.registrationId));
+    setError(null);
   }
 
-  async function add(items: MealSuggestion[]) {
-    const pending = items.filter((item) => !item.registrationId);
-    if (pending.length === 0) return false;
+  async function add(pending: VoiceItem[]) {
+    if (pending.length === 0) return;
     setAdding(true);
-    const saved = await Promise.all(
+    setError(null);
+    const pendingIds = new Set(pending.map((item) => item.id));
+    const results = await Promise.all(
       pending.map(async (item) => {
         try {
           const response = await fetch("/api/registrations", {
@@ -126,23 +202,23 @@ export function useMealInterpretation({
           });
           if (!response.ok) return null;
           const data = (await response.json()) as { registration: { id: string } };
-          return [item.key, data.registration.id] as const;
+          return { ...item, id: data.registration.id, saved: true };
         } catch {
           return null;
         }
       })
     );
-    const ids = new Map(saved.filter((entry): entry is readonly [string, string] => entry !== null));
-    setSuggestions((current) =>
-      current.map((item) => (ids.has(item.key) ? { ...item, registrationId: ids.get(item.key) } : item))
-    );
+    const newlySaved = results.filter((result): result is VoiceItem => result !== null);
+    setItems((current) => [...current.filter((item) => !pendingIds.has(item.id)), ...newlySaved]);
     setAdding(false);
-    return ids.size === pending.length;
+    if (newlySaved.length < pending.length) setError("couldNotSaveRegistrations");
   }
 
-  function remove(key: string) {
-    setSuggestions((current) => current.filter((item) => item.key !== key));
+  /** Et forslag fjernes bare; en gemt registrering slettes (efter bekræftelse i UI'et). */
+  function remove(item: VoiceItem) {
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+    if (item.saved) fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
   }
 
-  return { suggestions, interpreting, failed, adding, add, remove, clearPending };
+  return { items, error, adding, interpreting, add, remove, newRecording };
 }

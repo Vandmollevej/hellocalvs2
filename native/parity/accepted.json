@@ -626,7 +626,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "2a66edbf0a19bcd2",
+    "src/app/foods/page.tsx": "19711c808161def6",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -636,7 +636,9 @@
     "src/components/FooterArc.tsx": "09d67afd4d748237",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "ca45ac91a886fbf7",
+    "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "cbcb26ad7523daf6",
     "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
@@ -646,6 +648,7 @@
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
     "src/components/hf/AccordionCard.tsx": "8cab6c407d964400",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
+    "src/components/hf/EntryDetailsSheet.tsx": "f2434e44767670af",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",
     "src/components/hf/SearchCorrectionNotice.tsx": "5dfa2131df4730eb",
@@ -656,9 +659,9 @@
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
     "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
     "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
-    "src/components/voice/VoiceMealSuggestions.tsx": "d760a74ccc557439",
+    "src/components/voice/VoiceMealSuggestions.tsx": "3d58dbe0bbfd97d8",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
-    "src/components/voice/useMealInterpretation.ts": "8cfa57362a59ee65",
+    "src/components/voice/useMealInterpretation.ts": "c7177bdccd4c8fd9",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods/new": {
