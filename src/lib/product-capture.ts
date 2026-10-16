@@ -26,6 +26,8 @@ export type CaptureData = {
   // Hele forsidebilledet i fuld opløsning — gemmes som varens billede
   // (brugerens krav 2026-10-15); frontPhoto er kopien til AI'en.
   frontPhotoFull?: string;
+  // Telefonens tekstlæsning af forsiden (reserve til navn/brand).
+  frontOcrText?: string;
   nutritionPhoto?: string;
   nutritionOcrText?: string;
   nutritionOcrConfidence?: number;
@@ -57,6 +59,9 @@ async function ocr(photo: string, languages: string[], tableLayout = false) {
 // teksten matcher en (plus OCR-tallene til admin "Log"). `preRead`: kaldet fra
 // forlæsningen, mens brugeren sigter (serveren logger da kun fund).
 export type FrontRead = {
+  // Den læste tekst — sendes med oprettelsen som reserve til navn/brand, hvis
+  // AI'en ikke kan læse forsiden (docs/DECISIONS.md 2026-10-16).
+  text: string;
   duplicateId: string | null;
   duplicateName: string | null;
   brand: string | null;
@@ -73,7 +78,7 @@ export async function readFrontPhoto(
   options: { preRead?: boolean } = {},
 ): Promise<FrontRead> {
   const { text, confidence, ocrFailed } = await ocr(photo, languages);
-  const stats = { textLength: text.length, confidence, ocrFailed, duplicateId: null, duplicateName: null, brand: null };
+  const stats = { text, textLength: text.length, confidence, ocrFailed, duplicateId: null, duplicateName: null, brand: null };
   if (!text) return { ...stats, lookupFailed: false };
   try {
     const response = await fetch("/api/products/recognize-text", {
@@ -217,6 +222,7 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
       barcodeAnalysisId: data.barcodeAnalysisId,
       frontPhoto: data.frontPhoto,
       frontPhotoFull: data.frontPhotoFull,
+      frontOcrText: data.frontOcrText,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,
       nutritionOcrConfidence: data.nutritionOcrConfidence,

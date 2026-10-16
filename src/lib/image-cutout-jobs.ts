@@ -54,6 +54,16 @@ export async function createFrontCutoutJobs({
   await prisma.imageCutoutJob.createMany({ data: jobs });
 }
 
+// Forsiden blev aldrig læst af AI'en (alle genforsøg fejlede), så der kom
+// intet fritlægningsjob med varens boks: hele forsidefotoet fritlægges i
+// stedet (docs/DECISIONS.md 2026-10-16). Kun hvis varen ikke allerede har et.
+export async function createFallbackFrontCutoutJob(productId: string, sourceUrl: string | null) {
+  if (!sourceUrl) return;
+  const existing = await prisma.imageCutoutJob.count({ where: { productId, kind: "PRODUCT_FRONT" } });
+  if (existing) return;
+  await prisma.imageCutoutJob.create({ data: { kind: "PRODUCT_FRONT", sourceUrl, productId } });
+}
+
 // Logoet fra stregkode-fotoet (docs/DECISIONS.md 2026-09-28) — oprettes
 // når varen findes, så jobbet kobles direkte til vare og brand.
 export async function createBarcodeLogoCutoutJob({

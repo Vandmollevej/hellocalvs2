@@ -788,11 +788,11 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
   (`h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px]
   max-w-[180px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
   eller en manglende `img` kan ændre boksens mål.
-- Selve billedet tilpasses inde i dette fastlåste område med
-  `object-contain` og intern padding (`p-3`) — aldrig `object-fit: cover` på
-  bekostning af proportionerne, og aldrig `height: auto`,
-  billed-aspect-ratio-baseret sizing eller anden dynamisk størrelse afledt af
-  billedfilen. Det gælder råfotoet (før fritskrabningen).
+- Råfotoet (før fritskrabningen) dækker HELE cirklen: `object-cover` uden
+  padding, beskåret af cirklen (brugerens krav 2026-10-16, afløser
+  `object-contain` + `p-3`, som gav et firkantet foto med tomme kanter inde i
+  cirklen). Aldrig `height: auto`, billed-aspect-ratio-baseret sizing eller
+  anden dynamisk størrelse afledt af billedfilen — cirklens mål er låst.
 - Fritskrabet billede (PNG fra billedrobotten, 2026-10-02): lægges oven på
   den fastlåste cirkel i 110 % (198 px) — stående varer med bunden i cirklens
   bund, så toppen rager 10 % op over cirklen; liggende varer fra cirklens
