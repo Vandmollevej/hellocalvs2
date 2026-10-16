@@ -2,6 +2,8 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { readStoredImageAsDataUrl } from "@/lib/qc-image-storage";
 import {
+  applyFrontTextFromServerOcr,
+  applyServerNutritionOcr,
   clearPending,
   enrichQuickProduct,
   retryIngredients,
@@ -60,6 +62,8 @@ export type QuickEnrichmentStoredInput = {
   // Dele, hvor OpenAI-kaldet fejlede teknisk, og som prøves igen, selv om
   // felterne er ryddet (docs/DECISIONS.md 2026-10-16).
   retryParts?: RetryPart[];
+  // Originalbilleder, serverens lokale tekstlæsning allerede er prøvet på.
+  localTried?: string[];
   // Engangsreparationen af varer, der blev færdige uden navn/energi.
   repairedAt?: string;
   // Reparationsrunde: runde 1 kørte, mens OpenAI-kreditten var tom, og brændte
@@ -485,19 +489,106 @@ async function reopenBrokenProducts(now: Date): Promise<number> {
   return reopened;
 }
 
+// 0. Lokal genlæsning (brugerens krav 2026-10-16): nye varer uden navn eller
+// energi rettes ud fra serverens egen tekstlæsning af de gemte billeder
+// (quality-control-agent back_local.py, tesseract i fuld opløsning) — uden
+// OpenAI, så det virker også, mens kreditten er tom. Mangler et billede i
+// originalarkivet (varer fra før arkivet), lægges de gemte fotos ind, så den
+// lokale læser tager dem. Hvert billede prøves én gang (localTried).
+type LocalResult = { text?: unknown; confidence?: unknown };
+
+async function repairFromServerText(now: Date): Promise<{ named: number; nutrition: number; queued: number }> {
+  const since = new Date(now.getTime() - ADOPT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
+  const jobs = await prisma.quickEnrichmentJob.findMany({
+    where: {
+      product: { createdAt: { gt: since }, pendingFields: { isEmpty: true }, OR: [{ name: "" }, { kcalPer100g: 0 }] },
+    },
+    select: { id: true, productId: true, input: true, product: { select: { name: true, kcalPer100g: true } } },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+  let named = 0;
+  let nutrition = 0;
+  let queued = 0;
+  for (const job of jobs) {
+    const stored = asStoredInput(job.input);
+    if (!stored) continue;
+    const needName = !job.product.name.trim();
+    const needNutrition = job.product.kcalPer100g === 0;
+    const photos = await prisma.productBackPhoto.findMany({
+      where: { productId: job.productId },
+      select: { id: true, step: true, imageUrl: true, localResult: true },
+      orderBy: { createdAt: "asc" },
+    });
+    // Billeder, der mangler i arkivet, lægges ind til den lokale læser.
+    const wanted: [string, string | null, boolean][] = [
+      ["front", stored.frontPhotoUrl, needName],
+      ["nutrition", stored.nutritionPhotoUrl, needNutrition],
+      ["ingredients", stored.ingredientsPhotoUrl, needNutrition],
+    ];
+    for (const [step, url, need] of wanted) {
+      if (!need || !url || photos.some((photo) => photo.step === step)) continue;
+      await prisma.productBackPhoto.create({
+        data: { productId: job.productId, step, imageUrl: url, flowId: stored.flowId ?? `job-${job.id}` },
+      });
+      queued += 1;
+    }
+    const tried = new Set(stored.localTried ?? []);
+    const fresh = photos.filter((photo) => !tried.has(photo.id) && photo.localResult);
+    for (const photo of fresh) {
+      const local = photo.localResult as LocalResult;
+      const text = typeof local.text === "string" ? local.text : "";
+      const confidence = typeof local.confidence === "number" ? local.confidence : 0;
+      tried.add(photo.id);
+      if (!text) continue;
+      await withDebugContext({ productId: job.productId, barcode: stored.barcode }, async () => {
+        if (needNutrition && (photo.step === "nutrition" || photo.step === "ingredients")) {
+          const ok = await applyServerNutritionOcr({
+            productId: job.productId,
+            barcode: stored.barcode,
+            marketRegion: stored.marketRegion,
+            signals: stored.signals,
+            text,
+            confidence,
+            imageUrl: photo.imageUrl,
+          }).catch(() => false);
+          if (ok) nutrition += 1;
+        }
+        if (needName && photo.step === "front") {
+          const ok = await applyFrontTextFromServerOcr(job.productId, text).catch(() => false);
+          if (ok) named += 1;
+        }
+      });
+    }
+    if (fresh.length) {
+      await prisma.quickEnrichmentJob.update({
+        where: { id: job.id },
+        data: { input: { ...stored, localTried: [...tried] } as unknown as Prisma.InputJsonValue },
+      });
+    }
+  }
+  return { named, nutrition, queued };
+}
+
 // Job "quick-enrichment-recovery" (src/lib/jobs/registry.ts).
 export async function recoverQuickEnrichments(now: Date = new Date()): Promise<string | null> {
+  // Lokal genlæsning først — den kræver ikke OpenAI.
+  const local = await repairFromServerText(now);
+  const localNote =
+    local.named || local.nutrition || local.queued
+      ? `Lokalt: navn ${local.named} · energi ${local.nutrition} · billeder sat i kø ${local.queued}`
+      : null;
   // Uden OpenAI-kredit (eller med afvist/manglende nøgle) fejler hvert forsøg:
   // jobbene står stille i stedet for at brænde forsøgene af og blive opgivet.
   // De gemte fotos læses, så snart kreditten er tilbage (bruger 2026-10-16).
   const ai = await probeKeyStatus();
   if (ai.state === "quota" || ai.state === "invalid" || ai.state === "missing") {
-    return `Venter på OpenAI (${ai.state}) — ingen aflæsninger prøvet`;
+    return `${localNote ? `${localNote} · ` : ""}Venter på OpenAI (${ai.state}) — ingen AI-aflæsninger prøvet`;
   }
   const reopened = await reopenBrokenProducts(now);
   const adopted = await adoptProductsWithoutJob(now);
   const { resumed, givenUp } = await resumeStalledJobs(now);
   const { tried, found } = await retryMissingIngredients(now);
-  if (!reopened && !adopted && !resumed && !givenUp && !tried) return null;
-  return `Genåbnet ${reopened} · adopteret ${adopted} · genoptaget ${resumed} · opgivet ${givenUp} · ingrediens-forsøg ${tried} (fundet ${found})`;
+  if (!reopened && !adopted && !resumed && !givenUp && !tried) return localNote;
+  return `${localNote ? `${localNote} · ` : ""}Genåbnet ${reopened} · adopteret ${adopted} · genoptaget ${resumed} · opgivet ${givenUp} · ingrediens-forsøg ${tried} (fundet ${found})`;
 }

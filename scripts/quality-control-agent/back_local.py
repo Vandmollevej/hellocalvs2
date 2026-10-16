@@ -36,7 +36,9 @@ def fetch_pending(conn, limit):
             """
             SELECT id, "imageUrl" FROM product_back_photos
             WHERE "localScannedAt" IS NULL AND "analyzedAt" IS NULL
-              AND step IN ('nutrition', 'ingredients')
+              -- Forsiden læses også (navnet kan rettes lokalt, docs/DECISIONS.md
+              -- 2026-10-16); stregkodebilledet ikke.
+              AND step IN ('front', 'nutrition', 'ingredients')
             ORDER BY "createdAt" ASC
             LIMIT %s
             """,
