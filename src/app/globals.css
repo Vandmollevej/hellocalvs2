@@ -3522,6 +3522,8 @@ textarea.hf-input {
   .hf-chart-axis { font-size: 9px; }
   .hf-chart-axis--large { font-size: 10px; }
   .hf-chart-axis--widget { font-size: 11px; }
+  /* Forsidens grafer: timetal og titel i læsbar størrelse (bruger 2026-10-16). */
+  .hf-chart-axis--caption { font-size: 12px; }
 }
 
 @layer components {

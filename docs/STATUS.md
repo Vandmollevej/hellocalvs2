@@ -25,6 +25,10 @@
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
 - Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
 
+## 2026-10-16: Forsidens grafer uden tal i venstre side
+
+- Ingen min/maks/0 i venstre side; kun det højeste tal står oven på den højeste pind/top (puls: dagens maks, kalorier: største pind, kaloriestatus: slutværdien, mål: højeste dagsindtag eller målet). Timetal og titel er 12 px (før 9 px). Kalorier: blå pinde (3 px) og den anbefalede fordeling som blå kurve. Graferne bruger nu hele bredden. Web + native; native kompileres kun i CI.
+
 ## 2026-10-16: Forsidens grafer smallere, målgrafen altid med
 
 - Graferne slutter 36 px før skærmens midte (før 12 px), så de holder sig fri af tal-hjulets tekst. Målgrafen (kalorier pr. dag med den grå tværbar for målet og anbefalet min–maks) vises nu altid: uden et vægtmål med dato viser den de seneste 30 dage. Den tredje graf hedder "Kaloriestatus" (brugerens ord: anbefalet kalorieforbrug i grå mod den faktiske kaloriestatus i blå), og målgrafen hedder "Mål · dage/uger". Web + native; native kompileres kun i CI. Skærmbilledet fra brugerens iPhone så ud som om siden var zoomet ind (ca. 110 %), hvilket ikke kunne genskabes i Chromium.
