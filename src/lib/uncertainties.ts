@@ -35,10 +35,10 @@ const TAB_BY_KIND: Record<AiAnalysisKind, UncertaintyTabKey> = {
 // uncertainRegions[].field kan kobles til det rigtige input (rød ramme).
 export const UNCERTAINTY_FIELDS: Record<UncertaintyTabKey, { key: string; label: string; kind: "text" | "number" | "textarea" }[]> = {
   product: [
-    { key: "productName", label: "Varenavn", kind: "text" },
-    { key: "subbrand", label: "Vareserie", kind: "text" },
-    { key: "variant", label: "Variant", kind: "text" },
-    { key: "packageSizeText", label: "Pakningsstørrelse", kind: "text" },
+    { key: "productName", label: "Produkttype", kind: "text" },
+    { key: "subbrand", label: "Subbrand", kind: "text" },
+    { key: "variant", label: "Variation", kind: "text" },
+    { key: "packageSizeText", label: "Mængde", kind: "text" },
   ],
   energy: [
     { key: "kcalPer100g", label: "Energi (kcal)", kind: "number" },
