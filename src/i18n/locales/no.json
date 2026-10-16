@@ -2829,6 +2829,7 @@
     "added": "Lagt til",
     "addShownItems": "Legg til alle forslag",
     "addOne": "Legg til",
+    "removeSuggestion": "Fjern {item}",
     "suggested": "Foreslått",
     "unsupported": "Talegjenkjenning støttes ikke",
     "tapToTalk": "Trykk på mikrofonen for å snakke",

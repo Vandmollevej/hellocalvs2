@@ -70,6 +70,12 @@ import dk.packroff.hellocal.screens.capture.LiveWaveform
 import dk.packroff.hellocal.screens.capture.PingRing
 import dk.packroff.hellocal.screens.capture.rememberMealInputLanguage
 import dk.packroff.hellocal.screens.capture.standMicrophone
+import dk.packroff.hellocal.screens.capture.InterpretedResponse
+import dk.packroff.hellocal.screens.capture.VoiceItem
+import dk.packroff.hellocal.screens.capture.VoiceItemRow
+import dk.packroff.hellocal.screens.capture.registrationBody
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.coroutines.Job
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.ColorFilter
@@ -116,6 +122,22 @@ fun FoodsScreen(args: RouteArgs) {
     var micUnsupported by remember { mutableStateOf(false) }
     var micError by remember { mutableStateOf<String?>(null) }
     var micSession by remember { mutableStateOf<Job?>(null) }
+    // Hele sætninger (DECISIONS 2026-10-16): det sagte tolkes af AI'en til forslag med mængde,
+    // løbende mens man taler og en sidste gang, når mikrofonen stopper. Intet gemmes uden Tilføj.
+    var micSpoken by remember { mutableStateOf(false) }
+    var micFinished by remember { mutableStateOf(0) }
+    var suggestions by remember { mutableStateOf<List<VoiceItem>>(emptyList()) }
+    var interpreting by remember { mutableStateOf(false) }
+    var interpretFailed by remember { mutableStateOf(false) }
+    var adding by remember { mutableStateOf(false) }
+    var saveFailed by remember { mutableStateOf(false) }
+    var interpretSeq by remember { mutableStateOf(0) }
+    fun clearPendingSuggestions() {
+        interpretSeq++
+        interpreting = false
+        interpretFailed = false
+        suggestions = suggestions.filter { it.saved }
+    }
     var searchResults by remember { mutableStateOf<List<ProductListItem>>(emptyList()) }
     var loadedSnapshot by remember { mutableStateOf<FoodsSnapshot?>(null) }
     var loadFailed by remember { mutableStateOf(false) }
@@ -154,17 +176,24 @@ fun FoodsScreen(args: RouteArgs) {
         }
         micSession?.cancel()
         CaptureHooks.stopSpeech()
+        clearPendingSuggestions()
         micError = null
         micListening = true
         val tag = MealInputLanguages.speechLangFor(lang.language, lang.region)
         var job: Job? = null
         job = scope.launch {
             try {
-                val result = record(tag) { partial -> if (micSession == job) query = partial.trim() }
+                val result = record(tag) { partial ->
+                    if (micSession == job) {
+                        micSpoken = true
+                        query = partial.trim()
+                    }
+                }
                 if (micSession != job) return@launch
                 micSession = null
                 micListening = false
                 (result ?: query).trim().takeIf { it.isNotEmpty() }?.let { query = it }
+                micFinished++
             } catch (e: CapturePermissionDenied) {
                 if (micSession != job) return@launch
                 micSession = null
@@ -187,6 +216,46 @@ fun FoodsScreen(args: RouteArgs) {
         CaptureHooks.stopSpeech()
     }
     LaunchedEffect(Unit) { if (args.opt("mic") == "1") startMic() }
+
+    LaunchedEffect(query, micListening, micFinished) {
+        val transcript = query.trim()
+        if (!micSpoken || transcript.length < 2) return@LaunchedEffect
+        val final = !micListening
+        if (!final) delay(700)
+        val seq = ++interpretSeq
+        interpreting = true
+        try {
+            val data = ApiJson.decodeFromJsonElement(
+                InterpretedResponse.serializer(),
+                Api.post("/api/ai/interpret-meal", mapOf("transcript" to transcript, "language" to lang.language)),
+            )
+            if (seq != interpretSeq) return@LaunchedEffect
+            interpretFailed = false
+            suggestions = suggestions.filter { it.saved } + data.items.mapIndexed { index, item -> VoiceItem("pending-$seq-$index", item, saved = false) }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            if (seq == interpretSeq && final) interpretFailed = true
+        } finally {
+            if (seq == interpretSeq) interpreting = false
+        }
+    }
+
+    fun addSuggestions(pending: List<VoiceItem>) {
+        if (pending.isEmpty()) return
+        adding = true
+        scope.launch {
+            val ids = pending.mapNotNull { entry ->
+                runCatching {
+                    val res = Api.post("/api/registrations", registrationBody(entry.item)).jsonObject
+                    entry.id to res["registration"]!!.jsonObject["id"]!!.jsonPrimitive.content
+                }.getOrNull()
+            }.toMap()
+            suggestions = suggestions.map { entry -> ids[entry.id]?.let { entry.copy(id = it, saved = true) } ?: entry }
+            saveFailed = ids.size < pending.size
+            adding = false
+        }
+    }
 
     var correction by remember { mutableStateOf(SearchCorrection()) }
     var exactQuery by remember { mutableStateOf<String?>(null) }
@@ -280,11 +349,54 @@ fun FoodsScreen(args: RouteArgs) {
             }
             FoodsGrowingSearchField(
                 query,
-                { if (micListening) stopMic(); query = it.replace(Regex("\\s*\n\\s*"), " ") },
+                {
+                    if (micListening) stopMic()
+                    if (micSpoken) {
+                        micSpoken = false
+                        clearPendingSuggestions()
+                    }
+                    query = it.replace(Regex("\\s*\n\\s*"), " ")
+                },
                 t.t("foods.searchPlaceholder"),
                 cameraLabel = t.t("foods.scanNewProduct"),
                 onCamera = { nav.push("/camera?mode=product") },
             )
+            if (suggestions.isNotEmpty() || interpreting || interpretFailed) {
+                Column {
+                    HcText(t.t("voice.suggested").uppercase() + if (interpreting) " …" else "", HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
+                    if (interpretFailed && suggestions.isEmpty()) {
+                        HcText(t.t("voice.error.aiInterpretFailed"), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp, vertical = 4.dp), color = HcColors.RedDark)
+                    }
+                    if (suggestions.isNotEmpty()) {
+                        FoodListCard {
+                            suggestions.forEachIndexed { index, entry ->
+                                Box(Modifier.padding(horizontal = 16.dp)) {
+                                    VoiceItemRow(
+                                        entry,
+                                        onFavorite = null,
+                                        onReportError = null,
+                                        onDelete = { suggestions = suggestions.filter { it.id != entry.id } },
+                                        onAdd = { addSuggestions(listOf(entry)) },
+                                        adding = adding,
+                                        onOpen = { nav.push("/registration/${entry.id}") },
+                                    )
+                                }
+                                if (index < suggestions.lastIndex) FoodDivider()
+                            }
+                        }
+                    }
+                    val pending = suggestions.filter { !it.saved }
+                    if (pending.size > 1) {
+                        HcButton(
+                            if (adding) t.t("voice.adding") else t.t("voice.addShownItems"),
+                            onClick = { addSuggestions(pending) },
+                            modifier = Modifier.padding(top = 12.dp),
+                            enabled = !adding,
+                        )
+                    }
+                    if (saveFailed) HcText(t.t("voice.error.couldNotSaveRegistrations"), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp, vertical = 8.dp), color = HcColors.RedDark)
+                }
+            }
             if (!isSearching && ready && favorites.isNotEmpty()) {
                 HcText(t.t("foods.mostUsed").uppercase(), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
             }
@@ -329,7 +441,7 @@ fun FoodsScreen(args: RouteArgs) {
                             if (index < visible.lastIndex) FoodDivider()
                         }
                     }
-                    if (visible.isEmpty()) {
+                    if (visible.isEmpty() && suggestions.isEmpty() && !interpreting) {
                         HcText(
                             t.t(if (isSearching) "foods.noSearchMatches" else "foods.noFavoritesYet"),
                             HcTypeRoles.Body,

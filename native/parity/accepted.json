@@ -626,7 +626,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "9d5842804b996ade",
+    "src/app/foods/page.tsx": "2a66edbf0a19bcd2",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -656,7 +656,9 @@
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
     "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
     "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
+    "src/components/voice/VoiceMealSuggestions.tsx": "d760a74ccc557439",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
+    "src/components/voice/useMealInterpretation.ts": "8cfa57362a59ee65",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods/new": {

@@ -2829,6 +2829,7 @@
     "added": "Toegevoegd",
     "addShownItems": "Alle suggesties toevoegen",
     "addOne": "Toevoegen",
+    "removeSuggestion": "{item} verwijderen",
     "suggested": "Voorgesteld",
     "unsupported": "Spraakherkenning wordt niet ondersteund",
     "tapToTalk": "Tik op de microfoon om te praten",

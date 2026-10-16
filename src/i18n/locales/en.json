@@ -2829,6 +2829,7 @@
     "added": "Added",
     "addShownItems": "Add all suggestions",
     "addOne": "Add",
+    "removeSuggestion": "Remove {item}",
     "suggested": "Suggested",
     "unsupported": "Speech recognition not supported",
     "tapToTalk": "Tap the microphone to talk",

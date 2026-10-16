@@ -5740,3 +5740,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - Brugerens regel: hver gang man logger ind i admin, er alle grupper i venstre menu lukket. Afløser 2026-10-11 for admin (webversionen er uændret: foldet ud).
 - `AdminShell` starter med et tomt sæt åbne grupper, og den automatiske udfoldning af den aktive sides gruppe ved sideskift er fjernet (den åbnede en gruppe lige efter login). Gruppens overskrift markeres stadig som aktiv. Egne klik huskes i `sessionStorage` og ryddes ved login/logout som før.
+
+## 2026-10-16: Madvarer forstår hele sætninger igen
+
+- Brugerens krav: mikrofonen skal forstå en hel sætning som "to skiver franskbrød med smør og marmelade", ikke kun søge på én vare. Den gamle Tale-side sendte det sagte til AI'en (`/api/ai/interpret-meal`); det trin faldt ud, da siden blev flettet ind i Madvarer. Nu tolkes det sagte igen (700 ms efter sidste ord og en sidste gang, når mikrofonen stopper) og vises som "Foreslået" med mængde og kcal over søgeresultaterne — Tilføj pr. række og "Tilføj alle forslag"; intet gemmes uden tryk (docs/AI.md). Søgningen kører fortsat løbende på varen (se ovenfor). Skrives der i feltet, ryddes forslag, der ikke er tilføjet. Web: `useMealInterpretation` + `VoiceMealSuggestions`; native: `FoodsScreens.kt`.
