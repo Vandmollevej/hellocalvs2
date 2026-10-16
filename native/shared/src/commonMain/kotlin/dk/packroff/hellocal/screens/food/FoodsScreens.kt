@@ -7,6 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.border
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -34,19 +42,18 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodDivider
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.FoodListCard
 import dk.packroff.hellocal.ui.FoodRow
-import dk.packroff.hellocal.ui.FoodSearchField
 import dk.packroff.hellocal.ui.FoodSkeleton
 import dk.packroff.hellocal.ui.FoodSkeletonCards
 import dk.packroff.hellocal.ui.FoodSkeletonMediaRows
 import dk.packroff.hellocal.ui.FoodSlider
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
-import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcLink
 import dk.packroff.hellocal.ui.HcLoader
@@ -59,6 +66,7 @@ import dk.packroff.hellocal.screens.capture.CaptureHooks
 import dk.packroff.hellocal.screens.capture.CapturePermissionDenied
 import dk.packroff.hellocal.screens.capture.MealLanguagePicker
 import dk.packroff.hellocal.screens.capture.MealInputLanguages
+import dk.packroff.hellocal.screens.capture.LiveWaveform
 import dk.packroff.hellocal.screens.capture.PingRing
 import dk.packroff.hellocal.screens.capture.rememberMealInputLanguage
 import dk.packroff.hellocal.screens.capture.standMicrophone
@@ -204,8 +212,9 @@ fun FoodsScreen(args: RouteArgs) {
         }
     }
     val cachedResults = if (isSearching && exactQuery != q) FoodsSearchCache.entries[cacheKey]?.second else null
-    val favorites = snapshot?.products ?: emptyList()
     val favoriteIds = snapshot?.favoriteIds?.toSet() ?: emptySet()
+    // Favorites first (user rule 2026-10-16) — the server sends them first; a new bookmark moves up at once.
+    val favorites = (snapshot?.products ?: emptyList()).sortedBy { it.id !in favoriteIds }
     val ready = snapshot != null
     val visible = if (isSearching) cachedResults ?: searchResults else favorites
 
@@ -254,6 +263,7 @@ fun FoodsScreen(args: RouteArgs) {
                         bold = true,
                         color = HcColors.Green,
                     )
+                    if (micListening) LiveWaveform()
                     micError?.let {
                         HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
                     }
@@ -268,7 +278,13 @@ fun FoodsScreen(args: RouteArgs) {
                     }
                 }
             }
-            FoodSearchField(query, { if (micListening) stopMic(); query = it }, t.t("foods.searchPlaceholder"))
+            FoodsGrowingSearchField(
+                query,
+                { if (micListening) stopMic(); query = it.replace(Regex("\\s*\n\\s*"), " ") },
+                t.t("foods.searchPlaceholder"),
+                cameraLabel = t.t("foods.scanNewProduct"),
+                onCamera = { nav.push("/camera?mode=product") },
+            )
             if (!isSearching && ready && favorites.isNotEmpty()) {
                 HcText(t.t("foods.mostUsed").uppercase(), HcTypeRoles.Small, Modifier.padding(horizontal = 4.dp), color = HcColors.TextSecondary, bold = true)
             }
@@ -324,8 +340,39 @@ fun FoodsScreen(args: RouteArgs) {
                     }
                 }
             }
-            HcButton(t.t("foods.scanNewProduct"), onClick = { nav.push("/camera?mode=product") }, kind = HcButtonKind.Secondary)
         }
+    }
+}
+
+/** The Madvarer search field (.hf-search--grow): camera on the left opens the photo function, and it grows in height when the text does not fit one line. */
+@Composable
+private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, cameraLabel: String, onCamera: () -> Unit) {
+    val shape = RoundedCornerShape(HcDimens.RadiusCard)
+    val focus = LocalFocusManager.current
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(shape).background(HcColors.Surface, shape)
+            .border(1.dp, HcColors.Line, shape).padding(horizontal = HcDimens.SpaceBlock, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(Modifier.clickable(onClick = onCamera)) { HcIcon("Camera", size = 22.dp, stroke = 1.8f, color = HcColors.Green, contentDescription = cameraLabel) }
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = false,
+            textStyle = HcTypeRoles.Input.style(HcColors.Action),
+            cursorBrush = SolidColor(HcColors.Action),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { focus.clearFocus() }),
+            modifier = Modifier.weight(1f),
+            decorationBox = { inner ->
+                Box(contentAlignment = Alignment.CenterStart) {
+                    if (value.isEmpty()) HcText(placeholder, HcTypeRoles.Input, color = HcColors.Black.copy(alpha = 0.5f), maxLines = 1)
+                    inner()
+                }
+            },
+        )
+        HcIcon("Search", size = 16.dp, color = HcColors.Black)
     }
 }
 

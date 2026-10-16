@@ -1,3 +1,7 @@
+## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
+
+- Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.
+## 2026-10-16: Forsidens grafer i infoboksens plads
 ## 2026-10-16: Google Health synkroniserer af sig selv + kun én synk-popup
 
 - Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
