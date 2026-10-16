@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { sliderHaptic } from "@/lib/haptics";
 
 // Adjustable macro bar: slider + text field to override the value.
 // Extracted from src/app/voice/page.tsx's MacroBar for reuse in the Add flow.

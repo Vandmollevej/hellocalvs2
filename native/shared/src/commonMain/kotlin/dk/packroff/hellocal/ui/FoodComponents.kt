@@ -585,3 +585,27 @@ fun Modifier.foodSelected(selected: Boolean, shape: Shape, unselected: Color = H
 fun FoodScrollSheet(onDismiss: () -> Unit, title: String? = null, content: @Composable ColumnScope.() -> Unit) {
     HcBottomSheet(onDismiss = onDismiss, title = title, scrollable = true, content = content)
 }
+
+/** src/components/hf/FieldSlider.tsx — slider for a text-based number field (global rule: no number field without a slider). */
+@Composable
+fun FieldSlider(
+    text: String,
+    min: Double,
+    max: Double,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    step: Double = 1.0,
+) {
+    val parsed = text.replace(',', '.').toDoubleOrNull()
+    val current = parsed?.coerceIn(min, max) ?: min
+    FoodSlider(
+        value = current,
+        min = min,
+        max = max,
+        step = step,
+        onChange = { next ->
+            onChange(if (step >= 1.0) next.toLong().toString() else (kotlin.math.round(next * 10) / 10).toString())
+        },
+        modifier = modifier,
+    )
+}

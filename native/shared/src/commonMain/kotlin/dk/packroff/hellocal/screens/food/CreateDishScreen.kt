@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.FoodSheetDots
 import androidx.compose.ui.input.pointer.pointerInput
@@ -382,6 +383,13 @@ fun CreateDishScreen(args: RouteArgs) {
                     }
                 }
             }
+            FieldSlider(
+                text = (details.durationMinutes ?: 0).toString(),
+                min = 0.0,
+                max = 480.0,
+                onChange = { next -> updateDetails(details.copy(durationMinutes = next.toIntOrNull()?.takeIf { it > 0 })) },
+                step = 5.0,
+            )
           } else if (current == "ingredients") {
 
             importNote?.let { note ->

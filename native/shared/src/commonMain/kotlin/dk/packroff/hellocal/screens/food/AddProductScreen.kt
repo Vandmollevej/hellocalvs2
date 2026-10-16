@@ -63,6 +63,7 @@ import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.localizedDecimals
@@ -991,6 +992,7 @@ private fun AmountStepper(
     // Skøn (fx Frida-skøn, DECISIONS 2026-10-10): ∼ foran kalorietallet.
     kcalEstimated: Boolean = false,
 ) {
+    Column {
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Row(Modifier.widthIn(max = 320.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             GlyphButton("−", onMinus)
@@ -1044,6 +1046,14 @@ private fun AmountStepper(
             }
             GlyphButton("+", onPlus)
         }
+    }
+    FieldSlider(
+        text = jsNumberText(displayAmount),
+        min = 0.0,
+        max = maxOf(1000.0, kotlin.math.ceil(displayAmount / 100.0) * 100.0),
+        onChange = { next -> next.replace(",", ".").toDoubleOrNull()?.let(onTyped) },
+        step = 10.0,
+    )
     }
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useState } from "react";
 import { TextField } from "@/components/hf/TextField";
 import { Toggle } from "@/components/ui/Toggle";
@@ -82,6 +83,7 @@ export function FamilyProfileForm({
         value={form.heightCm}
         onChange={(event) => setForm({ ...form, heightCm: event.target.value })}
       />
+      <FieldSlider value={form.heightCm} min={40} max={230} step={1} onChange={(raw) => setForm({ ...form, heightCm: raw })} aria-label={t("family.add.heightCm")} />
       <TextField
         variant="standard"
         inputMode="decimal"
@@ -89,6 +91,7 @@ export function FamilyProfileForm({
         value={form.weightKg}
         onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
       />
+      <FieldSlider value={form.weightKg} min={2} max={250} step={0.5} onChange={(raw) => setForm({ ...form, weightKg: raw })} aria-label={t("family.add.weightKg")} />
       {!childOnly && !memberOnly && (
         <Toggle
           label={t("family.add.isChild")}

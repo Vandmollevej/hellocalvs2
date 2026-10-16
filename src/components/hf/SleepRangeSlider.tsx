@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { sliderHaptic } from "@/lib/haptics";
 
 const MINUTES_PER_DAY = 24 * 60;
 

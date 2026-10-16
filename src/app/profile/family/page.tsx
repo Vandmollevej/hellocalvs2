@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -541,6 +542,7 @@ function FamilyPageContent() {
                     value={form.heightCm}
                     onChange={(event) => setForm({ ...form, heightCm: event.target.value })}
                   />
+                  <FieldSlider value={form.heightCm} min={40} max={230} step={1} onChange={(raw) => setForm({ ...form, heightCm: raw })} aria-label={t("family.add.heightCm")} />
                   <TextField
                     variant="standard"
                     inputMode="decimal"
@@ -548,6 +550,7 @@ function FamilyPageContent() {
                     value={form.weightKg}
                     onChange={(event) => setForm({ ...form, weightKg: event.target.value })}
                   />
+                  <FieldSlider value={form.weightKg} min={2} max={250} step={0.5} onChange={(raw) => setForm({ ...form, weightKg: raw })} aria-label={t("family.add.weightKg")} />
                   {nonOwners.length > 0 && (
                     <div className="hf-stack">
                       <p className="hf-type-card-title">{t("family.rights.title")}</p>

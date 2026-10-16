@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useEffect, useMemo, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { HistoryLineChart } from "@/components/HistoryLineChart";
@@ -101,6 +102,15 @@ export default function CardioPage() {
                 />
                 <span className="hf-type-body text-text-secondary shrink-0">{m.unit}</span>
               </div>
+              <FieldSlider
+                value={draft[m.type]}
+                min={m.min}
+                max={m.max}
+                step={m.decimals > 0 ? 0.1 : 1}
+                onChange={(raw) => setDraft((d) => ({ ...d, [m.type]: raw }))}
+                onCommit={() => commit(m)}
+                aria-label={t(`cardio.${m.key}`)}
+              />
             </div>
           );
         })}
