@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NO_TRACKING_HEADERS, fromForEvent } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 import { pushSentNotice } from "@/lib/sent-notices";
+import { recordApiCall } from "@/lib/api-usage-record";
 
 // Reel SMTP-afsendelse, forberedt men ikke aktiveret (docs/DECISIONS.md
 // 2026-09-02): uden SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS i miljøet er
@@ -89,8 +90,10 @@ async function flushOnce(limit: number) {
         data: { status: "SENT", sentAt: new Date() },
       });
       if (message.userId) void pushSentNotice(message.userId, "EMAIL", message.subject);
+      recordApiCall("smtp", true);
       sent += 1;
     } catch (error) {
+      recordApiCall("smtp", false, error instanceof Error ? error.message : null);
       await prisma.outboundMessage.update({
         where: { id: message.id },
         data: { status: "FAILED", error: error instanceof Error ? error.message : "Ukendt fejl" },
