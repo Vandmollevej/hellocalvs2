@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { LiveMicButton } from "@/components/voice/LiveMicButton";
@@ -8,6 +8,8 @@ import { LiveWaveform } from "@/components/voice/LiveWaveform";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useLiveSpeech } from "@/lib/use-live-speech";
+import { useMealInterpretation } from "@/components/voice/useMealInterpretation";
+import { VoiceMealSuggestions } from "@/components/voice/VoiceMealSuggestions";
 import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
 import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
@@ -121,15 +123,25 @@ function MadvarerContent() {
   // Mikrofonen (tidligere Tale-siden): det sagte skrives løbende i søgefeltet,
   // så listen søges og raffineres, mens man taler.
   const { language, region, setLanguage } = useMealInputLanguage();
-  const speech = useLiveSpeech(setQuery);
+  // spoken: søgefeltets tekst kom fra mikrofonen — så tolkes hele sætningen
+  // også til forslag ("to skiver franskbrød med smør og marmelade").
+  const [spoken, setSpoken] = useState(false);
+  const speech = useLiveSpeech(
+    useCallback((text: string) => {
+      setSpoken(true);
+      setQuery(text);
+    }, [])
+  );
   const autoStartMic = searchParams.get("mic") === "1";
   const regionRef = useRef<string | null>(null);
   useEffect(() => {
     regionRef.current = region;
   }, [region]);
+  function currentMealLanguage(): MealInputLanguageCode {
+    return readStoredMealInputLanguage() ?? defaultMealInputLanguage(regionRef.current);
+  }
   function speechLang() {
-    const code: MealInputLanguageCode = readStoredMealInputLanguage() ?? defaultMealInputLanguage(regionRef.current);
-    return speechLangFor(code, regionRef.current);
+    return speechLangFor(currentMealLanguage(), regionRef.current);
   }
   const startMic = speech.start;
   useEffect(() => {
@@ -137,6 +149,11 @@ function MadvarerContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
   }, []);
   const isListening = speech.phase === "listening";
+  const meal = useMealInterpretation({ text: query, listening: isListening, spoken, language: currentMealLanguage });
+  function startSpeech(lang: string) {
+    meal.newRecording();
+    speech.start(lang);
+  }
 
   // Sidste liste for den aktive profil tegnes med det samme (også ved klik i
   // bundmenuen), og den friske fra serveren erstatter den stille — ingen
@@ -353,7 +370,7 @@ function MadvarerContent() {
               onChange={(code) => {
                 if (code === language) return;
                 setLanguage(code);
-                if (isListening) speech.start(speechLangFor(code, region));
+                if (isListening) startSpeech(speechLangFor(code, region));
               }}
             />
           </div>
@@ -361,7 +378,7 @@ function MadvarerContent() {
             listening={isListening}
             unsupported={speech.phase === "unsupported"}
             label={t(isListening ? "voice.stopMic" : "voice.startMic")}
-            onClick={() => (isListening ? speech.stop() : speech.start(speechLang()))}
+            onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
           />
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
@@ -393,6 +410,7 @@ function MadvarerContent() {
             value={query}
             onChange={(event) => {
               if (isListening) speech.stop();
+              setSpoken(false);
               setQuery(event.target.value.replace(/\s*\n\s*/g, " "));
             }}
             onKeyDown={(event) => {
@@ -406,6 +424,14 @@ function MadvarerContent() {
           />
           <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
         </div>
+
+        <VoiceMealSuggestions
+          items={meal.items}
+          error={meal.error}
+          adding={meal.adding}
+          onAdd={(items) => void meal.add(items)}
+          onRemove={meal.remove}
+        />
 
         {isSearching && correction?.forQuery === normalizedQuery && (
           <SearchCorrectionNotice
@@ -444,7 +470,7 @@ function MadvarerContent() {
                 onOpen={isSearching ? trackSearchClick : undefined}
               />
             ))}
-          {ready && visibleProducts.length === 0 && (
+          {ready && visibleProducts.length === 0 && !meal.items.some((item) => !item.saved) && !meal.interpreting && (
             <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
               {isSearching ? t("foods.noSearchMatches") : t("foods.noFavoritesYet")}
             </p>

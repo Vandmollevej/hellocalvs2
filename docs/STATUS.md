@@ -53,6 +53,10 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale forstår hele sætninger
+
+- Madvarer: Tale-sidens funktion er tilbage uændret — det sagte tolkes af AI'en til forslag med mængde ("to skiver franskbrød med smør og marmelade" → tre forslag), Foreslået/Tilføjet, swipe, dagens liste huskes. Web + native. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Tale finder varen
 
 - "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).
