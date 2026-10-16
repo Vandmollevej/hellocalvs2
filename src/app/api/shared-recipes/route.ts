@@ -170,8 +170,9 @@ export async function GET(req: Request) {
       : await prisma.sharedRecipe.findMany({
       where: {
         status: { not: "REJECTED" },
-        // En ret uden kendt energi vises aldrig (ingen "0 kcal").
-        kcal: { gt: 0 },
+        // En ret uden kendt energi vises aldrig med "0 kcal"; kun "Trender
+        // netop nu" tager dem med (uden kcal-tekst), så der altid vises noget.
+        ...(trending ? {} : { kcal: { gt: 0 } }),
         // Retter flagget som kopi skjules, til admin har godkendt dem.
         OR: [{ copyFlagged: false }, { status: "APPROVED" }],
         publisherHash: { notIn: blocked.map((b) => b.publisherHash) },
@@ -193,7 +194,7 @@ export async function GET(req: Request) {
     const items: Item[] = [];
     for (const { recipe: r, ingredients } of parsed) {
       // Sikkerhedsnet oven i where-filteret: en vist kcal-værdi er aldrig 0.
-      if (!(Math.round(r.kcal) > 0)) continue;
+      if (!trending && !(Math.round(r.kcal) > 0)) continue;
       const parts = ingredients.map((i) => ({ grams: i.grams, product: productById.get(i.productId) }));
       const sugar = withIngredientData ? totalOf(parts, "sugar") : null;
       const facts: RecipeFacts = {
@@ -248,8 +249,7 @@ export async function GET(req: Request) {
           // Importrobotterne gemmer 0 kcal + nutritionMissing, når næringen
           // er ukendt (fx Valdemarsro uden Frida-match). Sådanne retter må
           // aldrig vises med "0 kcal" — de skjules, til energien er beregnet.
-          nutritionMissing: false,
-          kcalPer100g: { gt: 0 },
+          ...(trending ? {} : { nutritionMissing: false, kcalPer100g: { gt: 0 } }),
           ...(q
             ? {
                 OR: [
@@ -287,7 +287,7 @@ export async function GET(req: Request) {
         const grams = p.servingSizeGrams ?? 100;
         const f = grams / 100;
         // Sikkerhedsnet oven i where-filteret: en vist kcal-værdi er aldrig 0.
-        if (!(Math.round(p.kcalPer100g * f) > 0)) continue;
+        if (!trending && !(Math.round(p.kcalPer100g * f) > 0)) continue;
         const facts: RecipeFacts = {
           title: p.name,
           segments: [{ name: p.name, text: p.ingredientsText ?? "", allergens: p.allergens }],
@@ -371,7 +371,11 @@ export async function GET(req: Request) {
       const clicked = shuffled
         .filter((item) => (clickScore.get(keyOf(item)) ?? 0) > 0)
         .sort((a, b) => (clickScore.get(keyOf(b)) ?? 0) - (clickScore.get(keyOf(a)) ?? 0));
-      const rest = shuffled.filter((item) => !clickScore.has(keyOf(item)));
+      // Retter med kendt energi først i opfyldningen; dem uden vises kun, hvis
+      // der ellers ikke er nok (klienterne viser da ingen kcal-tekst).
+      const rest = shuffled
+        .filter((item) => !clickScore.has(keyOf(item)))
+        .sort((a, b) => Number(b.kcal > 0) - Number(a.kcal > 0));
       items.splice(0, items.length, ...[...clicked, ...rest].slice(0, TRENDING_LIMIT));
     }
 

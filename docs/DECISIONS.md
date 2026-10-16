@@ -5184,3 +5184,10 @@ Brugerens krav: webversionen var bagud — fx lå "Oplevelse af søvn" som eget 
 - Den tidligere upushede Labels-side sættes i Varedatabase, bruger certifikatlogoer fra den fælles logofunktion og får admin-genvej Alt+Shift+0.
 - Søgeord uden artikel vælger ental-/flertalstitlen, når kun den ene titel indeholder ordet; uklare match bevarer standardtitlen.
 - Efterladt GuideGate og 25-point OFF-fotoflow indføres ikke: masters flow-system og 10-point genscanning er den aktuelle produktkontrakt.
+
+## 2026-10-16: Trender netop nu viser altid noget (også uden kendt energi)
+
+Brugeren så en tom "Trender netop nu" (web og app). Årsag: 2026-10-11-reglen skjulte alle retter uden kendt energi, og er alle importerede retter uden næring, blev rækken tom. "Altid mindst tre retter" gælder alle platforme.
+
+- `/api/shared-recipes?trending=1` tager retter uden energi med som opfyldning (sidst, efter retter med kendt energi); almindelig søgning skjuler dem stadig.
+- "Aldrig 0 kcal" gælder uændret: klienterne viser ingen kcal-tekst, når tallet er 0.
