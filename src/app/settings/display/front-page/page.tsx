@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import Image from "next/image";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
@@ -196,8 +197,8 @@ export default function FrontPageDisplaySettingsPage() {
           {pulse.zones.map((zone, index) => {
             const selected = pulse.selected === index;
             return (
+              <div key={index}>
               <div
-                key={index}
                 className={`hf-control-row flex items-center gap-3 px-4 ${
                   index < pulse.zones.length - 1 ? "border-b border-hf-tan-dark" : ""
                 }`}
@@ -233,6 +234,11 @@ export default function FrontPageDisplaySettingsPage() {
                   className="hf-type-body w-16 rounded-lg bg-hf-white px-2 py-1 text-right text-hf-black"
                 />
                 <span className="hf-type-caption">bpm</span>
+              </div>
+              <div className="flex flex-col">
+                <FieldSlider value={zone.min} min={30} max={230} onChange={(raw) => setZoneBound(index, "min", raw)} aria-label={t("frontPageSettings.zoneMin", { zone: index + 1 })} />
+                <FieldSlider value={zone.max} min={30} max={230} onChange={(raw) => setZoneBound(index, "max", raw)} aria-label={t("frontPageSettings.zoneMax", { zone: index + 1 })} />
+              </div>
               </div>
             );
           })}

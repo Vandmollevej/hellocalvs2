@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { TextField } from "@/components/hf/TextField";
 import {
@@ -96,6 +97,13 @@ export function PregnancyFields({
             onChange={(event) => onChange({ pregnancyWeek: parseWeeks(event.target.value, MIN_PREGNANCY_WEEK, MAX_PREGNANCY_WEEK) })}
             placeholder={t("pregnancy.weekPlaceholder")}
           />
+          <FieldSlider
+            value={week}
+            min={MIN_PREGNANCY_WEEK}
+            max={MAX_PREGNANCY_WEEK}
+            onChange={(raw) => onChange({ pregnancyWeek: parseWeeks(raw, MIN_PREGNANCY_WEEK, MAX_PREGNANCY_WEEK) })}
+            aria-label={t("pregnancy.weekLabel")}
+          />
           {trimester !== null && (
             <p className="hf-type-small text-hf-black">
               {t("pregnancy.trimester", { trimester })} · {t("pregnancy.extraKcal", { kcal: extraKcal })}
@@ -117,6 +125,13 @@ export function PregnancyFields({
             value={value.breastfeedingWeeks ?? ""}
             onChange={(event) => onChange({ breastfeedingWeeks: parseWeeks(event.target.value, 0, MAX_BREASTFEEDING_WEEKS) })}
             placeholder={t("pregnancy.breastfeedingWeeksPlaceholder")}
+          />
+          <FieldSlider
+            value={value.breastfeedingWeeks}
+            min={0}
+            max={MAX_BREASTFEEDING_WEEKS}
+            onChange={(raw) => onChange({ breastfeedingWeeks: parseWeeks(raw, 0, MAX_BREASTFEEDING_WEEKS) })}
+            aria-label={t("pregnancy.breastfeedingWeeksLabel")}
           />
           <p className="hf-type-small text-hf-black">{t("pregnancy.extraKcal", { kcal: extraKcal })}</p>
           <p className="hf-type-caption text-text-secondary">{t("pregnancy.breastfeedingHint")}</p>

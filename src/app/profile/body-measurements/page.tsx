@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldSlider } from "@/components/hf/FieldSlider";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -295,7 +296,8 @@ export default function BodyMeasurementsPage() {
                   />
                 )}
               </span>
-              <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
+              <span className="flex min-w-0 items-center justify-between gap-3">
                 <span className="hf-type-body hf-type-strong text-hf-black">{t(labelKey)}</span>
                 <span className="flex shrink-0 items-baseline gap-2">
                   <InlineMeasurementInput
@@ -306,6 +308,16 @@ export default function BodyMeasurementsPage() {
                   />
                   <span className="hf-type-body text-text-secondary shrink-0">{lengthUnitLabel(lengthUnit)}</span>
                 </span>
+              </span>
+              <FieldSlider
+                value={values[field]}
+                min={lengthUnit === "in" ? 4 : 10}
+                max={lengthUnit === "in" ? 100 : 250}
+                step={0.5}
+                onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}
+                onCommit={() => commitField(field)}
+                aria-label={t(labelKey)}
+              />
               </span>
             </label>
           ))}

@@ -12,6 +12,7 @@ export function HfSlider({
   max,
   step = 1,
   onChange,
+  onCommit,
   largeOnWeb = false,
   "aria-label": ariaLabel,
 }: {
@@ -20,6 +21,8 @@ export function HfSlider({
   max: number;
   step?: number;
   onChange: (value: number) => void;
+  // Kaldes når fingeren slippes / tasten er trykket (til felter der gemmer ved blur).
+  onCommit?: () => void;
   // Webvisning (≥1024px): tykkere bane og 24 px-greb. Mobil er uændret.
   largeOnWeb?: boolean;
   "aria-label"?: string;
@@ -79,6 +82,8 @@ export function HfSlider({
       data-sheet-no-drag
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerUp={() => onCommit?.()}
+      onPointerCancel={() => onCommit?.()}
       onKeyDown={handleKeyDown}
       className={`flex h-10 touch-none items-center px-6 outline-none ${largeOnWeb ? "lg:h-12" : ""}`}
     >

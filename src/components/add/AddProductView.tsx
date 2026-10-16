@@ -33,6 +33,7 @@ import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
+import { HfSlider } from "@/components/hf/HfSlider";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
 import {
@@ -1319,6 +1320,14 @@ export function AddProductView({
                   +
                 </button>
               </div>
+              <HfSlider
+                value={Math.min(Math.max(amount, 0), Math.max(1000, amount))}
+                min={0}
+                max={Math.max(1000, Math.ceil(amount / 100) * 100)}
+                step={step}
+                onChange={(next) => setAmount(Math.max(0, next))}
+                aria-label={displayUnit}
+              />
 
               <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">

@@ -23,6 +23,7 @@ import dk.packroff.hellocal.i18n.Locale
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcTypeRoles
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.HcAccordionCard
 import dk.packroff.hellocal.ui.HcChoiceChip
 import dk.packroff.hellocal.ui.HcLine
@@ -163,6 +164,7 @@ fun KnowledgeConversionScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                     HcChoiceChip(option, unit == option, { unit = option }, Modifier.weight(1f))
                 }
             }
+            FieldSlider(amountText, 0.0, 1000.0, { amountText = it }, step = 5.0)
             OnbSearchField(query, { query = it }, "Søg fx mælk, olie, honning eller mel")
             val current = table
             if (current == null) {

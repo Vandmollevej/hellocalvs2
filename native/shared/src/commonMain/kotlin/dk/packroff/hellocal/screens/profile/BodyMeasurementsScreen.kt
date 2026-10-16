@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.profile
 
+import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.Units
 import dk.packroff.hellocal.ui.HeightUnit
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -340,7 +341,8 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
                                 HcRemoteImage("/body-measurements/$prefix-${field.drawing}.png", Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
                             }
                         }
-                        Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Column(Modifier.weight(1f)) {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             HcText(t.t(field.labelKey), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 ProfileFilledField(
@@ -357,6 +359,14 @@ fun BodyMeasurementsScreen(args: RouteArgs) {
                                 )
                                 HcText(Units.lengthUnitLabel(lengthUnit), HcTypeRoles.Body, color = HcColors.TextSecondary)
                             }
+                        }
+                        FieldSlider(
+                            values[field.field] ?: "",
+                            if (lengthUnit == HeightUnit.In) 4.0 else 10.0,
+                            if (lengthUnit == HeightUnit.In) 100.0 else 250.0,
+                            { values[field.field] = it; commitField(field.field) },
+                            step = 0.5,
+                        )
                         }
                     }
                 }
