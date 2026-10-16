@@ -238,41 +238,44 @@ fun FoodsScreen(args: RouteArgs) {
     HcScreen(
         t.t("foods.title"),
         icon = { HcIcon("Apple", size = 20.dp, stroke = 2f, color = HcColors.White) },
-        leading = {
-            MealLanguagePicker(lang.language, lang.region) { code ->
-                if (code != lang.language) {
-                    lang.set(code)
-                    if (micListening) startMic()
-                }
-            }
-        },
         contentPadding = LIST_PAGE_PADDING,
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    Modifier.size(96.dp).clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (micListening) PingRing()
-                    Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
-                        Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+            Box(Modifier.fillMaxWidth()) {
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        Modifier.size(96.dp).clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (micListening) PingRing()
+                        Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
+                            Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                        }
+                    }
+                    HcText(
+                        when {
+                            micListening -> t.t("voice.listeningStatus")
+                            micUnsupported -> t.t("voice.unsupported")
+                            else -> t.t("voice.tapToTalk")
+                        },
+                        HcTypeRoles.Small,
+                        Modifier.padding(top = 8.dp),
+                        bold = true,
+                        color = HcColors.Green,
+                    )
+                    if (micListening) LiveWaveform()
+                    micError?.let {
+                        HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
                     }
                 }
-                HcText(
-                    when {
-                        micListening -> t.t("voice.listeningStatus")
-                        micUnsupported -> t.t("voice.unsupported")
-                        else -> t.t("voice.tapToTalk")
-                    },
-                    HcTypeRoles.Small,
-                    Modifier.padding(top = 8.dp),
-                    bold = true,
-                    color = HcColors.Green,
-                )
-                if (micListening) LiveWaveform()
-                micError?.let {
-                    HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
+                // The language flag sits left of the microphone, mirroring the favourite mark on the right.
+                Box(Modifier.align(Alignment.TopStart).padding(top = 26.dp)) {
+                    MealLanguagePicker(lang.language, lang.region) { code ->
+                        if (code != lang.language) {
+                            lang.set(code)
+                            if (micListening) startMic()
+                        }
+                    }
                 }
             }
             FoodsGrowingSearchField(

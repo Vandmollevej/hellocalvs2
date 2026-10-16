@@ -340,20 +340,23 @@ function MadvarerContent() {
     <HfScreen
       title={t("foods.title")}
       icon={<IconApple size={20} stroke={2} />}
-      leading={
-        <MealLanguagePicker
-          language={language}
-          region={region}
-          onChange={(code) => {
-            if (code === language) return;
-            setLanguage(code);
-            if (isListening) speech.start(speechLangFor(code, region));
-          }}
-        />
-      }
     >
       <div className="hf-page">
-        <section className="flex flex-col items-center" aria-live="polite">
+        <section className="relative flex flex-col items-center" aria-live="polite">
+          {/* Sprogflaget står til venstre for mikrofonen, ud for listens
+              venstre kant — spejlet af favoritmærket til højre (brugerens
+              ønske 2026-10-16: ikke oppe i headeren, væk fra mikrofonen). */}
+          <div className="absolute left-0 top-[26px]">
+            <MealLanguagePicker
+              language={language}
+              region={region}
+              onChange={(code) => {
+                if (code === language) return;
+                setLanguage(code);
+                if (isListening) speech.start(speechLangFor(code, region));
+              }}
+            />
+          </div>
           <LiveMicButton
             listening={isListening}
             unsupported={speech.phase === "unsupported"}

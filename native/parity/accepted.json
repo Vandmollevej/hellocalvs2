@@ -1,7 +1,7 @@
 {
   "/": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/page.tsx": "795f61ee871d9abf",
+    "src/app/page.tsx": "46c680291f106ff5",
     "src/components/AddButton.tsx": "0ff7af78748cc2c0",
     "src/components/AppHomeGate.tsx": "baa51e8bdefd34a0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
@@ -14,8 +14,9 @@
     "src/components/FoodRow.tsx": "17011506abef77b5",
     "src/components/FooterArc.tsx": "09d67afd4d748237",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
-    "src/components/Hero.tsx": "8ec268c27f9e8147",
+    "src/components/Hero.tsx": "770f2d1a1a2d02c3",
     "src/components/HomeWaves.tsx": "cc30f44ebba9027c",
+    "src/components/InfoBox.tsx": "325b16d7035f9af1",
     "src/components/IntegrationIcon.tsx": "36551d87b956c315",
     "src/components/OnboardingWizard.tsx": "a0835c2340caae0f",
     "src/components/PregnancyFields.tsx": "cd6a711673a5388c",
@@ -38,8 +39,6 @@
     "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
     "src/components/family/ProfileSwitcher.tsx": "25b2d318dea9674a",
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
-    "src/components/frontcharts/FrontChartSvgs.tsx": "59aea450c8aa5706",
-    "src/components/frontcharts/FrontCharts.tsx": "fbcb94e490228338",
     "src/components/hf/AccordionCard.tsx": "8cab6c407d964400",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
     "src/components/hf/EntryDetailsSheet.tsx": "f2434e44767670af",
@@ -384,7 +383,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/voice/MealLanguagePicker.tsx": "dc30d29d196ec53a",
+    "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
@@ -626,7 +625,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "e3c12bb1fea5983e",
+    "src/app/foods/page.tsx": "9d5842804b996ade",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -655,7 +654,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
     "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
-    "src/components/voice/MealLanguagePicker.tsx": "dc30d29d196ec53a",
+    "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },

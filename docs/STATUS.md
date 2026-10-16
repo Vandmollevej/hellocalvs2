@@ -9,16 +9,18 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale finder varen
+
+- "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).
+
 ## 2026-10-16: Tale-siden flettet ind i Madvarer
 
 - Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
 
-## 2026-10-14: Forsidens grafer erstatter infoboksen
+## 2026-10-16: Forsidens grafer rullet tilbage
 
-- Den hvide infoboks er fjernet. Øverst vises fire grafer uden baggrund (`src/components/frontcharts/`): puls (pindediagram), kalorieindtag (pinde + anbefalet energifordeling som glat kurve), anbefalet mod faktisk indtag (grå statisk mod blå) og målsætningens tidslinje (pind pr. dag/uge, bredt anbefalet min–maks-bånd, grå målstreg). Kun vågne timer (sengetid/opvågning fra Søvn; ellers 07–23), rundet ned til venstre og op til højre.
-- Nederst en handlingsboks ("forbrænd X kcal", eller reducér indtag/forbrænd). Tryk åbner et ark med gåture (rolig/rask/hurtig ud fra vægt) og forslag til mad; Hello Fresh-link vises kun, når integrationen er slået til.
-- Ny graf-accent `--hf-color-chart-blue` (#5b9fcf). Regler i `src/lib/front-charts.ts` (+ test), native port i `HomeFrontCharts*.kt`.
-- Kendt: norsk/svensk tekst er foreløbigt dansk, tysk/fransk/hollandsk engelsk. Native er ikke kompileret lokalt (ingen Android SDK) — CI afgør.
+- PR #463 (grafer over infoboksen) er rullet tilbage efter brugerens melding om, at forsiden var ødelagt: graferne skubbede tal-hjul og dagens liste ud af skærmen, puls-linjen lå hen over graferne, og siden fik rulning og en handlingsboks, brugeren ikke havde bedt om. Infoboksen og den gamle forside er tilbage (web + native).
+
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
 - Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu. Markeringerne ses under Admin → Kvalitetskontrol → Ufuldstændige billeder ("Fjern markering" afviser en fejlmarkering). Ikke typetjekket lokalt (node_modules mangler) — CI afgør. Se DECISIONS 2026-10-16.
