@@ -71,7 +71,7 @@ internal data class RecipeFilters(
     val diets: List<String> = emptyList(),
     val nutrients: List<String> = emptyList(),
     val macros: Map<String, String> = emptyMap(),
-    val persons: Int = 1,
+    val persons: Int = 0,
     val showKcal: Boolean = true,
     val showEnergySplit: Boolean = false,
 ) {
@@ -103,7 +103,7 @@ internal data class RecipeFilters(
                 diets = pick(params["diets"], RecipeFilterLists.diets),
                 nutrients = pick(params["nutrients"], RecipeFilterLists.nutrients),
                 macros = RecipeFilterLists.macroKeys.mapNotNull { key -> params[key]?.takeIf { it == "high" || it == "low" }?.let { key to it } }.toMap(),
-                persons = min(6, max(1, (params["persons"]?.toDoubleOrNull() ?: 1.0).roundToInt().let { if (it == 0) 1 else it })),
+                persons = min(6, max(0, (params["persons"]?.toDoubleOrNull() ?: 0.0).roundToInt())),
                 showKcal = params["kcal"] != "0",
                 showEnergySplit = params["split"] == "1",
             )
@@ -177,7 +177,7 @@ internal object RecipePortions {
     }
 
     fun scaleFactor(totalKcal: Double, portionKcal: Int, persons: Int): Double =
-        if (totalKcal <= 0 || portionKcal <= 0) 1.0 else persons * portionKcal / totalKcal
+        if (persons <= 0 || totalKcal <= 0 || portionKcal <= 0) 1.0 else persons * portionKcal / totalKcal
 }
 
 /** GET /api/profile → the user object (null when it cannot be read). */
@@ -276,7 +276,7 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
         AccordionSection(t.t("recipeFilters.personsTitle"), icon = "UsersGroup", count = filters.persons) {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                 PersonsSlider(t.t("recipeFilters.personsLabel"), filters.persons, RecipePortions.MAX_PERSONS, { update(filters.copy(persons = it)) }, min = 0, unset = filters.persons == 0)
-                portionKcal?.let { HcText(t.t("recipeFilters.portionHint", "kcal" to it), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary) }
+                portionKcal?.takeIf { filters.persons > 0 }?.let { HcText(t.t("recipeFilters.portionHint", "kcal" to it), HcTypeRoles.Small, Modifier.padding(top = 12.dp), color = HcColors.TextSecondary) }
             }
         }
         AccordionSection(t.t("recipeFilters.displayTitle"), icon = "Eye") {

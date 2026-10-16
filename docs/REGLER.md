@@ -364,7 +364,7 @@ Valgte knapper/faner/chips/planvalg har ALTID den lysegrønne farve (`--hf-color
 ## Mærker på produktcirklen (user rule 2026-10-10)
 
 Certifikater står nederst til venstre ud for cirklens bund (økologi altid nederst), advarsels-/kostikoner øverst ud for cirklens top; øverste har førsteret og æder certifikaterne, økologi sidst. Rækkefølge og allergen-tilstand sættes under Indstillinger → Visning → Prioritering af visning. Se `src/lib/circle-badges.ts`.
-- **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
+- **Undtagelse (bruger 2026-10-16): Opret ret er en rigtig side, ikke en popup**; de tre startvalg er kvadratiske felter midt på siden med teksten under. **Flows er helsides popups (bruger 2026-10-09):** alle flows overalt (fx Opret ret: Indsæt tekst / Scan opskrift / Opret manuelt, hvor man tilføjer én ingrediens ad gangen) åbner som en helsides popup (`BottomSheet size="full"`), ikke som en almindelig side.
 
 Økologimærker (Ø-mærket, EU-bladet, Bio-Siegel …) står ALDRIG i certifikater, kun i økologi-feltet `ProductFilters.organic` — kommasepareret (fx "Økologisk, EU-økologi"), med mærkets oprindelige navn, og kun mærker, der fremgår af varen: Ø-mærket og EU-bladet er to forskellige klassificeringer, og det ene giver aldrig automatisk det andet. Hvert vises med sit eget logo (user rule 2026-10-15). Se `src/lib/label-certifications.ts`.
 
@@ -396,6 +396,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 
 ## Aldrig 0 kcal på en ret (user rule 2026-10-11)
 
+- Undtagelse (2026-10-16): "Trender netop nu" tager retter uden energi med som opfyldning (uden kcal-tekst), så rækken aldrig er tom.
 - En ret (Trender netop nu, søgning, favoritter, Mine retter, web og native) vises **aldrig** med "0 kcal". Er energien 0 eller ukendt, skjules retten på serveren (`/api/shared-recipes`: `nutritionMissing = false`, `kcalPer100g > 0`, delte retter `kcal > 0`), og klienterne viser ingen kcal-tekst i stedet for et nul.
 - Importrobotterne gemmer 0 kcal + `nutritionMissing = true`, når næringen er ukendt (Valdemarsro uden Frida-match, BetterFeast/RetNemt uden tal). 0 er en pladsholder, aldrig en værdi — tjek altid `nutritionMissing`, når en liste hentes direkte fra `products`.
 - Nye lister, der viser kcal for retter/varer, skal følge samme regel; et nul må aldrig stå uden, at nogen har reageret på det.
@@ -417,3 +418,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Seneste produktregler på master går forud for gamle efterladte implementationer. Samlingsgennemgang: `docs/handoffs/2026-10-11-github-samling.md`.
 - Ental/flertal uden artikel: når søgeordet kun findes i den ene titelform, vises denne. Fælles ord og delord beholder standardtitlen (`displayNameForQuery`).
 - Labels i Varedatabase bruger de eksisterende certifikatlogoer; ingen tegnede erstatningslogoer.
+
+- **Antal personer (opskrifter): 0 = tag ikke højde for det (user rule 2026-10-16).** 0 er standard (web + native). Retten vises som gemt, uden skalering og uden "anbefalet servering"/"kcal pr. servering"; først ved ≥ 1 skaleres retten til brugerens anbefalede portion.

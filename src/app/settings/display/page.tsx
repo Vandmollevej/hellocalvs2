@@ -5,7 +5,6 @@ import {
   IconHome2,
   IconAlertTriangle,
   IconCalendarWeek,
-  IconMoon,
   IconCalendarHeart,
   IconBulb,
   IconArrowsSort,
@@ -88,12 +87,6 @@ export default function DisplaySettingsIndexPage() {
             icon={<IconCalendarWeek size={20} />}
             label={t("settings.calendarView")}
             href="/settings/display/calendar-view"
-            divider
-          />
-          <ChevronRow
-            icon={<IconMoon size={20} />}
-            label={t("settings.sleepQuality")}
-            href="/settings/display/sleep-quality"
             divider
           />
           <ChevronRow

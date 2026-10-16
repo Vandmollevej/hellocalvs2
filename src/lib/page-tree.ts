@@ -197,6 +197,7 @@ export const PAGE_TREE: PageArea[] = [
             path: "/profile/screenings",
             label: "Screeninger",
             children: [
+              { path: "/settings/display/sleep-quality", label: "Søvn: oplevelse af søvn", note: "Til/fra for det daglige søvnspørgsmål; række i Screeninger" },
               { path: "/profile/screenings/new", label: "Opret ny screening" },
               { path: "/profile/screenings/[id]", label: "Redigér screening" },
               {
@@ -319,7 +320,6 @@ export const PAGE_TREE: PageArea[] = [
               { path: "/settings/display/uncertainty", label: "Visning: usikkerhed" },
               { path: "/settings/display/translation", label: "Visning: oversættelse" },
               { path: "/settings/display/calendar-view", label: "Visning: kalender" },
-              { path: "/settings/display/sleep-quality", label: "Visning: oplevet søvnkvalitet" },
               { path: "/settings/display/tips", label: "Visning: tips og hjælpetekster" },
               { path: "/settings/display/menstrual-cycle", label: "Visning: menstruationscyklus" },
               { path: "/settings/display/pregnancy", label: "Visning: graviditet og amning", note: "EFSA-tillæg til energibehovet; intet kalorieunderskud" },

@@ -1357,7 +1357,6 @@ function WeekView({
   weighInsByDate: WeighInsByDate;
   onOpenDate: (date: Date) => void;
 }) {
-  const { t } = useTranslation();
   const goalForDate = useDailyGoal();
   return (
     <div className="space-y-2">
@@ -1395,49 +1394,42 @@ function WeekView({
             >
               {date.getDate()}
             </span>
+            <DayMarks hasGoal={hasGoal} entries={dayWeighIns} date={date} />
             {future ? (
-              <span className="flex flex-1 items-center gap-1.5">
-                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
-                <WeighInMark entries={dayWeighIns} />
-                <PulseHeartMark date={date} />
-              </span>
+              <IconChevronRight size={19} className="ml-auto shrink-0" />
             ) : (
-              <>
-                {met && !tooLow && (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
-                )}
+              <span className="ml-auto flex shrink-0 items-center gap-1">
                 <span
-                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
+                  className={`hf-type-body hf-type-strong tabular-nums ${
+                    logged && met && !tooLow ? "text-hf-green" : "text-text-muted"
+                  }`}
                 >
-                  {!logged
-                    ? "–"
-                    : tooLow
-                      ? t("calendar.intakeTooLow")
-                      : met
-                        ? t("calendar.goalMet")
-                        : t("calendar.goalMissed")}
-                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
-                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
-                  <WeighInMark entries={dayWeighIns} />
-                <PulseHeartMark date={date} />
+                  {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                 </span>
-                <span className="ml-auto flex shrink-0 items-center gap-1">
-                  <span
-                    className={`hf-type-body hf-type-strong tabular-nums ${
-                      !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
-                    }`}
-                  >
-                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
-                  </span>
-                  <IconChevronRight size={19} className="shrink-0" />
-                </span>
-              </>
+                <IconChevronRight size={19} className="shrink-0" />
+              </span>
             )}
-            {future && <IconChevronRight size={19} className="shrink-0" />}
           </button>
         );
       })}
     </div>
+  );
+}
+
+// Faste pladser til målsætning, vægt og puls, så ikonerne står lodret over
+// hinanden hele vejen ned gennem rækkerne, uanset hvilke dage der har dem.
+function DayMarks({ hasGoal, entries, date }: { hasGoal: boolean; entries: WeightEntry[]; date: Date }) {
+  const slot = "flex size-[18px] shrink-0 items-center justify-center";
+  return (
+    <span className="flex flex-1 items-center gap-1.5">
+      <span className={slot}>{hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}</span>
+      <span className={slot}>
+        <WeighInMark entries={entries} />
+      </span>
+      <span className={slot}>
+        <PulseHeartMark date={date} />
+      </span>
+    </span>
   );
 }
 
@@ -1528,7 +1520,6 @@ function ListView({
   onPrevWeek: () => void;
   onNextWeek: () => void;
 }) {
-  const { t } = useTranslation();
   const goalForDate = useDailyGoal();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const overscroll = useRef(0);
@@ -1635,45 +1626,21 @@ function ListView({
             >
               {date.getDate()}
             </span>
+            <DayMarks hasGoal={hasGoal} entries={dayWeighIns} date={date} />
             {future ? (
-              <span className="flex flex-1 items-center gap-1.5">
-                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
-                <WeighInMark entries={dayWeighIns} />
-                <PulseHeartMark date={date} />
-              </span>
+              <IconChevronRight size={19} className="ml-auto shrink-0" />
             ) : (
-              <>
-                {met && !tooLow && (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />
-                )}
+              <span className="ml-auto flex shrink-0 items-center gap-1">
                 <span
-                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "" : "text-text-muted"}`}
+                  className={`hf-type-body hf-type-strong tabular-nums ${
+                    logged && met && !tooLow ? "text-hf-green" : "text-text-muted"
+                  }`}
                 >
-                  {!logged
-                    ? "–"
-                    : tooLow
-                      ? t("calendar.intakeTooLow")
-                      : met
-                        ? t("calendar.goalMet")
-                        : t("calendar.goalMissed")}
-                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
-                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
-                  <WeighInMark entries={dayWeighIns} />
-                <PulseHeartMark date={date} />
+                  {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
                 </span>
-                <span className="ml-auto flex shrink-0 items-center gap-1">
-                  <span
-                    className={`hf-type-body hf-type-strong tabular-nums ${
-                      !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
-                    }`}
-                  >
-                    {!logged ? "–" : `${over ? "÷" : "+"}${diff} kcal`}
-                  </span>
-                  <IconChevronRight size={19} className="shrink-0" />
-                </span>
-              </>
+                <IconChevronRight size={19} className="shrink-0" />
+              </span>
             )}
-            {future && <IconChevronRight size={19} className="shrink-0" />}
           </button>
         );
       })}
