@@ -358,6 +358,16 @@ function Overlay({ children, onClose }: { children: React.ReactNode; onClose: ()
 
 const FULL_IMAGE: Box = { x: 0, y: 0, w: 1, h: 1 };
 
+// AI'ens aflæsningsområde er ofte et lille udsnit, der bliver uskarpt og
+// uden sammenhæng. Udvid det, så man ser mindst halvdelen af fotoets bredde.
+function paddedCrop(crop: Box): Box {
+  const w = Math.min(1, Math.max(crop.w * 1.6, 0.6));
+  const h = Math.min(1, Math.max(crop.h * 1.6, 0.6));
+  const x = Math.min(1 - w, Math.max(0, crop.x + crop.w / 2 - w / 2));
+  const y = Math.min(1 - h, Math.max(0, crop.y + crop.h / 2 - h / 2));
+  return { x, y, w, h };
+}
+
 // Fotoet beskåret til det område, AI'en aflæste (ocrRegion), med røde
 // rammer om de usikre områder. Alle koordinater er andele 0–1 af fotoet.
 function CroppedPhoto({ src, crop, marks }: { src: string; crop: Box; marks: Box[] }) {
@@ -435,7 +445,7 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
       {row.photoUrl ? (
         <CroppedPhoto
           src={row.photoUrl}
-          crop={row.regions.ocrRegion ?? FULL_IMAGE}
+          crop={paddedCrop(row.regions.ocrRegion ?? FULL_IMAGE)}
           marks={row.regions.uncertainRegions}
         />
       ) : (
