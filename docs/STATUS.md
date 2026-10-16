@@ -3,6 +3,11 @@
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
 - Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
 
+## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
+
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, 48 px høje hver (halvt så høje som første udgave), fra boksens gamle top. Heroens højde (top til skillelinjen) er uændret.
+- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
+
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
 - `scripts/lidl-aldi-enrich/`: stregkode → titel (Open Food Facts) → Google Vision kun ved 0 resultater; nye fakta i et Excel-ark ved siden af vores titel. Natlig kørsel via Windows-opgave (`install-task.ps1`, `git pull` hver nat), ingen admin. Står under Robotter/Cron-jobs som `lidl-aldi-enrich`, slået fra. Enhedstests (8), tsc, eslint og `npm test` grønne. Ikke kørt mod brugerens rigtige filer: kolonnenavne og stier skal prøves med `--inspect` og `--limit 20`. Se `docs/LIDL-ALDI-ENRICH.md`.
@@ -24,8 +29,7 @@
 
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
-- Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu. Markeringerne ses under Admin → Kvalitetskontrol → Ufuldstændige billeder ("Fjern markering" afviser en fejlmarkering). Ikke typetjekket lokalt (node_modules mangler) — CI afgør. Se DECISIONS 2026-10-16.
-
+- Kun pc-scriptet `scripts/image-screen` (CSV-rapport, intet på NAS'en). NAS-jobbet, admin-fanen og tabellen er fjernet igen. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Frida-skøn straks på varesiden
 

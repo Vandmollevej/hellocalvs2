@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
@@ -94,9 +95,22 @@ fun HomeScreen(args: RouteArgs) {
                 HomeWaves(pulseY, Modifier.matchParentSize())
                 Column(Modifier.fillMaxWidth()) {
                     HomeTopBar()
-                    Box(
+                    BoxWithConstraints(
                         Modifier.padding(top = 32.dp).fillMaxWidth().height(HERO_HEIGHT.dp),
                     ) {
+                        // The charts sit where the old white info box was, opposite the wheel,
+                        // 1/3 of the screen wide (web: FrontCharts in Hero, 13 px from the edge).
+                        val chartsLeft = FoodPrefs.fabSide == "left"
+                        HomeFrontCharts(
+                            Modifier
+                                .align(if (chartsLeft) Alignment.TopStart else Alignment.TopEnd)
+                                .padding(
+                                    start = if (chartsLeft) 13.dp else 0.dp,
+                                    end = if (chartsLeft) 0.dp else 13.dp,
+                                    top = infoBoxTopY().dp,
+                                )
+                                .width(maxWidth / 3),
+                        )
                         HomeStatsWheel(if (FoodPrefs.fabSide == "left") "right" else "left")
                     }
                 }

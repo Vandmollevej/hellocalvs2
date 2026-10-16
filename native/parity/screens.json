@@ -565,13 +565,6 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
-      "route": "/admin/quality-control/incomplete-images",
-      "web": "src/app/admin/quality-control/incomplete-images/page.tsx",
-      "status": "web-only",
-      "native": [],
-      "note": "Admin er et skrivebordsværktøj og bliver på web."
-    },
-    {
       "route": "/admin/quality-control/shared-recipes",
       "web": "src/app/admin/quality-control/shared-recipes/page.tsx",
       "status": "web-only",
