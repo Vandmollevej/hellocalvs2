@@ -55,7 +55,9 @@ export function MacroSliderBar({
     }
 
     stopHold();
-    onChange(Math.max(0, Math.round(ratio * max)));
+    const next = Math.max(0, Math.round(ratio * max));
+    if (next !== gramsRef.current) sliderHaptic();
+    onChange(next);
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {

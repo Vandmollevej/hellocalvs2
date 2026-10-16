@@ -33,6 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
@@ -88,7 +90,8 @@ fun CaptureCenteredError(text: String?, modifier: Modifier = Modifier) {
 @Composable
 fun CaptureSlider(value: Int, min: Int, max: Int, step: Int = 1, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
     val currentValue by rememberUpdatedState(value)
-    val currentOnChange by rememberUpdatedState(onChange)
+    val haptic = LocalHapticFeedback.current
+    val currentOnChange by rememberUpdatedState { v: Int -> haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); onChange(v) }
     val pct = if (max > min) ((value - min).toFloat() / (max - min)).coerceIn(0f, 1f) else 0f
     fun clamp(next: Float): Int {
         val snapped = ((next - min) / step).roundToInt() * step + min
