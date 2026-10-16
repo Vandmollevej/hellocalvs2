@@ -1,3 +1,7 @@
+## 2026-10-16: Admin → Log → Tale
+
+- Ny fane "Tale" i Admin → Log: én række pr. mikrofon-session på Madvarer med det, telefonen hørte undervejs (`steps`), det der blev søgt på (efter fyldord/rettelse) og de viste varer. Ingen AI; mikrofonen søger stadig løbende. Web + native sender `&voice=<session>` til `/api/products`, så længe søgefeltet står med det sagte. `src/lib/voice-search-log.ts`. Ikke prøvet i browser/på telefon eller mod rigtig database. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
 
 - `/admin/openai` er blevet til `/admin/api-usage` ("API-forbrug", Alt+Shift+3): ét kort pr. betalt tjeneste — OpenAI, Google Places, Google Vision (logo-robotten), Google Custom Search (billedrobotten), Bria, Passio, SMS og Mailjet — med status, månedens forbrug og budget (rettes på kortet). OpenAI-detaljerne og kreditsaldoen står som før nedenunder.

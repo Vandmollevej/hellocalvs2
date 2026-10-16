@@ -29,6 +29,7 @@ import { cachedSearch, storeSearch } from "@/lib/search-engine/search-cache";
 import { recordSearchEvent } from "@/lib/search-analytics";
 import { searchResultTitle } from "@/lib/search-result-title";
 import { parseSpokenFoodQuery } from "@/lib/spoken-food-query";
+import { logVoiceSearch } from "@/lib/voice-search-log";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -118,6 +119,21 @@ export async function GET(req: Request) {
         fullMatchCount,
         engine: first.engine,
         correctedQuery: searchedQuery,
+      });
+    }
+
+    // ?voice=<mikrofon-session>: søgningen kom fra mikrofonen på Madvarer
+    // (Admin → Log → Tale, docs/DECISIONS.md 2026-10-16).
+    const voiceSession = params.get("voice");
+    if (voiceSession && q && !source) {
+      void logVoiceSearch({
+        sessionId: voiceSession,
+        userId: first.userId,
+        heard: q,
+        searched: searchQ,
+        corrected: searchedQuery,
+        suggested: suggestedQuery,
+        results: products.map((product) => product.searchTitle || product.name),
       });
     }
 

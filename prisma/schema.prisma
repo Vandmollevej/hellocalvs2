@@ -4690,7 +4690,7 @@ model SearchQueryReview {
 model DebugLog {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
-  // "scan" | "ai" | "cron" | "error"
+  // "scan" | "ai" | "cron" | "error" | "voice"
   category   String
   event      String
   // "info" | "warn" | "error"

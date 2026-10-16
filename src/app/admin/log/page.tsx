@@ -29,6 +29,7 @@ export const dynamic = "force-dynamic";
 const TABS = [
   { key: "scan", label: "Scanninger" },
   { key: "ai", label: "AI-kald" },
+  { key: "voice", label: "Tale" },
   { key: "cron", label: "Cron" },
   { key: "errors", label: "Fejl" },
   { key: "logins", label: "Logins" },
@@ -478,7 +479,7 @@ export default async function AdminLogPage({
       <div>
         <h1 className="hf-type-title text-hf-black">Log</h1>
         <p className="hf-type-body text-text-secondary">
-          Test-log indtil appen går live: hver scannet vare trin for trin, alle OpenAI-kald, cron-kørsler og fejl.
+          Test-log indtil appen går live: hver scannet vare trin for trin, alle OpenAI-kald, mikrofonens søgninger på Madvarer, cron-kørsler og fejl.
           Tider er dansk tid.
         </p>
       </div>
@@ -503,6 +504,7 @@ export default async function AdminLogPage({
 
       {tab === "scan" && <ScanTab q={q} flow={flow} show={show} />}
       {tab === "ai" && <DebugListTab where={{ category: "ai" }} />}
+      {tab === "voice" && <DebugListTab where={{ category: "voice" }} />}
       {tab === "cron" && <DebugListTab where={{ category: "cron" }} />}
       {tab === "errors" && <DebugListTab where={{ level: "error" }} />}
       {tab === "logins" && <LoginsTab />}

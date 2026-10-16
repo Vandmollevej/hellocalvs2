@@ -121,7 +121,19 @@ function MadvarerContent() {
   // Mikrofonen (tidligere Tale-siden): det sagte skrives løbende i søgefeltet,
   // så listen søges og raffineres, mens man taler.
   const { language, region, setLanguage } = useMealInputLanguage();
-  const speech = useLiveSpeech(setQuery);
+  // Søgninger fra mikrofonen logges under én session i Admin → Log → Tale.
+  // Kun så længe søgefeltet står med det sagte; skriver man selv, logges intet.
+  const voiceSessionRef = useRef<string | null>(null);
+  const voiceTextRef = useRef<string | null>(null);
+  const speech = useLiveSpeech((text) => {
+    voiceSessionRef.current ??= crypto.randomUUID();
+    voiceTextRef.current = text.trim();
+    setQuery(text);
+  });
+  function startSpeech(lang: string) {
+    voiceSessionRef.current = null;
+    speech.start(lang);
+  }
   const autoStartMic = searchParams.get("mic") === "1";
   const regionRef = useRef<string | null>(null);
   useEffect(() => {
@@ -131,7 +143,7 @@ function MadvarerContent() {
     const code: MealInputLanguageCode = readStoredMealInputLanguage() ?? defaultMealInputLanguage(regionRef.current);
     return speechLangFor(code, regionRef.current);
   }
-  const startMic = speech.start;
+  const startMic = startSpeech;
   useEffect(() => {
     if (autoStartMic) startMic(speechLang());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
@@ -260,8 +272,12 @@ function MadvarerContent() {
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
+        const voice =
+          voiceSessionRef.current && voiceTextRef.current === q
+            ? `&voice=${encodeURIComponent(voiceSessionRef.current)}`
+            : "";
         const response = await fetch(
-          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}`,
+          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20${exactFor === q ? "&exact=1" : ""}${voice}`,
           { signal: controller.signal }
         );
         if (!response.ok) throw new Error("search failed");
@@ -353,7 +369,7 @@ function MadvarerContent() {
               onChange={(code) => {
                 if (code === language) return;
                 setLanguage(code);
-                if (isListening) speech.start(speechLangFor(code, region));
+                if (isListening) startSpeech(speechLangFor(code, region));
               }}
             />
           </div>
@@ -361,7 +377,7 @@ function MadvarerContent() {
             listening={isListening}
             unsupported={speech.phase === "unsupported"}
             label={t(isListening ? "voice.stopMic" : "voice.startMic")}
-            onClick={() => (isListening ? speech.stop() : speech.start(speechLang()))}
+            onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
           />
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}

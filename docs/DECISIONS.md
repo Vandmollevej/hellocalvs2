@@ -1,3 +1,8 @@
+## 2026-10-16: Mikrofonens søgninger logges i Admin → Log → Tale
+
+- Brugeren ville kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev. Mikrofonen på Madvarer bruger ingen AI (telefonens talegenkendelse + almindelig søgning), og den skal blive løbende — brugeren afviste en OpenAI-tolkning som for tung og langsom.
+- Derfor logges hver mikrofon-session som én række (kategori `voice`, flowId = session-id) i den eksisterende debug-log (30 dage, kan slås fra): hørt tekst trin for trin, søgeord efter `parseSpokenFoodQuery`/"Mente du", og top-10 resultater. Rækken opdateres for hver søgning i sessionen i stedet for at skrive en ny pr. tastetryk. Skriver brugeren selv i feltet, logges intet.
+
 ## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
 
 - Brugerens ønske: se budget og status for alle API'er, der koster penge, hver for sig og samlet på admin-forsiden, og få varsler på mail (til/fra + modtagerliste).
