@@ -417,3 +417,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Seneste produktregler på master går forud for gamle efterladte implementationer. Samlingsgennemgang: `docs/handoffs/2026-10-11-github-samling.md`.
 - Ental/flertal uden artikel: når søgeordet kun findes i den ene titelform, vises denne. Fælles ord og delord beholder standardtitlen (`displayNameForQuery`).
 - Labels i Varedatabase bruger de eksisterende certifikatlogoer; ingen tegnede erstatningslogoer.
+
+- **Antal personer (opskrifter): 0 = tag ikke højde for det (user rule 2026-10-16).** 0 er standard (web + native). Retten vises som gemt, uden skalering og uden "anbefalet servering"/"kcal pr. servering"; først ved ≥ 1 skaleres retten til brugerens anbefalede portion.

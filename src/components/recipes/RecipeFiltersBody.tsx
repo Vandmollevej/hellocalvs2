@@ -114,7 +114,7 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
             max={MAX_RECIPE_PERSONS}
             onChange={(persons) => update({ ...filters, persons })}
           />
-          {portionKcal !== null && (
+          {portionKcal !== null && filters.persons > 0 && (
             <p className="hf-type-caption pt-3">
               {t("recipeFilters.portionHint", { kcal: portionKcal })}
             </p>

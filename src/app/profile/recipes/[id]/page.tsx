@@ -97,7 +97,7 @@ function RecipeDetailContent() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
   // Justering til antal personer
-  const [persons, setPersons] = useState(() => Math.max(1, loadRecipeFilters().persons));
+  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
   const [portionKcal, setPortionKcal] = useState<number | null>(null);
   // Gram (som retten er gemt) eller køkkenmål (dl, spsk) via src/lib/kitchen-conversions.ts.
   const [unitMode, setUnitMode] = useState<RecipeUnitMode>("grams");
@@ -372,6 +372,8 @@ function RecipeDetailContent() {
                 <PersonsSlider
                   label={t("recipeFilters.personsTitle")}
                   value={persons}
+                  min={0}
+                  unset={persons === 0}
                   max={MAX_RECIPE_PERSONS}
                   onChange={changePersons}
                 />
@@ -379,11 +381,11 @@ function RecipeDetailContent() {
                   <div className="pt-3">
                     <Skeleton type="caption" width={128} height={12} className="my-[3px]" />
                   </div>
-                ) : (
+                ) : persons > 0 ? (
                   <p className="hf-type-caption pt-3">
                     {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
                   </p>
-                )}
+                ) : null}
               </div>
             )}
 
