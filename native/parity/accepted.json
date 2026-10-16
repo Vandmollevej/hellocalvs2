@@ -1443,14 +1443,14 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/recipes/RecipeFiltersBody.tsx": "1904850d1a0ef88c",
+    "src/components/recipes/RecipeFiltersBody.tsx": "8ffef58f52747cb4",
     "src/components/recipes/RecipeRow.tsx": "66977082d217cd9c",
     "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/recipes/[id]": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/recipes/[id]/page.tsx": "62e71a1e962609ba",
+    "src/app/profile/recipes/[id]/page.tsx": "dee8ae3bc02761c2",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
@@ -1508,7 +1508,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/recipes/RecipeFiltersBody.tsx": "1904850d1a0ef88c",
+    "src/components/recipes/RecipeFiltersBody.tsx": "8ffef58f52747cb4",
     "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },

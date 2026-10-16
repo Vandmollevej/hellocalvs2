@@ -68,8 +68,9 @@ export function servingsFor(totalKcal: number, portionKcal: number) {
 }
 
 // Faktor, ingrediensernes gram ganges med, så retten rækker til `persons`
-// serveringer af brugerens anbefalede størrelse.
+// serveringer af brugerens anbefalede størrelse. 0 personer = tag ikke højde
+// for antal personer: retten vises, som den er gemt.
 export function scaleFactorFor(totalKcal: number, portionKcal: number, persons: number) {
-  if (totalKcal <= 0 || portionKcal <= 0) return 1;
+  if (persons <= 0 || totalKcal <= 0 || portionKcal <= 0) return 1;
   return (persons * portionKcal) / totalKcal;
 }
