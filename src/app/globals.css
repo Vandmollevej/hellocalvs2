@@ -1824,6 +1824,31 @@ input.hf-field[type="week"] {
   opacity: 0.5;
 }
 
+/* Søgefelt der vokser i højden, når teksten ikke kan stå på én linje
+   (Madvarer, brugerens krav 2026-10-16): mindst kontrolhøjden, ellers højere. */
+.hf-search--grow {
+  height: auto;
+  min-height: var(--hf-control-height);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.hf-search textarea {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  outline: none;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.hf-search textarea::placeholder {
+  color: var(--hf-black);
+  opacity: 0.5;
+}
+
 /* Formularfelt: ét fælles udseende for <input>, <select> og <textarea> i admin
    og andre formularer (design.md §6.4). Højde 48 px; .hf-input--compact = 40 px
    til værktøjslinjer og filtre; textarea vokser efter indhold. Sider sætter

@@ -412,6 +412,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/admin-users", label: "Admin-brugere", note: "Via profil-ikonet øverst: adgang, invitationer, 2-faktor, IP-begrænsning og login-log" },
           { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
+          { path: "/admin/api-usage", label: "API-forbrug", note: "Status, forbrug og budget for alle betalte API'er, OpenAI-kredit og varsler på mail" },
           {
             path: "/admin/chatbot",
             label: "Chatbot",
@@ -446,7 +447,6 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/quality-control/shared-recipes", label: "Delte retter" },
               { path: "/admin/quality-control/activities", label: "Aktiviteter" },
-              { path: "/admin/quality-control/incomplete-images", label: "Ufuldstændige billeder" },
             ],
           },
           { path: "/admin/activities", label: "Aktiviteter" },

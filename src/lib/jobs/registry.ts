@@ -35,6 +35,17 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Eget job (2026-10-16): lå før i Vedligehold, hvor en fejl eller et langt
+    // trin tidligere i kørslen kunne stoppe hentningen i dagevis (Google Health).
+    key: "integration-sync",
+    name: "Integrationer: hent data",
+    description:
+      "Henter nye data (vægt, aktivitet, søvn, puls …) fra alle forbundne cloud-integrationer som Google Health, Withings, Strava og Garmin, og sender Hello Cal-data tilbage efter brugerens til/fra-valg. Hver integration får højst 2 minutter, så én der hænger, ikke stopper de andre.",
+    runtime: "app",
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "quick-enrichment-recovery",
     name: "Ny vare: genoptag aflæsning",
     description:
@@ -223,6 +234,16 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Admin → API-forbrug (docs/DECISIONS.md 2026-10-16).
+    key: "api-alerts",
+    name: "API-forbrug: varsler",
+    description:
+      "Mailer modtagerne under admin → API-forbrug, når en betalt tjeneste (OpenAI, Google Places, Bria, Passio, SMS, Mailjet) fejler, OpenAI-kreditten er lav, eller månedens budget når 80 % eller 100 %. Hvert varsel sendes kun én gang (fejl højst én gang i døgnet).",
+    runtime: "app",
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "search-miss-review",
     name: "Søgninger uden resultat: vurdering",
     description:
@@ -297,7 +318,7 @@ export const JOBS: JobDefinition[] = [
     key: "bria-compare",
     name: "Bria: sammenlign med rembg",
     description:
-      "Kører de 20 seneste fritlagte billeder gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
+      "Kører 20 danske Open Food Facts-varer, vi bruger (godkendte, med godkendt billede), gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: null,
@@ -352,17 +373,6 @@ export const JOBS: JobDefinition[] = [
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,
     defaultRunAtTime: null,
-  },
-  {
-    // Screening af Lidl/Aldi-billeder (docs/DECISIONS.md 2026-10-16).
-    key: "image-screen-local",
-    name: "Billeder: ufuldstændige produkter",
-    description:
-      "Screener billederne på danske og tyske Open Food Facts-varer fra Lidl og Aldi lokalt på serveren for afskårne produkter, hænder over billedet og åbne eller halvt fyldte varer. Markerer kun; ændrer aldrig varer eller billeder.",
-    runtime: "agent",
-    container: "quality-control-agent",
-    defaultIntervalMinutes: null,
-    defaultRunAtTime: "03:20",
   },
   {
     // OCR først for bagsidebillederne (docs/DECISIONS.md 2026-10-15).

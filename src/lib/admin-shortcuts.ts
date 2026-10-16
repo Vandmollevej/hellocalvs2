@@ -25,6 +25,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/statistics/search": ["Alt+Q"],
   "/admin/integrations": ["Alt+I"],
   "/admin/economy": ["Alt+Shift+E"],
+  "/admin/api-usage": ["Alt+Shift+3"],
   "/admin/hello-doc": ["Alt+H"],
   "/admin/log": ["Alt+L"],
 

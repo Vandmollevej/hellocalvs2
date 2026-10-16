@@ -372,6 +372,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/api-usage",
+      "web": "src/app/admin/api-usage/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/page-tree",
       "web": "src/app/admin/page-tree/page.tsx",
       "status": "web-only",
@@ -553,13 +560,6 @@
     {
       "route": "/admin/quality-control/activities",
       "web": "src/app/admin/quality-control/activities/page.tsx",
-      "status": "web-only",
-      "native": [],
-      "note": "Admin er et skrivebordsværktøj og bliver på web."
-    },
-    {
-      "route": "/admin/quality-control/incomplete-images",
-      "web": "src/app/admin/quality-control/incomplete-images/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."

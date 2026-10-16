@@ -239,20 +239,37 @@ export async function sync(adapter: OAuthProviderAdapter) {
   }
 }
 
-// Baggrundsjob (src/lib/scheduler.ts): alle forbundne cloud-integrationer
-// synkroniseres, så data kommer frem uden at brugeren åbner siden.
+// Baggrundsjob "integration-sync" (src/lib/scheduler.ts): alle forbundne
+// cloud-integrationer synkroniseres, så data kommer frem uden at brugeren
+// åbner siden. Hver hentning har en tidsgrænse, så én der hænger, ikke
+// blokerer resten (og jobbet) i dagevis.
+const SYNC_TIMEOUT_MS = 2 * 60 * 1000;
+
 export async function syncAllIntegrations() {
   const rows = await prisma.integration.findMany({
     where: { status: { in: ["CONNECTED", "ERROR"] }, accessToken: { not: null }, provider: { in: OAUTH_PROVIDERS.map((p) => p.provider) } },
     select: { userId: true, provider: true },
   });
+  let synced = 0;
+  let failed = 0;
   for (const row of rows) {
     const adapter = OAUTH_PROVIDERS.find((p) => p.provider === row.provider);
     if (!adapter || !isConfigured(adapter)) continue;
-    await runIntegrationSync(row.userId, adapter).catch((error) =>
-      console.error(`[scheduler] ${adapter.label}-sync fejlede`, errorMessage(error))
-    );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error("tidsgrænse overskredet")), SYNC_TIMEOUT_MS);
+    });
+    await Promise.race([runIntegrationSync(row.userId, adapter), timeout])
+      .then((result) => {
+        if (!result.skipped) synced += 1;
+      })
+      .catch((error) => {
+        failed += 1;
+        console.error(`[scheduler] ${adapter.label}-sync fejlede`, errorMessage(error));
+      })
+      .finally(() => clearTimeout(timer));
   }
+  return { message: `${synced} hentet, ${failed} fejlede`, count: synced };
 }
 
 export async function disconnect(adapter: OAuthProviderAdapter) {

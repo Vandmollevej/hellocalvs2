@@ -1,4 +1,4 @@
-// Venstre menu (admin og webversion): grupperne er foldet ud som standard
+// Venstre menu: i admin er alle grupper lukket, i webversionen foldet ud,
 // hver gang siden åbnes på ny — efter login, og når fanen/vinduet har været
 // lukket. Brugerens egne fold/sammenklap huskes kun, så længe fanen er åben
 // (sessionStorage), så en genindlæsning ikke nulstiller dem. Valget må aldrig
@@ -26,7 +26,7 @@ export function writeSidebarState(key: string, value: string) {
   }
 }
 
-// Kaldes ved login og logout, så næste visning starter med alt foldet ud.
+// Kaldes ved login og logout, så næste visning starter forfra (admin lukket, web foldet ud).
 // Fjerner også en gammel localStorage-værdi fra den tidligere version.
 export function clearSidebarState() {
   for (const key of ALL_KEYS) {

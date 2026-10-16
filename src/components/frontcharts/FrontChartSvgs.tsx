@@ -2,15 +2,17 @@
 
 import type { GoalBar, StickBucket } from "@/lib/front-charts";
 
-// Forsidens fire grafer (bruger 2026-10-14): uden baggrund, kun min/maks til
-// venstre, timetal i siderne under x-aksen og titlen i midten. Farven er den
+// Forsidens fire grafer (bruger 2026-10-14) i infoboksens plads: uden
+// baggrund, kun min/maks til venstre og timetal i siderne under x-aksen. Kun
+// pulsen har en titel ("Puls") i midten; de andre viser grafen i midten. Farven er den
 // nye graf-accent (--hf-color-chart-blue).
 
-const H = 96;
+// Højden følger pladsen i infoboksens felt (bruger 2026-10-16).
 const PAD_L = 30;
 const PAD_R = 4;
-const PLOT_H = 74;
-const LABEL_Y = H - 3;
+/** Plads under plotområdet til timetal og titel. */
+const LABEL_SPACE = 15;
+const plotH = (height: number) => height - LABEL_SPACE;
 
 type Pt = { x: number; y: number };
 
@@ -32,6 +34,7 @@ export function smoothPath(points: Pt[]) {
 
 function Frame({
   width,
+  height,
   title,
   left,
   right,
@@ -41,6 +44,7 @@ function Frame({
   ariaLabel,
 }: {
   width: number;
+  height: number;
   title: string;
   left: string;
   right: string;
@@ -49,14 +53,16 @@ function Frame({
   children: React.ReactNode;
   ariaLabel: string;
 }) {
+  const PLOT_H = plotH(height);
+  const LABEL_Y = height - 3;
   return (
-    <svg width={width} height={H} role="img" aria-label={ariaLabel} className="block">
+    <svg width={width} height={height} role="img" aria-label={ariaLabel} className="block">
       <text x={0} y={9} className="hf-chart-axis fill-hf-text-secondary">{top}</text>
       <text x={0} y={PLOT_H} className="hf-chart-axis fill-hf-text-secondary">{bottom}</text>
       <line x1={PAD_L} x2={width - PAD_R} y1={PLOT_H + 3} y2={PLOT_H + 3} className="stroke-hf-line" strokeWidth={0.5} />
       {children}
       <text x={PAD_L} y={LABEL_Y} className="hf-chart-axis fill-hf-text-secondary">{left}</text>
-      <text x={width / 2 + PAD_L / 2} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis fill-hf-text">{title}</text>
+      {title && <text x={width / 2 + PAD_L / 2} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis fill-hf-text">{title}</text>}
       <text x={width - PAD_R} y={LABEL_Y} textAnchor="end" className="hf-chart-axis fill-hf-text-secondary">{right}</text>
     </svg>
   );
@@ -64,9 +70,6 @@ function Frame({
 
 const hourLabel = (h: number) => String(h % 24 === 0 && h > 0 ? 24 : h).padStart(2, "0");
 
-function Empty({ width, text }: { width: number; text: string }) {
-  return <text x={PAD_L + (width - PAD_L - PAD_R) / 2} y={PLOT_H / 2} textAnchor="middle" className="hf-chart-axis--large fill-hf-inactive">{text}</text>;
-}
 
 function plotX(width: number, count: number, i: number) {
   const w = width - PAD_L - PAD_R;
@@ -75,20 +78,20 @@ function plotX(width: number, count: number, i: number) {
 
 /** Pulsen over dagen som pindediagram (én min/maks-pind pr. kvarter). */
 export function PulseSticks({
-  width, buckets, startHour, endHour, title, emptyText,
-}: { width: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string; emptyText: string }) {
+  width, height, buckets, startHour, endHour, title,
+}: { width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string }) {
   const filled = buckets.filter((b): b is NonNullable<StickBucket> => b !== null);
   const lo = filled.length ? Math.min(...filled.map((b) => b.min)) : 0;
   const hi = filled.length ? Math.max(...filled.map((b) => b.max)) : 0;
   const span = Math.max(1, hi - lo);
+  const PLOT_H = plotH(height);
   const y = (v: number) => PLOT_H - ((v - lo) / span) * (PLOT_H - 8);
   return (
     <Frame
-      width={width} title={title} ariaLabel={title}
+      width={width} height={height} title={title} ariaLabel={title}
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={filled.length ? String(Math.round(hi)) : ""} bottom={filled.length ? String(Math.round(lo)) : ""}
     >
-      {filled.length === 0 && <Empty width={width} text={emptyText} />}
       {filled.map((b) => (
         <line
           key={b.index}
@@ -103,15 +106,16 @@ export function PulseSticks({
 
 /** Kalorieindtag som pinde, med den anbefalede energifordeling som glat kurve i midten. */
 export function KcalSticks({
-  width, sums, shares, budgetKcal, startHour, endHour, title,
-}: { width: number; sums: number[]; shares: number[]; budgetKcal: number; startHour: number; endHour: number; title: string }) {
+  width, height, sums, shares, budgetKcal, startHour, endHour, title,
+}: { width: number; height: number; sums: number[]; shares: number[]; budgetKcal: number; startHour: number; endHour: number; title: string }) {
   const peakPlan = Math.max(...shares.map((s) => s * budgetKcal), 1);
   const top = Math.max(...sums, peakPlan, 1);
+  const PLOT_H = plotH(height);
   const y = (v: number) => PLOT_H - (v / top) * (PLOT_H - 8);
   const plan = shares.map((s, i) => ({ x: plotX(width, shares.length, i), y: y(s * budgetKcal) }));
   return (
     <Frame
-      width={width} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
@@ -126,16 +130,17 @@ export function KcalSticks({
 
 /** Statisk grå anbefalet kurve mod den faktiske kalorie-status i blå. */
 export function PlanVsActual({
-  width, planCumulative, actualCumulative, elapsed, startHour, endHour, title,
-}: { width: number; planCumulative: number[]; actualCumulative: number[]; elapsed: number; startHour: number; endHour: number; title: string }) {
+  width, height, planCumulative, actualCumulative, elapsed, startHour, endHour, title,
+}: { width: number; height: number; planCumulative: number[]; actualCumulative: number[]; elapsed: number; startHour: number; endHour: number; title: string }) {
   const count = planCumulative.length;
   const top = Math.max(planCumulative[count - 1] ?? 0, actualCumulative[Math.max(0, elapsed - 1)] ?? 0, 1);
+  const PLOT_H = plotH(height);
   const y = (v: number) => PLOT_H - (v / top) * (PLOT_H - 8);
   const plan = planCumulative.map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
   const actual = actualCumulative.slice(0, Math.max(0, elapsed)).map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
   return (
     <Frame
-      width={width} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={hourLabel(startHour)} right={hourLabel(endHour)}
       top={String(Math.round(top))} bottom="0"
     >
@@ -151,9 +156,9 @@ export function PlanVsActual({
  * Dage uden målt indtag er tomme.
  */
 export function GoalTimeline({
-  width, bars, goalKcal, recMin, recMax, startLabel, endLabel, title, slots,
+  width, height, bars, goalKcal, recMin, recMax, startLabel, endLabel, title, slots,
 }: {
-  width: number; bars: GoalBar[]; goalKcal: number | null; recMin: number; recMax: number;
+  width: number; height: number; bars: GoalBar[]; goalKcal: number | null; recMin: number; recMax: number;
   startLabel: string; endLabel: string; title: string; slots: number;
 }) {
   const measured = bars.filter((b) => b.lowKcal !== null && b.highKcal !== null);
@@ -162,12 +167,13 @@ export function GoalTimeline({
   const top = Math.max(...highs, recMax, goalKcal ?? 0, 1);
   const bottom = Math.min(...lows, recMin, goalKcal ?? Infinity);
   const span = Math.max(1, top - bottom);
+  const PLOT_H = plotH(height);
   const y = (v: number) => PLOT_H - ((v - bottom) / span) * (PLOT_H - 8);
   const x = (i: number) => plotX(width, slots, i);
   const barW = Math.max(1.5, Math.min(6, ((width - PAD_L - PAD_R) / slots) * 0.6));
   return (
     <Frame
-      width={width} title={title} ariaLabel={title}
+      width={width} height={height} title="" ariaLabel={title}
       left={startLabel} right={endLabel}
       top={String(Math.round(top))} bottom={String(Math.round(bottom))}
     >

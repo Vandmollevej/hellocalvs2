@@ -19,8 +19,8 @@ internal fun awakeHours(wakeTime: String?, bedtime: String?): AwakeHours {
     val wake = parse(wakeTime) ?: 7.0
     var bed = parse(bedtime) ?: 23.0
     if (bed <= wake) bed = 24.0
-    val start = max(0, floor(wake).toInt())
-    val end = min(24, max(start + 1, ceil(bed).toInt()))
+    val start = min(23, max(0, ceil(wake).toInt()))
+    val end = min(24, max(start + 1, floor(bed).toInt()))
     return AwakeHours(start, end)
 }
 

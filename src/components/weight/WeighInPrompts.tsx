@@ -159,7 +159,8 @@ export function WeighInPrompts() {
   return null;
 }
 
-function StaleSyncSheet({
+// Også brugt af StaleSyncPrompt (integrationer uden vægt), så begge ser ens ud.
+export function StaleSyncSheet({
   items,
   onSynced,
   onClose,

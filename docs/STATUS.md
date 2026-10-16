@@ -1,6 +1,45 @@
 ## 2026-10-16: Screeninger på det globale design
 
-- Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt). Rettet samtidig: ugyldige `:rest*`-mønstre i `next.config.ts` (#475 brød `next build`), admin-knap i `IncompleteImageList` (lint) og manglende side i `page-tree.ts`.
+- Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt).
+
+## 2026-10-16: Beløbsgrænse for API-varsler
+
+- Under "Ret budget og varsler" på hvert kort i admin → API-forbrug: beløbet, hvor du vil advares om forbruget, og for OpenAI saldoen, du vil advares under. **Migration `20261016180000_api_alert_amount` skal med deployet.** Prøvet mod lokal Postgres (varsel sendes én gang). Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
+
+- `/admin/openai` er blevet til `/admin/api-usage` ("API-forbrug", Alt+Shift+3): ét kort pr. betalt tjeneste — OpenAI, Google Places, Google Vision (logo-robotten), Google Custom Search (billedrobotten), Bria, Passio, SMS og Mailjet — med status, månedens forbrug og budget (rettes på kortet). OpenAI-detaljerne og kreditsaldoen står som før nedenunder.
+- Forsiden i admin har en "API-forbrug"-widget. Varsler: til/fra, modtagerliste og testmail på siden; jobbet `api-alerts` (hvert kvarter) mailer ved fejl, lav OpenAI-kredit og 80 %/100 % af budgettet, hvert varsel én gang.
+- **Migration `20261016170000_api_usage` skal med deployet**; image-agent og logo-agent genbygges af deployet. Prøvet mod lokal Postgres (tælling, budget, varsel sendes én gang, Python-tællingen). Ikke prøvet mod rigtige udbydere. Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Admin → OpenAI-forbrug
+
+- Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
+- Rettet på master: sidetræet manglede `/admin/quality-control/incomplete-images`, og knappen på siden brugte hjemmelavet stil (lint-fejl).
+
+## 2026-10-16: Mængdetallet trækkes vandret på produktsiden
+- Det store tal i mængdefeltet (`/add/[id]`) er nu selv slideren: træk til siderne, nabotallene vises mindre/utydeligere på samme grundlinje, "g" skjules under trækket og kommer igen, når nabotallene er faldet ud. `DragNumberStrip` (web + native); den separate slider under feltet er fjernet. Testet i Chromium; ikke testet på telefon.
+
+## 2026-10-16: Forsidens grafer i infoboksens plads
+
+## 2026-10-16: Nye scannede varer står aldrig tomme
+
+- Fejler OpenAI-aflæsningen af forside/energi, prøves den igen (straks og efter 10 min), med reservemodel; navn og brand udledes imens af telefonens tekst ("LETMÆLK" → Letmælk); ukendt energi vises som ukendt og får Frida-/varetype-skøn i stedet for "∼ 0"; råfotoet fylder hele cirklen (web + native). Varer fra de sidste 14 dage uden navn/med 0 kcal repareres én gang. Ikke prøvet mod OpenAI/rigtig database eller telefon herfra — produktionens log viser den præcise OpenAI-fejl. Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
+
+- Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.
+## 2026-10-16: Forsidens grafer i infoboksens plads
+## 2026-10-16: Google Health synkroniserer af sig selv + kun én synk-popup
+
+- Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
+- "Ikke synkroniseret"-popuppen i layoutet bruger nu samme bundark som vægt-popuppen og springer integrationer med vægt over (vægt-popuppen tager dem), så samme spørgsmål ikke kommer to gange. Web + native. Native kompileres kun i CI. Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
+
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
+- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
+
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
 
@@ -9,20 +48,21 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+## 2026-10-16: Tale finder varen
+
+- "Jeg har spist en bakke pomfritter" via mikrofonen søges nu som "pomfritter" (web + native, ændret i søge-API'et). Se DECISIONS 2026-10-16. Desuden rettet: admin-siden Ufuldstændige billeder manglede i sidetræet, og dens knap brugte egen stil (rød `npm test`/lint på master).
+
 ## 2026-10-16: Tale-siden flettet ind i Madvarer
 
 - Madvarer har nu den store mikrofon (samme størrelse og udseende som før på Tale-siden) over søgefeltet. Mens man taler, skrives det sagte løbende i søgefeltet, så listen søges og raffineres i realtid; ingen ventetid på en transskription bagefter. Sprogflaget ligger i venstre hjørne. `/voice` sender videre til `/foods?mic=1` (mikrofonen starter), og "Mikrofon" i Tilføj-menuen åbner Madvarer. Web: `src/lib/use-live-speech.ts`, `LiveMicButton`; native: `FoodsScreens.kt`. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
 
-## 2026-10-14: Forsidens grafer erstatter infoboksen
+## 2026-10-16: Forsidens grafer rullet tilbage
 
-- Den hvide infoboks er fjernet. Øverst vises fire grafer uden baggrund (`src/components/frontcharts/`): puls (pindediagram), kalorieindtag (pinde + anbefalet energifordeling som glat kurve), anbefalet mod faktisk indtag (grå statisk mod blå) og målsætningens tidslinje (pind pr. dag/uge, bredt anbefalet min–maks-bånd, grå målstreg). Kun vågne timer (sengetid/opvågning fra Søvn; ellers 07–23), rundet ned til venstre og op til højre.
-- Nederst en handlingsboks ("forbrænd X kcal", eller reducér indtag/forbrænd). Tryk åbner et ark med gåture (rolig/rask/hurtig ud fra vægt) og forslag til mad; Hello Fresh-link vises kun, når integrationen er slået til.
-- Ny graf-accent `--hf-color-chart-blue` (#5b9fcf). Regler i `src/lib/front-charts.ts` (+ test), native port i `HomeFrontCharts*.kt`.
-- Kendt: norsk/svensk tekst er foreløbigt dansk, tysk/fransk/hollandsk engelsk. Native er ikke kompileret lokalt (ingen Android SDK) — CI afgør.
+- PR #463 (grafer over infoboksen) er rullet tilbage efter brugerens melding om, at forsiden var ødelagt: graferne skubbede tal-hjul og dagens liste ud af skærmen, puls-linjen lå hen over graferne, og siden fik rulning og en handlingsboks, brugeren ikke havde bedt om. Infoboksen og den gamle forside er tilbage (web + native).
+
 ## 2026-10-16: Screening af ufuldstændige Lidl/Aldi-billeder
 
-- Nyt nat-job `image-screen-local` (03:20, quality-control-agent) markerer afskårne, hånd-dækkede og åbne/halvfyldte produktbilleder i `product_image_screenings`. Migration + genbygget agent skal med deployet. Ikke kørt mod rigtig database/CLIP endnu. Markeringerne ses under Admin → Kvalitetskontrol → Ufuldstændige billeder ("Fjern markering" afviser en fejlmarkering). Ikke typetjekket lokalt (node_modules mangler) — CI afgør. Se DECISIONS 2026-10-16.
-
+- Kun pc-scriptet `scripts/image-screen` (CSV-rapport, intet på NAS'en). NAS-jobbet, admin-fanen og tabellen er fjernet igen. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Frida-skøn straks på varesiden
 

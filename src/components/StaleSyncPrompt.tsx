@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ActionButton, ActionLink } from "@/components/hf/ActionButton";
-import { useTranslation } from "@/i18n/LocaleProvider";
+import { StaleSyncSheet } from "@/components/weight/WeighInPrompts";
 import type { IntegrationCardStatus } from "@/lib/integrations";
-import { formatDateTime } from "@/app/settings/integrations/status-badge";
 
 // Popup shown when a connected integration (smart scale, watch, …) has not
 // synced for a while, so weight and activity data may be missing. "Sync now"
 // fetches directly for cloud integrations; companion/via integrations (data
 // pushed from the phone) only get the link to their page. "Later" snoozes the
-// integration for a day.
+// integration for a day. Same bottom sheet as the weigh-in prompt
+// (WeighInPrompts), which owns integrations that deliver weight — they are
+// skipped here so the user never gets the same question twice (2026-10-16).
 const STALE_AFTER_MS = 3 * 24 * 60 * 60 * 1000;
 const SNOOZE_MS = 24 * 60 * 60 * 1000;
 
@@ -54,11 +53,8 @@ function lastSeen(integration: IntegrationCardStatus): number {
 let checkedThisVisit = false;
 
 export function StaleSyncPrompt() {
-  const { t } = useTranslation();
   const pathname = usePathname() ?? "/";
   const [stale, setStale] = useState<IntegrationCardStatus | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (checkedThisVisit) return;
@@ -69,6 +65,7 @@ export function StaleSyncPrompt() {
       .then((data) => {
         const candidates = (data?.integrations ?? [])
           .filter((i) => i.status !== "DISCONNECTED" && i.connectedAt)
+          .filter((i) => !i.capabilities.read.includes("weight"))
           .filter((i) => Date.now() - lastSeen(i) > STALE_AFTER_MS && !snoozed(i.provider))
           .sort((a, b) => lastSeen(a) - lastSeen(b));
         setStale(candidates[0] ?? null);
@@ -78,8 +75,8 @@ export function StaleSyncPrompt() {
 
   if (!stale) return null;
   const current = stale;
-  const href = `/settings/integrations/${current.pageSlug}`;
 
+  // "Senere" og luk udsætter integrationen et døgn.
   function later() {
     try {
       window.localStorage.setItem(snoozeKey(current.provider), String(Date.now() + SNOOZE_MS));
@@ -89,52 +86,23 @@ export function StaleSyncPrompt() {
     setStale(null);
   }
 
-  async function syncNow() {
-    if (!current.slug) return;
-    setBusy(true);
-    setFailed(false);
-    try {
-      const res = await fetch(`/api/integrations/${current.slug}/sync`, { method: "POST" });
-      if (res.ok) setStale(null);
-      else setFailed(true);
-    } catch {
-      setFailed(true);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const lastSync = current.lastSyncedAt ? formatDateTime(current.lastSyncedAt) : t("staleSyncPrompt.never");
-
   return (
-    // Web (lg): lightbox midt på skærmen i stedet for bundark (KRAV.md "Popups på web").
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/50 lg:items-center lg:justify-center lg:p-8" role="dialog" aria-modal="true" aria-labelledby="stale-sync-title">
-      <div className="hf-page rounded-t-3xl bg-hf-cream pb-8 pt-6 lg:w-full lg:max-w-xl lg:rounded-3xl lg:px-8 lg:pb-8 lg:pt-8 lg:shadow-2xl">
-        <h2 id="stale-sync-title" className="hf-type-page-title hf-heading text-hf-black">
-          {t("staleSyncPrompt.title", { name: current.label })}
-        </h2>
-        <p className="hf-type-body mt-3 text-text-secondary">{t("staleSyncPrompt.body", { name: current.label, date: lastSync })}</p>
-        {failed && <p className="hf-type-small mt-3 text-red-600">{t("staleSyncPrompt.failed")}</p>}
-        {current.slug ? (
-          <ActionButton className="mt-6" disabled={busy} onClick={syncNow}>
-            {t("staleSyncPrompt.syncNow")}
-          </ActionButton>
-        ) : (
-          <ActionLink href={href} className="mt-6" onClick={() => setStale(null)}>
-            {t("staleSyncPrompt.open")}
-          </ActionLink>
-        )}
-        <div className="mt-5 flex items-center justify-between">
-          <button type="button" disabled={busy} className="hf-type-caption" onClick={later}>
-            {t("staleSyncPrompt.later")}
-          </button>
-          {current.slug && (
-            <Link href={href} onClick={() => setStale(null)} className="hf-type-caption underline">
-              {t("staleSyncPrompt.open")}
-            </Link>
-          )}
-        </div>
-      </div>
-    </div>
+    <StaleSyncSheet
+      items={[
+        {
+          provider: current.provider,
+          label: current.label,
+          icon: current.icon,
+          slug: current.slug,
+          pageSlug: current.pageSlug,
+          canSyncNow: current.kind === "oauth",
+          status: current.status,
+          lastSyncedAt: current.lastSyncedAt,
+          stale: true,
+        },
+      ]}
+      onSynced={() => undefined}
+      onClose={later}
+    />
   );
 }

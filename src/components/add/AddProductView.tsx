@@ -33,7 +33,7 @@ import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
-import { HfSlider } from "@/components/hf/HfSlider";
+import { DragNumberStrip } from "@/components/hf/DragNumberStrip";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
 import {
@@ -1018,14 +1018,14 @@ export function AddProductView({
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className={`flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full ${bakedCircle ? "" : "bg-hf-tan"}`}>
                     {displayImageUrl && !isCutoutImage ? (
-                      // Det rå forsidefoto (før fritskrabningen): hele varen
-                      // skal kunne ses, så det tilpasses inde i cirklen —
-                      // aldrig zoomet ind (design.md §6.12).
+                      // Det rå forsidefoto (før fritskrabningen) dækker HELE
+                      // cirklen (brugerens krav 2026-10-16: et firkantet foto
+                      // inde i cirklen "ligner lort"), design.md §6.12.
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={imageThumb(displayImageUrl, 640)}
                         alt=""
-                        className="block h-full w-full max-h-full max-w-full object-contain p-3"
+                        className="block h-full w-full object-cover"
                       />
                     ) : displayImageUrl ? null : shouldPoll || isLoading ? (
                       <Skeleton type="circle" width="100%" height="100%" />
@@ -1276,7 +1276,23 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="page-title" width={96} />
                     </ReadingSkeleton>
-                  ) : hasServingUnit && amountUnit === "personer" ? (
+                  ) : (
+                  <DragNumberStrip
+                    value={amount}
+                    step={step}
+                    min={step}
+                    onChange={setAmount}
+                    format={(value) =>
+                      String(
+                        hasServingUnit && amountUnit === "personer"
+                          ? Math.round(value / (servingSizeGrams as number))
+                          : liquid
+                            ? liquidValue(value, liquid, liquidPrimary)
+                            : toDisplayAmount(value, displayUnit),
+                      )
+                    }
+                  >
+                  {hasServingUnit && amountUnit === "personer" ? (
                     <p className="hf-type-page-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
@@ -1317,6 +1333,8 @@ export function AddProductView({
                       <span>&nbsp;{displayUnit}{!hasServingUnit && displayUnit === "g" && servingSizeGrams === amount ? t("addProduct.perPiece") : ""}</span>
                     </label>
                   )}
+                  </DragNumberStrip>
+                  )}
                   <p className="hf-type-body text-text-secondary flex justify-center">
                     {isPending("nutrition") ? (
                       <ReadingSkeleton label={t("addProduct.reading")}>
@@ -1325,10 +1343,13 @@ export function AddProductView({
                     ) : view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : (
-                        <>
+                        // Ét inline-element: i flex-rækken blev "∼" sit eget
+                        // flex-element uden linjehøjde og svævede op mellem
+                        // linjerne (bruger 2026-10-16).
+                        <span>
                           {view.kcalEstimated && <UncertaintyTilde small />}
                           {t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
-                        </>
+                        </span>
                       )}
                   </p>
                 </div>
@@ -1340,14 +1361,6 @@ export function AddProductView({
                   +
                 </button>
               </div>
-              <HfSlider
-                value={Math.min(Math.max(amount, 0), Math.max(1000, amount))}
-                min={0}
-                max={Math.max(1000, Math.ceil(amount / 100) * 100)}
-                step={step}
-                onChange={(next) => setAmount(Math.max(0, next))}
-                aria-label={displayUnit}
-              />
 
               <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">

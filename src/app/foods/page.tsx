@@ -4,15 +4,15 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { LiveMicButton } from "@/components/voice/LiveMicButton";
+import { LiveWaveform } from "@/components/voice/LiveWaveform";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useLiveSpeech } from "@/lib/use-live-speech";
 import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
-import { IconApple, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
 import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
-import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SearchCorrectionNotice } from "@/components/hf/SearchCorrectionNotice";
 import { readSearchCorrection, type SearchCorrection } from "@/lib/search-notice";
@@ -116,7 +116,7 @@ function MadvarerContent() {
   const [searchResults, setSearchResults] = useState<{ key: string; products: Product[] }>({ key: "", products: [] });
   const [correction, setCorrection] = useState<SearchCorrection | null>(null);
   const [exactFor, setExactFor] = useState<string | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLTextAreaElement>(null);
 
   // Mikrofonen (tidligere Tale-siden): det sagte skrives løbende i søgefeltet,
   // så listen søges og raffineres, mens man taler.
@@ -225,6 +225,14 @@ function MadvarerContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
   }, []);
 
+  // Søgefeltet vokser i højden, når teksten (fx det sagte) ikke kan stå på én linje.
+  useEffect(() => {
+    const field = searchInputRef.current;
+    if (!field) return;
+    field.style.height = "auto";
+    field.style.height = `${field.scrollHeight}px`;
+  }, [query]);
+
   const normalizedQuery = query.trim();
   const isSearching = normalizedQuery.length >= SEARCH_MIN_LENGTH;
 
@@ -306,7 +314,12 @@ function MadvarerContent() {
     });
   }
 
-  const favorites = snapshot?.products ?? [];
+  // Favoritter øverst (brugerens krav 2026-10-16) — serveren sender dem
+  // først, og et nyt bogmærke rykker straks op uden at vente på næste hentning.
+  const favorites = useMemo(() => {
+    const products = snapshot?.products ?? [];
+    return [...products.filter((p) => favoriteIds.has(p.id)), ...products.filter((p) => !favoriteIds.has(p.id))];
+  }, [snapshot, favoriteIds]);
   const ready = snapshot !== null;
 
   // Below the minimum, `searchResults` may still hold the last real query's
@@ -327,20 +340,23 @@ function MadvarerContent() {
     <HfScreen
       title={t("foods.title")}
       icon={<IconApple size={20} stroke={2} />}
-      leading={
-        <MealLanguagePicker
-          language={language}
-          region={region}
-          onChange={(code) => {
-            if (code === language) return;
-            setLanguage(code);
-            if (isListening) speech.start(speechLangFor(code, region));
-          }}
-        />
-      }
     >
       <div className="hf-page">
-        <section className="flex flex-col items-center" aria-live="polite">
+        <section className="relative flex flex-col items-center" aria-live="polite">
+          {/* Sprogflaget står til venstre for mikrofonen, ud for listens
+              venstre kant — spejlet af favoritmærket til højre (brugerens
+              ønske 2026-10-16: ikke oppe i headeren, væk fra mikrofonen). */}
+          <div className="absolute left-0 top-[26px]">
+            <MealLanguagePicker
+              language={language}
+              region={region}
+              onChange={(code) => {
+                if (code === language) return;
+                setLanguage(code);
+                if (isListening) speech.start(speechLangFor(code, region));
+              }}
+            />
+          </div>
           <LiveMicButton
             listening={isListening}
             unsupported={speech.phase === "unsupported"}
@@ -350,6 +366,7 @@ function MadvarerContent() {
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
           </p>
+          <LiveWaveform active={isListening} />
           {speech.error && (
             <p className="hf-type-small mt-2 max-w-[310px] text-center text-hf-red-dark">
               {t(
@@ -365,17 +382,29 @@ function MadvarerContent() {
           )}
         </section>
 
-        <div className="hf-search">
-          <IconSearch size={16} color="var(--hf-black)" />
-          <input
+        <div className="hf-search hf-search--grow">
+          {/* Kameraet i søgefeltet åbner billedfunktionen (afløser knappen "Scan nyt produkt" nederst). */}
+          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
+            <IconCamera size={22} stroke={1.8} />
+          </Link>
+          <textarea
             ref={searchInputRef}
+            rows={1}
             value={query}
             onChange={(event) => {
               if (isListening) speech.stop();
-              setQuery(event.target.value);
+              setQuery(event.target.value.replace(/\s*\n\s*/g, " "));
             }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                event.currentTarget.blur();
+              }
+            }}
+            enterKeyHint="search"
             placeholder={t("foods.searchPlaceholder")}
           />
+          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
         </div>
 
         {isSearching && correction?.forQuery === normalizedQuery && (
@@ -421,10 +450,6 @@ function MadvarerContent() {
             </p>
           )}
         </div>
-
-        <ActionLink href="/camera?mode=product" variant="secondary" className="hf-type-small px-4 py-2">
-          {t("foods.scanNewProduct")}
-        </ActionLink>
       </div>
     </HfScreen>
   );

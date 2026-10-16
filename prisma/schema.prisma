@@ -1464,7 +1464,6 @@ model Product {
   // HelloFresh fra alle lande (scripts/hellofresh-import/markets.py). null = ukendt.
   market                 String?
   translations           ProductTranslation[]
-  imageScreening         ProductImageScreening?
   imageStatus      ImageStatus            @default(NONE)
   kcalPer100g      Float
   proteinPer100g   Float
@@ -5667,22 +5666,43 @@ model ProductTranslation {
   @@map("product_translations")
 }
 
-// Screening af produktbilleder for ufuldstændige billeder (afskåret, hænder, åben/halvfuld vare;
-// quality-control-agent image_screen_local.py, docs/DECISIONS.md 2026-10-16). Kun markering.
-model ProductImageScreening {
-  productId       String    @id
-  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  imageUrl        String
-  // CROPPED | HAND | OPEN
-  flags           String[]  @default([])
-  cropScore       Float?
-  cropSide        String?
-  skinBorderScore Float?
-  skinTotalScore  Float?
-  openScore       Float?
-  error           String?
-  screenedAt      DateTime  @default(now())
-  reviewedAt      DateTime?
+// Admin → API-forbrug (docs/DECISIONS.md 2026-10-16): kald pr. betalt
+// tjeneste pr. måned (YYYY-MM), tællet hvor appen kalder udbyderen.
+model ApiUsageMonth {
+  serviceId   String
+  month       String
+  calls       Int       @default(0)
+  errors      Int       @default(0)
+  lastOkAt    DateTime?
+  lastErrorAt DateTime?
+  lastError   String?
 
-  @@map("product_image_screenings")
+  @@id([serviceId, month])
+  @@map("api_usage_months")
+}
+
+// Månedsbudget og pris pr. kald, rettet af admin. Beløb i tjenestens valuta.
+model ApiBudget {
+  serviceId     String   @id
+  monthlyBudget  Float?
+  unitPrice      Float?
+  /// Varsel, når månedens forbrug når dette beløb.
+  alertAt        Float?
+  /// Kun OpenAI: varsel, når kreditsaldoen kommer under dette beløb.
+  balanceAlertAt Float?
+  updatedAt      DateTime @updatedAt
+
+  @@map("api_budgets")
+}
+
+// Varsler om API-forbrug og -status: til/fra og modtagere. `sent` husker
+// hvilke varsler der er sendt (nøgle → tidspunkt), så samme varsel ikke gentages.
+model ApiAlertSettings {
+  id        String   @id @default("default")
+  enabled   Boolean  @default(true)
+  emails    String[] @default([])
+  sent      Json?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("api_alert_settings")
 }

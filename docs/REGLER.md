@@ -35,6 +35,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - **Alkohol** (user rule 2026-10-15): alkoholprocenten (% vol) læses altid og gemmes på varen. En alkoholisk drik uden næringstabel står aldrig med 0 kcal: alkoholens energi regnes præcist (7 kcal/g), resten skønnes ud fra varetypen (`src/lib/alcohol-nutrition.ts`).
 - **Aldrig "Vare <stregkode>"** (user rule 2026-10-15): "Vare" + nummer vises aldrig, heller ikke under oprettelsen. Står varetypen ikke på forsiden, navngives den ud fra brand og synlig tekst (Verpoorten Original → Eierlikör); giver det intet, spørges OpenAI "Hvilken produkttype er <brand subbrand variant>?" (`askProductType`, også for scannede varer, der allerede hedder brand + subbrand — én gang pr. vare, `productTypeAskedAt`); kan den stadig ikke afgøres, hedder varen brand + subbrand (`brandProductName`). Varianten (fx Jalapeño, Original) er aldrig navnet. Værn: varesidens API viser brand + subbrand, hvis reservenavnet stadig står i databasen (`displayProductName`), og `repairPlaceholderNames` kører hvert kvarter — også på varer, hvis navn har hængt som ventende i over 30 min.
+- **En ny scannet vare står aldrig tom (user rule 2026-10-16, "til bunds een gang for alle")**: et fejlet OpenAI-kald må aldrig efterlade en ny vare uden navn, brand, energi eller fritlægning. (1) Hvert AI-kald har tidsgrænse (90 s), prøves igen ved midlertidige fejl (429/5xx/netværk, 2 + 6 s) og skifter til reservemodellen `gpt-4o`, hvis modellen afvises (`src/lib/product-ai.ts`). (2) Fejler forsiden stadig, navngives varen ud fra telefonens tekstlæsning af forsiden (`frontOcrText`): kendt brand i teksten + et varenavn, der findes på mindst to varer i databasen (LETMÆLK → Letmælk), ellers "Hvilken produkttype er <brand>?" (`src/lib/front-text-name.ts`). (3) Fejlede dele prøves igen af `quick-enrichment-recovery` efter 10 min (højst 3 forsøg); giver forsiden aldrig svar, fritlægges hele forsidefotoet. (4) Uden aflæst næringstabel står varen som "Næringsindhold ukendt" — aldrig "∼ 0 kalorier" — og får straks Fridas tal for varetypen, ellers et skøn ud fra varetypen (∼, `src/lib/type-nutrition-estimate.ts`). "∼" vises aldrig ved 0 kcal. Varer fra de sidste 14 dage uden navn eller med 0 kcal genåbnes én gang.
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
   brand og mængde fjernes først fra den rå titel.
 - **Generiske varer (uden brandnavn/EAN)**: 100 % uden brandnavn (grøntsager,
@@ -150,6 +151,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Søgning
 
+- **Talte sætninger søges som varen (2026-10-16)**: "Jeg har spist en bakke
+  pomfritter" søges som "pomfritter" — indledning, mængde/enhed og tidsangivelse
+  skrælles af i `/api/products` (`src/lib/spoken-food-query.ts`) på alle
+  mikrofonens sprog. Nye talte vendinger tilføjes dér, med test.
 - **Danske kædemærker kendes altid (bruger 2026-10-15)**: ØGO, Salling, Coop 365,
   Änglamark, REMA 1000, First Price, Lidl-mærker m.fl. står i `PINNED_BRANDS`
   (`src/lib/known-brands.ts`) og er altid med i AI'ens brandliste ved scanning.
@@ -176,6 +181,10 @@ ikke her, er den ikke registreret og skal tilføjes.
   brandet står ikke igen i undertitlen. Feltet `searchTitle` fra
   `GET /api/products` (`src/lib/search-result-title.ts`). Søgningen matcher
   stadig i alle tekstfelter, ikke kun titlen.
+- **Madvarer (bruger 2026-10-16)**: favoritter står øverst i listen før de mest
+  brugte; lydbølgen under mikrofonen må ikke fjernes; søgefeltet vokser i højden
+  med teksten; kameraet i søgefeltets venstre side åbner billedfunktionen (ingen
+  "Scan nyt produkt"-knap nederst). Web og native.
 
 ## UI
 
@@ -324,6 +333,7 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - **Aldrig hænge (bruger 2026-10-10, global, ufravigelig):** en opgave må aldrig stå stille. Slut aldrig en tur, mens CI, deploy, review eller en PR venter, uden at et tidsbestemt tjek er sat (`send_later`, højst 5 minutter frem; gentag, til det er gjort). Hvert tjek handler: grøn CI → flet nu; rød CI → ret og push nu; konflikt → løs nu; stående deploy-trin → læs jobloggen og meld den præcise årsag. Opgaven er først færdig, når den er flettet OG deployet. Må deployet ikke kunne gå igennem, skrives årsagen og næste skridt straks i `docs/handoffs/OPEN-TASKS.md`. (Ingen mellemstatus til brugeren, se næste punkt.) At vente passivt på en hændelse er forbudt.
 - **Konflikter, merge og lignende rutine løses selv (bruger 2026-10-16, global):** flettekonflikter, `git fetch`/`git merge origin/master`, genbygning af genererede filer, genkørsel af CI og alt tilsvarende rutinearbejde på dine egne grene/PR'er gøres uden at spørge. Ved binære konflikter: vælg den version, der er bedst/nyeste (typisk masters) og verificér. Skal brugeren alligevel spørges, sker det KUN i spørgsmålsboksen (AskUserQuestion), aldrig som tekst.
 - **Aldrig give opgaven tilbage til brugeren (bruger 2026-10-16, global):** en opgave er ikke færdig, fordi koden er flettet. Brugeren skal aldrig selv køre, starte, installere eller aktivere noget, for at resultatet bliver til noget. "Kør dette på din pc" er ikke en aflevering. Har du ikke direkte adgang, så byg løsningen, så den kører af sig selv, hvor adgangen findes (fx som job i en eksisterende agent på NAS'en, der deployes automatisk), eller find en anden vej, før du melder blokering.
+- **Bedt om kørsel på brugerens pc: vent og spørg om adgang (bruger 2026-10-16, gælder over reglen om at aflevere færdigt):** kan du ikke nå pc'en, så byg ikke et alternativ på NAS'en eller andet sted. Skriv kort, at du venter på adgang til pc'en, og spørg i spørgsmålsboksen, når brugeren er ved den. Det er ikke at aflevere opgaven tilbage.
 - **Udestående rettes altid (bruger 2026-10-10, generelt):** finder du noget udestående i det område, du arbejder i (manglende oversættelser, forældede noter i OPEN-TASKS, halvfærdige dele af samme funktion), så ret det i samme opgave i stedet for blot at notere det. Gælder ikke andre gruppers filer eller ting, der kræver brugerens beslutning.
 - **Brugeren er ligeglad med mellemstatus (bruger 2026-10-10, global):** meld ikke automatiske hændelser (PR-abonnement, ventende CI, planlagte tjek, "tests kører stadig") til brugeren. Gør arbejdet færdigt i stilhed, og skriv kun, når der er et resultat, en blokering eller et spørgsmål (i spørgsmålsboksen). Afløser kravet om at melde status hvert 10. minut under "Aldrig hænge". Brugeren gider ikke høre om, hvordan det gøres — det skal bare komme til at virke: løs problemet helt (også følgefejl og deploy), og meld kort, at det virker.
 - **Tidspunkter altid i dansk tid** (Europe/Copenhagen, sommer-/vintertid) over for brugeren, aldrig UTC (bruger 2026-10-10).
@@ -390,7 +400,8 @@ Certifikater står nederst til venstre ud for cirklens bund (økologi altid nede
 
 ## Venstre menu: alt foldet ud som standard (user rule 2026-10-11)
 
-- Fanerne/accordions i venstre menu — både webversionen (`WebShell`) og admin (`AdminShell`) — er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
+- Fanerne/accordions i webversionens venstre menu (`WebShell`) er foldet ud som standard, hver gang man logger ind eller åbner siden på ny efter at den har været lukket. Sidebjælken er også udvidet (ikke ikon-skinne) ved nyt besøg.
+- **Admin (afløser ovenstående for `AdminShell`, user rule 2026-10-16)**: hver gang man logger ind i admin, er ALLE accordions i venstre menu lukket — også den gruppe, den aktuelle side ligger i. Admin folder aldrig selv en gruppe ud ved sideskift; kun admins egne klik åbner en gruppe.
 - Brugerens egne fold/sammenklap huskes kun, mens fanen er åben (`sessionStorage`, `src/lib/sidebar-state.ts`) og nulstilles ved login/logout. Aldrig `localStorage` til fold-tilstand.
 - **Ark-gennemgang 2026-10-11 (bruger)**: 20 nye/præciserede regler (Quantity uden stk, Pack Count ens, MHD/datoer væk, brand/subbrand egne kolonner, kategori er aldrig produkttype, ingen dobbelte ord, dyremad fjernes, lande i `_is_country_of_origen` undtagen vin, certifikater/alkohol-% til egne felter). Fuld liste: `Excelark/NAVNEREGLER.md` → "Brugerens regler 2026-10-11". Overlevering: `docs/handoffs/2026-10-11-produkttype-gennemgang.md`.
 ## Middleware: /_next/ på admin-værten (2026-10-11)
@@ -433,4 +444,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
 - Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
 - Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- Mængdefeltet på produktsiden er selv slideren (bruger 2026-10-16): det store tal trækkes vandret (`DragNumberStrip`, web + native). Under trækket vises nabotallene mindre og mere utydelige i siderne i tal-hjulets stil, alle på det store tals grundlinje; enheden ("g") skjules under trækket og kommer igen, når nabotallene er faldet ud. Ingen separat slider under feltet.
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
+
+- **Vin: brand er producenten (bruger 2026-10-16)**: vintype (Rosso, Rosé), drue, appellation og kvalitetstrin (Riesling, Bourgogne, Qba, Chianti Riserva …) er aldrig brand — de står i variant. "S.C." = Santa Carolina. REMA 1000-vinene i `scripts/rema1000-import/data/rema1000_products.json` er rettet (fx Grande Alberone: brand "Grande Alberone", variant "Rosso"). Uafklaret: række 1960 (brand "Assamblage", titel "CAROLINA GRAN RESERVA") — producenten kendes ikke sikkert. Databasen skal have samme rettelse ved næste REMA-import.

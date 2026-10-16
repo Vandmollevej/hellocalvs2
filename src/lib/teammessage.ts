@@ -1,3 +1,5 @@
+import { recordApiCall } from "@/lib/api-usage-record";
+
 // TeamMessage SMS-API (https://www.teammessage.eu/en/documentation/api/).
 // POST {base}/api/v1/sms/send/ med Bearer-token. Kun SMS sendes herfra —
 // koderne genereres og kontrolleres i src/lib/sms-verification.ts.
@@ -50,12 +52,17 @@ export async function sendSms(toMobile: string, message: string): Promise<SmsRes
       signal: AbortSignal.timeout(15_000),
     });
     const data = (await response.json().catch(() => ({}))) as { code?: number; message?: string };
-    if (response.ok && data.code === 1) return { ok: true };
+    if (response.ok && data.code === 1) {
+      if (!c.testMode) recordApiCall("sms", true);
+      return { ok: true };
+    }
+    recordApiCall("sms", false, data.message ?? `HTTP ${response.status}`);
     // Koden må aldrig ligge i loggen; kun TeamMessage-fejlkoden.
     console.error("TeamMessage SMS failed", { status: response.status, code: data.code, message: data.message });
     return { ok: false, error: data.message ?? `HTTP ${response.status}` };
   } catch (error) {
     console.error("TeamMessage SMS request failed", error instanceof Error ? error.message : error);
+    recordApiCall("sms", false, "Kunne ikke nå TeamMessage");
     return { ok: false, error: "Kunne ikke nå TeamMessage" };
   }
 }

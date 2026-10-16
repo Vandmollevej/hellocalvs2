@@ -108,6 +108,7 @@ export async function estimateAlcoholNutrition(productId: string): Promise<boole
         proteinPer100g: sure ? protein : 0,
         fatPer100g: sure ? fat : 0,
         nutrientSources: sources,
+        nutritionMissing: false,
       },
     });
     await debugLog({

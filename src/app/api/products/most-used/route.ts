@@ -31,7 +31,17 @@ export async function GET() {
       // Lidt ekstra, da udgåede/skjulte varer sorteres fra nedenfor.
       take: MOST_USED_LIMIT * 2,
     });
-    const orderedIds = counts.map((row) => row.productId).filter((id): id is string => Boolean(id));
+    const usedIds = counts.map((row) => row.productId).filter((id): id is string => Boolean(id));
+    // Favoritter (bogmærker) står øverst, nyeste først (brugerens krav
+    // 2026-10-16); derefter de mest brugte, der ikke allerede er favoritter.
+    const favorites = await prisma.favorite.findMany({
+      where: { userId: user.id, productId: { not: null } },
+      orderBy: { createdAt: "desc" },
+      select: { productId: true },
+    });
+    const favoriteIds = favorites.map((row) => row.productId).filter((id): id is string => Boolean(id));
+    const orderedIds = [...new Set([...favoriteIds, ...usedIds])];
+    const favoriteSet = new Set(favoriteIds);
 
     const products = await prisma.product.findMany({
       where: {
@@ -58,13 +68,17 @@ export async function GET() {
       () => new Map<string, { name: string; brandName: string | null }>(),
     );
 
+    const available = orderedIds
+      .map((id) => byId.get(id))
+      .filter((product): product is NonNullable<typeof product> => Boolean(product));
+    const listed = [
+      ...available.filter((product) => favoriteSet.has(product.id)),
+      ...available.filter((product) => !favoriteSet.has(product.id)).slice(0, MOST_USED_LIMIT),
+    ];
+
     return NextResponse.json({
       profileId: user.id,
-      products: orderedIds
-        .map((id) => byId.get(id))
-        .filter((product): product is NonNullable<typeof product> => Boolean(product))
-        .slice(0, MOST_USED_LIMIT)
-        .map((product) => ({
+      products: listed.map((product) => ({
           id: product.id,
           name: localized.get(product.id)?.name ?? product.name,
           imageUrl: productImageForViewer(product, user.id),

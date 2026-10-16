@@ -39,6 +39,14 @@ Afgrænsning og næste skridt pr. opgave:
 Brugeren har godkendt commits, push og fortsættelse af opgaverne.
 
 
+## G-PC-BILLEDSCREENING — Lidl/Aldi-billeder på brugerens pc (2026-10-16)
+
+Ejer: lokal Claude på brugerens pc. Status: Ikke startet. Skal køres lokalt på pc'en, aldrig på NAS'en (brugerens regel 2026-10-16).
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| pc-screen | Screen billederne på danske og tyske Open Food Facts-varer fra Lidl og Aldi for A) afskåret produkt, B) hænder/fingre ind over, C) åben eller halvfuld vare | Ikke startet | `git pull origin master`, gå til `scripts/image-screen`, sæt `DATABASE_URL` (læseadgang) og `IMAGE_BASE_URL` eller `IMAGES_DIR` i miljøet (aldrig i en fil), kør først `python screen.py --limit 200 --no-clip`, kig i `out/ufuldstaendige-billeder.csv`, justér tærsklerne øverst i `screen.py`, og kør derefter `run-night.ps1` til natten. Rapporten er kun en CSV; ingen varer ændres. Sæt rækken til Færdig, når den er kørt |
+
 ## G-AABNE-PR — Åbne PR'er der IKKE blev flettet (2026-10-10)
 
 Flettet og deployet 2026-10-10: #339, #344, #348, #354, #355, #360, #361, #362, #363, #364. Resten står tilbage; ingen af dem er rørt.
@@ -545,7 +553,7 @@ Ejer: ledig (2026-10-10)
 
 | Opgave | Beskrivelse | Status | Næste skridt |
 | --- | --- | --- | --- |
-| **PRODUKTTYPE-GENNEMGANG (2026-10-11)** | Gendan forkerte produkttype-skrivninger i DRK/Årstiderne/DM/EDEKA/REWE, skriv regel-lint (20 regler), fjern dyremad, ret Quantity/Pack Count/MHD/lande, udtræk produkttype forsigtigt | Blokeret af bruger-gennemsyn | Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md`. Gendan fra `Backup/*_2026-10-11_foer_produkttype.xlsx` først |
+| **PRODUKTTYPE-GENNEMGANG (2026-10-11, udført 2026-10-16)** | Regel-lint (20 regler), dyremad slettet, Quantity/Pack Count/MHD/lande rettet, produkttype/brand/subbrand/co-brand/variation/flag udtrukket for DRK, Årstiderne, Wolt, dm, EDEKA, REWE (7.628 rækker læst af agent + uafhængig kontrollør, ændringer skrevet med gul baggrund, 45 ikke-mad-rækker slettet) | Skrevet i arkene — afventer Peters gennemsyn | Peter gennemgår de gule celler. Rester: `Produkter/Backup/produkttype_udtraek_aendringer_2026-10-16.csv` (før/efter pr. felt, sikkerhed + note; kig på sikkerhed «low»). Se `docs/handoffs/2026-10-11-produkttype-gennemgang.md` afsnit «Opdatering 2026-10-16». Genkør: `scripts/produkttype-forslag/pipeline-2026-10-16/` |
 
 | forside-infoboks | Port forsidens InfoBox (puls over dagen, swipe-visninger) til `HomeScreen.kt` + AI-statistikvisninger | Ikke startet | Se STATUS 2026-10-11 |
 
