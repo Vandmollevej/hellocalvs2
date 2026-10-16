@@ -1,6 +1,6 @@
 ## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
 
-- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, 48 px høje hver (halvt så høje som første udgave), fra boksens gamle top. Heroens højde (top til skillelinjen) er uændret.
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
 - Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)
