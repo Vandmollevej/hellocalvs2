@@ -28,6 +28,7 @@ import { searchProductIndex, type MeiliHit } from "@/lib/search-engine/meili";
 import { cachedSearch, storeSearch } from "@/lib/search-engine/search-cache";
 import { recordSearchEvent } from "@/lib/search-analytics";
 import { searchResultTitle } from "@/lib/search-result-title";
+import { parseSpokenFoodQuery } from "@/lib/spoken-food-query";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -69,7 +70,19 @@ export async function GET(req: Request) {
   }
 
   try {
-    const first = await searchProducts({ q, source, take, localHour });
+    // Tale (docs/DECISIONS.md 2026-10-16): "Jeg har spist en bakke pomfritter"
+    // søges som "pomfritter". Uden talt indledning prøves den skrællede tekst
+    // kun, hvis originalen intet finder.
+    const spoken = !source && !exact ? parseSpokenFoodQuery(q) : { query: q, spoken: false };
+    let searchQ = spoken.spoken ? spoken.query : q;
+    let first = await searchProducts({ q: searchQ, source, take, localHour });
+    if (!spoken.spoken && spoken.query !== q && first.products.length === 0) {
+      const stripped = await searchProducts({ q: spoken.query, source, take, localHour });
+      if (stripped.products.length > 0) {
+        first = stripped;
+        searchQ = spoken.query;
+      }
+    }
     let products = first.products;
     let fullMatchCount = first.fullMatchCount;
 
@@ -78,9 +91,9 @@ export async function GET(req: Request) {
     // rettelsen uden at bruge den.
     let searchedQuery: string | undefined;
     let suggestedQuery: string | undefined;
-    if (q.length >= 3 && !source && !exact && products.length <= 2) {
-      const fixed = await correctedQuery(q);
-      if (fixed && fixed.toLowerCase() !== q.toLowerCase()) {
+    if (searchQ.length >= 3 && !source && !exact && products.length <= 2) {
+      const fixed = await correctedQuery(searchQ);
+      if (fixed && fixed.toLowerCase() !== searchQ.toLowerCase()) {
         if (products.length === 0) {
           const fixedResult = await searchProducts({ q: fixed, source, take, localHour });
           if (fixedResult.products.length > 0) {
