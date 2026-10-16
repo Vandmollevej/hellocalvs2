@@ -5682,3 +5682,7 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 - Rækken er fjernet fra Visning (`/settings`, `/settings/display`, native `SettingsDisplayRows`, webbens sidebjælke). Settings-søgningen finder den stadig.
 - Screeninger-siden (`/profile/screenings`, web + native `ScreeningsScreen`): den faste Søvn-række åbner nu `/settings/display/sleep-quality` (adressen er uændret, så "Slå fra" i søvnspørgsmålet virker som før) og viser Aktiv/Inaktiv efter `User.sleepQualityPromptEnabled` — som de øvrige screeninger. Før pegede rækken på søvnmønsteret (DECISIONS 2026-10-09); søvnmønsteret ligger fortsat under Profil → Søvnmønster.
 - Webbens sidebjælke: Screeninger er en gruppe med Screeninger og Søvn.
+
+## 2026-10-16 — Screening af ufuldstændige produktbilleder (Lidl/Aldi, da/de, OFF)
+
+Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.

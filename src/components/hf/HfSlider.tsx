@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { sliderHaptic } from "@/lib/haptics";
 
 // Global Hello Cal-slider (én værdi): samme bane, farver og runde 18 px-greb
 // som SleepRangeSlider og MacroSliderBar. Brug altid denne i stedet for en
@@ -36,7 +37,10 @@ export function HfSlider({
     const rect = track.getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
     const next = clamp(min + ratio * (max - min));
-    if (next !== value) onChange(next);
+    if (next !== value) {
+      sliderHaptic();
+      onChange(next);
+    }
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -57,6 +61,7 @@ export function HfSlider({
     else if (event.key === "End") next = max;
     if (next === null) return;
     event.preventDefault();
+    sliderHaptic();
     onChange(clamp(next));
   }
 

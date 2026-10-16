@@ -3880,5 +3880,35 @@
       "365": "Last year",
       "all": "All time"
     }
+  },
+  "frontCharts": {
+    "aria": "Today's charts",
+    "pulse": "Pulse",
+    "noPulse": "No pulse data yet",
+    "intake": "Calories",
+    "planVsActual": "Recommended vs. intake",
+    "goalDays": "Goal · days",
+    "goalWeeks": "Goal · weeks",
+    "actionOpen": "See suggestions for staying within today's goal",
+    "actionLead": "To stay within today's goal we recommend that you burn",
+    "burnBig": "{kcal} kcal",
+    "orSplit": "or reduce your calorie intake by {reduce} kcal and burn {burn} kcal",
+    "sheetTitle": "Stay within today's goal",
+    "walkTitle": "Walk",
+    "walkIntro": "To burn {kcal} kcal you can walk:",
+    "walk": {
+      "easy": "Easy walk (light): about {minutes} min.",
+      "brisk": "Brisk walk (moderate): about {minutes} min.",
+      "fast": "Fast walk (high intensity): about {minutes} min."
+    },
+    "eatTitle": "Eat less",
+    "eatIntro": "Keep your intake under about {limit} kcal for the rest of the day — or cut {reduce} kcal.",
+    "food": {
+      "veg": "Vegetable soup or large salads: very filling, few calories",
+      "protein": "Lean protein (chicken, fish, skyr, eggs): keeps you full",
+      "soup": "Broth and clear soups as a snack",
+      "fruit": "Fruit and raw vegetables instead of snacks"
+    },
+    "helloFresh": "See Hello Fresh dishes with the fewest calories"
   }
 }

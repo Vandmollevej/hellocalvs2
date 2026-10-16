@@ -83,7 +83,7 @@ export const KNOWN_LABEL_KEYS: { key: string; name: string; category: LabelCateg
   { key: "vegan", name: "Vegansk", category: "DIET", hint: "Vegan / V-Label vegan / vegansk" },
   { key: "vegetarian", name: "Vegetarisk", category: "DIET", hint: "Vegetarisk / V-Label vegetarian" },
   { key: "organic-eu", name: "EU-økologi", category: "ORGANIC", hint: "EU's grønne blad med stjerner" },
-  { key: "organic-dk", name: "Ø-mærket", category: "ORGANIC", hint: "Det røde danske Ø-mærke / 'Statskontrolleret økologisk'" },
+  { key: "organic-dk", name: "Ø-mærket", category: "ORGANIC", hint: "Det røde danske Ø-mærke / 'Statskontrolleret økologisk' (rød-hvid cirkel med krone og teksten Ø). Forveksl ikke med Kongelig Hofleverandør-våbenet (guld/sort krone på emballagen) — det er IKKE økologi" },
   { key: "organic-de", name: "Bio-Siegel", category: "ORGANIC", hint: "Det tyske sekskantede Bio-Siegel" },
   { key: "organic-krav", name: "KRAV", category: "ORGANIC", hint: "Svensk KRAV-mærke" },
   { key: "keyhole", name: "Nøglehulsmærket", category: "HEALTH", hint: "Grønt nøglehul (DK/SE/NO)" },

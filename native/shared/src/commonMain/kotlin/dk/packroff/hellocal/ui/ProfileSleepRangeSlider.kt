@@ -32,6 +32,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -79,6 +81,7 @@ fun ProfileSleepRangeSlider(
     var editValue by remember { mutableStateOf("") }
     val wake by rememberUpdatedState(wakeMinutes)
     val bedtime by rememberUpdatedState(bedtimeMinutes)
+    val haptic = LocalHapticFeedback.current
     val onWake by rememberUpdatedState(onChangeWake)
     val onBedtime by rememberUpdatedState(onChangeBedtime)
 
@@ -147,6 +150,7 @@ fun ProfileSleepRangeSlider(
                 }
                 fun update(handle: SleepHandle, x: Float) {
                     val value = minutesAt(x)
+                    if (value != (if (handle == SleepHandle.Wake) wake else bedtime)) haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     if (handle == SleepHandle.Wake) onWake(value) else onBedtime(value)
                 }
                 detectDragGestures(

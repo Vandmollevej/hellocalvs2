@@ -38,6 +38,7 @@
     <color name="hc_warning_bg">#FFFDF3D3</color>
     <color name="hc_overlay">#66232323</color>
     <color name="hc_watch">#FF2F80ED</color>
+    <color name="hc_chart_blue">#FF5B9FCF</color>
     <color name="hc_faceid">#FF0A7AFF</color>
     <color name="hc_faceid_spin">#FF35C4D4</color>
     <color name="hc_mk_brand_light">#FF0A8F53</color>
