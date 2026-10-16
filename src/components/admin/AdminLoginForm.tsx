@@ -7,7 +7,7 @@ import { clearSidebarState } from "@/lib/sidebar-state";
 
 export function AdminLoginForm() {
   const router = useRouter();
-  // Nyt login: sidebjælken starter med alle grupper foldet ud.
+  // Nyt login: sidebjælken starter med alle grupper lukket.
   useEffect(() => {
     clearSidebarState();
   }, []);
