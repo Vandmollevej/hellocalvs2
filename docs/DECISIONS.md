@@ -1,3 +1,14 @@
+## 2026-10-16: Rodårsagen var tom OpenAI-kredit — energi-trinnet kræver nu en aflæsning, ingen skøn
+
+Produktionens log (læst med brugerens tilladelse): alle AI-aflæsninger siden mindst 15/10 08:56 fejlede med 429 `insufficient_quota` ("You have no credits remaining") — letmælken, Verpoorten m.fl. Kreditten skal fyldes op på platform.openai.com → Billing (admin → OpenAI-forbrug viser status).
+
+Brugeren afviste energiskønnet ("Skønner energien? Dette er ikke ok") og bestemte: energi-trinnet må ikke kunne klares, hvis energien ikke er læst. Derfor:
+- `POST /api/products/read-energy`: AI'en læser energifotoet, mens brugeren står på trinnet, når telefonens egen aflæsning ikke var komplet. Kun komplet pr. 100 g/ml eller alkohol over 1,2 % vol (`energyReadOk`, `src/lib/energy-read.ts`) klarer trinnet; ellers tages billedet om. Web (`verifyEnergy`) + native.
+- Aflæsningen sendes med oprettelsen (`nutritionAnalysisId`) og bruges direkte af `enrichLabel`.
+- Skønnet fra samme dag (Frida/varetype på nye scannede varer, `type-nutrition-estimate.ts`) er fjernet, og Frida-robotten springer varer fra kameraflowet over (`quickEnrichmentJob: null`).
+- Manglende kredit prøves ikke igen med det samme (kun de øvrige 429/5xx).
+- Alarm: `/api/health?deep=1` melder OpenAI-status (`ai`: ok/quota/invalid/missing/low …), og Uptime-overvågningen fejler — og mailer — ved tom kredit, afvist nøgle eller lav saldo (højst i timens første 10 minutter). Vagt: `src/lib/scan-energy-guard.test.mjs` fejler, hvis energi-porten, skøn-forbuddet eller alarmen fjernes.
+
 ## 2026-10-16: Beløbsgrænse for varsler (admin → API-forbrug)
 
 - Brugerens ønske: selv bestemme, hvornår der advares. Hver tjeneste har nu "Advar mig, når månedens forbrug når …" (`api_budgets.alertAt`), og OpenAI har også "Advar mig, når kreditsaldoen er under …" (`balanceAlertAt`, standard 5 $). Beløbsgrænsen giver advarsel på kortet og én mail pr. måned; 80 %/100 % af budgettet varsles stadig. Migration `20261016180000_api_alert_amount`.

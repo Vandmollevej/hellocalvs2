@@ -1064,7 +1064,10 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Oppretter varen …",
     "sendingPhotos": "Sender bildene …",
-    "processingPhotos": "Behandler bilder: {steps} …"
+    "processingPhotos": "Behandler bilder: {steps} …",
+    "readingEnergy": "Leser energien …",
+    "energyUnreadable": "Energien kunne ikke leses. Ta bildet på nytt, tett på næringstabellen.",
+    "energyAiUnavailable": "Energien kan ikke leses akkurat nå. Prøv igjen om litt."
   },
   "foods": {
     "title": "Matvarer",

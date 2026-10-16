@@ -1,5 +1,6 @@
 import { sanitizeAiPhoto } from "@/lib/image-metadata";
 import { debugLog, errorText } from "@/lib/debug-log";
+import { isAiQuotaError } from "@/lib/energy-read";
 type JsonSchema = Record<string, unknown>;
 
 type StructuredVisionArgs = {
@@ -146,8 +147,11 @@ async function requestStructured<T>(
         model = FALLBACK_VISION_MODEL;
         continue;
       }
-      // Et ugyldigt JSON-svar regnes også som midlertidigt.
-      const transient = error instanceof SyntaxError || (error instanceof OpenAiCallError && isTransientOpenAiStatus(status));
+      // Et ugyldigt JSON-svar regnes også som midlertidigt. Ingen kredit (429
+      // insufficient_quota) er ikke midlertidigt — et nyt forsøg koster kun tid.
+      const transient =
+        error instanceof SyntaxError ||
+        (error instanceof OpenAiCallError && isTransientOpenAiStatus(status) && !isAiQuotaError(message));
       if (!transient || retries >= RETRY_DELAYS_MS.length) throw error;
       const delay = (error instanceof OpenAiCallError ? error.retryAfterMs : null) ?? RETRY_DELAYS_MS[retries];
       retries += 1;

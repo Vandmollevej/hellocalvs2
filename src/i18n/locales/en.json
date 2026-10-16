@@ -1064,7 +1064,10 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Creating the product …",
     "sendingPhotos": "Sending the photos …",
-    "processingPhotos": "Processing photos: {steps} …"
+    "processingPhotos": "Processing photos: {steps} …",
+    "readingEnergy": "Reading the energy …",
+    "energyUnreadable": "The energy couldn't be read. Take the photo again, close to the nutrition table.",
+    "energyAiUnavailable": "The energy can't be read right now. Try again in a moment."
   },
   "foods": {
     "title": "Foods",
