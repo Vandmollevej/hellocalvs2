@@ -81,7 +81,6 @@ const EVENT_LABELS: Record<string, string> = {
   hello_cal_barcode_logo: "OpenAI: stregkode-logo",
   shelf_products: "OpenAI: hyldefoto",
   shelf_matches: "OpenAI: hyldematch",
-  voice_search: "Mikrofon: søgning",
 };
 
 export function eventLabel(row: Pick<DebugLogRow, "category" | "event">): string {

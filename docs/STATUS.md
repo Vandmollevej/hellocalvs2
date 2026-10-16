@@ -1,6 +1,7 @@
-## 2026-10-16: Admin → Log → Tale
+## 2026-10-16: Analyse → Søgning → Tale
 
-- Ny fane "Tale" i Admin → Log: én række pr. mikrofon-session på Madvarer med det, telefonen hørte undervejs (`steps`), det der blev søgt på (efter fyldord/rettelse) og de viste varer. Ingen AI; mikrofonen søger stadig løbende. Web + native sender `&voice=<session>` til `/api/products`, så længe søgefeltet står med det sagte. `src/lib/voice-search-log.ts`. Ikke prøvet i browser/på telefon eller mod rigtig database. Se DECISIONS 2026-10-16.
+- Ny fane "Tale" på Admin → Analyse → Søgning: hver brug af mikrofonen på Madvarer som en tidslinje. Hvert trin (hver søgning, mens der tales) viser det hørte, det der blev søgt på (efter fyldord/stavning) og de 5 øverste varer med billede og begrundelse i point (tekstmatch + populær i landet, tidspunkt, stregkode fra landet osv., samme point som Søgealgoritmer). Øverst: sådan læses og påvirkes det (Synonymordbog, Søgealgoritmer, Stavekontrol). Mikrofonen søger løbende som før; ingen AI. Anonymt, gemmes 30 dage.
+- Web + native sender `&voice=<session>` til `/api/products`, så længe søgefeltet står med det sagte. `src/lib/voice-search-log.ts`, `src/lib/search-explain.ts` (+ test), `VoiceSessions.tsx`. Visningen er prøvet med eksempeldata (skærmbillede); ikke prøvet mod rigtig database eller på telefon. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
 

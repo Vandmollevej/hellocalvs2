@@ -1,7 +1,7 @@
-## 2026-10-16: Mikrofonens søgninger logges i Admin → Log → Tale
+## 2026-10-16: Mikrofonens søgninger vises i Analyse → Søgning → Tale
 
-- Brugeren ville kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev. Mikrofonen på Madvarer bruger ingen AI (telefonens talegenkendelse + almindelig søgning), og den skal blive løbende — brugeren afviste en OpenAI-tolkning som for tung og langsom.
-- Derfor logges hver mikrofon-session som én række (kategori `voice`, flowId = session-id) i den eksisterende debug-log (30 dage, kan slås fra): hørt tekst trin for trin, søgeord efter `parseSpokenFoodQuery`/"Mente du", og top-10 resultater. Rækken opdateres for hver søgning i sessionen i stedet for at skrive en ny pr. tastetryk. Skriver brugeren selv i feltet, logges intet.
+- Brugeren vil kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev, for at kunne forbedre dem. Mikrofonen på Madvarer er telefonens talegenkendelse + almindelig søgning, løbende mens der tales; brugeren afviste en OpenAI-tolkning som for tung og langsom.
+- "Rationalet" er derfor søgningens egen rangering: pointene pr. signal (tekstmatch × 100 + signal × vægt fra Søgealgoritmer) gemmes for de 5 øverste varer i hvert trin. Én række pr. mikrofon-session (`debug_logs`, kategori `voice`), anonymt, 30 dage, uafhængigt af Log-kontakten. Visningen ligger under Analyse → Søgning (brugerens valg), ikke i Log. Skriver brugeren selv, logges intet.
 
 ## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
 

@@ -30,6 +30,7 @@ import { recordSearchEvent } from "@/lib/search-analytics";
 import { searchResultTitle } from "@/lib/search-result-title";
 import { parseSpokenFoodQuery } from "@/lib/spoken-food-query";
 import { logVoiceSearch } from "@/lib/voice-search-log";
+import { rankingPoints, type ReasonPoints } from "@/lib/search-explain";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -85,6 +86,7 @@ export async function GET(req: Request) {
       }
     }
     let products = first.products;
+    let reasons = first.reasons;
     let fullMatchCount = first.fullMatchCount;
 
     // "Mente du …?" (docs/DECISIONS.md 2026-10-10): ingen hits → søg på den
@@ -99,6 +101,7 @@ export async function GET(req: Request) {
           const fixedResult = await searchProducts({ q: fixed, source, take, localHour });
           if (fixedResult.products.length > 0) {
             products = fixedResult.products;
+            reasons = fixedResult.reasons;
             searchedQuery = fixed;
           }
         } else {
@@ -128,12 +131,17 @@ export async function GET(req: Request) {
     if (voiceSession && q && !source) {
       void logVoiceSearch({
         sessionId: voiceSession,
-        userId: first.userId,
+        region: first.region,
         heard: q,
         searched: searchQ,
         corrected: searchedQuery,
         suggested: suggestedQuery,
-        results: products.map((product) => product.searchTitle || product.name),
+        results: products.map((product) => ({
+          id: product.id,
+          name: product.searchTitle || product.name,
+          image: product.imageUrl ?? null,
+          points: reasons.get(product.id) ?? {},
+        })),
       });
     }
 
@@ -308,6 +316,8 @@ async function searchProducts({
       orderBy: { createdAt: "desc" },
     });
 
+  // Begrundelsen bag rækkefølgen (pointene pr. signal), kun til Tale-loggen.
+  const reasons = new Map<string, ReasonPoints>();
   let products = await findProducts(
     engine
       ? await withNamedBrandProducts(engine.hits.map((hit) => hit.id), visibleWhere, named, candidateTake)
@@ -359,6 +369,7 @@ async function searchProducts({
       ranked = rankProducts(rankable, q, user.region, localHour, take, weights, synonyms, engineScores);
     }
     products = ranked.map((entry) => entry.product);
+    for (const entry of ranked) reasons.set(entry.product.id, rankingPoints(entry.breakdown, weights));
     // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
     if (products.length === 0 && q.length >= 3) {
       await prisma.searchMiss
@@ -481,6 +492,7 @@ async function searchProducts({
     engine: (engine ? "meilisearch" : "postgres") as "meilisearch" | "postgres",
     userId: sessionUser?.id ?? null,
     region: user.region,
+    reasons,
   };
 }
 
