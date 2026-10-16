@@ -446,7 +446,6 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/admin/quality-control/shared-recipes", label: "Delte retter" },
               { path: "/admin/quality-control/activities", label: "Aktiviteter" },
-              { path: "/admin/quality-control/incomplete-images", label: "Ufuldstændige billeder" },
             ],
           },
           { path: "/admin/activities", label: "Aktiviteter" },
