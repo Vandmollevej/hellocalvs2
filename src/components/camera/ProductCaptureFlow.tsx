@@ -34,6 +34,7 @@ import {
   submitProductQualityCheck,
   createQuickProduct,
   findCreatedProduct,
+  readEnergyPhoto,
   readFrontPhoto,
   readLabelPhoto,
   saveBarcodePhoto,
@@ -130,6 +131,9 @@ const PRE_READ_FRESH_MS = 5000;
 // Efter udløseren ventes højst så længe på aflæsningen (mens "trinnet er
 // klaret" står); svar, der kommer senere, gemmes blot til oprettelsen.
 const SHUTTER_ANALYSIS_WAIT_MS = 2500;
+// Energi-trinnet: så længe ventes der på telefonens egen aflæsning, før
+// AI'en læser fotoet (docs/DECISIONS.md 2026-10-16).
+const ENERGY_LOCAL_WAIT_MS = 4000;
 // Oprettelsen venter højst så længe på billeder, der stadig behandles.
 const PENDING_PHOTOS_WAIT_MS = 10000;
 // Stregkodefotoet tages midt i scanningen og må ikke forsinke den.
@@ -242,6 +246,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const workingRef = useRef(false);
   // Forsidens analyse (objekter, dubletopslag) og oprettelsen: knapperne låses.
   const [working, setWorking] = useState(false);
+  // Energi-trinnet venter på en gyldig aflæsning (brugerens krav 2026-10-16):
+  // "reading" mens AI'en læser fotoet; en fejl står, til billedet tages om.
+  const [energyReading, setEnergyReading] = useState(false);
+  const [energyError, setEnergyError] = useState<"unreadable" | "ai_unavailable" | "error" | null>(null);
   const [flash, setFlash] = useState<Flash | null>(null);
   // De trin, der netop er klaret (StepDoneOverlay), og det senest klarede
   // (den lille overstregede linje over overskriften).
@@ -1198,6 +1206,56 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     return false;
   }
 
+  // Energi-trinnet (brugerens krav 2026-10-16): telefonens egen aflæsning af
+  // næringstabellen, ellers AI'en på fotoet, mens brugeren venter ("Læser
+  // energien …"). Kun en komplet aflæsning klarer trinnet; ellers står en
+  // besked, og billedet tages om. Ingen skøn.
+  async function verifyEnergy(
+    analysis: Promise<{ attempt: LabelAttempt<LiveFrame>; source: string }>,
+    still: Promise<Still>,
+    shot: number,
+  ): Promise<boolean> {
+    const data = dataRef.current;
+    const current = () => shotRef.current.nutrition === shot && !leavingRef.current;
+    const startedAt = Date.now();
+    setEnergyError(null);
+    setWorking(true);
+    setEnergyReading(true);
+    try {
+      const local = await Promise.race([analysis, wait(ENERGY_LOCAL_WAIT_MS).then(() => null)]).catch(() => null);
+      if (local?.attempt.read.nutrition) {
+        data.nutritionAnalysisId = undefined;
+        return true;
+      }
+      const taken = await still.catch(() => null);
+      if (!current()) return false;
+      if (local) data.nutritionOcrText = local.attempt.read.text;
+      const result = taken ? await readEnergyPhoto(taken.url, data, marketRegion()) : ({ ok: false, reason: "error" } as const);
+      if (!current()) return false;
+      scanLog(flowId, "energy_step", {
+        level: result.ok ? "info" : "warn",
+        message: result.ok
+          ? "Energi læst af AI — trinnet er klaret"
+          : result.reason === "ai_unavailable"
+            ? "Energi: AI'en er ikke tilgængelig (ingen kredit) — trinnet er ikke klaret"
+            : "Energi kunne ikke læses — brugeren skal tage billedet om",
+        barcode: data.barcode,
+        durationMs: Date.now() - startedAt,
+        data: { reason: result.ok ? null : result.reason },
+      });
+      if (result.ok) {
+        data.nutritionAnalysisId = result.analysisId;
+        return true;
+      }
+      data.nutritionAnalysisId = undefined;
+      setEnergyError(result.reason);
+      return false;
+    } finally {
+      setEnergyReading(false);
+      setWorking(false);
+    }
+  }
+
   // Energi/indhold efter udløseren: trinnet er klaret med det samme.
   // Forlæsningen bruges, hvis den fandt feltet; ellers læses udløserens
   // billede (højst SHUTTER_ANALYSIS_WAIT_MS, mens "trinnet er klaret" står —
@@ -1224,6 +1282,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         data.ingredientsPhoto = taken.url;
       }
     });
+    // Energien skal være læst, før trinnet er klaret — ellers tages billedet om
+    // (brugerens krav 2026-10-16: "man kan ikke fortsætte flowet hvis det fejler").
+    if (need === "nutrition" && !(await verifyEnergy(analysis, still, shot))) {
+      flashRef.current = false;
+      return;
+    }
     setFlash(ready ? labelFlash(ready.frame, ready.read.regions, need === "ingredients" ? "ingredients" : undefined) : null);
     setStepDone([need]);
     markDone(need);
@@ -1284,6 +1348,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       return;
     }
     flashRef.current = true;
+    setEnergyError(null);
     const shot = (shotRef.current[current] ?? 0) + 1;
     shotRef.current[current] = shot;
     const still = takeStill(current, live, shot);
@@ -1413,7 +1478,11 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   const submitPhoto = submitting ? (dataRef.current.frontPhoto ?? null) : null;
   const submitText = t(rescan ? "cameraCreate.sendingPhotos" : "cameraCreate.creating");
   // Beskeden nederst i kamerabilledet: lys/fokus.
-  const viewfinderNotice = frameIssue
+  const energyNotice =
+    step === "nutrition" && energyError
+      ? t(energyError === "ai_unavailable" ? "cameraCreate.energyAiUnavailable" : "cameraCreate.energyUnreadable")
+      : null;
+  const viewfinderNotice = energyNotice ?? (frameIssue
     ? frameIssue === "dark"
       ? cameraControls.torch && !torchOn
         ? t("camera.qualityDarkTorch")
@@ -1421,7 +1490,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
       : scanning
         ? t("camera.qualityBlurryBarcode")
         : t("camera.qualityBlurry")
-    : null;
+    : null);
   // Forlæsningen kører stille i baggrunden — ingen "Læser teksten …" eller
   // fund-beskeder i billedet (brugerens krav 2026-10-15: "Den skal bare gøre
   // det uden at du skal skrive noget").
@@ -1469,6 +1538,15 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
               borderColor: "rgba(255,255,255,0.8)",
             }}
           />
+        )}
+
+        {energyReading && !submitting && (
+          <div className="absolute inset-0">
+            <PhotoWorkingOverlay label={t("cameraCreate.readingEnergy")} showLabel={false} />
+            <div className="hf-camera-overlay" aria-live="polite">
+              <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{t("cameraCreate.readingEnergy")}</p>
+            </div>
+          </div>
         )}
 
         {submitting && (

@@ -121,7 +121,7 @@ formally migrated or archived.
   (fallback `GOOGLE_API_KEY`). Ingen `:?`-krav, så en manglende nøgle ikke
   stopper stakken. Heller ikke med i deploy-workflowet endnu.
 - Se `.env.production.example` for alle nye variabler.
-- Admin → OpenAI-forbrug (2026-10-16): valgfri `OPENAI_ADMIN_KEY` (OpenAI admin-nøgle, `sk-admin-…`) til forbruget; kan også sættes på admin → API-nøgler.
+- Admin → API-forbrug (2026-10-16): valgfri `OPENAI_ADMIN_KEY` (OpenAI admin-nøgle, `sk-admin-…`) til forbruget; kan også sættes på admin → API-nøgler.
 - Hjælpe-chatbot (2026-10-02): valgfri `OPENAI_CHATBOT_MODEL` (standard
   `gpt-4o-mini`). Bruger den eksisterende `OPENAI_API_KEY`. Migration
   `20261002120000_chatbot` køres af deployet.
@@ -480,7 +480,7 @@ Sikringer:
 - **Prøvekørsel:** `scripts/deploy/test-migrations.sh` (deploy-trin før udrulningen) kopierer produktionens skema + `_prisma_migrations` (ingen brugerdata) til en midlertidig PostgreSQL (`hellocal-migrate-test` på `backend`-netværket) og kører den nye releases `migrate`-service mod kopien. Fejler den, stopper deployet før produktionen røres. Kan kopien ikke indlæses, advares der, og testen springes over.
 - **Rækkefølge:** `rollout-app.sh` kører migreringerne eksplicit, før en ny app-container startes.
 - **Healthcheck:** `/api/health` henter også en (ikke-eksisterende) bruger med alle kolonner, så ny kode mod en database uden sine migreringer aldrig bliver sund. `/api/health?deep=1` melder desuden fejlede migreringer (HTTP 503 `degraded`).
-- **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows").
+- **Overvågning:** `.github/workflows/uptime.yml` kalder `https://hellocal.io/api/health?deep=1` hvert 5. minut fra GitHubs servere (virker også, når NAS'en er nede; tre forsøg før alarm). En fejlet kørsel giver mail/push fra GitHub til den, der sidst ændrede workflowet (GitHub-indstilling: Notifications → Actions → "Only notify for failed workflows"). Siden 2026-10-16 fejler kørslen også (højst i timens første 10 minutter), når OpenAI-kreditten er brugt op, nøglen afvises eller saldoen er lav (`ai` i health-svaret).
 - **Admin:** forsiden viser en rød boks "Deploy blokeret", når en migrering står som fejlet.
 - Gendannelsen 2026-10-07 skete via en midlertidig `prisma migrate resolve --rolled-back …` i `migrate`-servicen (c245f4cb), fjernet igen efter migreringen var anvendt. Samme fremgangsmåde bruges, hvis en migrering igen står som fejlet.
 

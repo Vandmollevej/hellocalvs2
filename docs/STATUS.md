@@ -1,3 +1,17 @@
+## 2026-10-16: Energi-trinnet kræver aflæst energi
+
+- Rodårsagen til de tomme varer: OpenAI-kontoen har ingen kredit (429 `insufficient_quota`) — skal fyldes op af brugeren. Energi-trinnet klares nu først, når energien er læst (telefonen, ellers AI mens man venter); ellers tages billedet om. Intet energiskøn på scannede varer. Web + native. Ikke prøvet på telefon herfra. Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Beløbsgrænse for API-varsler
+
+- Under "Ret budget og varsler" på hvert kort i admin → API-forbrug: beløbet, hvor du vil advares om forbruget, og for OpenAI saldoen, du vil advares under. **Migration `20261016180000_api_alert_amount` skal med deployet.** Prøvet mod lokal Postgres (varsel sendes én gang). Se DECISIONS 2026-10-16.
+
+## 2026-10-16: Admin → API-forbrug (alle betalte API'er, forside-widget og varsler)
+
+- `/admin/openai` er blevet til `/admin/api-usage` ("API-forbrug", Alt+Shift+3): ét kort pr. betalt tjeneste — OpenAI, Google Places, Google Vision (logo-robotten), Google Custom Search (billedrobotten), Bria, Passio, SMS og Mailjet — med status, månedens forbrug og budget (rettes på kortet). OpenAI-detaljerne og kreditsaldoen står som før nedenunder.
+- Forsiden i admin har en "API-forbrug"-widget. Varsler: til/fra, modtagerliste og testmail på siden; jobbet `api-alerts` (hvert kvarter) mailer ved fejl, lav OpenAI-kredit og 80 %/100 % af budgettet, hvert varsel én gang.
+- **Migration `20261016170000_api_usage` skal med deployet**; image-agent og logo-agent genbygges af deployet. Prøvet mod lokal Postgres (tælling, budget, varsel sendes én gang, Python-tællingen). Ikke prøvet mod rigtige udbydere. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Admin → OpenAI-forbrug
 
 - Ny side `/admin/openai` (menu "OpenAI-forbrug", Alt+Shift+3): status på nøglen (et lille testkald hvert minut afslører "kredit brugt op" = `insufficient_quota`), forbrug i dag/7 dage/måned og fordelt på modeller, de sidste 30 dage og anslået resterende kredit. Forbruget kræver en OpenAI **admin-nøgle** (`OPENAI_ADMIN_KEY`, sættes på admin → API-nøgler). OpenAI har intet API til saldoen, så den skrives ind på siden, og forbruget derefter trækkes fra. Ikke prøvet mod rigtig OpenAI-konto her. Se DECISIONS 2026-10-16.
@@ -10,7 +24,7 @@
 
 ## 2026-10-16: Nye scannede varer står aldrig tomme
 
-- Fejler OpenAI-aflæsningen af forside/energi, prøves den igen (straks og efter 10 min), med reservemodel; navn og brand udledes imens af telefonens tekst ("LETMÆLK" → Letmælk); ukendt energi vises som ukendt og får Frida-/varetype-skøn i stedet for "∼ 0"; råfotoet fylder hele cirklen (web + native). Varer fra de sidste 14 dage uden navn/med 0 kcal repareres én gang. Ikke prøvet mod OpenAI/rigtig database eller telefon herfra — produktionens log viser den præcise OpenAI-fejl. Se DECISIONS 2026-10-16.
+- Fejler OpenAI-aflæsningen af forside/energi, prøves den igen (straks og efter 10 min), med reservemodel; navn og brand udledes imens af telefonens tekst ("LETMÆLK" → Letmælk); ukendt energi vises som ukendt i stedet for "∼ 0" (skønnet er fjernet igen, se næste punkt); råfotoet fylder hele cirklen (web + native). Varer fra de sidste 14 dage uden navn/med 0 kcal repareres én gang. Ikke prøvet mod OpenAI/rigtig database eller telefon herfra — produktionens log viser den præcise OpenAI-fejl. Se DECISIONS 2026-10-16.
 
 ## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
 
@@ -21,10 +35,11 @@
 - Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
 - "Ikke synkroniseret"-popuppen i layoutet bruger nu samme bundark som vægt-popuppen og springer integrationer med vægt over (vægt-popuppen tager dem), så samme spørgsmål ikke kommer to gange. Web + native. Native kompileres kun i CI. Se DECISIONS 2026-10-16.
 
-## 2026-10-16: Forsidens grafer i den hvide boks' plads (1/3 bredde)
+## 2026-10-16: Forsidens grafer i den hvide boks' plads
 
-- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: 1/3 af skærmbredden, fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
-- Kun pulsen har titel ("Puls"). Ingen "Ingen pulsdata endnu", ingen titler på de andre grafer og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16). Web + native; native er ikke kompileret lokalt — CI afgør.
+- Graferne (puls, kalorier, anbefalet mod indtag, målsætning) står uden baggrund, hvor den hvide infoboks stod, modsat tal-hjulet: fra kanten ind til boksens gamle højre/venstre side og fra boksens top til dens bund (højden deles ligeligt mellem graferne). Heroens højde (top til skillelinjen) er uændret.
+- Graferne er 72 % af deres andel af boksen, så der er luft imellem. Titel i midten på alle (Puls, Kalorier, Anbefalet mod indtag, Målsætning), "kl." foran venstre timetal. Ingen "Ingen pulsdata endnu" og ingen tekst/kæmpe kcal-tal under graferne (brugeren 2026-10-16).
+- Kendt: den grå anbefalede kurve i Kalorier ligger næsten på 0, fordi skalaen følger det største måltid — afventer brugerens svar om, hvad graferne skal vise. Web + native; native er ikke kompileret lokalt — CI afgør.
 
 
 ## 2026-10-16: Lidl/Aldi-berigelse (lokalt script på brugerens pc)

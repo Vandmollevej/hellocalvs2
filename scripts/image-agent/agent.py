@@ -23,6 +23,7 @@ from rembg import remove
 
 from cutout import run_cutouts
 from compare_engines import run_compare
+from bria import record_api_call
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("image-agent")
@@ -73,8 +74,13 @@ def search_image_candidates(query):
         "safe": "active",
         "num": 8,
     }
-    response = requests.get(SEARCH_URL, params=params, timeout=15)
-    response.raise_for_status()
+    try:
+        response = requests.get(SEARCH_URL, params=params, timeout=15)
+        response.raise_for_status()
+    except Exception as exc:
+        record_api_call("google-search", False, str(exc))
+        raise
+    record_api_call("google-search", True)
     items = response.json().get("items", [])
 
     def area(item):

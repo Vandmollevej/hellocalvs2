@@ -1064,7 +1064,10 @@
     "shutterHint": "Press the shutter when the product is sharp in the picture.",
     "creating": "Product wordt aangemaakt …",
     "sendingPhotos": "Foto's worden verzonden …",
-    "processingPhotos": "Foto’s worden verwerkt: {steps} …"
+    "processingPhotos": "Foto’s worden verwerkt: {steps} …",
+    "readingEnergy": "Energie wordt gelezen …",
+    "energyUnreadable": "De energie kon niet worden gelezen. Maak de foto opnieuw, dicht bij de voedingswaardetabel.",
+    "energyAiUnavailable": "De energie kan nu niet worden gelezen. Probeer het zo opnieuw."
   },
   "foods": {
     "title": "Voedingsmiddelen",
@@ -3886,6 +3889,7 @@
     "noPulse": "No pulse data yet",
     "intake": "Calories",
     "planVsActual": "Recommended vs. intake",
+    "clockLeft": "{hour}",
     "goalDays": "Goal · days",
     "goalWeeks": "Goal · weeks",
     "actionOpen": "See suggestions for staying within today's goal",

@@ -7,6 +7,7 @@ svarer med en adresse til et transparent PNG, som hentes her.
 """
 
 import base64
+import hashlib
 import logging
 import os
 
@@ -20,6 +21,18 @@ log = logging.getLogger("image-agent.bria")
 
 BRIA_API_URL = os.environ.get("BRIA_API_URL", "https://engine.prod.bria-api.com/v2/image/edit/remove_background")
 BRIA_TIMEOUT = int(os.environ.get("BRIA_TIMEOUT_SECONDS", "60"))
+# Hvert Bria-svar gemmes på disken efter billedets indhold, så samme billede
+# aldrig koster to credits. Antallet af gemte svar er også kreditregnskabet:
+# ved BRIA_MAX_CREDITS stopper vi, så de sidste credits ikke brændes af.
+CACHE_DIR = os.path.join(os.environ.get("IMAGE_OUTPUT_DIR", "/images"), "bria-cache")
+MAX_CREDITS = int(os.environ.get("BRIA_MAX_CREDITS", "170"))
+
+
+def credits_used():
+    try:
+        return len([name for name in os.listdir(CACHE_DIR) if name.endswith(".png")])
+    except FileNotFoundError:
+        return 0
 
 
 def _admin_token():
@@ -51,7 +64,53 @@ def available():
     return bool(get_token())
 
 
+def record_api_call(service_id, ok, error=None, count=1):
+    """Tæller et kald til admin → API-forbrug (api_usage_months, som recordApiCall i appen)."""
+    database_url = os.environ.get("DATABASE_URL", "").split("?")[0]
+    if not database_url:
+        return
+    message = None if ok else (error or "Ukendt fejl")[:300]
+    try:
+        with psycopg2.connect(database_url, connect_timeout=10) as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO api_usage_months ("serviceId", month, calls, errors, "lastOkAt", "lastErrorAt", "lastError")
+                VALUES (%s, to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM'), %s, %s,
+                        CASE WHEN %s THEN now() END, CASE WHEN %s THEN NULL ELSE now() END, %s)
+                ON CONFLICT ("serviceId", month) DO UPDATE SET
+                  calls = api_usage_months.calls + EXCLUDED.calls,
+                  errors = api_usage_months.errors + EXCLUDED.errors,
+                  "lastOkAt" = COALESCE(EXCLUDED."lastOkAt", api_usage_months."lastOkAt"),
+                  "lastErrorAt" = COALESCE(EXCLUDED."lastErrorAt", api_usage_months."lastErrorAt"),
+                  "lastError" = COALESCE(EXCLUDED."lastError", api_usage_months."lastError")
+                """,
+                (service_id, count, 0 if ok else 1, ok, ok, message),
+            )
+    except Exception as exc:  # noqa: BLE001
+        log.debug("Kunne ikke tælle %s-kaldet: %s", service_id, exc)
+
+
 def remove_background_bria(image_bytes):
+    path = os.path.join(CACHE_DIR, hashlib.sha256(image_bytes).hexdigest() + ".png")
+    if os.path.exists(path):  # gemt svar: ingen credits, ingen kaldtælling
+        with open(path, "rb") as handle:
+            return handle.read()
+    if credits_used() >= MAX_CREDITS:
+        raise RuntimeError(f"Bria-kreditgrænsen er nået ({MAX_CREDITS} billeder) — hæv BRIA_MAX_CREDITS, når der er købt flere")
+    try:
+        result = _remove_background_bria(image_bytes)
+    except Exception as exc:
+        record_api_call("bria", False, str(exc))
+        raise
+    record_api_call("bria", True)
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    with open(path + ".tmp", "wb") as handle:
+        handle.write(result)
+    os.replace(path + ".tmp", path)
+    return result
+
+
+def _remove_background_bria(image_bytes):
     token = get_token()
     if not token:
         raise RuntimeError("Bria-nøgle mangler (admin → API-nøgler → Bria)")

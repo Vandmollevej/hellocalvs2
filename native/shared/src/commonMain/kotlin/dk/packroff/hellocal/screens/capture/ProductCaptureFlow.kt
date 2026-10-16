@@ -52,6 +52,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -111,6 +112,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     // completed one (the small struck-through line above the heading).
     var stepDone by remember { mutableStateOf<List<CaptureStep>?>(null) }
     var working by remember { mutableStateOf(false) }
+    // The energy step waits for a valid reading (user 2026-10-16, web:
+    // verifyEnergy): "reading" while the AI reads the photo; the error stays
+    // until the photo is retaken. The reading is sent with the create request.
+    var energyReading by remember { mutableStateOf(false) }
+    var energyError by remember { mutableStateOf<String?>(null) }
+    var nutritionAnalysisId by remember { mutableStateOf<String?>(null) }
     var createFailed by remember { mutableStateOf(false) }
     // The product is being created: "Opretter varen …" over the last photo (web 2026-10-14).
     var submitting by remember { mutableStateOf(false) }
@@ -148,6 +155,29 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     suspend fun findCreatedProduct(code: String): String? = runCatching {
         Api.get("/api/products/lookup/${Location.encode(code)}").jsonObject["product"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
     }.getOrNull()
+
+    // Energy step (web: readEnergyPhoto, POST /api/products/read-energy): the AI
+    // reads the photo while the user waits. Returns the analysis id, or null
+    // plus the reason ("unreadable", "ai_unavailable", "error").
+    suspend fun readEnergy(photo: String): Pair<String?, String> = try {
+        val res = Api.send(
+            HttpMethod.Post,
+            "/api/products/read-energy",
+            mapOf(
+                "photo" to photo,
+                "barcode" to (barcode ?: ""),
+                "marketRegion" to marketRegion(),
+                "signals" to mapOf("appLanguage" to t.locale.code),
+            ),
+        ) { header(SCAN_FLOW_HEADER, flowId) }.jsonObject
+        val id = res["analysisId"]?.jsonPrimitive?.contentOrNull
+        if (res["ok"]?.jsonPrimitive?.booleanOrNull == true && id != null) id to ""
+        else null to (res["reason"]?.jsonPrimitive?.contentOrNull ?: "error")
+    } catch (e: ApiException) {
+        null to ((e.body as? JsonObject)?.get("reason")?.jsonPrimitive?.contentOrNull ?: "error")
+    } catch (e: Exception) {
+        null to "error"
+    }
 
     // The whole, uncropped photo for the night robot (web: uploadFullPhoto).
     fun uploadBackPhoto(stepItem: CaptureStep, bytes: ByteArray) {
@@ -204,6 +234,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 photos[CaptureStep.Front]?.let { put("frontPhoto", it) }
                 frontFull?.let { put("frontPhotoFull", it) }
                 photos[CaptureStep.Nutrition]?.let { put("nutritionPhoto", it) }
+                nutritionAnalysisId?.let { put("nutritionAnalysisId", it) }
                 photos[CaptureStep.Ingredients]?.let { put("ingredientsPhoto", it) }
             }
             val id = Api.send(HttpMethod.Post, "/api/products/quick", body) { header(SCAN_FLOW_HEADER, flowId) }
@@ -332,6 +363,21 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 }
                 lastPhoto = bytes
                 photos = photos + (current to jpegDataUrl(bytes))
+                // The energy must be read before the step is done — otherwise the
+                // photo is retaken (user 2026-10-16). No estimates.
+                if (current == CaptureStep.Nutrition) {
+                    energyError = null
+                    working = true
+                    energyReading = true
+                    val (analysisId, reason) = readEnergy(jpegDataUrl(bytes))
+                    energyReading = false
+                    working = false
+                    nutritionAnalysisId = analysisId
+                    if (analysisId == null) {
+                        energyError = reason
+                        return@launch
+                    }
+                }
                 val completed = done + current
                 done = completed
                 showDoneThenContinue(listOf(current), completed)
@@ -365,6 +411,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             photos = emptyMap()
             frontFull = null
             lastPhoto = null
+            nutritionAnalysisId = null
+            energyError = null
             done = emptySet()
             createFailed = false
             lookupError = false
@@ -408,7 +456,17 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     CaptureStep.Nutrition, CaptureStep.Ingredients -> SquareGuide(0.20f, dim = 0.65f, topInset = 0.24f)
                 }
             }
-            if (working) PhotoWorkingOverlay(t.t(if (submitting) "cameraCreate.creating" else "cameraCreate.analyzingDefault"))
+            if (working) {
+                PhotoWorkingOverlay(
+                    t.t(
+                        when {
+                            submitting -> "cameraCreate.creating"
+                            energyReading -> "cameraCreate.readingEnergy"
+                            else -> "cameraCreate.analyzingDefault"
+                        },
+                    ),
+                )
+            }
             if (step != CaptureStep.Barcode && message == null && celebrating == null && !working && !createFailed) {
                 ShutterRow(
                     shutterLabel = t.t("cameraCreate.shutter"),
@@ -468,6 +526,12 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                     bold = true,
                     align = TextAlign.Center,
                 )
+            }
+            val energyMessage = energyError?.takeIf { step == CaptureStep.Nutrition }?.let {
+                t.t(if (it == "ai_unavailable") "cameraCreate.energyAiUnavailable" else "cameraCreate.energyUnreadable")
+            }
+            if (energyMessage != null) {
+                HcText(energyMessage, HcTypeRoles.Small, Modifier.fillMaxWidth(), bold = true, align = TextAlign.Center)
             }
             HcText(stepHints.getValue(step), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             if (step != CaptureStep.Barcode) {

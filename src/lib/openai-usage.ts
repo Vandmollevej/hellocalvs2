@@ -91,8 +91,21 @@ type CostPage = {
   next_page?: string | null;
 };
 
-// Dagligt forbrug fra Costs-API'et (UTC-døgn), opdelt på linjer (model/type).
+// OpenAI opdaterer forbruget med minutters forsinkelse; forsiden og
+// varsel-jobbet læser det ofte, så svaret genbruges i 5 minutter.
+const COSTS_CACHE_MS = 5 * 60_000;
+let costsCache: { at: number; key: string; value: Awaited<ReturnType<typeof fetchCostBucketsLive>> } | null = null;
+
 async function fetchCostBuckets(adminKey: string, startTime: number) {
+  const key = `${adminKey}:${startTime}`;
+  if (costsCache && costsCache.key === key && Date.now() - costsCache.at < COSTS_CACHE_MS) return costsCache.value;
+  const value = await fetchCostBucketsLive(adminKey, startTime);
+  costsCache = { at: Date.now(), key, value };
+  return value;
+}
+
+// Dagligt forbrug fra Costs-API'et (UTC-døgn), opdelt på linjer (model/type).
+async function fetchCostBucketsLive(adminKey: string, startTime: number) {
   const buckets: { start: number; usd: number; lines: Map<string, number> }[] = [];
   let page: string | null = null;
   for (let i = 0; i < 10; i += 1) {
@@ -139,7 +152,11 @@ export async function saveBalance(usd: number, adminId: string, now = new Date()
   await saveSecret("OPENAI_CREDIT_BALANCE_AT", now.toISOString(), adminId);
 }
 
-export async function getOpenAiUsage(now = new Date(), forceStatus = false): Promise<OpenAiUsage> {
+export async function getOpenAiUsage(
+  now = new Date(),
+  forceStatus = false,
+  lowBalanceUsd = LOW_BALANCE_USD,
+): Promise<OpenAiUsage> {
   await ensureSecretsLoaded();
   const balance = readBalance();
   const todayStart = utcDayStart(now);
@@ -200,7 +217,7 @@ export async function getOpenAiUsage(now = new Date(), forceStatus = false): Pro
           enteredAt: balance.at.toISOString(),
           spentSinceUsd: spentSince,
           remainingUsd: remaining,
-          low: status.state === "quota" || (remaining !== null && remaining < LOW_BALANCE_USD),
+          low: status.state === "quota" || (remaining !== null && remaining < lowBalanceUsd),
         }
       : { configured: false },
   };

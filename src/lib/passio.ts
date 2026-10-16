@@ -1,4 +1,5 @@
 import { sanitizeAiPhoto } from "@/lib/image-metadata";
+import { recordApiCall } from "@/lib/api-usage-record";
 // Passio Nutrition-AI client: exchanges PASSIO_API_KEY for a bearer token
 // (cached in memory, valid ~24h) and calls the meal-photo recognition
 // endpoint. Used only by /api/ai/analyze-meal-photo for the "Måltid"
@@ -50,6 +51,7 @@ export async function recognizeMealPhoto(photoDataUrl: string): Promise<PassioIn
     body: JSON.stringify({ image: sanitizeAiPhoto(photoDataUrl) }),
   });
 
+  recordApiCall("passio", res.ok, res.ok ? null : `HTTP ${res.status}`);
   if (res.status === 401) {
     // Token may have been revoked/expired early server-side — drop the cache
     // so the next call re-authenticates instead of failing repeatedly.

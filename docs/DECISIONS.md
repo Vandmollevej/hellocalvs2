@@ -1,3 +1,25 @@
+## 2026-10-16: Rodårsagen var tom OpenAI-kredit — energi-trinnet kræver nu en aflæsning, ingen skøn
+
+Produktionens log (læst med brugerens tilladelse): alle AI-aflæsninger siden mindst 15/10 08:56 fejlede med 429 `insufficient_quota` ("You have no credits remaining") — letmælken, Verpoorten m.fl. Kreditten skal fyldes op på platform.openai.com → Billing (admin → OpenAI-forbrug viser status).
+
+Brugeren afviste energiskønnet ("Skønner energien? Dette er ikke ok") og bestemte: energi-trinnet må ikke kunne klares, hvis energien ikke er læst. Derfor:
+- `POST /api/products/read-energy`: AI'en læser energifotoet, mens brugeren står på trinnet, når telefonens egen aflæsning ikke var komplet. Kun komplet pr. 100 g/ml eller alkohol over 1,2 % vol (`energyReadOk`, `src/lib/energy-read.ts`) klarer trinnet; ellers tages billedet om. Web (`verifyEnergy`) + native.
+- Aflæsningen sendes med oprettelsen (`nutritionAnalysisId`) og bruges direkte af `enrichLabel`.
+- Skønnet fra samme dag (Frida/varetype på nye scannede varer, `type-nutrition-estimate.ts`) er fjernet, og Frida-robotten springer varer fra kameraflowet over (`quickEnrichmentJob: null`).
+- Manglende kredit prøves ikke igen med det samme (kun de øvrige 429/5xx).
+- Alarm: `/api/health?deep=1` melder OpenAI-status (`ai`: ok/quota/invalid/missing/low …), og Uptime-overvågningen fejler — og mailer — ved tom kredit, afvist nøgle eller lav saldo (højst i timens første 10 minutter). Vagt: `src/lib/scan-energy-guard.test.mjs` fejler, hvis energi-porten, skøn-forbuddet eller alarmen fjernes.
+
+## 2026-10-16: Beløbsgrænse for varsler (admin → API-forbrug)
+
+- Brugerens ønske: selv bestemme, hvornår der advares. Hver tjeneste har nu "Advar mig, når månedens forbrug når …" (`api_budgets.alertAt`), og OpenAI har også "Advar mig, når kreditsaldoen er under …" (`balanceAlertAt`, standard 5 $). Beløbsgrænsen giver advarsel på kortet og én mail pr. måned; 80 %/100 % af budgettet varsles stadig. Migration `20261016180000_api_alert_amount`.
+
+## 2026-10-16: Admin → API-forbrug for alle betalte tjenester
+
+- Brugerens ønske: se budget og status for alle API'er, der koster penge, hver for sig og samlet på admin-forsiden, og få varsler på mail (til/fra + modtagerliste).
+- Kun OpenAI har et forbrugs-API, vi kan bruge. De øvrige tælles, hvor appen/robotterne kalder dem (`recordApiCall` i `src/lib/api-usage-record.ts`; i Python `record_api_call` i `scripts/image-agent/bria.py` og `scripts/logo-agent/agent.py`) i `api_usage_months` (tjeneste × måned). Forbrug = kald × pris pr. kald; standardpriserne står i `PAID_SERVICES` (`src/lib/api-usage.ts`) og kan rettes pr. tjeneste sammen med månedsbudgettet (`api_budgets`). Google Vision tælles pr. billede.
+- Status: OpenAI = testkaldet; de øvrige = seneste kald lykkedes/fejlede. Budget ≥ 80 % = advarsel, ≥ 100 % = fejl.
+- Varsler (`api_alert_settings`, job `api-alerts` hvert kvarter): fejl højst én gang i døgnet pr. tjeneste, budgetvarsler én gang pr. måned; sendes direkte til modtagerne via SMTP. Lidl/Aldi-scriptet på brugerens pc (Google Vision) tælles ikke — det har ingen adgang til databasen.
+
 ## 2026-10-16: Admin → OpenAI-forbrug
 
 - Brugerens ønske: se live, hvad OpenAI koster, og om kreditten er ved at slippe op. Løber den tør, svarer OpenAI 429 `insufficient_quota` på alle kald; appen virker ellers, men al AI-aflæsning, stemme/foto-måltider, chatbot, oversættelser og AI-robotter fejler, indtil der fyldes op (anbefaling: Auto recharge under Billing).
@@ -5744,3 +5766,6 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-16: Tale-sidens funktion uændret på Madvarer
 
 - Brugerens krav (gentaget): funktionen skal være præcis som på den gamle Tale-side. Det sagte tolkes af AI'en (`/api/ai/interpret-meal`) til varer med mængde ("to skiver franskbrød med smør og marmelade" → tre forslag), løbende mens man taler (700 ms efter sidste ord) og en sidste gang, når mikrofonen stopper. "Foreslået" med Tilføj pr. række og "Tilføj alle forslag"; "Tilføjet" åbner registreringen; swipe giver favorit/fejlmelding/slet (gemt vare slettes efter bekræftelse). Forslag fra tidligere optagelser bliver stående, og dagens tilføjede varer huskes (`hf-voice-added-items`). Intet gemmes uden tryk (docs/AI.md). Søgningen kører fortsat løbende på varen. Web: `useMealInterpretation` + `VoiceMealSuggestions`; native: `FoodsScreens.kt` (genbruger `VoiceItemRow`). Lære: en flytning af en funktion må aldrig ændre dens opførsel uden at spørge brugeren først.
+## 2026-10-16 — Bria ved siden af rembg, med cache og kreditloft
+- Bria RMBG er valgfri fritlægningsmotor (`CUTOUT_ENGINE`, nøgle i admin → API-nøgler). rembg er stadig standard og det, der godkendes uden valg.
+- Bria-svar caches på disken efter billedets hash og tælles mod `BRIA_MAX_CREDITS`, så credits ikke spildes. Nye PRODUCT_FRONT-fritlægninger får en `_bria.png`-udgave, som admin kan sammenligne og vælge under Billedforslag. Detaljer: `docs/BRIA.md`.
