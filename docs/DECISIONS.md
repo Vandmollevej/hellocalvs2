@@ -1,3 +1,7 @@
+## 2026-10-16: Faste designbilleder caches i et år
+
+- Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.
+- Uændret: adgangsmur-billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`, `/icons/animals`, `/icons/body-measurements`) bliver ved 1 time, fordi admin kan erstatte dem under samme sti.
 ## 2026-10-16: Lidl/Aldi-varer berigelse kører lokalt på brugerens pc
 
 - Brugerens krav: Google Vision kun for varer, der giver 0 resultater ved tekstopslag; start med alle hentede Lidl- og Aldi-varer på dansk og tysk; flere detaljer end vi har samles i et ark (vores titel + nye fakta ved siden af); scriptet kører lokalt om natten, trækkes ned af pc'en selv, og står under Robotter på serveren men slået fra.

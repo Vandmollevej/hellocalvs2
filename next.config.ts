@@ -27,6 +27,24 @@ const nextConfig: NextConfig = {
         source,
         headers: [{ key: "Cache-Control", value: "private, max-age=3600" }],
       })),
+      // Faste designfiler (ikoner, flag, logoer, betalingsmærker) skifter aldrig
+      // indhold under samme navn: gem dem i et år og spørg ikke igen. Ikon-
+      // mapperne animals/body-measurements er adgangsmur-billeder og undtaget.
+      ...[
+        "/icons/:path((?!animals|body-measurements).*)",
+        "/flags/:path*",
+        "/integrations/:path*",
+        "/payment/:path*",
+        "/certifications/:path*",
+        "/hello-cal-logo:rest*",
+        "/hello-cal-fruit:rest*",
+        "/flag-:rest*",
+        "/apple-icon:rest*",
+        "/favicon:rest*",
+      ].map((source) => ({
+        source,
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      })),
     ];
   },
 };
