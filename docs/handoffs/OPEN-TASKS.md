@@ -560,3 +560,10 @@ Ejer: Codex, chat CSS-gennemgang (2026-10-12). Filer: klasse-refaktorering i src
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | admin-visuel | Visuel kontrol af indre adminsider efter CSS-refaktoreringen | I gang | Adminadgang bekræftet 2026-10-12 efter brugerens melding. Root kontrollerer live; agent laver source/CSS-review. Fundne rester: native kontroller uden rolleklasse og tre faste grafstyles; opfølgning i codex/admin-css-slutkontrol-20261012. Browseren har timeouts på billedtunge sider, som ikke markeres visuelt godkendt uden screenshot. |
+
+## G-LIDL-ALDI — Lidl/Aldi-berigelse (lokalt script)
+Filer: `scripts/lidl-aldi-enrich/**`, `docs/LIDL-ALDI-ENRICH.md`, `src/lib/jobs/registry.ts` (ny `defaultEnabled`), `src/lib/jobs/runner.ts`, `src/app/api/admin/cron-jobs/[key]/route.ts`.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| lidl-aldi-enrich | Natligt lokalt script: Open Food Facts (stregkode, titel), Vision kun ved 0 resultater, ark med nye fakta | Venter på bruger | Brugeren kopierer `config.example.json`, kører `--inspect`/`--limit 20`, derefter `install-task.ps1` |

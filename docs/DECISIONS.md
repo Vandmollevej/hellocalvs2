@@ -1,3 +1,9 @@
+## 2026-10-16: Lidl/Aldi-varer berigelse kører lokalt på brugerens pc
+
+- Brugerens krav: Google Vision kun for varer, der giver 0 resultater ved tekstopslag; start med alle hentede Lidl- og Aldi-varer på dansk og tysk; flere detaljer end vi har samles i et ark (vores titel + nye fakta ved siden af); scriptet kører lokalt om natten, trækkes ned af pc'en selv, og står under Robotter på serveren men slået fra.
+- Valg: Google har ingen officiel tekstsøgning på nettet (Custom Search lukker 1. januar 2027), så tekstopslag går mod Open Food Facts (stregkode, derefter titel), og Vision (`WEB_DETECTION`) bruges kun ved 0 resultater. Se `docs/LIDL-ALDI-ENRICH.md`.
+- Jobbet har ny `defaultEnabled: false` i `src/lib/jobs/registry.ts`; rækken oprettes slået fra.
+
 ## 2026-10-16: Tale og Madvarer er én side
 
 Brugerens krav: Tale-siden og Madvarer flettes; mikrofonen er næsten lige så stor over søgefeltet og virker som før, og resultater søges og raffineres løbende, mens man taler.

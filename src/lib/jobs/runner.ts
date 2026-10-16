@@ -21,6 +21,7 @@ export async function ensureJobRows() {
       key: job.key,
       intervalMinutes: job.defaultIntervalMinutes,
       runAtTime: job.defaultRunAtTime,
+      enabled: job.defaultEnabled ?? true,
     })),
     skipDuplicates: true,
   });
