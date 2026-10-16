@@ -3888,7 +3888,7 @@
     "pulse": "Pulse",
     "noPulse": "No pulse data yet",
     "intake": "Calories",
-    "planVsActual": "Recommended vs. intake",
+    "planVsActual": "Calorie status",
     "clockLeft": "{hour}",
     "goalDays": "Goal · days",
     "goalWeeks": "Goal · weeks",

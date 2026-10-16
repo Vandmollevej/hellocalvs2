@@ -25,9 +25,11 @@ const BUCKET_MIN = 15;
 /** Kaloriegrafen samler pr. time, så den anbefalede kurve kan ses ved siden af måltiderne. */
 const KCAL_BUCKET_MIN = 60;
 const GOAL_BAR_PX = 4;
-/** Samme vandrette udstrækning som den gamle hvide infoboks: fra kanten til midten. */
 const EDGE = 13;
-const CENTER_GAP = 12;
+/** Graferne slutter et godt stykke før midten, så de holder sig fri af tal-hjulets tekst (bruger 2026-10-16). */
+const CENTER_GAP = 36;
+/** Uden et vægtmål med dato viser målgrafen de seneste 30 dage (bruger 2026-10-16: kalorier mod målet skal altid vises). */
+const FALLBACK_DAYS = 30;
 /** Fra den hvide boks' top til hero-bunden (graferne og teksten under dem). */
 const BOX_TOP = WHEEL_SPAN.shift - WHEEL_SPAN.half;
 
@@ -127,10 +129,10 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
 
   const goal = useMemo(() => {
     const weightGoal = goals.find((g) => g.targets.some((x) => x.type === "weight") && g.targetDate);
-    if (!weightGoal || !weightGoal.targetDate) return null;
-    const from = new Date(weightGoal.createdAt);
+    const to = weightGoal?.targetDate ? new Date(`${weightGoal.targetDate}T12:00:00`) : new Date();
+    to.setHours(12, 0, 0, 0);
+    const from = weightGoal ? new Date(weightGoal.createdAt) : new Date(to.getTime() - (FALLBACK_DAYS - 1) * 86_400_000);
     from.setHours(12, 0, 0, 0);
-    const to = new Date(`${weightGoal.targetDate}T12:00:00`);
     const totalDays = Math.max(1, Math.round((to.getTime() - from.getTime()) / 86_400_000) + 1);
     const perDay = new Map<string, number>();
     for (const r of registrations) {
@@ -155,8 +157,7 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
   }, [goals, registrations, width, budgetKcal]);
 
   // Graferne er lavere end deres andel af pladsen, så der er luft imellem dem (bruger 2026-10-16).
-  const chartCount = goal ? 4 : 3;
-  const chartH = Math.floor((chartsH / chartCount) * 0.85);
+  const chartH = Math.floor((chartsH / 4) * 0.85);
   const leftLabel = (hour: string) => t("frontCharts.clockLeft", { hour });
   const { reduceKcal, burnKcal } = splitSurplus(model.surplus);
   const walks = walkOptions(model.surplus, model.kg);
@@ -192,13 +193,11 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
                 width={width} height={chartH} planCumulative={model.planCum} actualCumulative={model.actualCum} elapsed={model.elapsed}
                 startHour={model.start} endHour={model.end} title={t("frontCharts.planVsActual")}
               />
-              {goal && (
-                <GoalTimeline
-                  width={width} height={chartH} bars={goal.bars} slots={goal.slots} goalKcal={budgetKcal} recMin={goal.min} recMax={goal.max}
-                  startLabel={shortDate(goal.from)} endLabel={shortDate(goal.to)}
-                  title={t(goal.weeks ? "frontCharts.goalWeeks" : "frontCharts.goalDays")}
-                />
-              )}
+              <GoalTimeline
+                width={width} height={chartH} bars={goal.bars} slots={goal.slots} goalKcal={budgetKcal} recMin={goal.min} recMax={goal.max}
+                startLabel={shortDate(goal.from)} endLabel={shortDate(goal.to)}
+                title={t(goal.weeks ? "frontCharts.goalWeeks" : "frontCharts.goalDays")}
+              />
             </>
           )}
         </div>
