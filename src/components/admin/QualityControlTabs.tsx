@@ -4,11 +4,12 @@ import { t } from "@/lib/admin-i18n";
 
 // Faner under Kvalitetskontrol: produkter, delte retter og brugertilføjede aktiviteter
 // (docs/DECISIONS.md 2026-09-24).
-export function QualityControlTabs({ active, locale }: { active: "products" | "sharedRecipes" | "activities"; locale: Locale }) {
+export function QualityControlTabs({ active, locale }: { active: "products" | "sharedRecipes" | "activities" | "incompleteImages"; locale: Locale }) {
   const tabs = [
     { key: "products", href: "/admin/quality-control", label: t(locale, "quality_control_tab_products") },
     { key: "sharedRecipes", href: "/admin/quality-control/shared-recipes", label: t(locale, "quality_control_tab_shared_recipes") },
     { key: "activities", href: "/admin/quality-control/activities", label: t(locale, "quality_control_tab_activities") },
+    { key: "incompleteImages", href: "/admin/quality-control/incomplete-images", label: t(locale, "quality_control_tab_incomplete_images") },
   ] as const;
   return (
     <div className="hf-type-body flex gap-4 border-b border-hf-tan-dark">
