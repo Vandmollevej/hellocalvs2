@@ -8,6 +8,10 @@ type StructuredVisionArgs = {
   text: string;
   schemaName: string;
   schema: JsonSchema;
+  // Flere billeder i samme kald (fx før/efter i 2-års kvalitetstjekket,
+  // src/lib/product-recheck.ts) og billedernes detaljegrad.
+  extraPhotos?: string[];
+  detail?: "low" | "high";
 };
 
 export function getProductVisionModel() {
@@ -42,23 +46,27 @@ export async function callStructuredVision<T>({
   text,
   schemaName,
   schema,
+  extraPhotos = [],
+  detail = "high",
 }: StructuredVisionArgs): Promise<{ value: T; model: string; responseId: string | null }> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     void debugLog({ category: "ai", event: schemaName, level: "error", message: "OPENAI_API_KEY er ikke sat — intet AI-kald" });
     throw new Error("OPENAI_API_KEY er ikke sat");
   }
-  if (!photo.startsWith("data:image/") && !photo.startsWith("https://")) {
-    throw new Error("photo skal være data:image/... eller https URL");
+  for (const item of [photo, ...extraPhotos]) {
+    if (!item.startsWith("data:image/") && !item.startsWith("https://")) {
+      throw new Error("photo skal være data:image/... eller https URL");
+    }
   }
 
   // docs/PRIVACY.md "AI": ingen metadata og ingen ID'er til OpenAI, og
   // svaret må ikke gemmes hos OpenAI (store: false).
-  const cleanPhoto = sanitizeAiPhoto(photo);
+  const cleanPhotos = [photo, ...extraPhotos].map(sanitizeAiPhoto);
   const model = getProductVisionModel();
   const startedAt = Date.now();
   try {
-    const result = await requestStructuredVision<T>({ apiKey, model, cleanPhoto, system, text, schemaName, schema });
+    const result = await requestStructuredVision<T>({ apiKey, model, cleanPhotos, detail, system, text, schemaName, schema });
     // Admin "Log" (docs/DECISIONS.md 2026-09-28): hvert OpenAI-kald med tid
     // og tokens; scanningens flow/vare kommer fra debug-konteksten.
     void debugLog({
@@ -85,7 +93,8 @@ export async function callStructuredVision<T>({
 async function requestStructuredVision<T>({
   apiKey,
   model,
-  cleanPhoto,
+  cleanPhotos,
+  detail,
   system,
   text,
   schemaName,
@@ -93,7 +102,8 @@ async function requestStructuredVision<T>({
 }: {
   apiKey: string;
   model: string;
-  cleanPhoto: string;
+  cleanPhotos: string[];
+  detail: "low" | "high";
   system: string;
   text: string;
   schemaName: string;
@@ -117,7 +127,7 @@ async function requestStructuredVision<T>({
           role: "user",
           content: [
             { type: "input_text", text },
-            { type: "input_image", image_url: cleanPhoto, detail: "high" },
+            ...cleanPhotos.map((image_url) => ({ type: "input_image", image_url, detail })),
           ],
         },
       ],
@@ -145,4 +155,51 @@ async function requestStructuredVision<T>({
     responseId: typeof data.id === "string" ? data.id : null,
     usage: data.usage ?? null,
   };
+}
+
+
+// Struktureret tekstkald uden billede (fx stavekontrollens tvivlsomme ord,
+// docs/DECISIONS.md 2026-10-15). Samme privatlivsregler: store: false.
+export async function callStructuredText<T>({
+  system,
+  text,
+  schemaName,
+  schema,
+}: {
+  system: string;
+  text: string;
+  schemaName: string;
+  schema: JsonSchema;
+}): Promise<{ value: T; model: string }> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("OPENAI_API_KEY er ikke sat");
+  const model = getProductVisionModel();
+  const startedAt = Date.now();
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    // Et hængende tekstkald må ikke stoppe de job, der venter på det.
+    signal: AbortSignal.timeout(60_000),
+    body: JSON.stringify({
+      model,
+      store: false,
+      input: [
+        { role: "system", content: [{ type: "input_text", text: system }] },
+        { role: "user", content: [{ type: "input_text", text }] },
+      ],
+      text: { format: { type: "json_schema", name: schemaName, schema, strict: true } },
+    }),
+  });
+  if (!response.ok) throw new Error(`OpenAI-kald fejlede (${response.status}): ${await response.text()}`);
+  const data = (await response.json()) as OpenAiResponsesPayload;
+  const output = readOutputText(data);
+  if (!output) throw new Error("Intet struktureret svar fra OpenAI");
+  void debugLog({
+    category: "ai",
+    event: schemaName,
+    message: `OpenAI-tekstkald (${model}) på ${Date.now() - startedAt} ms`,
+    durationMs: Date.now() - startedAt,
+    data: { model, usage: data.usage ?? null },
+  });
+  return { value: JSON.parse(output) as T, model };
 }

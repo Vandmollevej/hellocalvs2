@@ -31,7 +31,14 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // kvalitetsmærker/hjerter/segl er ikke logoer (hjertet på EDEKA-kartonen blev
 // brand-logo i testen 2026-10-01). Derudover certifications (mærkningslogoer
 // på emballagen), gemt i ProductFilters, så varesiden viser logoerne.
-export const FRONT_PROMPT_VERSION = "front-v4-2026-10-02-certifications";
+// front-v5 (2026-10-15): et logo, der kun ses delvist, må ikke gættes færdigt
+// ud fra brandlisten (Nettos ØGO-pose blev læst som "DAGO").
+// front-v6 (2026-10-15): productName udfyldes med varetypen, også når den ikke
+// står stort på forsiden (Verpoorten Original fik titlen "Vare 40157818"), og
+// varianten (Original, Jalapeño) er aldrig varenavnet.
+// Desuden alcoholPercent (% vol), så alkoholiske drikke uden næringstabel kan
+// få et kalorieskøn (src/lib/alcohol-nutrition.ts).
+export const FRONT_PROMPT_VERSION = "front-v6-2026-10-15-product-type-alcohol";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -64,6 +71,7 @@ export const FRONT_SCHEMA = {
     productName: { type: ["string", "null"] },
     variant: { type: ["string", "null"] },
     packageSizeText: { type: ["string", "null"] },
+    alcoholPercent: { type: ["number", "null"] },
     claims: { type: "array", items: { type: "string" } },
     certifications: { type: "array", items: { type: "string" } },
     visibleText: { type: "array", items: { type: "string" } },
@@ -93,6 +101,7 @@ export const FRONT_SCHEMA = {
     "productName",
     "variant",
     "packageSizeText",
+    "alcoholPercent",
     "claims",
     "certifications",
     "visibleText",
@@ -110,12 +119,15 @@ export const FRONT_SYSTEM = [
   "brand = hovedmærket/kommercielt logo, fx Arla.",
   "subbrand = vareserie/familie, fx LactoFREE.",
   "productName = hvad varen faktisk er, fx Letmælk. Emballeret drikkevand hedder Flaskevand (ikke bare Vand), medmindre emballagen siger fx Kildevand.",
+  "productName udfyldes altid, når du kan se, hvad slags vare det er — også når varetypen ikke står med store bogstaver på forsiden: udled den af emballagen, brandet og den synlige tekst (fx Verpoorten Original = Eierlikör). productName er aldrig kun brand eller variant — varianten (fx Original, Jalapeño) står kun i variant. null kun, hvis du slet ikke kan se, hvad varen er.",
   "variant = smag/type/styrke/fedtprocent/laktosefri/uden brus eller anden variant, når den tydeligt er en variant, fx 1,5 % fedt, laktosefri.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
+  "alcoholPercent = alkoholprocenten i % vol, når den står på emballagen (fx '20 % vol' → 20), ellers null.",
   "productName må ALDRIG indeholde variant eller packageSizeText — de står i hver sit felt og vises på hver sin linje. Fx forside med 'Fettarme H-Milch 1,5 % Fett laktosefrei 1 L': productName = Fettarme H-Milch, variant = 1,5 % Fett, laktosefrei, packageSizeText = 1 L.",
   "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
   "Kvalitetsmærker, hjerter, segl, stjerner, slogans (fx 'Markenqualität mit Herz') og certificeringer er IKKE logoer og aldrig brand. Står producentens kendte mærke (fx EDEKA, Arla, REMA 1000) på forsiden, er det brand, og en vareserie (fx Herzstücke, LactoFREE) er subbrand.",
   "logoText = navnet som hovedlogoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
+  "Læs logoet bogstav for bogstav, også æ, ø og å (fx ØGO). Er en del af logoet skåret af, skjult eller ulæselig, så gæt ikke resten og vælg ikke et lignende navn fra brandlisten — returnér det, du sikkert kan læse, eller null, med lav logoConfidence.",
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
   "productBox = rektangel om hele den fysiske vare/emballage i billedet, samme format. null hvis varen ikke kan afgrænses.",
@@ -187,7 +199,9 @@ export function barcodeLogoText(input: ContextLines & { knownBrands: string[] })
 // v3 (2026-09-27): pakningens samlede indhold er ikke en portion — test med
 // en 1 L mælkekarton gav "1 Liter" som alternativ portion uden kcal, hvilket
 // ellers bliver til en admin-fejlrapport ved hver oprettelse.
-export const NUTRITION_PROMPT_VERSION = "nutrition-v3-2026-09-27";
+// v4 (2026-10-15): alcoholPercent (% vol) — drikke over 1,2 % vol har ofte
+// ingen næringstabel, men procenten står der (Verpoorten: "20 % vol").
+export const NUTRITION_PROMPT_VERSION = "nutrition-v4-2026-10-15-alcohol";
 
 const NULLABLE_NUMBER = { type: ["number", "null"] };
 
@@ -204,6 +218,7 @@ export const NUTRITION_SCHEMA = {
     sugarsPer100g: NULLABLE_NUMBER,
     fiberPer100g: NULLABLE_NUMBER,
     saltPer100g: NULLABLE_NUMBER,
+    alcoholPercent: NULLABLE_NUMBER,
     // Usikkerheds-~ (docs/DECISIONS.md 2026-09-25): øvrige næringsstoffer,
     // der faktisk står i tabellen, og producentens egen ± når den er oplyst.
     micronutrients: {
@@ -250,6 +265,7 @@ export const NUTRITION_SCHEMA = {
     "sugarsPer100g",
     "fiberPer100g",
     "saltPer100g",
+    "alcoholPercent",
     "micronutrients",
     "rawText",
     "language",
@@ -266,6 +282,7 @@ const NUTRITION_RULES = [
   "Foretræk værdier pr. 100 g eller 100 ml. Bland aldrig portionskolonnen sammen med pr.100-kolonnen.",
   "kcalPer100g/proteinPer100g/carbsPer100g/fatPer100g skal være null hvis korrekt pr.100-værdi ikke kan læses.",
   "Hvis tabellen kun viser pr. portion, sæt basis=portion og lad pr.100-felter være null.",
+  "alcoholPercent = alkoholprocenten i % vol, når den står på fotoet (fx '20 % vol' → 20) — også når der ingen næringstabel er. Ellers null.",
   "Find også alternative portionsangivelser såsom pr. glas, skive, stk. eller portion, når de faktisk står på emballagen.",
   "Pakningens samlede indhold (fx 1 Liter eller 500 g) er ikke en portion og skal ikke med i alternativeServings.",
   `micronutrients: alle øvrige næringsstoffer der faktisk står i tabellen (vitaminer, mineraler, fedtsyrer, kolesterol osv.), pr. 100 g/ml omregnet til disse enheder: ${MICRO_UNITS}.`,
@@ -292,7 +309,7 @@ export function nutritionText(input: ContextLines & { ocrText?: string }) {
 
 // --- Ingrediensliste ---------------------------------------------------------
 
-export const INGREDIENTS_PROMPT_VERSION = "ingredients-v1-2026-09-24-regions";
+export const INGREDIENTS_PROMPT_VERSION = "ingredients-v2-2026-10-14-spelling";
 
 export const INGREDIENTS_SCHEMA = {
   type: "object",
@@ -312,6 +329,8 @@ const INGREDIENTS_RULES = [
   "Returnér kun ingredienser, allergener og tekst som faktisk kan ses.",
   "rawText skal bevare teksten så tæt på emballagen som muligt.",
   "ingredientsText må rydde åbenlyse OCR-linjeproblemer, men må ikke opfinde, fjerne eller ændre ingredienser/procenter.",
+  "ingredientsText skal være korrekt stavet på listens sprog: ret OCR-fejl som \"Fnergi\" (Energi) eller \"£202\"/\"€330\" (E202/E330). E-numre skrives som E + tal. På dansk staves det \"soja\" (aldrig \"soya\"). Ord med STORE bogstaver er efter loven allergener: læses et af dem forkert (\"SOIASAUCE\", \"FSAMFRØ\"), så skriv det allergen, der står (\"SOJASAUCE\", \"SESAMFRØ\"), med store bogstaver.",
+  "ingredientsText indeholder kun ingredienslisten — aldrig næringstabellen (Energi, kJ/kcal, fedt …), opbevaring eller producentadresse.",
   "Prioritér de oplyste sprog, men de er ikke en whitelist.",
   "Hvis billedet ikke er en ingrediensdeklaration eller er ulæseligt, brug tomme strenge/lister og lav confidence lav.",
 ];
@@ -339,7 +358,7 @@ export function ingredientsText(input: ContextLines & { ocrText?: string }) {
 // gange, ~3.400 ekstra tokens pr. vare). Bruges kun, når telefonens egen OCR
 // ikke kunne læse næringstabellen (src/lib/local-label.ts).
 
-export const LABEL_PROMPT_VERSION = "label-v1-2026-09-27";
+export const LABEL_PROMPT_VERSION = "label-v3-2026-10-15-alcohol";
 
 type ObjectSchema = { properties: Record<string, unknown>; required: string[] } & Record<string, unknown>;
 

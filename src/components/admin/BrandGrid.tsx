@@ -8,6 +8,7 @@ import type { LogoClientMeta, LogoUploadItem } from "@/lib/brand-logo-upload-typ
 import { assignLogoUpload } from "@/app/admin/product-database/logo-upload/actions";
 import { rerunBrandLogo } from "@/app/admin/product-database/brands/actions";
 import type { AdminBrandRow } from "@/lib/admin-brands";
+import { imageThumb } from "@/lib/image-thumb";
 
 // Brand-gitteret med "Drag n drop" til/fra (admin → Varedatabase → Brands). Når
 // det er slået til, kan et billede trækkes direkte ned i et brands boks: filen
@@ -29,7 +30,7 @@ function BrandLogo({ name, logoUrl }: { name: string; logoUrl: string | null }) 
   return (
     <div className="flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded-md bg-hf-white">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={logoUrl} alt={name} loading="lazy" className="h-full w-full object-contain p-3" />
+      <img src={imageThumb(logoUrl, 256)} alt={name} loading="lazy" className="h-full w-full object-contain p-3" />
     </div>
   );
 }

@@ -11,10 +11,13 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
-    <!-- Speech recognition service (device/AndroidDevice.kt startSpeech, Android 11+ package visibility). -->
+    <!-- Speech recognition and the voice (device/AndroidDevice.kt startSpeech/speak, Android 11+ package visibility). -->
     <queries>
         <intent>
             <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
     </queries>
 

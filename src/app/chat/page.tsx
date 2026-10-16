@@ -10,6 +10,7 @@ import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { mealShareBody } from "@/lib/meal-share";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
+import { imageThumb } from "@/lib/image-thumb";
 
 // "Indtast" afløser mikrofonen på desktop-versionen: beskrivelsen skrives i
 // stedet for at tales og tolkes af samme endpoint som stemmesiden. Opbygningen
@@ -75,7 +76,7 @@ function ItemRow({
       <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
         {item.image && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt="" className="h-full w-full object-contain" />
+          <img src={imageThumb(item.image, 128)} alt="" className="h-full w-full object-contain" />
         )}
       </div>
       <div className="min-w-0 flex-1">

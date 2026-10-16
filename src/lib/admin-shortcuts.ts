@@ -31,6 +31,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   // Varegodkendelse
   "/admin/quality-control": ["Alt+K"],
   "/admin/uncertainties": ["Alt+U"],
+  "/admin/spelling": ["Alt+Shift+1"],
   "/admin/duplicate-products": ["Alt+Shift+D"],
   "/admin/ingredient-requests": ["Alt+Shift+I"],
   "/admin/images": ["Alt+Shift+B"],
@@ -40,6 +41,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
 
   // Varedatabase
   "/admin/product-database/products": ["Alt+P", "Ctrl+P"],
+  "/admin/product-database/generics": ["Alt+Shift+2"],
   "/admin/product-database/brands": ["Alt+Shift+R"],
   "/admin/product-database/labels": ["Alt+Shift+0"],
   "/admin/product-database/open-food-facts": ["Alt+8"],

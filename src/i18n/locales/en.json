@@ -419,6 +419,7 @@
     "helpCenter": "Help center",
     "learnTheApp": "Account setup",
     "integrations": "Integrations",
+    "import": "Import",
     "terms": "Terms",
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
@@ -437,6 +438,7 @@
     "frontPage": "Front page",
     "recommendedLimits": "Recommended limits",
     "menstrualCycle": "Menstrual cycle",
+    "pregnancy": "Pregnancy and breastfeeding",
     "sleepQuality": "Sleep experience",
     "calendarView": "Calendar view",
     "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
@@ -445,7 +447,8 @@
     "showTooltips": "Show tooltips",
     "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
     "showStartupTips": "Show start-up tips",
-    "showStartupTipsDescription": "Shows short tips, guides and hint banners about features you have not used yet."
+    "showStartupTipsDescription": "Shows short tips, guides and hint banners about features you have not used yet.",
+    "translation": "Translation"
   },
   "guide": {
     "back": "Back",
@@ -514,7 +517,9 @@
     "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged.",
     "uncertainty": "Uncertainty",
     "autoExpandUncertainty": "Expand uncertainty automatically",
-    "autoExpandUncertaintyDescription": "A green ~ always appears in front of values we have estimated because the manufacturer does not state them. Turn this on to show the grey uncertainty line under the value without tapping."
+    "autoExpandUncertaintyDescription": "A green ~ always appears in front of values we have estimated because the manufacturer does not state them. Turn this on to show the grey uncertainty line under the value without tapping.",
+    "translateForeignText": "Translate foreign languages into English",
+    "translateForeignTextDescription": "Products in a language other than English are shown translated. Above the product name you can see which language it was translated from, with a link to the original. Turn it off to see products in their original language."
   },
   "sleepQualitySettings": {
     "toggleLabel": "Ask about last night's sleep",
@@ -533,6 +538,26 @@
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
     "toggleLabel": "Show menstrual cycle",
     "toggleDescription": "Adds \"Period\" to the add menu so you can log when your cycle starts."
+  },
+  "pregnancySettings": {
+    "intro": "If you are pregnant or breastfeeding, we add the official allowance (EFSA) to your energy need and never set a calorie deficit. The week counts up by itself, so only change this when something changes.",
+    "question": "Are you pregnant or breastfeeding?"
+  },
+  "pregnancy": {
+    "none": "No",
+    "status": {
+      "PREGNANT": "Pregnant",
+      "BREASTFEEDING": "Breastfeeding"
+    },
+    "weekLabel": "Which week are you in?",
+    "weekPlaceholder": "e.g. 20",
+    "weekHint": "Trimester 1 is weeks 1–13, trimester 2 weeks 14–27 and trimester 3 from week 28. The week counts up by itself.",
+    "trimester": "Trimester {trimester}",
+    "extraKcal": "+{kcal} kcal per day",
+    "breastfeedingWeeksLabel": "How many weeks have you been breastfeeding?",
+    "breastfeedingWeeksPlaceholder": "e.g. 8",
+    "breastfeedingHint": "For the first 26 weeks we assume full breastfeeding (+500 kcal per day), then partial breastfeeding (+300 kcal). The weeks count up by themselves.",
+    "noDeficit": "We never set a calorie deficit while you are pregnant or breastfeeding. Always follow the advice of your midwife or doctor."
   },
   "customMeasure": {
     "add": "Add own measurement",
@@ -1005,9 +1030,9 @@
     "labelTextFound": "Nutrition facts or ingredients read",
     "frontCaptured": "Front scanned",
     "scanBarcode": "Scan barcode",
-    "scanFront": "Scan photo",
-    "scanNutrition": "Scan energy",
-    "scanIngredients": "Scan ingredients list",
+    "scanFront": "Take a photo of the front",
+    "scanNutrition": "Take a photo of the nutrition facts",
+    "scanIngredients": "Take a photo of the ingredients",
     "readingImage": "Reading the photo...",
     "searchingDatabase": "Searching the database...",
     "comparingKnownItems": "Comparing with known items...",
@@ -1031,7 +1056,15 @@
     "stepDone": "{step}: captured and read",
     "bothFound": "Energy and contents found in the same photo",
     "chooseObject": "Tap the item that should be in focus",
-    "useWholePhoto": "Use the whole photo"
+    "useWholePhoto": "Use the whole photo",
+    "frontNoProduct": "No item in the picture — hold the front of the item in the frame, or tap the picture to use it anyway.",
+    "retakeHint": "Tap a step with a check mark to redo it. Barcode starts over.",
+    "skipIngredients": "Skip",
+    "shutter": "Take photo",
+    "shutterHint": "Press the shutter when the product is sharp in the picture.",
+    "creating": "Creating the product …",
+    "sendingPhotos": "Sending the photos …",
+    "processingPhotos": "Processing photos: {steps} …"
   },
   "foods": {
     "title": "Foods",
@@ -1849,7 +1882,51 @@
     "noEntriesYet": "No measurements logged yet.",
     "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
-    "delete": "Delete"
+    "delete": "Delete",
+    "voice": {
+      "start": "Speak your measurements",
+      "startHint": "Tap and I will guide you through the measurements one at a time.",
+      "stop": "Stop the voice guide",
+      "speaking": "Speaking…",
+      "listening": "Listening…",
+      "youSaid": "You said: {text}",
+      "unsupported": "Speech recognition is not available here. Type the measurements in the fields.",
+      "micDenied": "The app has no access to the microphone. Allow it in your phone's settings.",
+      "unitCm": "centimetres",
+      "unitIn": "inches",
+      "intro": "I will guide you through your body measurements. Say the number after each one. Say skip to skip a measurement, back to go back one, or stop to finish.",
+      "ask": "Now I need the measurement of your {target}.",
+      "next": "Now give me the measurement of your {target}.",
+      "recorded": "I have recorded {value} {unit}.",
+      "skipped": "Skipping that one.",
+      "notHeard": "I didn't hear anything. Say the measurement of your {target}.",
+      "notUnderstood": "I didn't catch that. Say the measurement of your {target} as a number, for example 82 point 5.",
+      "outOfRange": "{value} doesn't sound right. Say the measurement of your {target} again.",
+      "done": "Thank you, all your measurements are recorded.",
+      "stopped": "Okay, I'll stop here. What you said has been saved.",
+      "giveUp": "I'm stopping because I couldn't hear you. Tap the microphone to continue.",
+      "noFields": "There are no measurements to fill in. Choose them under Settings, Display, Body measurements.",
+      "target": {
+        "chestCm": "chest",
+        "waistCm": "waist",
+        "hipCm": "hips",
+        "upperArmCm": "upper arm",
+        "thighCm": "thigh",
+        "buttockCm": "buttocks",
+        "calfCm": "calf",
+        "ankleCm": "ankle"
+      },
+      "how": {
+        "chestCm": "Measure around your chest at its widest, with the tape under your arms.",
+        "waistCm": "Measure around your waist at its narrowest, usually just above the navel. Breathe out gently first.",
+        "hipCm": "Measure around your hips at their widest.",
+        "upperArmCm": "Measure around your upper arm halfway between shoulder and elbow, with the arm hanging relaxed.",
+        "thighCm": "Measure around your thigh halfway between hip and knee.",
+        "buttockCm": "Measure around your buttocks at their widest, with your feet together.",
+        "calfCm": "Measure around the middle of your calf, where it is thickest.",
+        "ankleCm": "Measure around your ankle just above the ankle bone, where it is narrowest."
+      }
+    }
   },
   "profileStatus": {
     "title": "Status",
@@ -2272,7 +2349,13 @@
       "vitaminB9": "Vitamin B9 (folate)",
       "vitaminB12": "Vitamin B12"
     },
-    "swapLiquidUnit": "Switch between volume and grams"
+    "swapLiquidUnit": "Switch between volume and grams",
+    "translatedFrom": "Translated into {target} from {source}.",
+    "translatedTo": "Translated into {target}.",
+    "originalLanguage": "Original in {source}.",
+    "originalText": "Original text.",
+    "showOriginal": "Show original",
+    "showTranslation": "Show translation"
   },
   "photoAward": {
     "bannerSingle": "You can earn {points} points by taking a new photo of {photoType}.",
@@ -2289,6 +2372,7 @@
   },
   "productUpdate": {
     "banner": "Earn {points} points by updating this product",
+    "bannerPhoto": "Earn {points} points by updating with a great new photo",
     "toggle": "Show or hide banner",
     "tileFront": "Front",
     "tileNutrition": "Energy",
@@ -2848,11 +2932,17 @@
     "stepProgress": "Step {current} of {total} completed",
     "sleepPatternQuestion": "Do you have a regular sleep pattern?",
     "shiftWorkQuestion": "Is that due to varying work hours or night work?",
+    "pregnancyQuestion": "Are you pregnant or breastfeeding?",
+    "pregnancyHint": "Then we add the official allowance to your energy need. Can always be changed under Settings → Display.",
     "dailyLogQuestion": "Do you want to log work hours or sleep times daily?",
     "workHours": "Work hours",
     "sleepTimes": "Sleep times",
     "healthImportQuestion": "Do you want to import data from your smartwatch or health app?",
     "healthImportHint": "Can always be set up later under personal details.",
+    "migrationImportQuestion": "Do you already have an account with another provider?",
+    "migrationImportHint": "Then you may be able to import your data, so your history comes along.",
+    "importNow": "Import now",
+    "importLater": "Later",
     "setUpNow": "Set up now",
     "next": "Next",
     "remindLater": "Remind me later",
@@ -2927,6 +3017,8 @@
     "rest": "Rest (your metabolism)",
     "everyday": "Your everyday",
     "training": "Your exercise",
+    "pregnancy": "Pregnancy",
+    "breastfeeding": "Breastfeeding",
     "need": "Your energy needs",
     "goal": "Your weight goal",
     "budget": "Your daily budget",
@@ -2942,6 +3034,8 @@
     "whyRest": "What your body uses if you lay still all day. Based on weight, height, age and sex (Mifflin-St Jeor).",
     "whyEveryday": "Work, walking, standing and transport — without exercise. Your answers match the level \"{level}\" (PAL {pal}).",
     "whyTraining": "Your typical exercise spread over the week, counted net so resting metabolism isn't counted twice. When you log a workout it replaces this allowance for that day.",
+    "whyPregnancy": "Official allowance (EFSA): 70 kcal per day in trimester 1, 260 in trimester 2 and 500 in trimester 3. You are in trimester {trimester} (week {week}).",
+    "whyBreastfeeding": "Official allowance (EFSA): 500 kcal per day with full breastfeeding for the first 6 months, then about 300 with partial breastfeeding. You have been breastfeeding for {weeks} weeks.",
     "whyGoal": "The difference between what you use and what you should eat to reach your goal at a healthy pace.",
     "disclaimer": "All numbers are estimates, not measurements. They don't replace advice from a doctor or dietitian.",
     "missingData": "To work out your energy needs we still need:",
@@ -2953,6 +3047,7 @@
     },
     "adjustment": {
       "CHILD_NO_DEFICIT": "Under 18 we don't set a calorie deficit — the body is still growing.",
+      "PREGNANCY_NO_DEFICIT": "You are pregnant or breastfeeding, so we set no calorie deficit — talk to your midwife or doctor about your weight.",
       "UNDERWEIGHT_NO_LOSS": "Your weight is below what we consider healthy, so we don't suggest weight loss.",
       "TARGET_RAISED_TO_MIN_BMI": "Your target weight was raised to the lowest weight we consider healthy for your height.",
       "PACE_CAPPED": "The pace was lowered to what is healthy to lose per week.",
@@ -3538,8 +3633,13 @@
   },
   "migrationImport": {
     "title": "Move from MyFitnessPal or Lifesum",
+    "landingTitle": "Import",
+    "landingIntro": "Already using MyFitnessPal or Lifesum? You can import your data automatically.",
+    "otherProvider": "Using another provider and want to import your old data? Contact us.",
+    "contactUs": "Contact us",
+    "contactSubject": "Import from another provider",
+    "providerTitle": "Import from {provider}",
     "intro": "Record your screen while you scroll through your diary in the other app. Hello Cal reads the foods, amounts and calories and adds them to your calendar.",
-    "fromApp": "From the app",
     "step1": "Start a screen recording on your phone (or take screenshots).",
     "step2": "Open the diary in the other app and scroll calmly back, day by day.",
     "step3": "Stop the recording and choose the video here.",

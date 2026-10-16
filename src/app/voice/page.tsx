@@ -13,6 +13,7 @@ import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { scaleItemToGrams } from "@/lib/scale-meal-item";
+import { imageThumb } from "@/lib/image-thumb";
 
 type Item = {
   id: string;
@@ -207,7 +208,7 @@ function VoiceItemRow({
       <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
         {item.image && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt="" className="h-full w-full object-contain" />
+          <img src={imageThumb(item.image, 128)} alt="" className="h-full w-full object-contain" />
         )}
       </div>
       <div className="min-w-0 flex-1">

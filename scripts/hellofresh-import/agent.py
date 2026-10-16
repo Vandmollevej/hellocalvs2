@@ -1,7 +1,8 @@
 """
 HELLO CAL HelloFresh-agent.
 
-Katalogiserer HelloFresh Danmarks offentlige opskrifter som Product-rækker
+Katalogiserer HelloFreshs offentlige opskrifter fra alle 17 lande (markets.py,
+docs/DECISIONS.md 2026-10-15; land og sprog står på hver ret) som Product-rækker
 (category "Retter", externalSource=HELLOFRESH) med billede, energifordeling
 og ingrediens-sammensætning (gram + andel af rettens vægt), plus et delt
 Ingredient-billedkatalog (category "Ingredienser") der genbruges på tværs af
@@ -51,6 +52,7 @@ from datetime import datetime, timezone
 import psycopg2
 
 from job_control import run_forever
+import markets as mk
 import requests
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -68,8 +70,6 @@ REMOVED_CHECK_BATCH = int(os.environ.get("HELLOFRESH_REMOVED_CHECK_BATCH", "5"))
 OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/hellofresh-images")
 
-SITE = "https://www.hellofresh.dk"
-SITEMAP_URL = f"{SITE}/sitemap_recipe_pages.xml"
 IMAGE_WIDTH = 2000
 USER_AGENT = (
     "HelloCalRecipeCatalogBot/1.0 "
@@ -79,8 +79,9 @@ USER_AGENT = (
 
 NEXT_DATA_RE = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 # HelloFresh navngiver selv udgåede opskrifter "(Brug 126228 i stedet) …" eller
-# "(Brug 121446) …": en dublet af erstatningsopskriften, som ikke skal vises.
-RETIRED_NAME_RE = re.compile(r"^\(\s*Brug\s+\d+", re.I)
+# "(Brug 121446) …" — på andre sprog fx "(Use 126228 …)", "(Verwende 126228 …)":
+# en dublet af erstatningsopskriften, som ikke skal vises.
+RETIRED_NAME_RE = re.compile(r"^\(\s*[^\d()]{1,20}\s\d{4,}", re.I)
 RECIPE_ID_RE = re.compile(r"-([0-9a-f]{24})$")
 SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
@@ -103,24 +104,13 @@ ALLERGEN_TYPE_TO_KEY = {
     "sulphites": "sulphur-dioxide-and-sulphites",
 }
 
-# Recipe-level nutrition beyond the four core macros, kept as a JSON blob on
-# Product.nutritionExtra rather than dedicated columns (varies per recipe,
-# see docs/DECISIONS.md 2026-08-29). Values are per the recipe's own
-# servingSize, NOT scaled to 100g like the core macro columns.
-NUTRITION_EXTRA_MAP = {
-    "Mættet fedt": "saturatedFatG",
-    "Sukker": "sugarG",
-    "Kostfibre": "fiberG",
-    "Kolesterol": "cholesterolMg",
-    "Salt": "saltG",
-    "Potassium": "potassiumMg",
-    "Calcium": "calciumMg",
-    "Iron": "ironMg",
-}
+# Næringen (makroer og ekstra-tal som mættet fedt, sukker, fibre, salt) læses
+# med hvert lands egne navne i markets.read_nutrition. Ekstra-tallene gemmes i
+# Product.nutritionExtra pr. rettens servingSize (docs/DECISIONS.md 2026-08-29).
 
 
-def fetch_sitemap_entries():
-    resp = requests.get(SITEMAP_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
+def fetch_sitemap_entries(market):
+    resp = requests.get(f"{market['site']}/sitemap_recipe_pages.xml", headers={"User-Agent": USER_AGENT}, timeout=30)
     resp.raise_for_status()
     root = ET.fromstring(resp.content)
     entries = []
@@ -172,13 +162,13 @@ def get_category_id(conn, name):
         return row[0] if row else None
 
 
-def already_up_to_date(conn, recipe_id, lastmod):
+def already_up_to_date(conn, market, recipe_id, lastmod):
     if not lastmod:
         return False
     with conn.cursor() as cur:
         cur.execute(
             """SELECT "sourceCheckedAt", "recipeDetails" IS NOT NULL FROM products WHERE "externalSource" = 'HELLOFRESH' AND "externalId" = %s""",
-            (recipe_id,),
+            (mk.external_id(market, recipe_id),),
         )
         row = cur.fetchone()
     # Rækker importeret før recipeDetails fandtes hentes igen én gang.
@@ -196,20 +186,21 @@ def already_up_to_date(conn, recipe_id, lastmod):
     return checked_at >= lastmod_dt
 
 
-def ensure_ingredient(conn, ingredient):
-    external_id = ingredient["id"]
+def ensure_ingredient(conn, market, ingredient):
+    # Ingredienserne har navne på hvert lands sprog: én række pr. land.
+    new_id, external_id = mk.ingredient_ids(market, ingredient["id"])
     with conn.cursor() as cur:
         cur.execute('SELECT id, "imageUrl" FROM ingredients WHERE "externalId" = %s', (external_id,))
         existing = cur.fetchone()
 
-    db_id = existing[0] if existing else f"hf_ing_{external_id}"
+    db_id = existing[0] if existing else new_id
     image_url = existing[1] if existing else None
 
     if not image_url and ingredient.get("imagePath"):
         try:
             content = download_image(ingredient["imagePath"])
             ext = os.path.splitext(ingredient["imagePath"])[1] or ".png"
-            image_url = save_image("ingredients", f"{external_id}{ext}", content)
+            image_url = save_image("ingredients", f"{external_id.replace(':', '_')}{ext}", content)
             time.sleep(REQUEST_DELAY_SECONDS)
         except Exception:  # noqa: BLE001 - one bad ingredient image must not stop the recipe
             log.warning("failed to download ingredient image for %s", ingredient.get("name"))
@@ -245,7 +236,7 @@ def text_or_none(value):
     return value or None
 
 
-def build_recipe_details(conn, recipe):
+def build_recipe_details(conn, market, recipe):
     """Visningsdata til opskriftssiden (docs/DECISIONS.md 2026-09-27).
 
     Gemmer HelloFreshs egne værdier uændret (tekst, tal og enheder), så appen
@@ -262,7 +253,7 @@ def build_recipe_details(conn, recipe):
         amount, unit = amounts[ingredient["id"]]
         ingredients.append(
             {
-                "ingredientId": ensure_ingredient(conn, ingredient),
+                "ingredientId": ensure_ingredient(conn, market, ingredient),
                 "name": ingredient["name"],
                 "amount": amount,
                 "unit": text_or_none(unit),
@@ -299,31 +290,26 @@ def build_recipe_details(conn, recipe):
     }
 
 
-def upsert_recipe(conn, recipe, retter_category_id):
+def upsert_recipe(conn, market, recipe, retter_category_id):
     recipe_id = recipe["recipeId"]
     if RETIRED_NAME_RE.match(recipe.get("name") or ""):
         log.info("skipping %s (%s) — HelloFresh has replaced this recipe", recipe.get("name"), recipe_id)
         return None
-    nutrition = {item["name"]: item["amount"] for item in recipe.get("nutrition", [])}
-
-    kcal = nutrition.get("Kalorier (kcal)")
-    protein = nutrition.get("Protein")
-    carbs = nutrition.get("Kulhydrat")
-    fat = nutrition.get("Fedt")
+    nutrition = mk.read_nutrition(recipe.get("nutrition", []))
     serving_size = recipe.get("servingSize")
-    if kcal is None or protein is None or carbs is None or fat is None or not serving_size:
-        log.warning("skipping %s (%s) — missing core macros or servingSize", recipe.get("name"), recipe_id)
+    if nutrition is None or not serving_size:
+        log.warning("skipping %s (%s, %s) — missing core macros or servingSize", recipe.get("name"), recipe_id, market["country"])
         return None
+    kcal, protein, carbs, fat, extra = nutrition
 
     factor = 100.0 / serving_size
-    extra = {key: nutrition[label] for label, key in NUTRITION_EXTRA_MAP.items() if label in nutrition}
 
     image_url = None
     if recipe.get("imagePath"):
         try:
             content = download_image(recipe["imagePath"])
             ext = os.path.splitext(recipe["imagePath"])[1] or ".jpg"
-            image_url = save_image("dishes", f"{recipe_id}{ext}", content)
+            image_url = save_image("dishes", f"{mk.image_name(market, recipe_id)}{ext}", content)
             time.sleep(REQUEST_DELAY_SECONDS)
         except Exception:  # noqa: BLE001 - a missing photo must not block the rest of the import
             log.warning("failed to download dish image for %s (%s)", recipe.get("name"), recipe_id)
@@ -336,9 +322,9 @@ def upsert_recipe(conn, recipe, retter_category_id):
         }
     )
     ingredients_text = ", ".join(i["name"] for i in recipe.get("ingredients", []))
-    recipe_details = build_recipe_details(conn, recipe)
+    recipe_details = build_recipe_details(conn, market, recipe)
 
-    product_id = f"hf_{recipe_id}"
+    product_id = mk.product_id(market, recipe_id)
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -347,9 +333,9 @@ def upsert_recipe(conn, recipe, retter_category_id):
                  "carbsPer100g", "fatPer100g", "servingSizeGrams",
                  "servingSizeUnitSingular", "servingSizeUnitPlural", "ingredientsText",
                  allergens, "nutritionExtra", "recipeDetails", "externalSource", "externalId",
-                 "sourceCheckedAt", status, discontinued, "createdAt")
+                 market, language, "sourceCheckedAt", status, discontinued, "createdAt")
             VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, NOW(), 'APPROVED', false, NOW())
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, %s, %s, NOW(), 'APPROVED', false, NOW())
             ON CONFLICT (id) DO UPDATE SET
                 name = EXCLUDED.name,
                 "imageUrl" = COALESCE(EXCLUDED."imageUrl", products."imageUrl"),
@@ -364,6 +350,8 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 allergens = EXCLUDED.allergens,
                 "nutritionExtra" = EXCLUDED."nutritionExtra",
                 "recipeDetails" = EXCLUDED."recipeDetails",
+                market = EXCLUDED.market,
+                language = EXCLUDED.language,
                 "sourceCheckedAt" = NOW()
             """,
             (
@@ -382,13 +370,15 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 allergen_keys,
                 json.dumps(extra) if extra else None,
                 json.dumps(recipe_details),
-                recipe_id,
+                mk.external_id(market, recipe_id),
+                market["country"],
+                market["language"],
             ),
         )
     return product_id
 
 
-def upsert_recipe_ingredients(conn, product_id, recipe):
+def upsert_recipe_ingredients(conn, market, product_id, recipe):
     ref = reference_yield(recipe)
     if not ref:
         return
@@ -402,7 +392,7 @@ def upsert_recipe_ingredients(conn, product_id, recipe):
         raw_amount, raw_unit = amount_unit
         if raw_amount is None or not raw_unit:
             continue
-        ingredient_db_id = ensure_ingredient(conn, ingredient)
+        ingredient_db_id = ensure_ingredient(conn, market, ingredient)
         amount_grams = raw_amount if raw_unit == "g" else None
         proportion = (raw_amount / gram_total) if (raw_unit == "g" and gram_total) else None
         pi_id = f"hf_pi_{product_id}_{ingredient_db_id}"
@@ -442,41 +432,41 @@ def remember_skipped(conn, url, lastmod):
         )
 
 
-def import_one(conn, url, retter_category_id):
+def import_one(conn, market, url, retter_category_id):
     """Henter og gemmer én opskrift; returnerer product_id eller None."""
     recipe = fetch_recipe(url)
     time.sleep(REQUEST_DELAY_SECONDS)
     if not recipe:
         log.warning("no recipe JSON found at %s", url)
         return None
-    product_id = upsert_recipe(conn, recipe, retter_category_id)
+    product_id = upsert_recipe(conn, market, recipe, retter_category_id)
     if product_id:
-        upsert_recipe_ingredients(conn, product_id, recipe)
+        upsert_recipe_ingredients(conn, market, product_id, recipe)
     return product_id
 
 
-def refresh_stale(conn, url_by_id, retter_category_id):
+def refresh_stale(conn, market, url_by_id, retter_category_id):
     """Henter de ældste opskrifter igen (og dem uden billede), så kataloget
     holdes opdateret, selvom sitemap'ens lastmod ikke ændres."""
     with conn.cursor() as cur:
         cur.execute(
             """SELECT "externalId" FROM products
-               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = false
+               WHERE "externalSource" = 'HELLOFRESH' AND market = %s AND discontinued = false
                  AND ("sourceCheckedAt" IS NULL
                       OR "sourceCheckedAt" < now() - make_interval(days => %s)
                       OR ("imageUrl" IS NULL AND "sourceCheckedAt" < now() - interval '1 day'))
                ORDER BY ("imageUrl" IS NULL) DESC, "sourceCheckedAt" ASC NULLS FIRST
                LIMIT %s""",
-            (REFRESH_DAYS, REFRESH_BATCH),
+            (market["country"], REFRESH_DAYS, REFRESH_BATCH),
         )
-        ids = [row[0] for row in cur.fetchall()]
+        ids = [mk.recipe_id_from_external(market, row[0]) for row in cur.fetchall()]
     refreshed = 0
     for recipe_id in ids:
         url = url_by_id.get(recipe_id)
         if not url:
             continue  # ikke i sitemap'en: håndteres af sync_removed
         try:
-            if import_one(conn, url, retter_category_id):
+            if import_one(conn, market, url, retter_category_id):
                 conn.commit()
                 refreshed += 1
         except Exception:  # noqa: BLE001 - én fejlende opskrift må ikke stoppe kørslen
@@ -492,34 +482,37 @@ def page_is_gone(url):
     return resp.status_code in (404, 410)
 
 
-def sync_removed(conn, sitemap_ids):
-    """Spærrer retter, HelloFresh har fjernet, og genåbner dem, der er tilbage."""
+def sync_removed(conn, market, sitemap_ids):
+    """Spærrer retter, HelloFresh har fjernet, og genåbner dem, der er tilbage
+    — kun inden for ét land."""
     with conn.cursor() as cur:
         cur.execute(
-            """SELECT count(*) FROM products WHERE "externalSource" = 'HELLOFRESH'"""
+            """SELECT count(*) FROM products WHERE "externalSource" = 'HELLOFRESH' AND market = %s""",
+            (market["country"],),
         )
         known = cur.fetchone()[0]
     # En halv eller tom sitemap må aldrig spærre kataloget.
     if not sitemap_ids or len(sitemap_ids) < 0.8 * known:
         log.warning("sitemap has %d ids for %d known recipes — skipping removal check", len(sitemap_ids), known)
         return 0, 0
+    external_ids = [mk.external_id(market, recipe_id) for recipe_id in sitemap_ids]
     reopened = 0
     with conn.cursor() as cur:
         cur.execute(
             """UPDATE products SET discontinued = false, "recipeDetails" = "recipeDetails" - 'retiredByAgent'
-               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = true
+               WHERE "externalSource" = 'HELLOFRESH' AND market = %s AND discontinued = true
                  AND ("recipeDetails"->>'retiredByAgent') = 'true' AND "externalId" = ANY(%s)""",
-            (list(sitemap_ids),),
+            (market["country"], external_ids),
         )
         reopened = cur.rowcount
         cur.execute(
             """SELECT id, "externalId", "recipeDetails"->>'websiteUrl' FROM products
-               WHERE "externalSource" = 'HELLOFRESH' AND discontinued = false
+               WHERE "externalSource" = 'HELLOFRESH' AND market = %s AND discontinued = false
                  AND NOT ("externalId" = ANY(%s))
                  AND "recipeDetails"->>'websiteUrl' IS NOT NULL
                  AND ("sourceCheckedAt" IS NULL OR "sourceCheckedAt" < now() - interval '7 days')
                ORDER BY "sourceCheckedAt" ASC NULLS FIRST LIMIT %s""",
-            (list(sitemap_ids), REMOVED_CHECK_BATCH),
+            (market["country"], external_ids, REMOVED_CHECK_BATCH),
         )
         candidates = cur.fetchall()
     conn.commit()
@@ -548,15 +541,32 @@ def sync_removed(conn, sitemap_ids):
     return closed, reopened
 
 
-def run_once(conn):
-    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
-    retter_category_id = get_category_id(conn, "Retter")
-    if not retter_category_id:
-        log.error('category "Retter" not found — has migration 20260829010000_hellofresh_catalog run?')
-        raise RuntimeError('Kategorien "Retter" findes ikke — er migration 20260829010000_hellofresh_catalog kørt?')
+# Hvert land har sin egen kørsel: Danmark hver anden gang, de øvrige 16 på
+# skift ind imellem (en hel sitemap pr. kørsel er nok for HelloFreshs servere).
+_cycle = {"n": 0}
 
-    entries = fetch_sitemap_entries()
-    log.info("sitemap has %d recipe urls", len(entries))
+
+def next_market():
+    n = _cycle["n"]
+    _cycle["n"] = n + 1
+    if n % 2 == 0:
+        return mk.MARKETS[0]
+    others = mk.MARKETS[1:]
+    return others[(n // 2) % len(others)]
+
+
+def run_market(conn, market, retter_category_id):
+    country = market["country"]
+    try:
+        entries = fetch_sitemap_entries(market)
+    except Exception as error:  # noqa: BLE001
+        if mk.is_denmark(market):
+            raise
+        # Et land, der ikke kan læses (anden sideopbygning, nede), springes
+        # over; intet ændres i databasen.
+        log.warning("%s: sitemap kunne ikke hentes (%s) — springes over", country, error)
+        return f"{country}: sitemap kunne ikke hentes", 0
+    log.info("%s: sitemap has %d recipe urls", country, len(entries))
 
     processed = 0
     failed = 0
@@ -565,14 +575,14 @@ def run_once(conn):
         if processed >= BATCH_SIZE:
             break
         recipe_id = recipe_id_from_url(url)
-        if not recipe_id or skipped.get(url) == (lastmod or "") or already_up_to_date(conn, recipe_id, lastmod):
+        if not recipe_id or skipped.get(url) == (lastmod or "") or already_up_to_date(conn, market, recipe_id, lastmod):
             continue
 
         try:
-            product_id = import_one(conn, url, retter_category_id)
+            product_id = import_one(conn, market, url, retter_category_id)
             if product_id:
                 processed += 1
-                log.info("imported %s", recipe_id)
+                log.info("%s: imported %s", country, recipe_id)
             else:
                 remember_skipped(conn, url, lastmod)
             conn.commit()
@@ -586,17 +596,17 @@ def run_once(conn):
         recipe_id = recipe_id_from_url(url)
         if recipe_id:
             url_by_id[recipe_id] = url
-    refreshed = refresh_stale(conn, url_by_id, retter_category_id)
-    closed, reopened = sync_removed(conn, set(url_by_id))
+    refreshed = refresh_stale(conn, market, url_by_id, retter_category_id)
+    closed, reopened = sync_removed(conn, market, set(url_by_id))
 
     log.info(
-        "cycle complete — %d imported, %d refreshed, %d disabled, %d reopened",
-        processed, refreshed, closed, reopened,
+        "%s: cycle complete — %d imported, %d refreshed, %d disabled, %d reopened",
+        country, processed, refreshed, closed, reopened,
     )
     total = processed + refreshed + closed + reopened
     if total == 0 and failed == 0:
-        return "Ingen nye eller ændrede opskrifter", 0
-    parts = [f"{processed} opskrifter importeret"]
+        return f"{country}: ingen nye eller ændrede opskrifter", 0
+    parts = [f"{country}: {processed} opskrifter importeret"]
     if refreshed:
         parts.append(f"{refreshed} opdateret")
     if closed:
@@ -606,6 +616,15 @@ def run_once(conn):
     if failed:
         parts.append(f"{failed} fejlede")
     return ", ".join(parts), total
+
+
+def run_once(conn):
+    # Returnerer (besked, antal udført) til admin "Robotter"/"Nattens kørsler".
+    retter_category_id = get_category_id(conn, "Retter")
+    if not retter_category_id:
+        log.error('category "Retter" not found — has migration 20260829010000_hellofresh_catalog run?')
+        raise RuntimeError('Kategorien "Retter" findes ikke — er migration 20260829010000_hellofresh_catalog kørt?')
+    return run_market(conn, next_market(), retter_category_id)
 
 
 def main():

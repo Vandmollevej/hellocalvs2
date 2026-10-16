@@ -5,6 +5,7 @@ import { getProfileUser } from "@/lib/family-access";
 import { computeAge } from "@/lib/age";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { currentDailyBudget, recordDailyBudget } from "@/lib/activity-profile";
+import { pregnancyInfo } from "@/lib/pregnancy";
 import { SNOOZE_DAYS, suggestDailyKcalGoal } from "@/lib/kcal-goal-suggestion";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -32,6 +33,8 @@ export async function GET(req: Request) {
     const user = await getProfileUser("profile", "VIEWED");
     if (!user) return unauthorized();
     if (user.kcalGoalPromptDisabled) return NextResponse.json({ suggestion: null });
+    // Gravid/ammende: vægttrenden siger intet om energibalancen, så ingen forslag.
+    if (user.sex === "FEMALE" && pregnancyInfo(user) !== null) return NextResponse.json({ suggestion: null });
     if (user.kcalGoalPromptSnoozedUntil && user.kcalGoalPromptSnoozedUntil.getTime() > Date.now()) {
       return NextResponse.json({ suggestion: null });
     }

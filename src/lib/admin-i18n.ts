@@ -16,6 +16,7 @@ const DICTIONARY = {
   nav_images: { DA: "Billedbehandling", EN: "Image management" },
   nav_cutout_queue: { DA: "Billeder i kø til frilæggelse", EN: "Images queued for cut-out" },
   nav_uncertainties: { DA: "Usikkerheder", EN: "Uncertainties" },
+  nav_spelling: { DA: "Stavekontrol", EN: "Spell check" },
   nav_cron_jobs: { DA: "Cronjobs", EN: "Cron jobs" },
   nav_pet_food_filter: { DA: "Dyrefoder-filter", EN: "Pet food filter" },
   nav_duplicate_products: { DA: "Dubletter", EN: "Duplicates" },
@@ -50,6 +51,7 @@ const DICTIONARY = {
   nav_group_approval: { DA: "Varegodkendelse", EN: "Product approval" },
   nav_product_database: { DA: "Varedatabase", EN: "Product database" },
   nav_product_database_products: { DA: "Varer", EN: "Products" },
+  nav_product_database_generics: { DA: "Generiske produkter", EN: "Generic products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
   nav_product_database_labels: { DA: "Labels", EN: "Labels" },
   nav_product_database_off: { DA: "Open Food Facts", EN: "Open Food Facts" },
@@ -142,6 +144,7 @@ const DICTIONARY = {
   products_title: { DA: "Nye varer", EN: "New products" },
   products_tab_user: { DA: "Bruger-indsendte", EN: "User-submitted" },
   products_tab_auto: { DA: "Auto-importerede", EN: "Auto-imported" },
+  products_tab_recheck: { DA: "2-års tjek", EN: "2-year check" },
 
   users_title: { DA: "Brugere", EN: "Users" },
   users_col_user: { DA: "Bruger", EN: "User" },
