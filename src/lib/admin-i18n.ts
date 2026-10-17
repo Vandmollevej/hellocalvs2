@@ -57,6 +57,7 @@ const DICTIONARY = {
   nav_product_database_products: { DA: "Varer", EN: "Products" },
   nav_product_database_generics: { DA: "Generiske produkter", EN: "Generic products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
+  nav_product_database_scans: { DA: "Brugerscanninger", EN: "User scans" },
   nav_product_database_labels: { DA: "Labels", EN: "Labels" },
   nav_product_database_off: { DA: "Open Food Facts", EN: "Open Food Facts" },
   nav_product_database_off_images: { DA: "Billeder", EN: "Images" },

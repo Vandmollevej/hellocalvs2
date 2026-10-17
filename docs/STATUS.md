@@ -3,9 +3,22 @@
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
 - Ny side `/product/[id]/report-error` (fejlmelding direkte på en vare). Slet på indscanninger skjuler varen (`product_scans.hiddenAt`, migration `20261017230000_product_scan_hidden`), til den scannes igen. Vejninger kan swipes væk i kalenderen. Web + native; native ikke kompileret lokalt.
 
+## 2026-10-17: Open Food Facts-billeder søges online og fritlægges løbende
+
+- Ny robot "Open Food Facts-billeder: søg online og fritlæg" (hver time, 50 varer ad gangen, scannede varer først) sender OFF-varer, der aldrig er behandlet, gennem samme Google-søgning og fritlægning som egne fotos. Ikke prøvet mod rigtig database herfra.
+
+## 2026-10-17: Admin "Brugerscanninger"
+
+- Varedatabase → Brugerscanninger viser alle varer, brugerne scanner (også kendte OFF-varer), med bruger og tidspunkt og link til at rette varen. Ikke prøvet mod rigtig database herfra; lint, test og build grønne.
+
+## 2026-10-17: Delte retter hænger ikke længere i pladsholdere
+
+- "Trender netop nu" kunne stå med grå pladsholdere for evigt, hvis en forespørgsel hang (fx mens serveren genstartes ved en deploy): `/api/shared-recipes`, `/api/profile` og `/api/subscription` hentes nu med tidsgrænse (15 s) og op til 4 forsøg (`src/lib/fetch-retry.ts`); ellers vises fejlteksten. Nyt indeks `registrations(productId, createdAt)` (migration `20261017210000_registrations_product_index`) — tabellen havde ingen indeks, og trender/alle retter tæller tilføjelser pr. ret. Kunne ikke genskabes mod produktion herfra (ingen adgang); lokalt med 3.000 retter og 1,5 mio. registreringer svarer endpointet på 0,2 s. Native har allerede 60 s tidsgrænse.
+
 ## 2026-10-17: Robot-QoS på admin → Robotter
 
 - Ny boks "Belastningsstyring (QoS)": robotter starter først, når CPU/RAM er under grænsen, og aldrig i spærretider. Viser serverens belastning lige nu og hvor mange robotter der venter; hver robotrække viser grunden. Kræver migration `20261017220000_robot_qos` og genbyg af agent-containerne (ny `job_control.py`). Se DECISIONS 2026-10-17.
+
 ## 2026-10-17: Allergener linker til egne sider + natlig allergen-robot
 
 - Brugerens regel: alle allergener i EU-varer står med STORT, og hvert allergen-ord i ingredienslisten linker til en side om allergenet. Ny sektion "Allergener" under Viden om mad med de 14 EU-allergener (`src/lib/knowledge-allergens.ts`, kilder: EU 1169/2011, sundhed.dk, Your Europe); ordene i ingredienslisten linker til `/viden-om/allergener/<nøgle>`. Web + native.

@@ -2806,6 +2806,8 @@ model Registration {
 
   createdAt DateTime @default(now())
 
+  // "Trender netop nu"/"Alle retter" tæller nye tilføjelser pr. ret.
+  @@index([productId, createdAt])
   @@map("registrations")
 }
 
