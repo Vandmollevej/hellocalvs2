@@ -2070,7 +2070,7 @@
   },
   "/registration/[id]/report-error": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/registration/[id]/report-error/page.tsx": "4d7934d3e312dc3b",
+    "src/app/registration/[id]/report-error/page.tsx": "1efe4c40f6ee558f",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",

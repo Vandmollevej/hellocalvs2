@@ -49,6 +49,7 @@ import dk.packroff.hellocal.ui.HcCard
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.launch
 
 private val PAGE_PADDING = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)
@@ -116,6 +117,10 @@ fun ReportErrorScreen(args: RouteArgs) {
     var points by remember(id) { mutableStateOf<List<ReportPoint>?>(null) }
     var productId by remember(id) { mutableStateOf<String?>(null) }
     var notes by remember(id) { mutableStateOf(mapOf<String, String>()) }
+    // Photo from the point's own camera button (user rule 2026-10-17).
+    var photos by remember(id) { mutableStateOf(mapOf<String, String>()) }
+    var capturing by remember { mutableStateOf<String?>(null) }
+    var captureErrors by remember(id) { mutableStateOf(mapOf<String, String>()) }
     var submitting by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var result by remember { mutableStateOf<String?>(null) }
@@ -136,7 +141,36 @@ fun ReportErrorScreen(args: RouteArgs) {
 
     val list = points
     val selected = list.orEmpty().filter { it.key in notes }
-    val canSubmit = selected.isNotEmpty() && selected.all { (notes[it.key] ?: "").trim().isNotEmpty() }
+    val canSubmit = selected.isNotEmpty() && selected.all { (notes[it.key] ?: "").trim().isNotEmpty() || it.key in photos }
+
+    // EAN uses the live scanner and writes the code into the note; the others take a photo.
+    fun capture(point: ReportPoint) {
+        val key = point.key
+        scope.launch {
+            capturing = key
+            captureErrors = captureErrors - key
+            try {
+                if (point.capture == "barcode") {
+                    val code = CaptureHooks.scanBarcode?.let { runCatching { it() }.getOrNull() }
+                    if (code.isNullOrBlank()) {
+                        captureErrors = captureErrors + (key to t.t("registrationReportError.barcodeUnreadable"))
+                        if (key !in notes) notes = notes + (key to "")
+                    } else {
+                        val current = notes[key].orEmpty()
+                        notes = notes + (key to current.ifBlank { t.t("registrationReportError.barcodeRead", "code" to code) })
+                    }
+                } else {
+                    val photo = FoodPlatform.photo(fromGallery = false) ?: return@launch
+                    photos = photos + (key to photo.dataUrl())
+                    if (key !in notes) notes = notes + (key to "")
+                }
+            } catch (_: Exception) {
+                captureErrors = captureErrors + (key to t.t("registrationReportError.photoFailed"))
+            } finally {
+                capturing = null
+            }
+        }
+    }
 
     fun submit() {
         val pid = productId ?: return
@@ -145,11 +179,15 @@ fun ReportErrorScreen(args: RouteArgs) {
         submitting = true
         scope.launch {
             try {
+                val (sections, sectionPhotos) = buildReportSections(
+                    selected.map { ReportEntry(it.key, t.t(it.labelKey), notes[it.key] ?: "", photos[it.key]) },
+                )
                 Api.post(
                     "/api/bug-reports",
                     mapOf(
                         "productId" to pid,
-                        "description" to buildReportDescription(selected.map { t.t(it.labelKey) to (notes[it.key] ?: "") }),
+                        "sections" to sections,
+                        "sectionPhotos" to sectionPhotos,
                         "categories" to selected.mapNotNull { it.category }.distinct(),
                     ),
                 )
@@ -209,10 +247,43 @@ fun ReportErrorScreen(args: RouteArgs) {
                                     Modifier.size(36.dp).clip(CircleShape)
                                         .background(if (isSelected) HcColors.Brand else Color.Transparent)
                                         .border(2.dp, HcColors.Brand, CircleShape)
-                                        .clickable { notes = if (isSelected) notes - point.key else notes + (point.key to "") },
+                                        .clickable {
+                                            notes = if (isSelected) notes - point.key else notes + (point.key to "")
+                                            if (isSelected) photos = photos - point.key
+                                        },
                                     contentAlignment = Alignment.Center,
                                 ) { HcText("!", HcTypeRoles.Title, color = if (isSelected) HcColors.White else HcColors.Brand, bold = true) }
                             }
+                            val capture = point.capture
+                            if (capture != null) {
+                                val hasPhoto = point.key in photos
+                                HcButton(
+                                    when {
+                                        capturing == point.key -> t.t("registrationReportError.reading")
+                                        hasPhoto -> t.t("registrationReportError.retake")
+                                        capture == "barcode" -> t.t("registrationReportError.captureBarcode")
+                                        capture == "nutrition" -> t.t("registrationReportError.captureNutrition")
+                                        else -> t.t("registrationReportError.capturePhoto")
+                                    },
+                                    onClick = { capture(point) },
+                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                    kind = HcButtonKind.Secondary,
+                                    enabled = capturing == null,
+                                    leading = { HcIcon(if (capture == "barcode") "Barcode" else "Camera", size = 20.dp, color = HcColors.Action) },
+                                )
+                            }
+                            photos[point.key]?.let { photo ->
+                                Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    FoodImage(photo, Modifier.size(64.dp).clip(RoundedCornerShape(HcDimens.RadiusCard)), ContentScale.Crop)
+                                    HcText(
+                                        t.t("registrationReportError.removePhoto"),
+                                        HcTypeRoles.Body,
+                                        Modifier.clickable { photos = photos - point.key },
+                                        color = HcColors.Action,
+                                    )
+                                }
+                            }
+                            captureErrors[point.key]?.let { HcText(it, HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.RedDark) }
                             if (isSelected) {
                                 FoodTextArea(
                                     value = notes[point.key] ?: "",
