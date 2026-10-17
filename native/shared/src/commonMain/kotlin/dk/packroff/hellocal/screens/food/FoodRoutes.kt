@@ -12,6 +12,7 @@ object FoodRoutes {
         ScreenRoute("/add/[id]/photo-award") { PhotoAwardScreen(it) },
         ScreenRoute("/registration/[id]") { RegistrationScreen(it) },
         ScreenRoute("/registration/[id]/report-error") { ReportErrorScreen(it) },
+        ScreenRoute("/product/[id]/report-error") { ReportErrorScreen(it, byProduct = true) },
         ScreenRoute("/search") { SearchScreen(it) },
         ScreenRoute("/favorites") { FavoritesScreen(it) },
         ScreenRoute("/my-scans") { MyScansScreen(it) },

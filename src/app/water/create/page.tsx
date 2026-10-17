@@ -239,14 +239,15 @@ export default function WaterCreatePage() {
                         className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
                       >
                         <SwipeableRow onDelete={() => void deleteEntry(entry.id)}>
+                        {/* Som forsiden: klokkeslæt over mængden (bruger 2026-10-17). */}
                         <FoodRow
                           thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
-                          title={`${entry.amountMl} ml`}
-                          right={
-                            <span className="hf-type-caption">
-                              {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
-                            </span>
+                          overline={
+                            <p className="hf-type-small text-hf-black hf-type-strong">
+                              {t("dailyList.atTime", { time: formatTime(entry.loggedAt) })}
+                            </p>
                           }
+                          title={`${entry.amountMl} ml`}
                         />
                         </SwipeableRow>
                       </li>

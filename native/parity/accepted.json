@@ -6,7 +6,7 @@
     "src/components/AppHomeGate.tsx": "baa51e8bdefd34a0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
-    "src/components/DailyList.tsx": "afecef918cb89852",
+    "src/components/DailyList.tsx": "1260ad086f6e2a8f",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
     "src/components/EnergyBreakdown.tsx": "693400e98aaca217",
@@ -265,7 +265,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "e5a3e40c6d6b565d",
+    "src/app/calendar/page.tsx": "fac87596309f2c86",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -358,7 +358,7 @@
     "src/app/layout.tsx": "ce9cce1fff73600a"
   },
   "/chat": {
-    "src/app/chat/page.tsx": "b1062d6535666474",
+    "src/app/chat/page.tsx": "a1e27bbebf3c46d1",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -594,7 +594,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/favorites": {
-    "src/app/favorites/page.tsx": "800d58d96f0b449a",
+    "src/app/favorites/page.tsx": "2483297ecf947fbe",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -604,8 +604,9 @@
     "src/components/FooterArc.tsx": "7e405515f5bd4257",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "b16396e5807051df",
-    "src/components/ProductResultRow.tsx": "9fb2129510813d59",
+    "src/components/ProductResultRow.tsx": "066a17cde01cc642",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "d9fb19eb10d38b7f",
     "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
@@ -626,7 +627,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "8b3a9a0c2756a619",
+    "src/app/foods/page.tsx": "8526189e56196504",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -659,7 +660,7 @@
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
     "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
     "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
-    "src/components/voice/VoiceMealSuggestions.tsx": "56196b73d08152e1",
+    "src/components/voice/VoiceMealSuggestions.tsx": "dd3d184b762f679d",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/voice/useMealInterpretation.ts": "d7a28a9232426beb",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
@@ -768,7 +769,7 @@
   },
   "/my-scans": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/my-scans/page.tsx": "119589cfb3561d9b",
+    "src/app/my-scans/page.tsx": "7aacc8beb688ea4a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",
@@ -777,8 +778,9 @@
     "src/components/FooterArc.tsx": "7e405515f5bd4257",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "b16396e5807051df",
-    "src/components/ProductResultRow.tsx": "9fb2129510813d59",
+    "src/components/ProductResultRow.tsx": "066a17cde01cc642",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "d9fb19eb10d38b7f",
     "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
@@ -849,6 +851,33 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/LegalDocument.tsx": "2316fe87f68eda3a",
     "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",
+    "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
+  },
+  "/product/[id]/report-error": {
+    "src/app/layout.tsx": "ce9cce1fff73600a",
+    "src/app/product/[id]/report-error/page.tsx": "6dc9dfaf596a03c2",
+    "src/components/AuthGate.tsx": "94db96b768f9f95f",
+    "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
+    "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
+    "src/components/FooterArc.tsx": "7e405515f5bd4257",
+    "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
+    "src/components/HfScreen.tsx": "b16396e5807051df",
+    "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
+    "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
+    "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
+    "src/components/family/MealShareBar.tsx": "1a89f02c26cffff5",
+    "src/components/family/ProfileCircle.tsx": "08fe8d4db2620525",
+    "src/components/family/ProfileSwitcher.tsx": "25b2d318dea9674a",
+    "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
+    "src/components/hf/AccordionCard.tsx": "e91c58d64765328e",
+    "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
+    "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
+    "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",
+    "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
+    "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
+    "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
+    "src/components/report/ReportErrorScreen.tsx": "f7848e94b4b3c2dd",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/product/create": {
@@ -2074,7 +2103,7 @@
   },
   "/registration/[id]/report-error": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/registration/[id]/report-error/page.tsx": "1efe4c40f6ee558f",
+    "src/app/registration/[id]/report-error/page.tsx": "30a33df7c5c2d560",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
@@ -2096,6 +2125,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
+    "src/components/report/ReportErrorScreen.tsx": "f7848e94b4b3c2dd",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/reset-password": {
@@ -2115,8 +2145,9 @@
     "src/components/FooterArc.tsx": "7e405515f5bd4257",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "b16396e5807051df",
-    "src/components/ProductResultRow.tsx": "9fb2129510813d59",
+    "src/components/ProductResultRow.tsx": "066a17cde01cc642",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
+    "src/components/SwipeableRow.tsx": "d9fb19eb10d38b7f",
     "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
     "src/components/family/FamilyStatusProvider.tsx": "7fd1f1ff7807171c",
@@ -3297,7 +3328,7 @@
   },
   "/water/create": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/water/create/page.tsx": "154b190d667d705c",
+    "src/app/water/create/page.tsx": "2f1620145e3dc0cd",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",

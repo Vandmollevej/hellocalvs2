@@ -12,10 +12,12 @@ import type { UserScan } from "@/lib/user-scans";
 
 // "Se dine indscanninger" (bruger 2026-10-02): brugerens egne fotograferede
 // varer, grupperet under en overskrift med skillelinje pr. dato, de blev taget.
-// Rækkerne er de samme som i Søg.
+// Rækkerne er de samme som "Dagens tilføjelser" på forsiden (bruger
+// 2026-10-17): klokkeslæt over navnet, swipe højre = Favorit, swipe venstre =
+// Fejl/Slet. Slet skjuler kun varen fra listen, indtil den scannes igen.
 
 type LoadState = "loading" | "ready" | "error";
-type DayGroup = { key: string; date: Date; scans: ProductResult[] };
+type DayGroup = { key: string; date: Date; scans: Array<ProductResult & { createdAt: string }> };
 
 function dayKey(date: Date) {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -38,6 +40,7 @@ function groupByDay(scans: UserScan[]): DayGroup[] {
       brand: scan.brand,
       kcal: scan.kcalPer100g,
       macrosEstimated: scan.macrosEstimated,
+      createdAt: scan.createdAt,
     });
   }
   return groups;
@@ -99,18 +102,34 @@ export default function MyScansPage() {
     }).catch(() => {});
   }
 
+  function deleteScan(productId: string) {
+    const previous = scans;
+    setScans((current) => current.filter((scan) => scan.id !== productId));
+    fetch(`/api/my-scans?productId=${encodeURIComponent(productId)}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) throw new Error("failed");
+      })
+      .catch(() => setScans(previous));
+  }
+
+  function formatTime(createdAt: string) {
+    return new Intl.DateTimeFormat(intlLocale(locale), { hour: "2-digit", minute: "2-digit" }).format(new Date(createdAt));
+  }
+
   function dayHeading(date: Date) {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     if (dayKey(date) === dayKey(today)) return t("myScans.today");
     if (dayKey(date) === dayKey(yesterday)) return t("myScans.yesterday");
-    return new Intl.DateTimeFormat(intlLocale(locale), {
+    const label = new Intl.DateTimeFormat(intlLocale(locale), {
       weekday: "long",
       day: "numeric",
       month: "long",
       ...(date.getFullYear() !== today.getFullYear() ? { year: "numeric" } : {}),
     }).format(date);
+    // Overskriften med streger er flex, så CSS first-letter virker ikke.
+    return label.charAt(0).toUpperCase() + label.slice(1);
   }
 
   return (
@@ -129,17 +148,23 @@ export default function MyScansPage() {
         )}
         {groups.map((group) => (
           <section key={group.key} className="flex flex-col gap-2">
-            <h2 className="hf-type-small hf-type-strong border-b border-hf-tan-dark pb-1 text-hf-black first-letter:uppercase">
+            <h2 className="hf-type-section-title">
               {dayHeading(group.date)}
             </h2>
             <div className="overflow-hidden bg-hf-tan rounded-card">
-              {group.scans.map((scan) => (
+              {group.scans.map(({ createdAt, ...scan }) => (
                 <ProductResultRow
                   key={scan.id}
                   {...scan}
+                  overline={
+                    <p className="hf-type-small text-hf-black hf-type-strong">
+                      {t("dailyList.atTime", { time: formatTime(createdAt) })}
+                    </p>
+                  }
                   onAdd={openProduct}
                   isFavorite={favoriteIds.has(scan.id)}
                   onToggleFavorite={toggleFavorite}
+                  onDelete={deleteScan}
                 />
               ))}
             </div>

@@ -114,6 +114,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/foods/new", label: "Ny madvare (omdirigerer til scanning)" },
               { path: "/product/create", label: "Opret vare" },
+              { path: "/product/[id]/report-error", label: "Rapportér fejl på vare", note: "Swipe til venstre på en vare i Søg, Favoritter, Indscanninger" },
               { path: "/create-dish", label: "Opret ret" },
             ],
           },

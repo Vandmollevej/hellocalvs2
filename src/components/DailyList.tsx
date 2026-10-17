@@ -196,7 +196,7 @@ export function DailyList() {
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
               isFavorite={entry.productId ? favoriteIds.has(entry.productId) : false}
               onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}
-              onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
+              onReportError={entry.productId ? () => router.push(`/registration/${entry.id}/report-error`) : undefined}
               onDelete={() => setConfirmDelete(entry)}
             >
               <Link href={`/registration/${entry.id}`} className="block">

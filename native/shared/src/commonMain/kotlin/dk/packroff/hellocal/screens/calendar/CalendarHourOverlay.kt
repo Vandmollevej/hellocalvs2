@@ -40,6 +40,8 @@ import dk.packroff.hellocal.app.BackHandler
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.screens.capture.WeightEntryDetailsSheet
+import dk.packroff.hellocal.screens.food.FavoriteProducts
+import dk.packroff.hellocal.screens.food.rememberFavoriteProducts
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -78,12 +80,14 @@ internal fun HourEntriesOverlay(
     waterEntries: List<CalWater>,
     measurements: List<CalendarMeasurement>,
     onDeleteMetrics: (List<String>) -> Unit,
+    onDeleteWeighIn: (String) -> Unit,
     onDeleteRegistration: (String) -> Unit,
     onDeleteWater: (String) -> Unit,
     goals: List<CalGoal>,
     onClose: () -> Unit,
 ) {
     val t = LocalTranslator.current
+    val favorites = rememberFavoriteProducts()
     BackHandler(enabled = true, onBack = onClose)
     val groups = remember(registrations, waterEntries, measurements) {
         val sorted = (registrations.map { HourItem.Registration(it) } + waterEntries.map { HourItem.Water(it) } + measurements.map { HourItem.Measurement(it) })
@@ -118,7 +122,7 @@ internal fun HourEntriesOverlay(
                 // A weigh-in alone at its time opens the details sheet directly (no fold-out).
                 val solo = (items.singleOrNull() as? HourItem.Measurement)?.measurement
                 if (solo != null && solo.weightKg != null && solo.id.startsWith("weight-")) {
-                    SoloWeightRow(items.first().time, solo)
+                    SoloWeightRow(items.first().time, solo, onDeleteWeighIn)
                     continue
                 }
                 val isOpen = key in openKeys
@@ -161,7 +165,15 @@ internal fun HourEntriesOverlay(
                         Column(Modifier.fillMaxWidth()) {
                             Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics, onDeleteRegistration = onDeleteRegistration, onDeleteWater = onDeleteWater)
+                                HourItemRow(
+                                    item,
+                                    favorites = favorites,
+                                    hideWeight = item === groupMeasurement,
+                                    onDeleteMetrics = onDeleteMetrics,
+                                    onDeleteWeighIn = onDeleteWeighIn,
+                                    onDeleteRegistration = onDeleteRegistration,
+                                    onDeleteWater = onDeleteWater,
+                                )
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -173,28 +185,36 @@ internal fun HourEntriesOverlay(
 }
 
 @Composable
-private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement) {
+private fun SoloWeightRow(time: LocalDateTime, measurement: CalendarMeasurement, onDeleteWeighIn: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
-    Row(
-        Modifier.padding(bottom = 8.dp).fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(RoundedCornerShape(16.dp))
-            .background(HcColors.Tan).clickable { open = true }.padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        HcText(clock(time), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CalendarBathScaleIcon(18.dp, HcColors.Black)
-            HcText(formatWeightKg(measurement.weightKg ?: 0.0), HcTypeRoles.Body, bold = true, color = HcColors.Black)
-            Box(Modifier.offset(x = (-4).dp)) { HcChevron(ChevronDirection.Right, color = HcColors.Black) }
+    val weighInId = measurement.id.removePrefix("weight-")
+    // Swipe → Slet (user 2026-10-17: everything that isn't a product can be swiped away).
+    Box(Modifier.padding(bottom = 8.dp).fillMaxWidth().clip(RoundedCornerShape(16.dp))) {
+        CaptureSwipeableRow(onDelete = { onDeleteWeighIn(weighInId) }) {
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight)
+                    .background(HcColors.Tan).clickable { open = true }.padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HcText(clock(time), HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalendarBathScaleIcon(18.dp, HcColors.Black)
+                    HcText(formatWeightKg(measurement.weightKg ?: 0.0), HcTypeRoles.Body, bold = true, color = HcColors.Black)
+                    Box(Modifier.offset(x = (-4).dp)) { HcChevron(ChevronDirection.Right, color = HcColors.Black) }
+                }
+            }
         }
     }
-    if (open) WeightEntryDetailsSheet(measurement.id.removePrefix("weight-"), onClose = { open = false })
+    if (open) WeightEntryDetailsSheet(weighInId, onClose = { open = false })
 }
 
 @Composable
 private fun HourItemRow(
     item: HourItem,
+    favorites: FavoriteProducts,
     hideWeight: Boolean = false,
     onDeleteMetrics: (List<String>) -> Unit = {},
+    onDeleteWeighIn: (String) -> Unit = {},
     onDeleteRegistration: (String) -> Unit = {},
     onDeleteWater: (String) -> Unit = {},
 ) {
@@ -211,7 +231,7 @@ private fun HourItemRow(
                 )
             }
         }
-        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight, onDeleteMetrics)
+        is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight, onDeleteMetrics, onDeleteWeighIn)
         is HourItem.Registration -> {
             val registration = item.registration
             val isWater = isWaterRegistration(registration)
@@ -220,8 +240,13 @@ private fun HourItemRow(
             } else {
                 null
             }
+            // Like "Dagens tilføjelser" (user 2026-10-17): swipe right = Favorit, swipe left =
+            // Fejl + Slet; only Slet when it isn't a product.
+            val productId = registration.productId?.takeIf { !isWater }
             CaptureSwipeableRow(
-                onReportError = { nav.push("/registration/${registration.id}/report-error") },
+                onFavorite = productId?.let { id -> { favorites.toggle(id) } },
+                isFavorite = productId != null && productId in favorites.ids,
+                onReportError = productId?.let { { nav.push("/registration/${registration.id}/report-error") } },
                 onDelete = { confirmDelete = registration },
             ) {
                 Box(Modifier.fillMaxWidth().clickable { nav.push("/registration/${registration.id}") }.padding(horizontal = 16.dp)) {
@@ -232,14 +257,7 @@ private fun HourItemRow(
                         subtitle = registration.amountGrams?.takeIf { !isWater && it > 0 }?.let { grams ->
                             { HcText("${(registration.kcal / grams * 100).roundToInt()} kcal / 100 g", HcTypeRoles.Small, color = HcColors.TextSecondary) }
                         },
-                        right = {
-                            EnergyChip(
-                                if (isWater) EnergyChipKind.Water else EnergyChipKind.Intake,
-                                if (isWater) waterRegistrationMl(registration) else registration.kcal,
-                                iconSize = 18.dp,
-                                role = HcTypeRoles.Body,
-                            )
-                        },
+                        right = { HcChevron(ChevronDirection.Right, color = HcColors.Black.copy(alpha = 0.4f)) },
                     )
                 }
             }
@@ -308,7 +326,12 @@ private fun GoalAccordion(goal: CalGoal) {
  * details sheet.
  */
 @Composable
-private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean = false, onDeleteMetrics: (List<String>) -> Unit = {}) {
+private fun MeasurementRow(
+    measurement: CalendarMeasurement,
+    hideWeight: Boolean = false,
+    onDeleteMetrics: (List<String>) -> Unit = {},
+    onDeleteWeighIn: (String) -> Unit = {},
+) {
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var open by remember { mutableStateOf(false) }
@@ -325,11 +348,16 @@ private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean
     } else {
         null
     }
-    // Readings without a weigh-in (SpO2, pulse …) can be swiped away; weigh-ins are deleted from their own sheet.
+    // Everything can be swiped away (user 2026-10-17): a weigh-in is deleted with its
+    // readings, readings without a weigh-in (SpO2, pulse …) on their own.
     val metricIds = if (weightKg == null) measurement.metrics.mapNotNull { it.id } else emptyList()
     val swipeable = metricIds.isNotEmpty() && metricIds.size == measurement.metrics.size
     val wrap: @Composable (@Composable () -> Unit) -> Unit = { body ->
-        if (swipeable) CaptureSwipeableRow(onDelete = { onDeleteMetrics(metricIds) }, content = body) else body()
+        when {
+            weighInId != null -> CaptureSwipeableRow(onDelete = { onDeleteWeighIn(weighInId) }, content = body)
+            swipeable -> CaptureSwipeableRow(onDelete = { onDeleteMetrics(metricIds) }, content = body)
+            else -> body()
+        }
     }
     wrap {
     Column(Modifier.fillMaxWidth().background(HcColors.Tan).let { if (weighInId != null) it.clickable { open = true } else it }.padding(horizontal = 16.dp)) {

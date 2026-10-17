@@ -35,6 +35,8 @@ internal data class CalRegistration(
     val at: LocalDateTime,
     val imageUrl: String?,
     val isDrink: Boolean,
+    /** null for free-text/AI entries: no Favorit or Fejl on swipe, only Slet. */
+    val productId: String? = null,
 )
 
 internal data class CalActivity(
@@ -151,6 +153,7 @@ internal fun parseRegistrations(root: JsonElement): List<CalRegistration> =
             at = at,
             imageUrl = row["product"].asObj()?.str("imageUrl"),
             isDrink = row["classification"].asObj()?.bool("isDrink") ?: false,
+            productId = row.str("productId"),
         )
     }
 

@@ -1,3 +1,8 @@
+## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
+
+- Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
+- Ny side `/product/[id]/report-error` (fejlmelding direkte på en vare). Slet på indscanninger skjuler varen (`product_scans.hiddenAt`, migration `20261017230000_product_scan_hidden`), til den scannes igen. Vejninger kan swipes væk i kalenderen. Web + native; native ikke kompileret lokalt.
+
 ## 2026-10-17: Alle swipe-rækker ser ens ud
 
 - Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.

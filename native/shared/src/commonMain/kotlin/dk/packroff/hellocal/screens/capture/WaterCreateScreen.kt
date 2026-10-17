@@ -210,14 +210,16 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                     }
                                 }) {
                                 Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                                // Like the front page: the time above the amount (user 2026-10-17).
                                 CaptureFoodRow(
                                     title = "${entry.amountMl} ml",
                                     thumbnail = { WaterGlassIcon(22.dp) },
-                                    right = {
+                                    overline = {
                                         HcText(
-                                            "${t.t("common.clockPrefix")} ${local?.let { CaptureDates.time(it) } ?: ""}",
+                                            t.t("dailyList.atTime", "time" to (local?.let { CaptureDates.time(it) } ?: "")),
                                             HcTypeRoles.Small,
-                                            color = HcColors.TextSecondary,
+                                            color = HcColors.Black,
+                                            bold = true,
                                         )
                                     },
                                 )

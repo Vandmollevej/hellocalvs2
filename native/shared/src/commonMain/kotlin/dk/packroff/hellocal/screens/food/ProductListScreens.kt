@@ -67,6 +67,32 @@ internal suspend fun setFavorite(productId: String, next: Boolean) {
     }
 }
 
+/**
+ * src/lib/use-favorite-products.ts — the user's favourite products for the swipe
+ * rows' Favorit button (swipe right): filled icon + "Gemt" when already a
+ * favourite; tapping again removes it.
+ */
+class FavoriteProducts internal constructor(private val scope: kotlinx.coroutines.CoroutineScope) {
+    var ids by mutableStateOf(setOf<String>())
+        internal set
+
+    fun toggle(productId: String) {
+        val next = productId !in ids
+        ids = if (next) ids + productId else ids - productId
+        scope.launch { setFavorite(productId, next) }
+    }
+}
+
+@Composable
+fun rememberFavoriteProducts(): FavoriteProducts {
+    val scope = rememberCoroutineScope()
+    val favorites = remember { FavoriteProducts(scope) }
+    LaunchedEffect(Unit) {
+        runCatching { loadFavoriteProducts().map { it.id }.toSet() }.getOrNull()?.let { favorites.ids = it }
+    }
+    return favorites
+}
+
 internal suspend fun loadFavoriteProducts(): List<FoodProductResult> =
     ApiJson.decodeFromJsonElement(FavoritesResponse.serializer(), Api.get("/api/favorites")).favorites
         .mapNotNull { f -> f.product?.let { FoodProductResult(it.id, it.name, it.imageUrl) } }
@@ -79,6 +105,10 @@ internal fun ProductResultList(
     showKcal: Boolean,
     onOpen: (String) -> Unit,
     onToggleFavorite: (String, Boolean) -> Unit,
+    /** "Kl. 18.45" above the name per product id (my scans, like the front page). */
+    overlines: Map<String, String> = emptyMap(),
+    /** Swipe left → Slet, only where the list can delete (my scans, favourites). */
+    onDelete: ((String) -> Unit)? = null,
 ) {
     items.forEachIndexed { index, r ->
         FoodProductResultRow(
@@ -90,10 +120,11 @@ internal fun ProductResultList(
                 else -> null
             },
             isFavorite = r.id in favoriteIds,
-            favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
             onOpen = onOpen,
             onToggleFavorite = onToggleFavorite,
             divider = index < items.lastIndex,
+            overline = overlines[r.id],
+            onDelete = onDelete,
         )
     }
 }
@@ -300,7 +331,6 @@ private fun androidx.compose.foundation.lazy.LazyListScope.searchSection(
                 result = r,
                 kcalText = null,
                 isFavorite = r.id in favoriteIds,
-                favoriteLabel = t.t(if (r.id in favoriteIds) "search.removeFavorite" else "search.addFavorite"),
                 onOpen = onOpen,
                 onToggleFavorite = onToggleFavorite,
                 divider = index < shown.lastIndex,
@@ -386,7 +416,8 @@ fun FavoritesScreen(args: RouteArgs) {
                 p == null -> FoodSkeletonMediaRows(3)
                 p.isEmpty() -> HcText(t.t("favorites.foodsEmpty"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(horizontal = 4.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
                 else -> FoodListCard {
-                    ProductResultList(p, p.map { it.id }.toSet(), t, false, { nav.push("/add/$it") }, ::removeFavorite)
+                    // Swipe højre → Gemt, eller swipe venstre → Slet: fjernes som favorit.
+                    ProductResultList(p, p.map { it.id }.toSet(), t, false, { nav.push("/add/$it") }, ::removeFavorite, onDelete = { removeFavorite(it, false) })
                 }
             }
             HcSectionTitle(t.t("favorites.recipesTitle"))
@@ -439,6 +470,22 @@ fun MyScansScreen(args: RouteArgs) {
         scope.launch { setFavorite(productId, next) }
     }
 
+    // Swipe → Slet: hides the product from the list until it is scanned again (DELETE /api/my-scans).
+    fun deleteScan(productId: String) {
+        val previous = scans
+        scans = scans.filter { it.id != productId }
+        scope.launch {
+            try {
+                Api.delete("/api/my-scans?productId=${encodeUri(productId)}")
+            } catch (_: Exception) {
+                scans = previous
+            }
+        }
+    }
+
+    // "Kl. 18.45" above each name, like "Dagens tilføjelser" on the front page.
+    val overlines = remember(scans) { scans.associate { it.id to t.t("dailyList.atTime", "time" to FoodTime.hhmm(it.createdAt)) } }
+
     // Group by local day, newest first as delivered.
     val groups = remember(scans) {
         val map = LinkedHashMap<kotlinx.datetime.LocalDate, MutableList<FoodProductResult>>()
@@ -464,9 +511,11 @@ fun MyScansScreen(args: RouteArgs) {
             }
             groups.forEach { (day, items) ->
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcText(dayHeading(day), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                    FoodDivider()
-                    FoodListCard { ProductResultList(items, favoriteIds, t, true, { nav.push("/add/$it") }, ::toggleFavorite) }
+                    // Front-page section title (hf-type-section-title): centred, a line on each side.
+                    HcSectionTitle(dayHeading(day))
+                    FoodListCard {
+                        ProductResultList(items, favoriteIds, t, true, { nav.push("/add/$it") }, ::toggleFavorite, overlines = overlines, onDelete = ::deleteScan)
+                    }
                 }
             }
         }
