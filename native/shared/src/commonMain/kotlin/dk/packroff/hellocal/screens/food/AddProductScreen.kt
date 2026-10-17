@@ -1163,11 +1163,10 @@ private fun ExtendedNutritionSection(
                     }
                     if (index < rows.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                 }
-                HcText(t.t("addProduct.extendedNutritionDisclaimer"), HcTypeRoles.Micro, Modifier.padding(horizontal = 16.dp, vertical = 10.dp), color = HcColors.TextSecondary)
                 // Fridas kildeangivelse (brugerens regel 2026-10-10): kun her, helt
                 // nederst i det udfoldede felt, og kun når en værdi kommer fra Frida.
                 if (fridaSource) {
-                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                         FoodUncertaintyTilde(small = true)
                         HcText(t.t("addProduct.fridaSource"), HcTypeRoles.Micro, color = HcColors.TextSecondary)
                     }
