@@ -79,6 +79,7 @@ internal fun HourEntriesOverlay(
     measurements: List<CalendarMeasurement>,
     onDeleteMetrics: (List<String>) -> Unit,
     onDeleteRegistration: (String) -> Unit,
+    onDeleteWater: (String) -> Unit,
     goals: List<CalGoal>,
     onClose: () -> Unit,
 ) {
@@ -155,9 +156,12 @@ internal fun HourEntriesOverlay(
                         }
                     }
                     if (isOpen) {
-                        Column(Modifier.fillMaxWidth().background(HcColors.Cream).padding(horizontal = 16.dp)) {
+                        // Same card as "Dagens tilføjelser" on the front page: tan rows with a
+                        // line between them; the swipe buttons reach the card's edge.
+                        Column(Modifier.fillMaxWidth()) {
+                            Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             items.forEachIndexed { index, item ->
-                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics, onDeleteRegistration = onDeleteRegistration)
+                                HourItemRow(item, hideWeight = item === groupMeasurement, onDeleteMetrics = onDeleteMetrics, onDeleteRegistration = onDeleteRegistration, onDeleteWater = onDeleteWater)
                                 if (index < items.lastIndex) Box(Modifier.fillMaxWidth().height(1.dp).background(HcColors.TanDark))
                             }
                         }
@@ -192,16 +196,21 @@ private fun HourItemRow(
     hideWeight: Boolean = false,
     onDeleteMetrics: (List<String>) -> Unit = {},
     onDeleteRegistration: (String) -> Unit = {},
+    onDeleteWater: (String) -> Unit = {},
 ) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     var confirmDelete by remember { mutableStateOf<CalRegistration?>(null) }
     when (item) {
-        is HourItem.Water -> CalendarFoodRow(
-            title = t.t("calendar.waterTitle"),
-            thumbnail = { CalendarWaterGlassIcon(22.dp, HcColors.Black) },
-            right = { EnergyChip(EnergyChipKind.Water, item.entry.amountMl, iconSize = 18.dp, role = HcTypeRoles.Body) },
-        )
+        is HourItem.Water -> CaptureSwipeableRow(onDelete = { onDeleteWater(item.entry.id) }) {
+            Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                CalendarFoodRow(
+                    title = t.t("calendar.waterTitle"),
+                    thumbnail = { CalendarWaterGlassIcon(22.dp, HcColors.Black) },
+                    right = { EnergyChip(EnergyChipKind.Water, item.entry.amountMl, iconSize = 18.dp, role = HcTypeRoles.Body) },
+                )
+            }
+        }
         is HourItem.Measurement -> MeasurementRow(item.measurement, hideWeight, onDeleteMetrics)
         is HourItem.Registration -> {
             val registration = item.registration
@@ -215,7 +224,7 @@ private fun HourItemRow(
                 onReportError = { nav.push("/registration/${registration.id}/report-error") },
                 onDelete = { confirmDelete = registration },
             ) {
-                Box(Modifier.fillMaxWidth().clickable { nav.push("/registration/${registration.id}") }) {
+                Box(Modifier.fillMaxWidth().clickable { nav.push("/registration/${registration.id}") }.padding(horizontal = 16.dp)) {
                     CalendarFoodRow(
                         title = registration.title,
                         image = if (isWater) null else registration.imageUrl,
@@ -323,7 +332,7 @@ private fun MeasurementRow(measurement: CalendarMeasurement, hideWeight: Boolean
         if (swipeable) CaptureSwipeableRow(onDelete = { onDeleteMetrics(metricIds) }, content = body) else body()
     }
     wrap {
-    Column(Modifier.fillMaxWidth().let { if (weighInId != null) it.clickable { open = true } else it }) {
+    Column(Modifier.fillMaxWidth().background(HcColors.Tan).let { if (weighInId != null) it.clickable { open = true } else it }.padding(horizontal = 16.dp)) {
         CalendarFoodRow(
             title = if (weightKg != null) t.t("calendar.measurement.weight") else t.t("calendar.measurement.title"),
             thumbnail = {
