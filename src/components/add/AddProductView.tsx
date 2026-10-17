@@ -44,6 +44,7 @@ import {
 const ORGANIC_KINDS = new Set<CertificationKind>(["organic", "euOrganic", "bioGermany", "landbau", "bioland"]);
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
+import { displayIngredientsText } from "@/lib/ingredient-text-quality";
 import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
@@ -1560,7 +1561,7 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-caption">
-                      {splitENumbers(view.ingredientsText ?? "").map((part, index) =>
+                      {splitENumbers(displayIngredientsText(view.ingredientsText ?? "")).map((part, index) =>
                         part.code ? (
                           <button
                             key={index}
@@ -1571,7 +1572,7 @@ export function AddProductView({
                             {part.text}
                           </button>
                         ) : (
-                          <IngredientsText key={index} text={part.text} />
+                          <IngredientsText key={index} text={part.text} cleaned />
                         ),
                       )}
                     </p>

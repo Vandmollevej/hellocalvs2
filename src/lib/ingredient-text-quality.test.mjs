@@ -85,3 +85,15 @@ test("volapyk giver tvivl: ':699k1', 'ee', men ikke E-numre, B12 eller 12%", asy
   assert.deepEqual(junkTokens("Vand, sukker (12%), E330, vitamin B12, D3, omega-3, 2,5 g salt"), []);
   assert.ok(reviewIngredientsText("Vand, sukker, salt, xq7z, olie", "da").doubts.some((d) => d.startsWith("Volapyk")));
 });
+
+test("tegnsætning: brugerens cola-liste 2026-10-17", () => {
+  assert.equal(
+    displayIngredientsText("Vand, sukker, kuldioxid, farvestof (karamel E150d), surhedsregulerende middel ( E338), , naturlige aromaer(inkl. koffein) ."),
+    "Vand, sukker, kuldioxid, farvestof (karamel E150d), surhedsregulerende middel (E338), naturlige aromaer (inkl. koffein).",
+  );
+  assert.equal(displayIngredientsText("farvestof (karamelE150d),salt"), "farvestof (karamel E150d), salt");
+});
+
+test("tegnsætning rører ikke decimaltal og E-nummer-varianter", () => {
+  assert.equal(displayIngredientsText("Mælk 1,5 %, farve E160a(ii), salt"), "Mælk 1,5 %, farve E160a(ii), salt");
+});
