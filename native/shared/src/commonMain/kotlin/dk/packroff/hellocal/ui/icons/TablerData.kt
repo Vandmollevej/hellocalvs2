@@ -137,6 +137,8 @@ internal object TablerData {
         "PingPong" to (false to listOf("M12.718 20.713a7.64 7.64 0 0 1 -7.48 -12.755l.72 -.72a7.643 7.643 0 0 1 9.105 -1.283l2.387 -2.345a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-2.346 2.387a7.644 7.644 0 0 1 -1.052 8.864", "M11 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0", "M9.3 5.3l9.4 9.4")),
         "Plant" to (false to listOf("M7 15h10v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2v-4", "M12 9a6 6 0 0 0 -6 -6h-3v2a6 6 0 0 0 6 6h3", "M12 11a6 6 0 0 1 6 -6h3v1a6 6 0 0 1 -6 6h-3", "M12 15l0 -6")),
         "PlayHandball" to (false to listOf("M13 21l3.5 -2l-4.5 -4l2 -4.5", "M5 7l4 3l5 .5l4 2.5l2.5 3", "M4 20l5 -1l1.5 -2", "M13.007 8a2 2 0 1 0 4 0a2 2 0 1 0 -4 0", "M6.007 3.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0")),
+        "PlayerPause" to (false to listOf("M6 6a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -12", "M14 6a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -12")),
+        "PlayerPlay" to (false to listOf("M7 4v16l13 -8l-13 -8")),
         "PlayerStopFilled" to (true to listOf("M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z")),
         "PlugConnected" to (false to listOf("M7 12l5 5l-1.5 1.5a3.536 3.536 0 1 1 -5 -5l1.5 -1.5", "M17 12l-5 -5l1.5 -1.5a3.536 3.536 0 1 1 5 5l-1.5 1.5", "M3 21l2.5 -2.5", "M18.5 5.5l2.5 -2.5", "M10 11l-2 2", "M13 14l-2 2")),
         "Plus" to (false to listOf("M12 5l0 14", "M5 12l14 0")),

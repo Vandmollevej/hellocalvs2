@@ -55,7 +55,9 @@ import dk.packroff.hellocal.ui.ProfileChoiceChip
 import dk.packroff.hellocal.ui.ProfilePage
 import dk.packroff.hellocal.ui.ProfilePagePadding
 import dk.packroff.hellocal.ui.ProfileProgressStepper
-import dk.packroff.hellocal.ui.ProfileSwipeActions
+import dk.packroff.hellocal.ui.FoodSwipeAction
+import dk.packroff.hellocal.ui.FoodSwipeTexts
+import dk.packroff.hellocal.ui.FoodSwipeableRow
 import dk.packroff.hellocal.ui.ProfileTextArea
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.launch
@@ -298,14 +300,20 @@ fun ScreeningsScreen(args: RouteArgs) {
                             value = { ScreeningStatusText(sleepActive) },
                         )
                         list.forEachIndexed { index, screening ->
-                            ProfileSwipeActions(
-                                firstLabel = if (screening.active) t.t("screenings.deactivate") else t.t("screenings.activate"),
-                                onFirst = {
-                                    screenings = list.map { if (it.id == screening.id) it.copy(active = !it.active) else it }
-                                    scope.launch { runCatching { ScreeningApi.setActive(screening.id, !screening.active) } }
-                                },
-                                secondLabel = t.t("swipeableRow.delete"),
-                                onSecond = { pendingDelete = screening },
+                            // The shared swipe row (ScreeningSwipeRow.tsx → SwipeableRow.tsx).
+                            FoodSwipeableRow(
+                                texts = FoodSwipeTexts(favorite = "", copy = "", reportError = "", delete = t.t("screenings.delete")),
+                                rightActions = listOf(
+                                    FoodSwipeAction(
+                                        label = if (screening.active) t.t("screenings.deactivate") else t.t("screenings.activate"),
+                                        icon = if (screening.active) "PlayerPause" else "PlayerPlay",
+                                        color = HcColors.GrayDark,
+                                    ) {
+                                        screenings = list.map { if (it.id == screening.id) it.copy(active = !it.active) else it }
+                                        scope.launch { runCatching { ScreeningApi.setActive(screening.id, !screening.active) } }
+                                    },
+                                ),
+                                onDelete = { pendingDelete = screening },
                             ) {
                                 Box(Modifier.fillMaxWidth().background(HcColors.Tan)) {
                                     HcChevronRow(

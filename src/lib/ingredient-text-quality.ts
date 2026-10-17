@@ -75,6 +75,25 @@ function languageFreeCorrections(text: string, fixes: string[]): string {
   return withE;
 }
 
+// Tegnsætning (brugerens fejlrapport 2026-10-17: "karamelE150d", "E338), ,
+// naturlige", "aromaer(inkl."): dobbelte kommaer, manglende mellemrum før
+// parentes/E-nummer og efter komma/parentes, mellemrum før komma/punktum.
+// Rører ikke decimaltal ("1,5 %") eller E-nummer-varianter ("E160a(ii)").
+export function normalizeIngredientPunctuation(text: string): string {
+  return text
+    .replace(/[ \t]+/g, " ")
+    .replace(/,(?:\s*,)+/g, ",")
+    .replace(/\(\s*[,;]\s*/g, "(")
+    .replace(/\s*[,;]\s*\)/g, ")")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+([,.;:)])/g, "$1")
+    .replace(/(?<=\p{L}{2})\(/gu, " (")
+    .replace(/(\p{Ll}{2})(E\d{3})/gu, "$1 $2")
+    .replace(/([,;])(?=\p{L})/gu, "$1 ")
+    .replace(/\)(?=[\p{L}\d])/gu, ") ")
+    .trim();
+}
+
 export function reviewIngredientsText(
   raw: string,
   language?: string | null,
@@ -106,6 +125,12 @@ export function reviewIngredientsText(
     text = languageFreeCorrections(text, fixes);
     const junk = junkTokens(text);
     if (junk.length) doubts.push(`Volapyk i listen: ${junk.slice(0, 5).join(" ")}`);
+  }
+
+  const punctuated = normalizeIngredientPunctuation(text);
+  if (punctuated !== text) {
+    fixes.push("Tegnsætning rettet");
+    text = punctuated;
   }
 
   const odd = text.match(ODD_CHARS);

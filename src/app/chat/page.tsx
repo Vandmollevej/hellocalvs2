@@ -83,7 +83,7 @@ function ItemRow({
         <span className="flex items-center gap-1.5">
           <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-cream px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
           )}
         </span>
         <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
@@ -294,7 +294,7 @@ export default function ChatPage() {
         {suggestedItems.length > 0 && (
           <section className="mt-4">
             <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("web.chatSuggested")}</h2>
-            <ul>
+            <ul className="overflow-hidden rounded-card bg-hf-tan">
               {suggestedItems.map((item) => (
                 <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                   <ItemRow
@@ -319,7 +319,7 @@ export default function ChatPage() {
         {savedItems.length > 0 && (
           <section className="mt-4">
             <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-            <ul>
+            <ul className="overflow-hidden rounded-card bg-hf-tan">
               {savedItems.map((item) => (
                 <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                   <ItemRow

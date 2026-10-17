@@ -200,6 +200,8 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 if (suggested.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
                         HcText(t.t("web.chatSuggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                        // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                         suggested.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
@@ -211,6 +213,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 addLabel = t.t("web.chatAdd"),
                             )
                             if (index < suggested.lastIndex) HcLine()
+                        }
                         }
                         if (suggested.size > 1) {
                             HcButton(
@@ -226,6 +229,8 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 if (saved.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
                         HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                        // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                         saved.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
@@ -235,6 +240,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 onOpen = { nav.push("/registration/${entry.id}") },
                             )
                             if (index < saved.lastIndex) HcLine()
+                        }
                         }
                     }
                 }

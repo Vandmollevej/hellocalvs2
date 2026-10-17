@@ -1,6 +1,10 @@
-## 2026-10-17: Screeninger bruger den fælles swipe-række
+## 2026-10-17: Alle swipe-rækker ser ens ud
 
-- `ScreeningSwipeRow` er slettet; Screeninger bruger den globale `SwipeableRow` med en ny `actions`-prop (Aktivér/Deaktivér) + den fælles Slet. Felterne bag en lukket række skjules nu overalt (den røde kant i sidste rækkes hjørne er væk), og et træk åbner ikke længere linket under fingeren. Native: samme skjul i `FoodSwipeableRow`, `CaptureSwipeableRow` og `ProfileSwipeActions`; Slet hedder det samme som i de andre lister. Prøvet i browser (mobilbredde, touch-swipe); native ikke kompileret lokalt.
+- Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.
+
+## 2026-10-17: Brand ved produktcirklen kun som logo
+
+- Uden logo vises hverken brand eller subbrand ved cirklen (før stod navnet i grøn tekst — fx hele firmanavnet "Coca-Cola Europacific Partners Services Bulgaria EOOD" fra Open Food Facts). Brands uden logo findes i admin → Brands → "Uden logo" med link til varerne. Web + native; native ikke kompileret lokalt (Android-plugin kan ikke hentes). Se DECISIONS 2026-10-17.
 
 ## 2026-10-17: Scannede kendte varer står på "Dine indscanninger"
 

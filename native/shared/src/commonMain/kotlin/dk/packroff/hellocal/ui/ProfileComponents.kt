@@ -414,8 +414,7 @@ fun ProfileSwipeToDelete(label: String, onDelete: () -> Unit, content: @Composab
 
 /**
  * Swipe a row to the left to reveal two actions (screenings: activate/deactivate and delete),
- * as the shared SwipeableRow (`actions` + Slet) on the web. Only horizontal drags are caught.
- * The tiles are hidden while the row is closed so they never show through the card's round corners.
+ * as in ScreeningSwipeRow on the web. Only horizontal drags are caught.
  */
 @Composable
 fun ProfileSwipeActions(
@@ -432,11 +431,11 @@ fun ProfileSwipeActions(
     val animated by animateFloatAsState(dragX, label = "swipeActions")
     val shown = if (dragging) dragX else animated
     Box(Modifier.fillMaxWidth().clip(RectangleShape)) {
-        Row(Modifier.matchParentSize().alpha(if (shown == 0f) 0f else 1f), horizontalArrangement = Arrangement.End) {
+        Row(Modifier.matchParentSize(), horizontalArrangement = Arrangement.End) {
             Box(
                 Modifier.fillMaxHeight().width(80.dp).background(HcColors.TanDark).clickable { onFirst(); dragX = 0f },
                 contentAlignment = Alignment.Center,
-            ) { HcText(firstLabel, HcTypeRoles.Small, bold = true, color = HcColors.Black, align = TextAlign.Center) }
+            ) { HcText(firstLabel, HcTypeRoles.Small, color = HcColors.Black, align = TextAlign.Center) }
             Box(
                 Modifier.fillMaxHeight().width(80.dp).background(HcColors.RedDark).clickable { onSecond(); dragX = 0f },
                 contentAlignment = Alignment.Center,

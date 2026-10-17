@@ -10,7 +10,7 @@ import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { HfLoader } from "@/components/hf/HfLoader";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { ScreeningFillSheet } from "@/components/screenings/ScreeningFillSheet";
-import { SwipeableRow } from "@/components/SwipeableRow";
+import { ScreeningSwipeRow } from "@/components/screenings/ScreeningSwipeRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
   deleteScreening,
@@ -104,16 +104,10 @@ function ScreeningsContent() {
               divider={screenings.length > 0}
             />
             {screenings.map((screening, index) => (
-              <SwipeableRow
+              <ScreeningSwipeRow
                 key={screening.id}
-                surfaceClassName="bg-hf-tan"
-                actions={[
-                  {
-                    key: "toggle-active",
-                    label: screening.active ? t("screenings.deactivate") : t("screenings.activate"),
-                    onClick: () => toggleActive(screening),
-                  },
-                ]}
+                active={screening.active}
+                onToggleActive={() => toggleActive(screening)}
                 onDelete={() => setPendingDelete(screening)}
               >
                 <ChevronRow
@@ -123,7 +117,7 @@ function ScreeningsContent() {
                   value={<StatusText active={screening.active} />}
                   divider={index < screenings.length - 1}
                 />
-              </SwipeableRow>
+              </ScreeningSwipeRow>
             ))}
           </AccordionCard>
         )}
