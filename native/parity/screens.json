@@ -99,6 +99,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/api-usage",
+      "web": "src/app/admin/api-usage/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/approve/[token]",
       "web": "src/app/admin/approve/[token]/page.tsx",
       "status": "web-only",
@@ -367,13 +374,6 @@
     {
       "route": "/admin/messaging/kladde",
       "web": "src/app/admin/messaging/kladde/page.tsx",
-      "status": "web-only",
-      "native": [],
-      "note": "Admin er et skrivebordsværktøj og bliver på web."
-    },
-    {
-      "route": "/admin/api-usage",
-      "web": "src/app/admin/api-usage/page.tsx",
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."
@@ -745,6 +745,12 @@
       "status": "web-only",
       "native": [],
       "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
+      "route": "/admin/warning-emails",
+      "web": "src/app/admin/warning-emails/page.tsx",
+      "status": "pending",
+      "native": []
     },
     {
       "route": "/admin/warnings",

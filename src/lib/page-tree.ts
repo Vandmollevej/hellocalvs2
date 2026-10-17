@@ -413,6 +413,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/test-programmes", label: "Test-programmes" },
           { path: "/admin/economy", label: "Economy", note: "Betalende abonnementer, sikret indkomst og forventet indtjening" },
           { path: "/admin/api-usage", label: "API-forbrug", note: "Status, forbrug og budget for alle betalte API'er, OpenAI-kredit og varsler på mail" },
+          { path: "/admin/warning-emails", label: "Mine advarselsmails", note: "Til/fra for egne mails, når Admin viser en advarsel (højst én pr. advarsel pr. døgn)" },
           {
             path: "/admin/chatbot",
             label: "Chatbot",

@@ -5785,3 +5785,8 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-16 — Bria ved siden af rembg, med cache og kreditloft
 - Bria RMBG er valgfri fritlægningsmotor (`CUTOUT_ENGINE`, nøgle i admin → API-nøgler). rembg er stadig standard og det, der godkendes uden valg.
 - Bria-svar caches på disken efter billedets hash og tælles mod `BRIA_MAX_CREDITS`, så credits ikke spildes. Nye PRODUCT_FRONT-fritlægninger får en `_bria.png`-udgave, som admin kan sammenligne og vælge under Billedforslag. Detaljer: `docs/BRIA.md`.
+
+## 2026-10-17: Scheduleren starter fra src/instrumentation.ts
+
+- `instrumentation.ts` lå i roden siden 2026-09-03; med `src/app` finder `next build` kun `src/instrumentation.ts`, så standalone-imaget aldrig startede `startScheduler()`. Flyttet til `src/`, vagt-test tilføjet.
+- Fordi scheduleren starter for første gang, eskalerer 48-timers-jobbet kun ventende varer/fejlrapporter oprettet for 48–72 timer siden (`ESCALATION_WINDOW_HOURS`), så første kørsel ikke sender én mail pr. gammel sag. Kø, abonnementer, lukkede konti og partnerrapporter var tjekket tomme/uden risiko før start.
