@@ -214,6 +214,48 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     funFact: "Hjernen består af omkring 75 % vand.",
     source: KOSTRAAD_SOURCE,
   },
+  {
+    slug: "energifordeling-over-dagen",
+    category: "sundhedstips",
+    title: "Anbefalet energifordeling over dagen",
+    summary: "Ca. 20 % til morgenmad, 25 % til frokost, 30 % til aftensmad og 25 % fordelt på mellemmåltider.",
+    body: [
+      "Danske retningslinjer for måltider (Den danske Institutionskost og Kost og Ernæringsforbundet) fordeler dagens energi nogenlunde sådan: morgenmad ca. 20 %, frokost ca. 25 %, aftensmad ca. 30 % og mellemmåltider tilsammen ca. 25 %.",
+      "Mellemmåltiderne kan i alt udgøre op til ca. 30 % af dagens energi. Spreder du energien over dagen, er det lettere at undgå stor sult og at spise for meget om aftenen.",
+      "På forsiden viser grafen \"Kalorier fordelt\" denne anbefaling som en grå streg over dagen, og dit eget indtag pr. time som blå pinde, så du kan sammenligne.",
+    ],
+    source: {
+      label: "Ernæringsfokus: Kostplan til vægttab og vægtvedligehold (bygger på Den danske Institutionskost)",
+      href: "https://www.ernaeringsfokus.dk/media/fkycgrkh/vda-vaegttab-vedligehold-8000kj.pdf",
+    },
+    moreSources: [
+      {
+        label: "DTU Fødevareinstituttet: Grundlag for ernæringsmæssige kriterier for mellemmåltider",
+        href: "https://www.food.dtu.dk/-/media/institutter/foedevareinstituttet/publikationer/pub-2012/grundlag-for-ernaeringsmaessige-kriterier-for-mellemmaaltider.pdf",
+      },
+      KOSTRAAD_SOURCE,
+    ],
+  },
+  {
+    slug: "anbefalet-puls",
+    category: "kalorieforbraending",
+    title: "Anbefalet puls: få pulsen op i moderat intensitet",
+    summary: "Moderat intensitet starter ved ca. 64 % af din maksimale puls. Vær aktiv mindst 30 minutter om dagen.",
+    body: [
+      "Sundhedsstyrelsen anbefaler voksne at være fysisk aktive mindst 30 minutter hver dag ved moderat intensitet, hvor du bliver let forpustet, men stadig kan føre en samtale.",
+      "Moderat intensitet svarer til ca. 64–76 % af din maksimale puls; over ca. 77 % er det høj intensitet.",
+      "Hello Cal regner din maksimale puls ud fra din alder (208 − 0,7 × alder). Kender vi ikke din alder, bruger vi 190 slag i minuttet.",
+      "På forsiden viser den stiplede grå linje i pulsgrafen, hvor moderat intensitet begynder for dig, så du kan se, hvornår du har fået pulsen op.",
+    ],
+    source: {
+      label: "Sundhedsstyrelsen: Anbefalinger for fysisk aktivitet, 18–64 år",
+      href: "https://www.sst.dk/-/media/Viden/Fysisk-aktivitet/OP-FA-18-til-64.ashx",
+    },
+    moreSources: [
+      { label: "borger.dk: Motionsråd", href: "https://www.borger.dk/sundhed-og-sygdom/forebyg-sygdom/motionsraad" },
+      { label: "CDC: Target Heart Rate and Estimated Maximum Heart Rate", href: "https://www.cdc.gov/physicalactivity/basics/measuring/heartrate.htm" },
+    ],
+  },
   ...RESEARCH_ARTICLES,
 ];
 

@@ -9,6 +9,8 @@ import type { GoalBar, StickBucket } from "@/lib/front-charts";
 // nye graf-accent (--hf-color-chart-blue).
 
 const PAD_L = 0;
+/** Samme stregtykkelse på alle linjer og pinde i graferne (bruger 2026-10-17). */
+const LINE_W = 2;
 const PAD_R = 0;
 /** Plads under plotområdet til timetal og titel (12 px tekst). */
 const LABEL_SPACE = 17;
@@ -63,6 +65,9 @@ function Frame({
 }) {
   const PLOT_H = plotH(height);
   const LABEL_Y = height - 3;
+  // Titlen centreres i rummet mellem venstre og højre etiket, så lange titler ikke rammer "kl. 07".
+  const CHAR_W = 6.4;
+  const titleX = (PAD_L + left.length * CHAR_W + (width - PAD_R - right.length * CHAR_W)) / 2;
   const peakAnchor = peak && peak.x < 14 ? "start" : peak && peak.x > width - 14 ? "end" : "middle";
   return (
     <svg width={width} height={height} role="img" aria-label={ariaLabel} className="block overflow-visible">
@@ -74,7 +79,7 @@ function Frame({
         </text>
       )}
       <text x={PAD_L} y={LABEL_Y} className="hf-chart-axis--caption fill-hf-text-secondary">{left}</text>
-      {title && <text x={width / 2} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis--caption fill-hf-text">{title}</text>}
+      {title && <text x={titleX} y={LABEL_Y} textAnchor="middle" className="hf-chart-axis--caption fill-hf-text">{title}</text>}
       <text x={width - PAD_R} y={LABEL_Y} textAnchor="end" className="hf-chart-axis--caption fill-hf-text-secondary">{right}</text>
     </svg>
   );
@@ -88,34 +93,36 @@ function plotX(width: number, count: number, i: number) {
   return PAD_L + ((i + 0.5) / count) * w;
 }
 
-/** Pulsen over dagen som pindediagram (én min/maks-pind pr. kvarter); dagens maks står oven på den højeste pind. */
+/** Pulsen over dagen som blå kurve med en stiplet grå linje ved moderat intensitet; dagens maks står ved toppen. */
 export function PulseSticks({
-  width, height, leftLabel, buckets, startHour, endHour, title,
-}: { leftLabel: (hour: string) => string; width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string }) {
+  width, height, leftLabel, buckets, startHour, endHour, title, zoneBpm,
+}: { leftLabel: (hour: string) => string; width: number; height: number; buckets: StickBucket[]; startHour: number; endHour: number; title: string; zoneBpm: number }) {
   const filled = buckets.filter((b): b is NonNullable<StickBucket> => b !== null);
-  const lo = filled.length ? Math.min(...filled.map((b) => b.min)) : 0;
-  const hi = filled.length ? Math.max(...filled.map((b) => b.max)) : 0;
+  const lo = filled.length ? Math.min(...filled.map((b) => b.min), zoneBpm) : 0;
+  const hi = filled.length ? Math.max(...filled.map((b) => b.max), zoneBpm) : 0;
   const y = scaleY(height, lo, hi);
-  const top = filled.find((b) => b.max === hi);
-  const peak: Peak = top ? { x: plotX(width, buckets.length, top.index), y: y(hi), value: hi } : null;
+  const top = filled.length ? filled.reduce((a, b) => (b.max > a.max ? b : a)) : null;
+  const peak: Peak = top ? { x: plotX(width, buckets.length, top.index), y: y(top.max), value: top.max } : null;
+  // Blå kurve gennem kvarterets gennemsnit; stiplet grå linje ved moderat intensitet (bruger 2026-10-17).
+  const points = filled.map((b) => ({ x: plotX(width, buckets.length, b.index), y: y((b.min + b.max) / 2) }));
   return (
     <Frame
       width={width} height={height} title={title} ariaLabel={title} peak={peak}
       left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
     >
-      {filled.map((b) => (
-        <line
-          key={b.index}
-          x1={plotX(width, buckets.length, b.index)} x2={plotX(width, buckets.length, b.index)}
-          y1={y(b.min) + (b.min === b.max ? 1 : 0)} y2={y(b.max) - (b.min === b.max ? 1 : 0)}
-          className="stroke-hf-chart-blue" strokeWidth={2} strokeLinecap="round"
-        />
-      ))}
+      {filled.length > 0 && (
+        <line x1={PAD_L} x2={width - PAD_R} y1={y(zoneBpm)} y2={y(zoneBpm)}
+          className="stroke-hf-line" strokeWidth={LINE_W} strokeDasharray="4 3" />
+      )}
+      {points.length > 1 && <path d={smoothPath(points)} fill="none" className="stroke-hf-chart-blue" strokeWidth={LINE_W} strokeLinecap="round" strokeLinejoin="round" />}
     </Frame>
   );
 }
 
-/** Kalorieindtag som blå pinde, med den anbefalede energifordeling som glat blå kurve. */
+/**
+ * Kalorier fordelt (bruger 2026-10-17): eget indtag pr. time som blå pinde og den
+ * anbefalede energifordeling over dagen som grå streg.
+ */
 export function KcalSticks({
   width, height, leftLabel, sums, shares, budgetKcal, startHour, endHour, title,
 }: { leftLabel: (hour: string) => string; width: number; height: number; sums: number[]; shares: number[]; budgetKcal: number; startHour: number; endHour: number; title: string }) {
@@ -131,36 +138,11 @@ export function KcalSticks({
       width={width} height={height} title={title} ariaLabel={title} peak={peak}
       left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
     >
-      <path d={smoothPath(plan)} fill="none" className="stroke-hf-chart-blue" strokeWidth={1.25} strokeLinecap="round" opacity={0.5} />
+      <path d={smoothPath(plan)} fill="none" className="stroke-hf-line" strokeWidth={LINE_W} strokeLinecap="round" />
       {sums.map((v, i) => v > 0 && (
         <line key={i} x1={plotX(width, sums.length, i)} x2={plotX(width, sums.length, i)} y1={plotH(height)} y2={y(v)}
-          className="stroke-hf-chart-blue" strokeWidth={3} strokeLinecap="round" />
+          className="stroke-hf-chart-blue" strokeWidth={LINE_W} strokeLinecap="round" />
       ))}
-    </Frame>
-  );
-}
-
-/** Statisk grå anbefalet kurve mod den faktiske kalorie-status i blå; slutværdien står ved toppen. */
-export function PlanVsActual({
-  width, height, leftLabel, planCumulative, actualCumulative, elapsed, startHour, endHour, title,
-}: { leftLabel: (hour: string) => string; width: number; height: number; planCumulative: number[]; actualCumulative: number[]; elapsed: number; startHour: number; endHour: number; title: string }) {
-  const count = planCumulative.length;
-  const planEnd = planCumulative[count - 1] ?? 0;
-  const actualNow = actualCumulative[Math.max(0, elapsed - 1)] ?? 0;
-  const top = Math.max(planEnd, actualNow, 1);
-  const y = scaleY(height, 0, top);
-  const plan = planCumulative.map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
-  const actual = actualCumulative.slice(0, Math.max(0, elapsed)).map((v, i) => ({ x: plotX(width, count, i), y: y(v) }));
-  const peak: Peak = actualNow > planEnd && elapsed > 0
-    ? { x: plotX(width, count, elapsed - 1), y: y(actualNow), value: actualNow }
-    : count ? { x: plotX(width, count, count - 1), y: y(planEnd), value: planEnd } : null;
-  return (
-    <Frame
-      width={width} height={height} title={title} ariaLabel={title} peak={peak}
-      left={leftLabel(hourLabel(startHour))} right={hourLabel(endHour)}
-    >
-      <path d={smoothPath(plan)} fill="none" className="stroke-hf-line" strokeWidth={2.5} strokeLinecap="round" />
-      {actual.length > 1 && <path d={smoothPath(actual)} fill="none" className="stroke-hf-chart-blue" strokeWidth={2.5} strokeLinecap="round" />}
     </Frame>
   );
 }
@@ -184,11 +166,10 @@ export function GoalTimeline({
   const bottom = Math.min(...lows, recMin, goalKcal ?? Infinity);
   const y = scaleY(height, bottom, top);
   const x = (i: number) => plotX(width, slots, i);
-  const barW = Math.max(1.5, Math.min(6, ((width - PAD_L - PAD_R) / slots) * 0.6));
   const maxHigh = highs.length ? Math.max(...highs) : null;
   const peakIndex = maxHigh === null ? -1 : bars.findIndex((b) => b.highKcal === maxHigh);
   const peak: Peak = peakIndex >= 0 && maxHigh !== null
-    ? { x: x(peakIndex), y: y(maxHigh) - barW / 2, value: maxHigh }
+    ? { x: x(peakIndex), y: y(maxHigh) - LINE_W / 2, value: maxHigh }
     : goalKcal !== null ? { x: width - PAD_R, y: y(goalKcal), value: goalKcal } : null;
   return (
     <Frame
@@ -196,10 +177,10 @@ export function GoalTimeline({
       left={startLabel} right={endLabel}
     >
       <rect x={PAD_L} y={y(recMax)} width={width - PAD_L - PAD_R} height={Math.max(2, y(recMin) - y(recMax))} className="fill-hf-nav" opacity={0.7} />
-      {goalKcal !== null && <line x1={PAD_L} x2={width - PAD_R} y1={y(goalKcal)} y2={y(goalKcal)} className="stroke-hf-text-secondary" strokeWidth={1.5} />}
+      {goalKcal !== null && <line x1={PAD_L} x2={width - PAD_R} y1={y(goalKcal)} y2={y(goalKcal)} className="stroke-hf-text-secondary" strokeWidth={LINE_W} />}
       {bars.map((b, i) => b.lowKcal !== null && b.highKcal !== null && (
         <line key={i} x1={x(i)} x2={x(i)} y1={y(b.lowKcal)} y2={Math.min(y(b.lowKcal) - 1, y(b.highKcal))}
-          className="stroke-hf-chart-blue" strokeWidth={barW} strokeLinecap="round" />
+          className="stroke-hf-chart-blue" strokeWidth={LINE_W} strokeLinecap="round" />
       ))}
     </Frame>
   );

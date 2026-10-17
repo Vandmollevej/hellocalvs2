@@ -54,7 +54,23 @@ internal fun sumBuckets(entries: List<Pair<Double, Double>>, startHour: Int, end
 
 private data class Meal(val hour: Double, val share: Double, val spread: Double)
 
-private val MEALS = listOf(Meal(7.75, 0.25, 0.9), Meal(12.5, 0.3, 1.0), Meal(18.25, 0.35, 1.1), Meal(15.5, 0.1, 0.8))
+// Den danske Institutionskost: morgenmad ~20 %, frokost ~25 %, aftensmad ~30 %, mellemmåltider ~25 % (web: MEAL_SHARES).
+private val MEALS = listOf(Meal(7.5, 0.2, 0.9), Meal(10.0, 0.1, 0.7), Meal(12.5, 0.25, 1.0), Meal(15.5, 0.15, 0.8), Meal(18.5, 0.3, 1.1))
+
+/** Moderate intensity starts at ~64 % of max heart rate (Tanaka; 190 without age) — web: moderatePulseBpm. */
+internal fun moderatePulseBpm(age: Int?): Double {
+    val max = if (age != null && age > 0) 208 - 0.7 * age else 190.0
+    return kotlin.math.round(max * 0.64)
+}
+
+/** Whole years from a YYYY-MM-DD birth date — web: ageFrom. */
+internal fun ageFrom(birthDate: String?, today: kotlinx.datetime.LocalDate): Int? {
+    val m = Regex("^(\\d{4})-(\\d{2})-(\\d{2})").find(birthDate ?: "") ?: return null
+    val (y, mo, d) = m.destructured
+    var age = today.year - y.toInt()
+    if (today.monthNumber < mo.toInt() || (today.monthNumber == mo.toInt() && today.dayOfMonth < d.toInt())) age -= 1
+    return if (age in 1..119) age else null
+}
 
 /** Recommended energy distribution over the day (shares sum to 1). */
 internal fun recommendedShares(startHour: Int, endHour: Int, bucketMinutes: Int = 15): List<Double> {

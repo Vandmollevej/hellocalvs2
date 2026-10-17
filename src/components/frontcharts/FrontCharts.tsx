@@ -6,12 +6,12 @@ import { activitySummaryUrl } from "@/lib/daily-budget";
 import { FLOOR_KCAL_FEMALE } from "@/lib/energy-budget";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import {
-  awakeHours, cumulative, daysPerBar, groupDays, isoDay, recommendedRange,
+  ageFrom, awakeHours, daysPerBar, moderatePulseBpm, groupDays, isoDay, recommendedRange,
   recommendedShares, scheduleForDate, stickBuckets, sumBuckets,
   type DayKcal,
 } from "@/lib/front-charts";
 import { WHEEL_SPAN } from "@/components/StatsWheel";
-import { GoalTimeline, KcalSticks, PlanVsActual, PulseSticks } from "./FrontChartSvgs";
+import { GoalTimeline, KcalSticks, PulseSticks } from "./FrontChartSvgs";
 
 // Forsidens grafer (bruger 2026-10-14) i infoboksens plads ved siden af
 // tal-hjulet (bruger 2026-10-16): puls, kalorier, anbefalet mod faktisk indtag
@@ -50,6 +50,7 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [goals, setGoals] = useState<GoalRow[]>([]);
+  const [age, setAge] = useState<number | null>(null);
   const [budgetKcal, setBudgetKcal] = useState<number>(DAILY_KCAL_GOAL);
   const [chartsH, setChartsH] = useState(0);
   const chartsRef = useRef<HTMLDivElement>(null);
@@ -79,6 +80,7 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
     getJson<{ registrations: Registration[] }>("/api/registrations").then((d) => live && d && setRegistrations(d.registrations));
     getJson<{ schedules: Schedule[] }>("/api/sleep-schedule").then((d) => live && d && setSchedules(d.schedules));
     getJson<{ goals: GoalRow[] }>("/api/goals").then((d) => live && d && setGoals(d.goals));
+    getJson<{ user?: { birthDate?: string | null } }>("/api/profile").then((d) => live && setAge(ageFrom(d?.user?.birthDate)));
     getJson<{ summary: { budget: { budgetKcal: number } | null } }>(activitySummaryUrl()).then(
       (d) => live && d?.summary.budget && setBudgetKcal(d.summary.budget.budgetKcal),
     );
@@ -99,20 +101,13 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
     const intake = registrations
       .filter((r) => isoDay(new Date(r.createdAt)) === today)
       .map((r) => ({ at: new Date(r.createdAt), kcal: r.kcalSnapshot }));
-    const shares = recommendedShares(start, end, BUCKET_MIN);
-    const sums = sumBuckets(intake, start, end, BUCKET_MIN);
-    const nowHour = now.getHours() + now.getMinutes() / 60;
-    const elapsed = Math.max(0, Math.min(shares.length, Math.ceil(((nowHour - start) * 60) / BUCKET_MIN)));
     return {
       start, end,
       pulse: stickBuckets(pulse, start, end, BUCKET_MIN),
       hourSums: sumBuckets(intake, start, end, KCAL_BUCKET_MIN),
       hourShares: recommendedShares(start, end, KCAL_BUCKET_MIN),
-      elapsed,
-      planCum: cumulative(shares.map((s) => s * budgetKcal)),
-      actualCum: cumulative(sums),
     };
-  }, [now, schedules, metrics, registrations, budgetKcal]);
+  }, [now, schedules, metrics, registrations]);
 
   const goal = useMemo(() => {
     const weightGoal = goals.find((g) => g.targets.some((x) => x.type === "weight") && g.targetDate);
@@ -144,7 +139,7 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
   }, [goals, registrations, width, budgetKcal]);
 
   // Graferne fylder 70 % af deres andel af boksen, så der er tydelig luft imellem dem (bruger 2026-10-16).
-  const chartH = Math.floor((chartsH / 4) * 0.7);
+  const chartH = Math.floor((chartsH / 3) * 0.7);
   const leftLabel = (hour: string) => t("frontCharts.clockLeft", { hour });
   const shortDate = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`;
 
@@ -166,16 +161,11 @@ export function FrontCharts({ side }: { side: "left" | "right" }) {
               <PulseSticks
                 leftLabel={leftLabel}
                 width={width} height={chartH} buckets={model.pulse} startHour={model.start} endHour={model.end}
-                title={t("frontCharts.pulse")}
+                title={t("frontCharts.pulse")} zoneBpm={moderatePulseBpm(age)}
               />
               <KcalSticks
                 leftLabel={leftLabel}
                 width={width} height={chartH} sums={model.hourSums} shares={model.hourShares} budgetKcal={budgetKcal}
-                startHour={model.start} endHour={model.end} title={t("frontCharts.intake")}
-              />
-              <PlanVsActual
-                leftLabel={leftLabel}
-                width={width} height={chartH} planCumulative={model.planCum} actualCumulative={model.actualCum} elapsed={model.elapsed}
                 startHour={model.start} endHour={model.end} title={t("frontCharts.planVsActual")}
               />
               <GoalTimeline

@@ -22,6 +22,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.drawText
@@ -52,6 +54,8 @@ import kotlin.math.min
 
 private const val BUCKET_MIN = 15
 private const val GOAL_BAR_DP = 4
+/** Same stroke width for every line and stick in the charts (web: LINE_W). */
+private const val LINE_DP = 2f
 private const val FALLBACK_DAYS = 30
 private const val FLOOR_KCAL_FEMALE = 1200.0
 
@@ -83,7 +87,7 @@ private data class WeightDto(val weightKg: Double = 0.0, val weighedAt: String =
 private data class WeightsResponse(val entries: List<WeightDto> = emptyList())
 
 @Serializable
-private data class ProfileUserDto(val recipeProviders: List<String> = emptyList())
+private data class ProfileUserDto(val recipeProviders: List<String> = emptyList(), val birthDate: String? = null)
 
 @Serializable
 private data class ProfileResponse(val user: ProfileUserDto? = null)
@@ -96,6 +100,7 @@ private data class ChartData(
     val weights: List<WeightDto> = emptyList(),
     val budgetKcal: Double = DAILY_KCAL_GOAL,
     val hasHelloFresh: Boolean = false,
+    val birthDate: String? = null,
 )
 
 private suspend fun loadChartData(): ChartData = coroutineScope {
@@ -106,10 +111,11 @@ private suspend fun loadChartData(): ChartData = coroutineScope {
     val weights = async { runCatching { ApiJson.decodeFromJsonElement(WeightsResponse.serializer(), Api.get("/api/weight-entries")).entries }.getOrNull() }
     val budget = async { runCatching { Api.get("/api/profile/activity?tz=${FoodTime.tzOffsetMinutesEast()}").obj("summary").obj("budget").num("budgetKcal") }.getOrNull() }
     val profile = async { runCatching { ApiJson.decodeFromJsonElement(ProfileResponse.serializer(), Api.get("/api/profile")).user }.getOrNull() }
+    val user = profile.await()
     ChartData(
         regs.await() ?: emptyList(), metrics.await() ?: emptyList(), schedules.await() ?: emptyList(),
         goals.await() ?: emptyList(), weights.await() ?: emptyList(), budget.await() ?: DAILY_KCAL_GOAL,
-        profile.await()?.recipeProviders?.contains("hellofresh") == true,
+        user?.recipeProviders?.contains("hellofresh") == true, user?.birthDate,
     )
 }
 
@@ -207,70 +213,50 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
     )
     val todays = data.registrations.filter { isTodayIso(it.createdAt) }
     val intake = todays.mapNotNull { r -> hourOf(r.createdAt)?.let { it to r.kcalSnapshot } }
-    val shares = recommendedShares(start, end, BUCKET_MIN)
-    val sums = sumBuckets(intake, start, end, BUCKET_MIN)
-    val nowHour = now.hour + now.minute / 60.0
-    val elapsed = max(0, min(shares.size, kotlin.math.ceil((nowHour - start) * 60 / BUCKET_MIN).toInt()))
     val budget = data.budgetKcal
     // The calorie chart sums per hour so the recommended curve shows next to the meals (web: KCAL_BUCKET_MIN).
     val hourShares = recommendedShares(start, end, 60)
     val hourSums = sumBuckets(intake, start, end, 60)
     // "kl." in front of the left hour under the x axis (web: frontCharts.clockLeft).
     fun clock(hour: String) = t.t("frontCharts.clockLeft", "hour" to hour)
-    val planCum = cumulative(shares.map { it * budget })
-    val actualCum = cumulative(sums)
 
     Column(modifier) {
       Column(Modifier.fillMaxWidth().weight(1f)) {
-        // Pulse: one min/max stick per quarter hour; the day's max on top of the highest stick.
+        // Pulse: a blue curve through each quarter hour's average, a dashed grey line where
+        // moderate intensity starts (web: PulseSticks with zoneBpm); the day's max on top.
         val filled = pulse.filterNotNull()
-        val lo = filled.minOfOrNull { it.min } ?: 0.0
-        val hi = filled.maxOfOrNull { it.max } ?: 0.0
+        val zone = moderatePulseBpm(ageFrom(data.birthDate, today))
+        val lo = min(filled.minOfOrNull { it.min } ?: zone, zone)
+        val hi = max(filled.maxOfOrNull { it.max } ?: zone, zone)
         ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.pulse")) {
             baseline()
             val y = scaleY(lo, hi)
-            for (b in filled) {
-                val x = plotX(pulse.size, b.index)
-                val y1 = y(b.min)
-                val y2 = y(b.max)
-                drawLine(HcColors.ChartBlue, Offset(x, y1), Offset(x, if (y1 == y2) y2 - 1f else y2), strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
+            if (filled.isNotEmpty()) {
+                drawLine(
+                    HcColors.Line, Offset(0f, y(zone)), Offset(size.width, y(zone)), strokeWidth = LINE_DP.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx())),
+                )
             }
-            filled.firstOrNull { it.max == hi }?.let { Peak(plotX(pulse.size, it.index), y(hi), hi) }
+            val points = filled.map { b -> Offset(plotX(pulse.size, b.index), y((b.min + b.max) / 2)) }
+            if (points.size > 1) drawPath(smoothPath(points), HcColors.ChartBlue, style = Stroke(width = LINE_DP.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+            filled.maxByOrNull { it.max }?.let { Peak(plotX(pulse.size, it.index), y(it.max), it.max) }
         }
 
-        // Calories: blue sticks per hour with the recommended distribution as a smooth blue curve.
+        // Calories distributed: own intake per hour as blue sticks, the recommended distribution as a grey line.
         val maxSum = hourSums.maxOrNull() ?: 0.0
         val topKcal = max(maxSum, max((hourShares.maxOrNull() ?: 0.0) * budget, 1.0))
-        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.intake")) {
+        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.planVsActual")) {
             baseline()
             val y = scaleY(0.0, topKcal)
             val plan = hourShares.mapIndexed { i, s -> Offset(plotX(hourShares.size, i), y(s * budget)) }
-            drawPath(smoothPath(plan), HcColors.ChartBlue, alpha = 0.5f, style = Stroke(width = 1.25.dp.toPx(), cap = StrokeCap.Round))
+            drawPath(smoothPath(plan), HcColors.Line, style = Stroke(width = LINE_DP.dp.toPx(), cap = StrokeCap.Round))
             hourSums.forEachIndexed { i, v ->
                 if (v > 0) {
                     val x = plotX(hourSums.size, i)
-                    drawLine(HcColors.ChartBlue, Offset(x, size.height), Offset(x, y(v)), strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round)
+                    drawLine(HcColors.ChartBlue, Offset(x, size.height), Offset(x, y(v)), strokeWidth = LINE_DP.dp.toPx(), cap = StrokeCap.Round)
                 }
             }
             if (maxSum > 0) Peak(plotX(hourSums.size, hourSums.indexOf(maxSum)), y(maxSum), maxSum) else null
-        }
-
-        // Calorie status: recommended (grey, static) vs. actual intake (blue); the top value at the end.
-        val planEnd = planCum.lastOrNull() ?: 0.0
-        val actualNow = actualCum.getOrElse(max(0, elapsed - 1)) { 0.0 }
-        val topCum = max(planEnd, max(actualNow, 1.0))
-        ChartFrame(clock(hourLabel(start)), hourLabel(end), t.t("frontCharts.planVsActual")) {
-            baseline()
-            val y = scaleY(0.0, topCum)
-            val plan = planCum.mapIndexed { i, v -> Offset(plotX(planCum.size, i), y(v)) }
-            drawPath(smoothPath(plan), HcColors.Line, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
-            val actual = actualCum.take(elapsed).mapIndexed { i, v -> Offset(plotX(planCum.size, i), y(v)) }
-            if (actual.size > 1) drawPath(smoothPath(actual), HcColors.ChartBlue, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
-            when {
-                actualNow > planEnd && elapsed > 0 -> Peak(plotX(planCum.size, elapsed - 1), y(actualNow), actualNow)
-                planCum.isNotEmpty() -> Peak(plotX(planCum.size, planCum.size - 1), y(planEnd), planEnd)
-                else -> null
-            }
         }
 
         // Goal timeline: one stick per day/week from the goal's start to its target date;
@@ -300,9 +286,9 @@ fun HomeFrontCharts(modifier: Modifier = Modifier) {
                 baseline()
                 val y = scaleY(bottom, top)
                 drawRect(HcColors.Nav, Offset(0f, y(recMax)), Size(size.width, max(2f, y(recMin) - y(recMax))), alpha = 0.7f)
-                drawLine(HcColors.TextSecondary, Offset(0f, y(budget)), Offset(size.width, y(budget)), strokeWidth = 1.5.dp.toPx())
+                drawLine(HcColors.TextSecondary, Offset(0f, y(budget)), Offset(size.width, y(budget)), strokeWidth = LINE_DP.dp.toPx())
                 val slots = bars.size
-                val barW = max(1.5f, min(6f, size.width / slots * 0.6f))
+                val barW = LINE_DP.dp.toPx()
                 bars.forEachIndexed { i, b ->
                     val low = b.lowKcal ?: return@forEachIndexed
                     val high = b.highKcal ?: return@forEachIndexed
