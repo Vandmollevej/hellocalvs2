@@ -1054,6 +1054,7 @@
     "stepNutrition": "Energie",
     "stepIngredients": "Inhalt",
     "stepDone": "{step}: aufgenommen und gelesen",
+    "stepSkipped": "{step}: übersprungen",
     "bothFound": "Energie und Inhalt auf demselben Foto gefunden",
     "chooseObject": "Tippe auf den Artikel, der im Fokus sein soll",
     "useWholePhoto": "Ganzes Foto verwenden",
@@ -3795,7 +3796,7 @@
       "DAILY": "Jeden Tag",
       "WEEKLY": "Jede Woche",
       "MONTHLY": "Jeden Monat",
-      "MANUAL": "Nur wenn ich will"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Schaltflächen",

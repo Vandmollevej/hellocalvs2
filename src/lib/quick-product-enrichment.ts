@@ -57,6 +57,7 @@ export type QuickEnrichmentInput = {
   // Telefonens land/sprog og appens sprog, fastfrosset ved scanningen.
   signals?: unknown;
   frontPhoto: string;
+  // Tom, når energi-trinnet blev sprunget over (ingen næringstabel på varen).
   nutritionPhoto: string;
   // Udeladt, når ingredienslisten stod på næringsfotoet.
   ingredientsPhoto?: string;
@@ -701,7 +702,10 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   // Energien, AI'en allerede læste under flowet (read-energy), læses ikke igen.
   const prereadN = await loadPrereadNutrition(input.nutritionAnalysisId);
   const localN = prereadN ? null : localNutrition(nutritionText, input.nutritionOcrConfidence ?? 0);
+  // Uden energifoto (trinnet sprunget over) læses ingen næring: varen står
+  // med "næring ukendt" (setNutritionKnown nedenfor).
   const haveNutrition = Boolean(prereadN || localN);
+  const readNutrition = !haveNutrition && Boolean(input.nutritionPhoto);
   const localI = localIngredients(ingredientsText, ingredientsConfidence ?? 0, await loadSpellingDictionary());
 
   let nutrition: Read<NutritionAnalysis> = null;
@@ -712,7 +716,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const labelErrors: string[] = [];
 
   try {
-    if (!haveNutrition && !input.ingredientsPhoto) {
+    if (readNutrition && !input.ingredientsPhoto) {
       labelPath = "openai-combined";
       const both = await analyzeLabelPhoto({
         ...base,
@@ -725,10 +729,12 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       if (both.ingredients.result.ingredientsText || !localI) ingredients = both.ingredients;
     } else {
       const wantIngredients =
-        !localI && (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
-      labelPath = `nutrition:${prereadN ? "flow" : localN ? "local" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
+        !localI &&
+        Boolean(ingredientsPhoto) &&
+        (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
+      labelPath = `nutrition:${prereadN ? "flow" : localN ? "local" : readNutrition ? "openai" : "skipped"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
       const [nutritionRead, ingredientsRead] = await Promise.all([
-        haveNutrition
+        !readNutrition
           ? Promise.resolve(prereadN)
           : analyzeNutritionPhoto({
               ...base,

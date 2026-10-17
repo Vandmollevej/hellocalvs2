@@ -59,7 +59,7 @@
     "src/components/landing/MarketingShell.tsx": "298d23e96256172f",
     "src/components/landing/StoreDownload.tsx": "dce8def441a5c630",
     "src/components/onboarding/ActivityStep.tsx": "aaa348ecb0dbc648",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/weight/AttireToggles.tsx": "748406d06d57ad65",
     "src/components/weight/WeighInPrompts.tsx": "877b443e8b42d4a1"
   },
@@ -327,7 +327,7 @@
     "src/components/camera/IngredientsRetakeFlow.tsx": "f127419703370cf7",
     "src/components/camera/LabelFillOverlay.tsx": "12b9f5a4cc2b4268",
     "src/components/camera/ObjectPickerOverlay.tsx": "b61a78af2889cb7b",
-    "src/components/camera/ProductCaptureFlow.tsx": "309c25f9bffc1f06",
+    "src/components/camera/ProductCaptureFlow.tsx": "039d9f09f89e2560",
     "src/components/camera/ProductOutlineOverlay.tsx": "f83893ae6f78c81e",
     "src/components/camera/ScanHeading.tsx": "c59f5b70a0fd1670",
     "src/components/camera/StepDoneOverlay.tsx": "88c1e68e7bf2f3b3",
@@ -343,7 +343,7 @@
     "src/components/hf/AccordionCard.tsx": "e91c58d64765328e",
     "src/components/hf/BarcodeScanOverlay.tsx": "9ee9a3f47b7eddf9",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
-    "src/components/hf/CaptureCheckOverlay.tsx": "a7292297d65c6935",
+    "src/components/hf/CaptureCheckOverlay.tsx": "604ed637f7f70e89",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/HfLoader.tsx": "a99c6d8be579bbae",
     "src/components/hf/ScreenHeader.tsx": "7f87946066a98a2f",
@@ -425,7 +425,7 @@
     "src/components/recipes/RecipeImportSheets.tsx": "b5f2611334f78ebd",
     "src/components/recipes/RecipeStepPage.tsx": "7aeb198e10167f69",
     "src/components/recipes/RecipeStepsEditor.tsx": "fa53856c19d8ab07",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/drinks": {
@@ -628,7 +628,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "58a90d1132b6d7df",
+    "src/app/foods/page.tsx": "4be5bb0bd958144b",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -900,7 +900,7 @@
     "src/components/family/WatchPhoneIcon.tsx": "397db1a4ad9312de",
     "src/components/hf/AccordionCard.tsx": "e91c58d64765328e",
     "src/components/hf/BottomSheet.tsx": "897150eb3e34458d",
-    "src/components/hf/CaptureCheckOverlay.tsx": "a7292297d65c6935",
+    "src/components/hf/CaptureCheckOverlay.tsx": "604ed637f7f70e89",
     "src/components/hf/CreateProductMediaGrid.tsx": "9fb1829299141542",
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/NumberedBadge.tsx": "4c8a89ba7ebf6126",
@@ -1109,7 +1109,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/goals": {
@@ -1403,7 +1403,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/photo-diary": {
@@ -1437,7 +1437,7 @@
     "src/components/photo-diary/PhotoCompareSlider.tsx": "672cd3ef9e00aeb4",
     "src/components/photo-diary/PhotoSelectBox.tsx": "de668378cf39e965",
     "src/components/photo-diary/PhotoViewer.tsx": "0f516daacddd8af7",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/points": {
@@ -1497,7 +1497,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/recipes/RecipeFiltersBody.tsx": "134f847cbcc1e2c7",
     "src/components/recipes/RecipeRow.tsx": "8907b05999f9f888",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/recipes/[id]": {
@@ -1530,7 +1530,7 @@
     "src/components/recipe-view/RecipeUnitToggle.tsx": "119afef16dd652ce",
     "src/components/recipes/ForwardRecipeSheet.tsx": "9a2a310a413779d5",
     "src/components/recipes/RecipeThumbs.tsx": "894c8710e8ee4305",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/recipes/filters": {
@@ -1561,7 +1561,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/recipes/RecipeFiltersBody.tsx": "134f847cbcc1e2c7",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/recipes/hellofresh/[id]": {
@@ -1607,7 +1607,7 @@
   },
   "/profile/screenings": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/screenings/page.tsx": "a035ab0f8900cc1e",
+    "src/app/profile/screenings/page.tsx": "f6ef8f2c4b990592",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",
@@ -1674,7 +1674,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/screenings/ScreeningFlow.tsx": "13f00f0ae523eecf",
     "src/components/screenings/ScreeningInput.tsx": "aae168d4d765e5cf",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/screenings/new": {
@@ -1708,7 +1708,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/screenings/ScreeningFlow.tsx": "13f00f0ae523eecf",
     "src/components/screenings/ScreeningInput.tsx": "aae168d4d765e5cf",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/screenings/reports": {
@@ -1850,7 +1850,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/sleep": {
@@ -1879,7 +1879,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/start-weight": {
@@ -1969,7 +1969,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/landing/LandingPlans.tsx": "5a86cfe2cee168b5",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/subscription/[plan]": {
@@ -1998,7 +1998,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/profile/subscription/redeem-points": {
@@ -2261,7 +2261,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display": {
@@ -2347,7 +2347,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/limits": {
@@ -2376,7 +2376,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/menstrual-cycle": {
@@ -2405,7 +2405,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/pregnancy": {
@@ -2466,7 +2466,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/tips": {
@@ -2495,7 +2495,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/translation": {
@@ -2524,7 +2524,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/display/uncertainty": {
@@ -2553,7 +2553,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/ui/UncertaintyLine.tsx": "c550af7b73bad1b8",
     "src/components/ui/UncertaintyTilde.tsx": "d249d2befed82303",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
@@ -2612,7 +2612,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/hello-doc/invite": {
@@ -2641,7 +2641,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/hello-doc/preview": {
@@ -2878,7 +2878,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/settings/support/contact": {
@@ -2971,7 +2971,7 @@
     "src/components/hf/HfChevron.tsx": "11106e436ea8e3ef",
     "src/components/hf/SocialLoginButton.tsx": "e0beb9ccb3072e37",
     "src/components/hf/TextField.tsx": "8339609e420b5315",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1"
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87"
   },
   "/statistics": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
@@ -3012,7 +3012,7 @@
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/ui/RemoveCircleButton.tsx": "d228868894a54436",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/ui/UncertaintyLine.tsx": "c550af7b73bad1b8",
     "src/components/ui/UncertaintyTilde.tsx": "d249d2befed82303",
     "src/components/useStatChartRenderer.tsx": "f44d17c1fdcbb93f",
@@ -3139,7 +3139,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/useStatChartRenderer.tsx": "f44d17c1fdcbb93f",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
@@ -3174,7 +3174,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/useStatChartRenderer.tsx": "f44d17c1fdcbb93f",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
@@ -3387,7 +3387,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
+    "src/components/ui/Toggle.tsx": "fe810e1a5cc72b87",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/weight/create": {

@@ -1054,6 +1054,7 @@
     "stepNutrition": "Energi",
     "stepIngredients": "Indhold",
     "stepDone": "{step}: taget og aflæst",
+    "stepSkipped": "{step}: sprunget over",
     "bothFound": "Energi og indhold fundet på samme billede",
     "chooseObject": "Tryk på den vare, der skal være i fokus",
     "useWholePhoto": "Brug hele billedet",
@@ -3795,7 +3796,7 @@
       "DAILY": "Hver dag",
       "WEEKLY": "Hver uge",
       "MONTHLY": "Hver måned",
-      "MANUAL": "Kun når jeg selv vil"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knapper",
