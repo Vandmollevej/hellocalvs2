@@ -9,7 +9,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
-- Listen er den globale `AccordionCard` + `ChevronRow` (native `HcAccordionCard` + `HcChevronRow`) med status-prik (`.hf-status-dot`) og "Aktiv/Inaktiv" i `value` — ingen hjemmelavede rækker (bruger 2026-10-16).
+- Listen er `AccordionCard` med `ScreeningRow` (`src/components/screenings/ScreeningRow.tsx`; native `ScreeningListRow`): præcis som madvarelistens rækker — px-4-ramme med tan-dark streg, den globale `FoodRow` (64 px, 44 px ikonfelt med måne/clipboard-heart, navn, status-prik + "Aktiv/Inaktiv" som caption) og pil til højre (user rule 2026-10-17: "1:1 med madvare-blokkene", særligt højden). Afløser 48 px-`ChevronRow` herfra.
 
 ## Varens sprog og oversættelse (user rule 2026-10-15)
 
@@ -117,15 +117,16 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
   udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
   flisen. Se DECISIONS.md 2026-10-11.
-- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
-  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
-  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10, ændret 2026-10-17)**:
+  brandet står til højre for cirklen, subbrandet oven over det — **kun som logo**.
+  Har brandet/subbrandet intet logo, vises intet (bruger 2026-10-17: Coca-Cola stod
+  som "Coca-Cola Europacific Partners Services Bulgaria EOOD", fordi Open Food
+  Facts' brand-felt indeholdt producentens firmanavn, og navnet blev vist som tekst).
+  Brands uden logo findes i admin → Produkt-database → Brands → "Uden logo", hvor
+  hvert brand linker til alle dets varer, så logoet kan lægges ind. Ingen
+  hardcodede navnelister til at rette brandnavne. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
-  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
-- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
-  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
-  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
-  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-17.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -192,6 +193,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
+- **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Knapperne bag en lukket række er skjulte, så de ikke skinner igennem kortets runde hjørner. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
+- **Swipe-knapperne og forsidens række gælder alle lister (user rule 2026-10-17)**: alle steder, hvor varer listes eller tilføjelser vises (forsiden, Søg, Madvarer, Favoritter, Dine indscanninger, tale, chat, kalenderen), ser rækken ud som "Dagens tilføjelser": billede, evt. "Kl. 18.45" over navnet, navn, "kcal / 100 g" og pil til højre (web `ProductResultRow`/`FoodRow`; native `FoodProductResultRow`). Favorit fås **kun** ved swipe til højre — ingen hjerte-/bogmærkeknapper i lister. Swipe til venstre giver Fejl (vare: `/product/[id]/report-error`, registrering: `/registration/[id]/report-error`) og Slet, hvor listen kan slette (Favoritter: fjerner favoritten; Indscanninger: skjuler varen, til den scannes igen). Er det ikke en vare (vand, vejning, måling, AI-skøn uden vare), er der hverken Favorit eller Fejl — kun Slet.
 - **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
 - **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
@@ -231,7 +234,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Tyske ark: `_is_` og brand (2026-10-10)**: `Excelark/tyske_is_og_brand.py` (deploy-grenen) udfylder tomme `_is_`-kolonner med tyske ord og kopierer brand/subbrand 1:1 fra de danske ark, når mærket står forrest i den tyske titel. Se Excelark/NAVNEREGLER.md.
 - **Knapper står ALTID nederst (bruger 2026-10-11, afløser en fejlagtig regel fra 2026-10-10)**: handlingsknapper (Gem, Tilføj, Færdig, Deaktiver osv.) står nederst og fast over bundcirklen (`HfScreen`-footeren, 40 px over menuen) — aldrig øverst. Der er ingen knapper øverst nogen steder i appen; kun hvor brugeren udtrykkeligt placerer én dér (fx den hvide "Rediger visning" øverst på synkroniseringssiden). Gælder web og native.
 - Vægt-ikonet er ALTID badevægten (`IconBathScale` / `CalendarBathScaleIcon`) — aldrig Tablers vægtskål (`IconScale`/`Scale`), heller ikke i kalenderen (bruger 2026-10-10, gentaget). Målinger uden vægt (fx iltmætning, puls) får `Heartbeat`, aldrig vægtikonet. Web og native.
-- Enkeltmålinger uden vægt i kalenderen (iltmætning, puls …) kan swipes til venstre og slettes (`DELETE /api/health-metrics`, web + native); vejninger slettes fra deres eget ark. En ny synkronisering kan hente en slettet måling igen (bruger 2026-10-10).
+- Enkeltmålinger uden vægt i kalenderen (iltmætning, puls …) kan swipes til venstre og slettes (`DELETE /api/health-metrics`, web + native); vejninger kan også swipes væk (`DELETE /api/weight-entries/[id]`, bruger 2026-10-17). En ny synkronisering kan hente en slettet måling igen (bruger 2026-10-10).
 - Google Health leverer iltmætning/åndedræt/HRV/temperatur hvert minut; de gemmes som ét gennemsnit pr. time (`averagePerHour` i `google-health-items.ts`), så kalenderen ikke oversvømmes. Dagsværdier (kl. 00:00 UTC) blandes aldrig ind i timegennemsnittene. Migration `20261011080000_google_health_hourly_collapse` samlede de minutmålinger, der allerede lå i databasen.
 - **Synkroniseringssiden (forbundet integration, bruger 2026-10-11)**: `src/app/settings/integrations/[app]/ConnectedView.tsx` (web + native). Rækkefølge: hvid knap **Rediger visning** allerøverst (bundark med til/fra pr. datatype, gemmes straks, loggen følger valgene) → "Sidst synkroniseret" + **Aktiveret** med grøn cirkel til højre → **I dag**-log → **Historik**-dropdown (I går / Sidste uge / Sidste måned / Sidste år / Altid, historikken slutter ved midnat i dag) → sort **Deaktiver** fast nederst. Loggen: `GET /api/integrations/<app>/log?range=…`. Kun OAuth-integrationer, der er forbundet og ikke mangler adgang; de øvrige har stadig godkendelsesarket.
 - Ikonerne i bundcirklen (FooterArc/tilføj-hjulet) er altid ensartede sorte stregikoner — aldrig farvede 3D-billeder (bruger 2026-10-10; Aktivitet bruger `IconActivity`). Gælder web og native.
@@ -292,6 +295,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge). Ord med STORE bogstaver er allergener og rettes til det nærmeste allergen. Ingredienslisten slutter, hvor næringstabellen begynder (også "Energi"/kJ/kcal uden overskrift).
 - Stavelogik findes ét sted: `src/lib/spelling-engine.ts` (robot, kontrol ved gem og visning). Ny ordbog/regel = grundlisten `src/lib/ingredient-words.ts`, katalogets ordforråd eller admins afgørelser på Stavekontrol — aldrig en særregel for ét ord i koden. Nattens robot (`spelling-check`) retter kun sikre fund og lægger resten på admin → Stavekontrol; hvad admin har afvist/fortrudt, rettes aldrig igen.
 - E-numre i ingredienslisten vises fede og klikbare, men aldrig understregede — web og native (bruger 2026-10-17).
+- Allergener i ingredienslisten står altid med STORT og fed og linker til allergenets side under Viden om mad → Allergener (`allergenHref`) — web og native (bruger 2026-10-17). Nye allergen-ord findes af nattens allergen-robot (Open Food Facts-opslag + ord skrevet med STORT) og afgøres på admin → Allergen-ord; læg aldrig enkeltord ind i koden.
 - Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
 
 ## Kropsmål: stemmeguiden (user rule 2026-10-14)
@@ -362,6 +366,10 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
 - Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
+
+## Robot-QoS (user rule 2026-10-17)
+
+- Robotter starter kun, når serverens CPU/RAM er under grænsen på admin → Robotter → Belastningsstyring, og aldrig i en spærretid. Nye robotter får det automatisk: app-jobs med `robot: true` går gennem `src/lib/jobs/runner.ts`, Python-agenter gennem `job_control.py` — byg aldrig en robot udenom dem. Ændres reglerne, ændres `src/lib/robot-qos.ts` og alle `scripts/*/job_control.py` sammen. "KØR" går udenom.
 
 ## Crawlere og billeder
 
@@ -466,6 +474,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
 - Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
 - Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- **Tallet over en slider kan altid skrives (bruger 2026-10-17, gentaget flere gange):** overalt hvor der er en slider, skal værdien også kunne tastes manuelt. Tallet ser ud som almindelig tekst og ændrer ikke udseende, før man trykker på det; da får det hvid baggrund, og taltastaturet kommer frem. Brug `TapNumberInput` (web) / `CaptureTapNumber` (native) — eller et eksisterende felt ved siden af slideren. Ingen slider uden en indtastningsmulighed.
 - Mængdefeltet på produktsiden er selv slideren (bruger 2026-10-16): det store tal trækkes vandret (`DragNumberStrip`, web + native). Under trækket vises nabotallene mindre og mere utydelige i siderne i tal-hjulets stil, alle på det store tals grundlinje; enheden ("g") skjules under trækket og kommer igen, når nabotallene er faldet ud. Ingen separat slider under feltet.
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
 

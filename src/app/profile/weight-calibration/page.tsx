@@ -84,9 +84,9 @@ function KgField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={unit === "st" ? "11 5" : placeholder}
-        className="hf-type-title min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/35"
+        className="hf-type-input min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/35"
       />
-      <span className="hf-type-body hf-type-strong text-hf-black/60">{weightUnitLabel(unit)}</span>
+      <span className="hf-type-body text-hf-black/60">{weightUnitLabel(unit)}</span>
     </div>
   );
 }
@@ -236,7 +236,7 @@ export default function WeightCalibrationPage() {
             <div key={pair[0].key} className="grid grid-cols-2 gap-3">
               {pair.map((condition) => (
                 <label key={condition.key} htmlFor={`weight-${condition.key}`} className="flex min-w-0 flex-col gap-2">
-                  <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
+                  <span className="hf-type-body flex items-center gap-2 text-hf-black">
                     <span className="shrink-0">{condition.icon}</span>
                     <span className="truncate">{condition.label}</span>
                   </span>
@@ -264,7 +264,7 @@ export default function WeightCalibrationPage() {
                 htmlFor={`weight-slot-${hour}`}
                 className="flex h-16 items-center gap-4 border-b border-hf-tan-dark"
               >
-                <span className="hf-type-body hf-type-strong w-12 shrink-0 text-hf-black/60">
+                <span className="hf-type-body w-12 shrink-0 text-hf-black/60">
                   {String(hour).padStart(2, "0")}:00
                 </span>
                 <input
@@ -276,9 +276,9 @@ export default function WeightCalibrationPage() {
                     setGridValues((current) => ({ ...current, [hour]: event.target.value }))
                   }
                   placeholder={t("weightCalibration.timeGrid.placeholder")}
-                  className="hf-type-title h-full min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/30"
+                  className="hf-type-input h-full min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/30"
                 />
-                <span className="hf-type-body hf-type-strong text-hf-black/60">{weightUnitLabel(weightUnit)}</span>
+                <span className="hf-type-body text-hf-black/60">{weightUnitLabel(weightUnit)}</span>
               </label>
             ))}
           </div>

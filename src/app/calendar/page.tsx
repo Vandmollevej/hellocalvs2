@@ -2,6 +2,7 @@
 
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { useFavoriteProducts } from "@/lib/use-favorite-products";
 import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState, createContext, useContext } from "react";
 import Link from "next/link";
@@ -555,6 +556,29 @@ function CalendarPageContent() {
     } catch {
       setRegistrations(previous);
     }
+  }
+
+  async function deleteWater(id: string) {
+    const previous = waterEntries;
+    setWaterEntries((current) => current.filter((entry) => entry.id !== id));
+    try {
+      const response = await fetch(`/api/water-entries/${id}`, { method: "DELETE" });
+      if (!response.ok) setWaterEntries(previous);
+    } catch {
+      setWaterEntries(previous);
+    }
+  }
+
+  // Swipe → Slet på en vejning (bruger 2026-10-17: alt, der ikke er en vare,
+  // kan slettes ved swipe).
+  function deleteWeighIn(id: string) {
+    const removed = weighIns;
+    setWeighIns((current) => current.filter((entry) => entry.id !== id));
+    fetch(`/api/weight-entries/${id}`, { method: "DELETE" })
+      .then((response) => {
+        if (!response.ok) setWeighIns(removed);
+      })
+      .catch(() => setWeighIns(removed));
   }
 
   function deleteMetrics(ids: string[]) {
@@ -1119,7 +1143,9 @@ function CalendarPageContent() {
           waterEntries={waterEntries.filter((entry) => isSameDay(new Date(entry.loggedAt), selectedDate))}
           measurements={measurementsForDay(weighIns, healthMetrics, (time) => isSameDay(time, selectedDate))}
           onDeleteMetrics={deleteMetrics}
+          onDeleteWeighIn={deleteWeighIn}
           onDeleteRegistration={deleteRegistration}
+          onDeleteWater={deleteWater}
           goals={goalsForDate(goalsByDate, selectedDate)}
           weighIns={weighInsForDate(weighInsByDate, selectedDate)}
           loading={registrationsLoading}
@@ -2055,7 +2081,9 @@ function DayDetails({
   waterEntries,
   measurements,
   onDeleteMetrics,
+  onDeleteWeighIn,
   onDeleteRegistration,
+  onDeleteWater,
   goals,
   weighIns,
   loading,
@@ -2079,7 +2107,9 @@ function DayDetails({
   /** Dagens vejninger og kropsmålinger (Withings m.fl. eller manuelle). */
   measurements: CalendarMeasurement[];
   onDeleteMetrics: (ids: string[]) => void;
+  onDeleteWeighIn: (id: string) => void;
   onDeleteRegistration: (id: string) => void;
+  onDeleteWater: (id: string) => void;
   goals: GoalDTO[];
   weighIns: WeightEntry[];
   loading: boolean;
@@ -2569,7 +2599,9 @@ function DayDetails({
           waterEntries={waterEntries.filter((entry) => new Date(entry.loggedAt).getHours() === openHour)}
           measurements={measurements.filter((item) => item.time.getHours() === openHour)}
           onDeleteMetrics={onDeleteMetrics}
+          onDeleteWeighIn={onDeleteWeighIn}
           onDeleteRegistration={onDeleteRegistration}
+          onDeleteWater={onDeleteWater}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
@@ -2937,7 +2969,9 @@ function HourEntriesOverlay({
   waterEntries,
   measurements,
   onDeleteMetrics,
+  onDeleteWeighIn,
   onDeleteRegistration,
+  onDeleteWater,
   goals,
   onClose,
 }: {
@@ -2946,7 +2980,9 @@ function HourEntriesOverlay({
   waterEntries: WaterEntry[];
   measurements: CalendarMeasurement[];
   onDeleteMetrics: (ids: string[]) => void;
+  onDeleteWeighIn: (id: string) => void;
   onDeleteRegistration: (id: string) => void;
+  onDeleteWater: (id: string) => void;
   goals: GoalDTO[];
   onClose: () => void;
 }) {
@@ -2975,6 +3011,7 @@ function HourEntriesOverlay({
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
   const [confirmDelete, setConfirmDelete] = useState<Registration | null>(null);
   const router = useRouter();
+  const { favoriteIds, toggleFavorite } = useFavoriteProducts();
   function toggleGroup(key: string) {
     setOpenKeys((prev) => {
       const next = new Set(prev);
@@ -3011,7 +3048,9 @@ function HourEntriesOverlay({
         {groups.map((group) => {
           const soloWeight = group.items.length === 1 && group.items[0].kind === "measurement" ? group.items[0].measurement : null;
           if (soloWeight && soloWeight.weightKg !== null && soloWeight.id.startsWith("weight-")) {
-            return <WeightGroupRow key={group.key} time={group.time} measurement={soloWeight} />;
+            return (
+              <WeightGroupRow key={group.key} time={group.time} measurement={soloWeight} onDeleteWeighIn={onDeleteWeighIn} />
+            );
           }
           const isOpen = openKeys.has(group.key);
           // Kalorier fra mad som "540 kcal", vand som glas + cl — begge kan
@@ -3060,7 +3099,9 @@ function HourEntriesOverlay({
                 </span>
               </button>
               {isOpen && (
-                <div className="bg-hf-cream px-4">
+                // Samme kort som "Dagens tilføjelser" på forsiden: tan rækker med
+                // streg imellem, og swipe-knapperne går helt ud til kortets kant.
+                <div className="border-t border-hf-tan-dark">
                   {group.items.map((item, i) => {
                     const rowClass = `block focus-visible:outline-2 focus-visible:outline-hf-black ${
                       i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
@@ -3068,6 +3109,7 @@ function HourEntriesOverlay({
                     if (item.kind === "water") {
                       return (
                         <div key={item.id} className={rowClass}>
+                          <SwipeableRow onDelete={() => onDeleteWater(item.id)}>
                           <FoodRow
                             thumbnail={<IconWaterGlass size={22} className="text-hf-black" />}
                             title={t("calendar.waterTitle")}
@@ -3080,6 +3122,7 @@ function HourEntriesOverlay({
                               />
                             }
                           />
+                          </SwipeableRow>
                         </div>
                       );
                     }
@@ -3091,6 +3134,7 @@ function HourEntriesOverlay({
                           className={rowClass}
                           hideWeight={item === groupWeight}
                           onDeleteMetrics={onDeleteMetrics}
+                          onDeleteWeighIn={onDeleteWeighIn}
                         />
                       );
                     }
@@ -3098,8 +3142,16 @@ function HourEntriesOverlay({
                     const isWater = isWaterRegistration(registration);
                     return (
                       <div key={item.id} className={rowClass}>
+                        {/* Som "Dagens tilføjelser" (bruger 2026-10-17): swipe højre =
+                            Favorit, swipe venstre = Fejl + Slet; kun Slet uden vare. */}
                         <SwipeableRow
-                          onReportError={() => router.push(`/registration/${registration.id}/report-error`)}
+                          onFavorite={registration.productId && !isWater ? () => toggleFavorite(registration.productId as string) : undefined}
+                          isFavorite={registration.productId ? favoriteIds.has(registration.productId) : false}
+                          onReportError={
+                            registration.productId && !isWater
+                              ? () => router.push(`/registration/${registration.id}/report-error`)
+                              : undefined
+                          }
                           onDelete={() => setConfirmDelete(registration)}
                         >
                           <Link href={`/registration/${registration.id}`} className="block">
@@ -3118,14 +3170,7 @@ function HourEntriesOverlay({
                                   </p>
                                 ) : undefined
                               }
-                              right={
-                                <EnergyChip
-                                  kind={isWater ? "water" : "intake"}
-                                  value={isWater ? waterRegistrationMl(registration) : registration.kcalSnapshot}
-                                  iconSize={18}
-                                  className="hf-type-body hf-type-strong text-hf-black"
-                                />
-                              }
+                              right={<HfChevron direction="right" className="text-hf-black opacity-40" />}
                             />
                           </Link>
                         </SwipeableRow>
@@ -3162,15 +3207,25 @@ function HourEntriesOverlay({
 
 // Vejning alene på sit tidspunkt: rækken åbner info-vinduet (kilde, tøj,
 // fedtprocent …) direkte — ingen foldbar mellemstation.
-function WeightGroupRow({ time, measurement }: { time: Date; measurement: CalendarMeasurement }) {
+function WeightGroupRow({
+  time,
+  measurement,
+  onDeleteWeighIn,
+}: {
+  time: Date;
+  measurement: CalendarMeasurement;
+  onDeleteWeighIn: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const weighInId = measurement.id.slice("weight-".length);
   return (
     <>
+      <div className="mb-2 overflow-hidden rounded-2xl">
+      <SwipeableRow surfaceClassName="bg-hf-tan" onDelete={() => onDeleteWeighIn(weighInId)}>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="hf-control-row mb-2 flex w-full items-center justify-between rounded-2xl bg-hf-tan px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+        className="hf-control-row flex w-full items-center justify-between bg-hf-tan px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
       >
         <span className="hf-type-body hf-type-strong text-hf-black">
           {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
@@ -3181,6 +3236,8 @@ function WeightGroupRow({ time, measurement }: { time: Date; measurement: Calend
           <HfChevron direction="right" className="-ml-1 text-hf-black" />
         </span>
       </button>
+      </SwipeableRow>
+      </div>
       {open && <WeightEntryDetailsSheet id={weighInId} onClose={() => setOpen(false)} />}
     </>
   );
@@ -3194,11 +3251,13 @@ function MeasurementRow({
   className,
   hideWeight = false,
   onDeleteMetrics,
+  onDeleteWeighIn,
 }: {
   measurement: CalendarMeasurement;
   className: string;
   hideWeight?: boolean;
   onDeleteMetrics: (ids: string[]) => void;
+  onDeleteWeighIn: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -3208,7 +3267,7 @@ function MeasurementRow({
   const metricIds = measurement.weightKg === null ? measurement.metrics.flatMap((m) => (m.id ? [m.id] : [])) : [];
   const row = (
     <div
-      className={`${className} ${weighInId ? "cursor-pointer" : ""}`}
+      className={`${className} bg-hf-tan px-4 ${weighInId ? "cursor-pointer" : ""}`}
       {...(weighInId
         ? {
             role: "button",
@@ -3258,10 +3317,18 @@ function MeasurementRow({
       )}
     </div>
   );
-  // Målinger uden vægt (iltmætning, puls …) kan swipes væk; vejninger slettes fra deres eget ark.
+  // Alt kan swipes væk (bruger 2026-10-17): en vejning slettes med sine
+  // målinger, målinger uden vægt (iltmætning, puls …) for sig.
+  if (weighInId) {
+    return (
+      <SwipeableRow surfaceClassName="bg-hf-tan" onDelete={() => onDeleteWeighIn(weighInId)}>
+        {row}
+      </SwipeableRow>
+    );
+  }
   if (metricIds.length === 0 || metricIds.length !== measurement.metrics.length) return row;
   return (
-    <SwipeableRow onDelete={() => onDeleteMetrics(metricIds)}>
+    <SwipeableRow surfaceClassName="bg-hf-tan" onDelete={() => onDeleteMetrics(metricIds)}>
       {row}
     </SwipeableRow>
   );

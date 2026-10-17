@@ -48,6 +48,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/quality-control", key: "nav_quality_control" },
       { href: "/admin/uncertainties", key: "nav_uncertainties" },
       { href: "/admin/spelling", key: "nav_spelling" },
+      { href: "/admin/allergen-words", key: "nav_allergen_words" },
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
       { href: "/admin/images", key: "nav_images", alsoActive: ["/admin/logos"] },
@@ -61,6 +62,7 @@ export const NAV: NavEntry[] = [
     icon: "database",
     links: [
       { href: "/admin/product-database/products", key: "nav_product_database_products" },
+      { href: "/admin/product-database/scans", key: "nav_product_database_scans", child: true },
       { href: "/admin/product-database/generics", key: "nav_product_database_generics", child: true },
       { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
       { href: "/admin/product-database/labels", key: "nav_product_database_labels" },

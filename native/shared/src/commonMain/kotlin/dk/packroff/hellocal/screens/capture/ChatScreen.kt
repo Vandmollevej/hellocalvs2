@@ -28,6 +28,7 @@ import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
+import dk.packroff.hellocal.screens.food.rememberFavoriteProducts
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
@@ -171,6 +172,8 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
 
     val suggested = items.filter { !it.saved }
     val saved = items.filter { it.saved }
+    // Swipe right = Favorit, swipe left = Fejl + Slet — only Slet when it isn't a product (user 2026-10-17).
+    val favorites = rememberFavoriteProducts()
 
     Column(Modifier.fillMaxSize()) {
         HcAppBar(
@@ -200,17 +203,21 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 if (suggested.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
                         HcText(t.t("web.chatSuggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                        // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                         suggested.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
-                                onFavorite = null,
-                                onReportError = null,
+                                onFavorite = entry.item.productId?.let { id -> { favorites.toggle(id) } },
+                                onReportError = entry.item.productId?.let { id -> { nav.push("/product/$id/report-error") } },
                                 onDelete = { deleteItem(entry) },
+                                isFavorite = entry.item.productId?.let { it in favorites.ids } ?: false,
                                 onAdd = { addShownItems(listOf(entry.id)) },
                                 adding = isAdding,
                                 addLabel = t.t("web.chatAdd"),
                             )
                             if (index < suggested.lastIndex) HcLine()
+                        }
                         }
                         if (suggested.size > 1) {
                             HcButton(
@@ -226,15 +233,19 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                 if (saved.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
                         HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                        // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                         saved.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
-                                onFavorite = null,
-                                onReportError = null,
+                                onFavorite = entry.item.productId?.let { id -> { favorites.toggle(id) } },
+                                onReportError = if (entry.item.productId != null) ({ nav.push("/registration/${entry.id}/report-error") }) else null,
                                 onDelete = { deleteItem(entry) },
+                                isFavorite = entry.item.productId?.let { it in favorites.ids } ?: false,
                                 onOpen = { nav.push("/registration/${entry.id}") },
                             )
                             if (index < saved.lastIndex) HcLine()
+                        }
                         }
                     }
                 }

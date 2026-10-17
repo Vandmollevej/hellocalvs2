@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,10 +38,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -470,9 +466,8 @@ fun AddProductView(
                 Box(Modifier.fillMaxWidth().padding(16.dp)) {
                     Column(Modifier.fillMaxWidth()) {
                         Column(Modifier.fillMaxWidth().padding(top = 46.dp), verticalArrangement = Arrangement.spacedBy(33.dp)) {
-                            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                            Box(Modifier.fillMaxWidth()) {
                             ProductCircle(
-                                columnWidthDp = maxWidth.value,
                                 imageUrl = displayImageUrl,
                                 isCutout = isCutout,
                                 landscape = imageLandscape,
@@ -821,14 +816,8 @@ private fun ProductCircle(
     subbrand: String?,
     subbrandLogoUrl: String?,
     certifications: List<NameCertification>,
-    columnWidthDp: Float,
     modifier: Modifier = Modifier,
 ) {
-    // Brand and subbrand names wrap onto more lines instead of running past the page edge; their measured
-    // height moves them out from the circle (src/lib/brand-logo-layout.ts).
-    val density = LocalDensity.current
-    var brandNameHeight by remember { mutableStateOf(BRAND_NAME_HEIGHT_DP) }
-    var subbrandNameHeight by remember { mutableStateOf(BRAND_NAME_HEIGHT_DP) }
     // Without a product photo a logo stands big in the circle: the subbrand's if it has one, else the brand's
     // (docs/DECISIONS.md 2026-10-14). That logo is then not shown beside the circle as well.
     val noImage = imageUrl == null && !showSkeleton
@@ -888,31 +877,18 @@ private fun ProductCircle(
                 FoodSkeleton(Modifier.size(88.dp, BRAND_NAME_HEIGHT_DP.dp), RoundedCornerShape(50))
             }
         }
-        if (!brandPending && brand != null && !brandInCircle) {
-            if (!brand.logoUrl.isNullOrEmpty()) {
-                Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
-                    FoodImage(brand.logoUrl, Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand.name, thumbWidth = 384)
-                }
-            } else {
-                val left = logoLeftDp(brandNameHeight, 0)
-                BrandNameText(brand.name, left, 0, columnWidthDp) { brandNameHeight = with(density) { it.toDp().value.roundToInt() } }
+        // Brand and subbrand stand beside the circle only as logos; without a logo nothing is shown
+        // (REGLER 2026-10-17).
+        val brandLogoShown = !brandPending && brand != null && !brandInCircle && !brand.logoUrl.isNullOrEmpty()
+        if (brandLogoShown) {
+            Box(Modifier.align(Alignment.BottomStart).offset(x = (135 + 12).dp)) {
+                FoodImage(brand?.logoUrl.orEmpty(), Modifier.size(95.dp, 66.dp), ContentScale.Fit, contentDescription = brand?.name, thumbWidth = 384)
             }
         }
-        if (!brandPending && subbrand != null && !subbrandInCircle) {
-            // Subbrand above the brand (logo if one exists, else the name), clear of the circle like the web.
-            val brandHeight = when {
-                brand == null || brandInCircle -> 0
-                !brand.logoUrl.isNullOrEmpty() -> BRAND_LOGO_HEIGHT_DP
-                else -> brandNameHeight
-            }
-            val bottom = if (brandHeight > 0) brandHeight + SUBBRAND_GAP_DP else 0
-            if (!subbrandLogoUrl.isNullOrEmpty()) {
-                Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_LOGO_HEIGHT_DP, bottom).dp, y = (-bottom).dp)) {
-                    FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand, thumbWidth = 384)
-                }
-            } else {
-                val left = logoLeftDp(subbrandNameHeight, bottom)
-                BrandNameText(subbrand, left, bottom, columnWidthDp) { subbrandNameHeight = with(density) { it.toDp().value.roundToInt() } }
+        if (!brandPending && subbrand != null && !subbrandInCircle && !subbrandLogoUrl.isNullOrEmpty()) {
+            val bottom = if (brandLogoShown) BRAND_LOGO_HEIGHT_DP + SUBBRAND_GAP_DP else 0
+            Box(Modifier.align(Alignment.BottomStart).offset(x = logoLeftDp(BRAND_LOGO_HEIGHT_DP, bottom).dp, y = (-bottom).dp)) {
+                FoodImage(subbrandLogoUrl, Modifier.size(95.dp, BRAND_LOGO_HEIGHT_DP.dp), ContentScale.Fit, contentDescription = subbrand, thumbWidth = 384)
             }
         }
         if (certifications.isNotEmpty()) {
@@ -923,29 +899,6 @@ private fun ProductCircle(
     }
 }
 
-/**
- * A brand/subbrand name in bold green beside the circle, [leftDp] from the circle's left and [bottomDp] above its
- * bottom. It wraps within the room to the page edge (brandNameMaxWidthPx in src/lib/brand-logo-layout.ts).
- */
-@Composable
-private fun BoxScope.BrandNameText(
-    name: String,
-    leftDp: Int,
-    bottomDp: Int,
-    columnWidthDp: Float,
-    onHeightPx: (Int) -> Unit,
-) {
-    val maxWidth = max(BRAND_NAME_MIN_WIDTH_DP, (columnWidthDp / 2 + 90 - leftDp).toInt())
-    Text(
-        name,
-        style = HcTypeRoles.Title.style(HcColors.Green).copy(fontWeight = FontWeight.Bold),
-        modifier = Modifier.align(Alignment.BottomStart).offset(x = leftDp.dp, y = (-bottomDp).dp)
-            .wrapContentWidth(Alignment.Start, unbounded = true).widthIn(max = maxWidth.dp)
-            .onSizeChanged { onHeightPx(it.height) },
-    )
-}
-
-private const val BRAND_NAME_MIN_WIDTH_DP = 60
 private const val BRAND_LOGO_HEIGHT_DP = 66
 private const val BRAND_NAME_HEIGHT_DP = 22
 private const val SUBBRAND_GAP_DP = 6

@@ -292,7 +292,7 @@
       "title": "Assistance",
       "intro": "Comme nous protégeons tes données, l'assistance Hello Cal n'a par défaut accès ni à tes données personnelles ni à ton compte. Tu décides toi-même des données que l'assistance peut consulter temporairement.",
       "description": "Ci-dessous, tu peux autoriser les données que nous pouvons consulter et fixer la période pendant laquelle elles sont accessibles.",
-      "period": "Période d'accès",
+      "period": "Autoriser l'accès pendant la période",
       "from": "Du",
       "until": "Au",
       "dataTitle": "Données consultables par l'assistance",

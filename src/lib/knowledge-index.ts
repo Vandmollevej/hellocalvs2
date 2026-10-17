@@ -3,12 +3,13 @@
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from "@/lib/knowledge";
 import { FOOD_TERMS, foodTermAnchor, matchesFoodTerm } from "@/lib/food-latin";
 
-export type KnowledgeSection = "vitaminer" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder" | "mad-paa-latin";
+export type KnowledgeSection = "vitaminer" | "allergener" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder" | "mad-paa-latin";
 
 // "e-numre" og "omregning" har deres egne sider (/viden-om/e-numre, /viden-om/omregning).
 export const KNOWLEDGE_SECTIONS: { id: KnowledgeSection | "e-numre" | "omregning"; title: string }[] = [
   { id: "vitaminer", title: "Vitaminer" },
   { id: "e-numre", title: "E-numre" },
+  { id: "allergener", title: "Allergener" },
   { id: "sundhedstips", title: "Sundhedstips" },
   { id: "kalorieforbraending", title: "Kalorieforbrænding" },
   { id: "who-og-kilder", title: "WHO og officielle kilder" },
@@ -50,6 +51,7 @@ export function searchEntries(query: string, section?: KnowledgeSection): Knowle
   const q = query.trim().toLowerCase();
   const sections: KnowledgeSection[] = section ? [section] : [
     "vitaminer",
+    "allergener",
     "sundhedstips",
     "kalorieforbraending",
     "who-og-kilder",

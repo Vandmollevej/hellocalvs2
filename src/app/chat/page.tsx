@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconChevronRight, IconSend } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { useFavoriteProducts } from "@/lib/use-favorite-products";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { mealShareBody } from "@/lib/meal-share";
@@ -63,6 +65,9 @@ function ItemRow({
   disabled,
   onAdd,
   onDelete,
+  onFavorite,
+  isFavorite = false,
+  onReportError,
 }: {
   item: Item;
   estimateLabel: string;
@@ -70,6 +75,9 @@ function ItemRow({
   disabled: boolean;
   onAdd: () => void;
   onDelete: () => void;
+  onFavorite?: () => void;
+  isFavorite?: boolean;
+  onReportError?: () => void;
 }) {
   const content = (
     <div className="flex items-center gap-2.5 py-2.5">
@@ -83,7 +91,7 @@ function ItemRow({
         <span className="flex items-center gap-1.5">
           <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-cream px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
           )}
         </span>
         <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
@@ -106,7 +114,7 @@ function ItemRow({
   );
 
   return (
-    <SwipeableRow onDelete={onDelete}>
+    <SwipeableRow onFavorite={onFavorite} isFavorite={isFavorite} onReportError={onReportError} onDelete={onDelete}>
       {item.saved ? (
         <Link href={`/registration/${item.id}`} className="block">
           {content}
@@ -129,6 +137,19 @@ export default function ChatPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Item | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const router = useRouter();
+  // Swipe højre = Favorit, swipe venstre = Fejl + Slet — kun Slet, når det
+  // ikke er en vare fra databasen (bruger 2026-10-17).
+  const { favoriteIds, toggleFavorite } = useFavoriteProducts();
+  const swipeProps = (item: Item) =>
+    item.productId
+      ? {
+          onFavorite: () => toggleFavorite(item.productId as string),
+          isFavorite: favoriteIds.has(item.productId),
+          onReportError: () =>
+            router.push(item.saved ? `/registration/${item.id}/report-error` : `/product/${item.productId}/report-error`),
+        }
+      : {};
 
   useEffect(() => {
     // localStorage findes først efter hydrering.
@@ -294,7 +315,7 @@ export default function ChatPage() {
         {suggestedItems.length > 0 && (
           <section className="mt-4">
             <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("web.chatSuggested")}</h2>
-            <ul>
+            <ul className="overflow-hidden rounded-card bg-hf-tan">
               {suggestedItems.map((item) => (
                 <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                   <ItemRow
@@ -304,6 +325,7 @@ export default function ChatPage() {
                     disabled={isAdding}
                     onAdd={() => void addShownItems([item.id])}
                     onDelete={() => deleteItem(item)}
+                    {...swipeProps(item)}
                   />
                 </li>
               ))}
@@ -319,7 +341,7 @@ export default function ChatPage() {
         {savedItems.length > 0 && (
           <section className="mt-4">
             <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-            <ul>
+            <ul className="overflow-hidden rounded-card bg-hf-tan">
               {savedItems.map((item) => (
                 <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                   <ItemRow
@@ -329,6 +351,7 @@ export default function ChatPage() {
                     disabled={isAdding}
                     onAdd={() => void addShownItems([item.id])}
                     onDelete={() => deleteItem(item)}
+                    {...swipeProps(item)}
                   />
                 </li>
               ))}

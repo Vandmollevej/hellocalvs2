@@ -212,38 +212,58 @@ fun FoodUncertaintyTilde(small: Boolean = false) {
     )
 }
 
-/** src/components/ProductResultRow.tsx — the whole row opens the product; bookmark toggles favourite. */
+/**
+ * src/components/ProductResultRow.tsx — the same row as "Dagens tilføjelser" on
+ * the front page (user 2026-10-17: the front page decides every list). The whole
+ * row opens the product; Favorit only by swiping right, Fejl (→
+ * /product/{id}/report-error) + optional Slet by swiping left; chevron on the right.
+ */
 @Composable
 fun FoodProductResultRow(
     result: FoodProductResult,
     kcalText: String?,
     isFavorite: Boolean,
-    favoriteLabel: String,
     onOpen: (String) -> Unit,
     onToggleFavorite: (String, Boolean) -> Unit,
     divider: Boolean,
+    /** Line above the name, e.g. "Kl. 18.45" (like the front page). */
+    overline: String? = null,
+    /** Only where the list can delete (my scans, favourites). */
+    onDelete: ((String) -> Unit)? = null,
 ) {
-    Column(Modifier.fillMaxWidth().clickable { onOpen(result.id) }) {
-        FoodRow(
-            title = result.title,
-            image = result.image,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            subtitle = if (kcalText != null) {
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (!result.brand.isNullOrBlank()) HcText("${result.brand} · ", HcTypeRoles.Small, color = HcColors.TextSecondary, maxLines = 1)
-                        if (result.macrosEstimated) FoodUncertaintyTilde()
-                        HcText(kcalText, HcTypeRoles.Small, color = HcColors.TextSecondary, maxLines = 1)
+    val t = dk.packroff.hellocal.i18n.LocalTranslator.current
+    val nav = dk.packroff.hellocal.nav.LocalNavigator.current
+    Column(Modifier.fillMaxWidth()) {
+        FoodSwipeableRow(
+            texts = FoodSwipeTexts(
+                favorite = t.t("swipeableRow.favorite"),
+                copy = t.t("family.copy.action"),
+                reportError = t.t("swipeableRow.reportError"),
+                delete = t.t("swipeableRow.delete"),
+                favoriteSaved = t.t("swipeableRow.favoriteSaved"),
+            ),
+            onFavorite = { onToggleFavorite(result.id, !isFavorite) },
+            isFavorite = isFavorite,
+            onReportError = { nav.push("/product/${result.id}/report-error") },
+            onDelete = if (onDelete != null) ({ onDelete(result.id) }) else null,
+        ) {
+            FoodRow(
+                title = result.title,
+                image = result.image,
+                modifier = Modifier.clickable { onOpen(result.id) }.padding(horizontal = 16.dp),
+                overline = if (overline != null) ({ HcText(overline, HcTypeRoles.Small, color = HcColors.Black, bold = true) }) else null,
+                subtitle = if (kcalText != null) {
+                    {
+                        Row(Modifier.padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                            if (!result.brand.isNullOrBlank()) HcText("${result.brand} · ", HcTypeRoles.Small, color = HcColors.TextSecondary, maxLines = 1)
+                            if (result.macrosEstimated) FoodUncertaintyTilde()
+                            HcText(kcalText, HcTypeRoles.Small, color = HcColors.TextSecondary, maxLines = 1)
+                        }
                     }
-                }
-            } else null,
-            right = {
-                Box(
-                    Modifier.padding(end = 8.dp).size(32.dp).clip(CircleShape).clickable { onToggleFavorite(result.id, !isFavorite) },
-                    contentAlignment = Alignment.Center,
-                ) { FoodFavoriteIcon(isFavorite, 20.dp, HcColors.Green) }
-            },
-        )
+                } else null,
+                right = { HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black.copy(alpha = 0.4f)) },
+            )
+        }
         if (divider) FoodDivider()
     }
 }

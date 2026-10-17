@@ -11,11 +11,13 @@ import { backfillAlcoholNutrition } from "@/lib/alcohol-nutrition";
 import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
+import { queueOffImageCutouts } from "@/lib/off-image-sweep";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
 import { checkFrontImages } from "@/lib/front-image-check";
 import { runProductRechecks } from "@/lib/product-recheck";
 import { runSpellingCheck } from "@/lib/spelling-robot";
+import { runAllergenWordCheck } from "@/lib/allergen-robot";
 import { runBackPhotoScan } from "@/lib/product-back-photos";
 import { assessOffProducts } from "@/lib/off-quality-job";
 import { runFridaEstimates } from "@/lib/frida-estimates";
@@ -162,12 +164,14 @@ export function startScheduler() {
       "pulse-activity": runPulseNightJob,
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
+      "off-image-sweep": queueOffImageCutouts,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
       "front-image-check": checkFrontImages,
       "product-recheck": runProductRechecks,
       "off-quality": assessOffProducts,
       "spelling-check": runSpellingCheck,
+      "allergen-words": runAllergenWordCheck,
       "back-photo-scan": runBackPhotoScan,
       "frida-estimates": runFridaEstimates,
       "search-index": syncProductIndex,

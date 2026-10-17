@@ -81,8 +81,33 @@ async function imageJobWarnings(now: Date): Promise<AdminWarning[]> {
     : [];
 }
 
+// Allergen-robottens rapport (docs/DECISIONS.md 2026-10-17): nye ord fra det
+// seneste døgn og ord, der venter på admin.
+async function allergenWordWarnings(now: Date): Promise<AdminWarning[]> {
+  const [fresh, pending] = await Promise.all([
+    prisma.allergenWord.findMany({
+      where: { firstSeenAt: { gte: new Date(now.getTime() - 24 * HOUR) } },
+      orderBy: { productCount: "desc" },
+      take: 20,
+      select: { word: true },
+    }),
+    prisma.allergenWord.count({ where: { status: "PENDING" } }),
+  ]);
+  // Kun når der er nye ord — ventende ord alene giver ikke en daglig mail.
+  if (!fresh.length) return [];
+  const words = fresh.map((row) => row.word.toUpperCase()).join(", ");
+  return [
+    {
+      key: `allergen-words-${now.toISOString().slice(0, 10)}`,
+      title: `Allergen-robotten fandt ${fresh.length} nye ord`,
+      detail: `Nye ord: ${words}. ${pending} venter på gennemsyn.`,
+      href: "/admin/allergen-words",
+    },
+  ];
+}
+
 export async function getAdminWarnings(now: Date = new Date()): Promise<AdminWarning[]> {
-  const parts = await Promise.all([openAiWarnings(now), integrationWarnings(), jobWarnings(now), imageJobWarnings(now)].map((p) => p.catch(() => [] as AdminWarning[])));
+  const parts = await Promise.all([openAiWarnings(now), integrationWarnings(), jobWarnings(now), imageJobWarnings(now), allergenWordWarnings(now)].map((p) => p.catch(() => [] as AdminWarning[])));
   return parts.flat();
 }
 

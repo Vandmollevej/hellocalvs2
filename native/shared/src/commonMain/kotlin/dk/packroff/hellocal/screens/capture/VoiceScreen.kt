@@ -124,6 +124,7 @@ internal fun VoiceItemRow(
     onFavorite: (() -> Unit)?,
     onReportError: (() -> Unit)?,
     onDelete: () -> Unit,
+    isFavorite: Boolean = false,
     onAdd: (() -> Unit)? = null,
     adding: Boolean = false,
     onOpen: (() -> Unit)? = null,
@@ -131,9 +132,9 @@ internal fun VoiceItemRow(
 ) {
     val t = LocalTranslator.current
     val item = entry.item
-    CaptureSwipeableRow(onDelete = onDelete, onFavorite = onFavorite, onReportError = onReportError) {
+    CaptureSwipeableRow(onDelete = onDelete, onFavorite = onFavorite, isFavorite = isFavorite, onReportError = onReportError) {
         Row(
-            Modifier.fillMaxWidth().let { if (entry.saved && onOpen != null) it.clickable(onClick = onOpen) else it }.padding(vertical = 10.dp),
+            Modifier.fillMaxWidth().let { if (entry.saved && onOpen != null) it.clickable(onClick = onOpen) else it }.padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
@@ -144,7 +145,7 @@ internal fun VoiceItemRow(
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     HcText(item.title, HcTypeRoles.Body, Modifier.weight(1f, fill = false), bold = true, color = HcColors.Black, maxLines = 1)
                     if (item.estimated) {
-                        Box(Modifier.clip(RoundedCornerShape(50)).background(HcColors.Tan).alpha(0.7f).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                        Box(Modifier.clip(RoundedCornerShape(50)).background(HcColors.Cream).alpha(0.7f).padding(horizontal = 6.dp, vertical = 2.dp)) {
                             HcText(t.t("voice.aiEstimate").uppercase(), HcTypeRoles.Micro, bold = true, color = HcColors.Black)
                         }
                     }

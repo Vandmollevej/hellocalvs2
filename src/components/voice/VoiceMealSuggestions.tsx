@@ -7,18 +7,21 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { imageThumb } from "@/lib/image-thumb";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { useFavoriteProducts } from "@/lib/use-favorite-products";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import type { VoiceItem, VoiceMealError } from "@/components/voice/useMealInterpretation";
 
 // Tale-sidens lister, uændret, på Madvarer: "Foreslået" (Tilføj pr. række og
-// "Tilføj alle forslag") og "Tilføjet" (åbner registreringen). Swipe giver
-// favorit, fejlmelding og slet; en gemt vare slettes først efter bekræftelse.
+// "Tilføj alle forslag") og "Tilføjet" (åbner registreringen). Swipe højre =
+// Favorit, swipe venstre = Fejl + Slet (kun Slet, når det ikke er en vare fra
+// databasen); en gemt vare slettes først efter bekræftelse.
 
 type T = (key: string, params?: Record<string, string | number>) => string;
 
 function VoiceItemRow({
   item,
   onFavorite,
+  isFavorite = false,
   onReportError,
   onDelete,
   onAdd,
@@ -27,6 +30,7 @@ function VoiceItemRow({
 }: {
   item: VoiceItem;
   onFavorite?: () => void;
+  isFavorite?: boolean;
   onReportError?: () => void;
   onDelete: () => void;
   onAdd?: () => void;
@@ -45,7 +49,7 @@ function VoiceItemRow({
         <span className="flex items-center gap-1.5">
           <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-cream px-1.5 py-0.5 uppercase text-hf-black opacity-70">
               {t("voice.aiEstimate")}
             </span>
           )}
@@ -69,7 +73,7 @@ function VoiceItemRow({
   );
 
   return (
-    <SwipeableRow onFavorite={onFavorite} onReportError={onReportError} onDelete={onDelete}>
+    <SwipeableRow onFavorite={onFavorite} isFavorite={isFavorite} onReportError={onReportError} onDelete={onDelete}>
       {item.saved ? (
         <Link href={`/registration/${item.id}`} className="block">
           {content}
@@ -100,13 +104,7 @@ export function VoiceMealSuggestions({
   const suggestedItems = items.filter((item) => !item.saved);
   const savedItems = items.filter((item) => item.saved);
 
-  function favorite(productId: string) {
-    fetch("/api/favorites", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId }),
-    }).catch(() => {});
-  }
+  const { favoriteIds, toggleFavorite } = useFavoriteProducts();
 
   function deleteItem(item: VoiceItem) {
     if (item.saved) setConfirmDelete(item);
@@ -120,12 +118,14 @@ export function VoiceMealSuggestions({
       {suggestedItems.length > 0 && (
         <section>
           <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.suggested")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ul className="max-h-[45vh] overflow-y-auto overflow-x-hidden rounded-card bg-hf-tan">
             {suggestedItems.map((item) => (
               <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                 <VoiceItemRow
                   item={item}
-                  onFavorite={item.productId ? () => favorite(item.productId as string) : undefined}
+                  onFavorite={item.productId ? () => toggleFavorite(item.productId as string) : undefined}
+                  isFavorite={item.productId ? favoriteIds.has(item.productId) : false}
+                  onReportError={item.productId ? () => router.push(`/product/${item.productId}/report-error`) : undefined}
                   onDelete={() => deleteItem(item)}
                   onAdd={() => onAdd([item])}
                   adding={adding}
@@ -145,13 +145,14 @@ export function VoiceMealSuggestions({
       {savedItems.length > 0 && (
         <section>
           <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ul className="max-h-[45vh] overflow-y-auto overflow-x-hidden rounded-card bg-hf-tan">
             {savedItems.map((item) => (
               <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                 <VoiceItemRow
                   item={item}
-                  onFavorite={item.productId ? () => favorite(item.productId as string) : undefined}
-                  onReportError={() => router.push(`/registration/${item.id}/report-error`)}
+                  onFavorite={item.productId ? () => toggleFavorite(item.productId as string) : undefined}
+                  isFavorite={item.productId ? favoriteIds.has(item.productId) : false}
+                  onReportError={item.productId ? () => router.push(`/registration/${item.id}/report-error`) : undefined}
                   onDelete={() => deleteItem(item)}
                   t={t}
                 />

@@ -14,6 +14,7 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { getSessionUser } from "@/lib/session";
 import { isProductRecheckDue } from "@/lib/product-recheck";
+import { recordProductScanSafely } from "@/lib/user-scans";
 
 // GET /api/products/lookup/:barcode
 //
@@ -99,6 +100,7 @@ export async function GET(
       // fremstår som ny for en indlogget kunde — kameraet tager fotos som ved
       // en ny vare, men kunden får varens tidligere info med det samme.
       const sessionUser = await getSessionUser();
+      if (sessionUser) await recordProductScanSafely(sessionUser.id, existing.product.id);
       const qualityCheck = sessionUser ? await isProductRecheckDue(existing.product.id).catch(() => false) : false;
       log("barcode_lookup", `Fundet i egen database: ${existing.product.name}${qualityCheck ? " — over to år gammel, kameraet tager nye fotos (2-års tjek)" : ""}`, {
         productId: existing.product.id,
@@ -236,6 +238,8 @@ export async function GET(
     await createExternalImageCutoutJob(product.id, product.imageUrl).catch((error) =>
       console.error("Could not queue cutout for external image", error),
     );
+    const scanner = await getSessionUser();
+    if (scanner) await recordProductScanSafely(scanner.id, product.id);
     log("barcode_lookup", `Hentet fra ${offProduct ? "Open Food Facts" : "USDA"} og oprettet: ${product.name}`, {
       productId: product.id,
       data: { source: offProduct ? "openfoodfacts" : "usda", kcalPer100g: product.kcalPer100g },

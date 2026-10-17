@@ -352,6 +352,21 @@ fun CalendarScreen(args: RouteArgs) {
                             runCatching { Api.delete("/api/health-metrics", mapOf("ids" to ids)) }.onFailure { metrics = before }
                         }
                     },
+                    // Swipe → Slet on a weigh-in (user 2026-10-17: everything that isn't a product can be swiped away).
+                    onDeleteWeighIn = { id ->
+                        val before = weighIns
+                        weighIns = weighIns.filter { it.id != id }
+                        scope.launch {
+                            runCatching { Api.delete("/api/weight-entries/$id") }.onFailure { weighIns = before }
+                        }
+                    },
+                    onDeleteWater = { id ->
+                        val before = waterEntries
+                        waterEntries = waterEntries.filter { it.id != id }
+                        scope.launch {
+                            runCatching { Api.delete("/api/water-entries/$id") }.onFailure { waterEntries = before }
+                        }
+                    },
                     onDeleteRegistration = { id ->
                         val before = registrations
                         registrations = registrations.filter { it.id != id }

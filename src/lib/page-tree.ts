@@ -114,6 +114,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/foods/new", label: "Ny madvare (omdirigerer til scanning)" },
               { path: "/product/create", label: "Opret vare" },
+              { path: "/product/[id]/report-error", label: "Rapportér fejl på vare", note: "Swipe til venstre på en vare i Søg, Favoritter, Indscanninger" },
               { path: "/create-dish", label: "Opret ret" },
             ],
           },
@@ -232,7 +233,7 @@ export const PAGE_TREE: PageArea[] = [
               {
                 path: "/viden-om/[category]",
                 label: "Kategori",
-                note: "Vitaminer, sundhedstips, kalorieforbrænding, WHO, Mad på latin",
+                note: "Vitaminer, allergener, sundhedstips, kalorieforbrænding, WHO, Mad på latin",
                 children: [{ path: "/viden-om/[category]/[slug]", label: "Artikel / ord" }],
               },
               {
@@ -489,6 +490,11 @@ export const PAGE_TREE: PageArea[] = [
             label: "Stavekontrol",
             note: "Nattens stavekontrol-robot: rettelser og forslag til ingredienslister — godkend, afvis eller skriv egen rettelse",
           },
+          {
+            path: "/admin/allergen-words",
+            label: "Allergen-ord",
+            note: "Nattens allergen-robot: nye allergen-ord fra Open Food Facts og ord skrevet med STORT — godkend eller afvis",
+          },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
           { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },
           { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },
@@ -499,6 +505,11 @@ export const PAGE_TREE: PageArea[] = [
             note: "Sender videre til Varer",
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
+              {
+                path: "/admin/product-database/scans",
+                label: "Brugerscanninger",
+                note: "Alle varer brugerne scanner (også kendte varer fra Open Food Facts), nyeste først, med link til at rette varen",
+              },
               { path: "/admin/product-database/generics", label: "Generiske produkter" },
               { path: "/admin/product-database/brands", label: "Brands" },
               { path: "/admin/product-database/labels", label: "Labels" },

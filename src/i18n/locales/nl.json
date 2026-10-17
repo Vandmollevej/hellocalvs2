@@ -292,7 +292,7 @@
       "title": "Support",
       "intro": "Omdat we je gegevens serieus nemen, heeft Hello Cal Support standaard geen toegang tot je persoonlijke gegevens of je account. Jij bepaalt zelf welke gegevens Support tijdelijk mag inzien.",
       "description": "Hieronder kun je toestemming geven voor welke gegevens we mogen inzien en de periode instellen waarin de gegevens toegankelijk zijn.",
-      "period": "Toegangsperiode",
+      "period": "Toegang toestaan in de periode",
       "from": "Van",
       "until": "Tot",
       "dataTitle": "Gegevens die Support mag inzien",

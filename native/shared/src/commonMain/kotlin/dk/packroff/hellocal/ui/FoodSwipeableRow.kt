@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -35,48 +36,61 @@ import dk.packroff.hellocal.ui.icons.HcIcon
 
 private const val ACTION_WIDTH = 80f
 
+/** An extra button behind the row (e.g. Aktivér on screenings); looks like every other action. */
+data class FoodSwipeAction(val label: String, val icon: String, val color: Color, val onClick: () -> Unit)
+
 /** Texts for the swipe actions (src/components/SwipeableRow.tsx uses swipeableRow.* and family.copy.action). */
 data class FoodSwipeTexts(val favorite: String, val copy: String, val reportError: String, val delete: String, val favoriteSaved: String = favorite)
 
 /**
  * src/components/SwipeableRow.tsx — swipe right for Favorit (+ Kopier til konto),
  * swipe left for (Fejl +) Slet. One gesture opens one side; releases snap open/closed.
+ * The one shared swipe row (user 2026-10-17): every action is icon over label, 80 dp wide.
  */
 @Composable
 fun FoodSwipeableRow(
     texts: FoodSwipeTexts,
-    onDelete: () -> Unit,
+    /** null = no Slet (e.g. search results: products you can't delete from the list). */
+    onDelete: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onFavorite: (() -> Unit)? = null,
     isFavorite: Boolean = false,
     onCopyToAccount: (() -> Unit)? = null,
     onReportError: (() -> Unit)? = null,
-    surface: Color = HcColors.Cream,
+    rightActions: List<FoodSwipeAction> = emptyList(),
+    surface: Color = HcColors.Tan,
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current.density
-    val rightWidth = if (onReportError != null) ACTION_WIDTH * 2 else ACTION_WIDTH
+    val rightWidth = ACTION_WIDTH * (rightActions.size + (if (onReportError != null) 1 else 0) + (if (onDelete != null) 1 else 0))
     val leftWidth = (if (onFavorite != null) ACTION_WIDTH else 0f) + (if (onCopyToAccount != null) ACTION_WIDTH else 0f)
     var dragX by remember { mutableStateOf(0f) }
     var dragging by remember { mutableStateOf(false) }
     val shown by animateFloatAsState(dragX, if (dragging) snap<Float>() else tween<Float>(150))
 
     Box(modifier.fillMaxWidth().height(IntrinsicSize.Min).clipToBounds()) {
-        Row(Modifier.fillMaxWidth().fillMaxHeight()) {
-            if (onFavorite != null) SwipeAction(if (isFavorite) texts.favoriteSaved else texts.favorite, if (isFavorite) HcColors.Black else HcColors.Green, icon = { FoodFavoriteIcon(isFavorite, 18.dp, HcColors.White) }) {
+        // Closed row: the buttons are hidden so they never show through the card's round corners.
+        Row(Modifier.fillMaxWidth().fillMaxHeight().alpha(if (shown == 0f) 0f else 1f)) {
+            if (onFavorite != null) SwipeAction(if (isFavorite) texts.favoriteSaved else texts.favorite, if (isFavorite) HcColors.Black else HcColors.Green, icon = { FoodFavoriteIcon(isFavorite, 20.dp, HcColors.White) }) {
                 onFavorite()
                 dragX = 0f
             }
-            if (onCopyToAccount != null) SwipeAction(texts.copy, HcColors.Watch, icon = { HcIcon("Copy", size = 18.dp, color = HcColors.White) }) {
+            if (onCopyToAccount != null) SwipeAction(texts.copy, HcColors.Watch, icon = { HcIcon("Copy", size = 20.dp, color = HcColors.White) }) {
                 onCopyToAccount()
                 dragX = 0f
             }
             Box(Modifier.weight(1f))
-            if (onReportError != null) SwipeAction(texts.reportError, HcColors.GrayDark, icon = { HcIcon("AlertTriangle", size = 18.dp, color = HcColors.White) }) {
+            rightActions.forEach { action ->
+                SwipeAction(action.label, action.color, icon = { HcIcon(action.icon, size = 20.dp, color = HcColors.White) }) {
+                    action.onClick()
+                    dragX = 0f
+                }
+            }
+            if (onReportError != null) SwipeAction(texts.reportError, HcColors.GrayDark, icon = { HcIcon("AlertTriangle", size = 20.dp, color = HcColors.White) }) {
                 onReportError()
                 dragX = 0f
             }
-            SwipeAction(texts.delete, HcColors.RedDark, icon = null) {
+            if (onDelete != null) SwipeAction(texts.delete, HcColors.RedDark, icon = { HcIcon("Trash", size = 20.dp, color = HcColors.White) }) {
                 onDelete()
                 dragX = 0f
             }
@@ -101,13 +115,17 @@ fun FoodSwipeableRow(
                             dragging = false
                             dragX = when {
                                 leftWidth > 0 && dragX > leftWidth / 2 -> leftWidth
-                                dragX < -rightWidth / 2 -> -rightWidth
+                                rightWidth > 0 && dragX < -rightWidth / 2 -> -rightWidth
                                 else -> 0f
                             }
                         },
                         onDragCancel = {
                             dragging = false
-                            dragX = 0f
+                            dragX = when {
+                                leftWidth > 0 && dragX > leftWidth / 2 -> leftWidth
+                                rightWidth > 0 && dragX < -rightWidth / 2 -> -rightWidth
+                                else -> 0f
+                            }
                         },
                     ) { change, amount ->
                         change.consume()

@@ -121,6 +121,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:30",
   },
   {
+    // Bruger 2026-10-17: OFF-varer fritlægges på lige fod med egne fotos,
+    // efter en søgning online efter et matchende billede (src/lib/off-image-sweep.ts).
+    key: "off-image-sweep",
+    name: "Open Food Facts-billeder: søg online og fritlæg",
+    description:
+      "Lægger Open Food Facts-varer, hvis billede endnu ikke er behandlet, i samme kø som kameraets forsidefotos: først søges et matchende billede online (Google Vision), derefter fritlægges billedet. Varer, brugerne har scannet, tages først. Højst 50 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 60,
+    defaultRunAtTime: null,
+  },
+  {
     key: "energy-split-check",
     name: "Energifordeling: afvigelser",
     description:
@@ -141,6 +153,18 @@ export const JOBS: JobDefinition[] = [
     robot: true,
     defaultIntervalMinutes: null,
     defaultRunAtTime: "04:15",
+  },
+  {
+    // Allergen-robotten (docs/DECISIONS.md 2026-10-17): rapporten ligger under
+    // admin → Allergen-ord og som admin-advarsel, når der er nye ord.
+    key: "allergen-words",
+    name: "Allergen-robot: nye allergen-ord",
+    description:
+      "Læser alle nye og ændrede ingredienslister og finder allergen-ord, som fremhævningen med STORT ikke fanger endnu. Ord, Open Food Facts' åbne opslagsværk kender som allergen på varens sprog, godkendes straks og vises med STORT og link til allergenets side. Ord, kun producenten har skrevet med STORT, venter på admin under Allergen-ord. Nye fund rapporteres som admin-advarsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:20",
   },
   {
     // Ubeskårne bagsidebilleder (docs/DECISIONS.md 2026-10-15): hvert billede

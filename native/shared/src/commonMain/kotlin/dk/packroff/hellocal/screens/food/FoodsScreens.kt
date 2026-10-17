@@ -44,7 +44,6 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.FoodDivider
-import dk.packroff.hellocal.ui.FoodFavoriteIcon
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.FoodListCard
 import dk.packroff.hellocal.ui.FoodRow
@@ -52,6 +51,8 @@ import dk.packroff.hellocal.ui.FoodSkeleton
 import dk.packroff.hellocal.ui.FoodSkeletonCards
 import dk.packroff.hellocal.ui.FoodSkeletonMediaRows
 import dk.packroff.hellocal.ui.FoodSlider
+import dk.packroff.hellocal.ui.FoodSwipeTexts
+import dk.packroff.hellocal.ui.FoodSwipeableRow
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcCard
@@ -319,10 +320,6 @@ fun FoodsScreen(args: RouteArgs) {
         }
     }
 
-    fun favoriteVoiceItem(productId: String) {
-        scope.launch { runCatching { Api.post("/api/favorites", mapOf("productId" to productId)) } }
-    }
-
     var correction by remember { mutableStateOf(SearchCorrection()) }
     var exactQuery by remember { mutableStateOf<String?>(null) }
     val q = query.trim()
@@ -353,6 +350,14 @@ fun FoodsScreen(args: RouteArgs) {
     val favorites = (snapshot?.products ?: emptyList()).sortedBy { it.id !in favoriteIds }
     val ready = snapshot != null
     val visible = if (isSearching) cachedResults ?: searchResults else favorites
+
+    val swipeTexts = FoodSwipeTexts(
+        favorite = t.t("swipeableRow.favorite"),
+        copy = t.t("family.copy.action"),
+        reportError = t.t("swipeableRow.reportError"),
+        delete = t.t("swipeableRow.delete"),
+        favoriteSaved = t.t("swipeableRow.favoriteSaved"),
+    )
 
     fun toggleFavorite(productId: String, next: Boolean) {
         snapshot?.let { s ->
@@ -431,16 +436,21 @@ fun FoodsScreen(args: RouteArgs) {
             if (suggestedVoice.isNotEmpty()) {
                 Column {
                     HcText(t.t("voice.suggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                     suggestedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
-                            onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
-                            onReportError = null,
+                            // Swipe right = Favorit, swipe left = Fejl + Slet — only Slet when it isn't a product (user 2026-10-17).
+                            onFavorite = entry.item.productId?.let { id -> { toggleFavorite(id, id !in favoriteIds) } },
+                            isFavorite = entry.item.productId?.let { it in favoriteIds } ?: false,
+                            onReportError = entry.item.productId?.let { id -> { nav.push("/product/$id/report-error") } },
                             onDelete = { deleteVoiceItem(entry) },
                             onAdd = { addVoiceItems(listOf(entry)) },
                             adding = adding,
                         )
                         if (index < suggestedVoice.lastIndex) HcLine()
+                    }
                     }
                     if (suggestedVoice.size > 1) {
                         HcButton(
@@ -455,15 +465,19 @@ fun FoodsScreen(args: RouteArgs) {
             if (savedVoice.isNotEmpty()) {
                 Column {
                     HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                     savedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
-                            onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
-                            onReportError = { nav.push("/registration/${entry.id}/report-error") },
+                            onFavorite = entry.item.productId?.let { id -> { toggleFavorite(id, id !in favoriteIds) } },
+                            isFavorite = entry.item.productId?.let { it in favoriteIds } ?: false,
+                            onReportError = if (entry.item.productId != null) ({ nav.push("/registration/${entry.id}/report-error") }) else null,
                             onDelete = { deleteVoiceItem(entry) },
                             onOpen = { nav.push("/registration/${entry.id}") },
                         )
                         if (index < savedVoice.lastIndex) HcLine()
+                    }
                     }
                 }
             }
@@ -481,33 +495,40 @@ fun FoodsScreen(args: RouteArgs) {
                 if (ready) {
                     visible.forEachIndexed { index, product ->
                         val isFavorite = product.id in favoriteIds
-                        Column(Modifier.fillMaxWidth().clickable {
-                            if (isSearching) trackSearchClick(product.id)
-                            nav.push("/add/${product.id}$prefill")
-                        }) {
-                            FoodRow(
-                                title = product.searchTitle ?: product.name,
-                                image = product.imageUrl,
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                subtitle = {
-                                    HcText(
-                                        listOfNotNull(
-                                            // The brand already leads a search hit's title.
-                                            if (product.searchTitle != null) null else product.brand?.name,
-                                            if (product.nutritionMissing) t.t("addProduct.nutritionUnknown")
-                                            else t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g)),
-                                        ).joinToString(" · "),
-                                        HcTypeRoles.Small,
-                                        color = HcColors.TextSecondary,
-                                        maxLines = 1,
-                                    )
-                                },
-                                right = {
-                                    Box(Modifier.size(32.dp).clip(CircleShape).clickable { toggleFavorite(product.id, !isFavorite) }, contentAlignment = Alignment.Center) {
-                                        FoodFavoriteIcon(isFavorite, 20.dp, HcColors.Green)
-                                    }
-                                },
-                            )
+                        // Like "Dagens tilføjelser" on the front page (user 2026-10-17): Favorit only by
+                        // swiping right, Fejl by swiping left; chevron on the right.
+                        Column(Modifier.fillMaxWidth()) {
+                            FoodSwipeableRow(
+                                texts = swipeTexts,
+                                onFavorite = { toggleFavorite(product.id, !isFavorite) },
+                                isFavorite = isFavorite,
+                                onReportError = { nav.push("/product/${product.id}/report-error") },
+                                onDelete = null,
+                            ) {
+                                FoodRow(
+                                    title = product.searchTitle ?: product.name,
+                                    image = product.imageUrl,
+                                    modifier = Modifier.clickable {
+                                        if (isSearching) trackSearchClick(product.id)
+                                        nav.push("/add/${product.id}$prefill")
+                                    }.padding(horizontal = 16.dp),
+                                    subtitle = {
+                                        HcText(
+                                            listOfNotNull(
+                                                // The brand already leads a search hit's title.
+                                                if (product.searchTitle != null) null else product.brand?.name,
+                                                if (product.nutritionMissing) t.t("addProduct.nutritionUnknown")
+                                                else t.t("foods.kcalPer100g", "kcal" to jsRound(product.kcalPer100g)),
+                                            ).joinToString(" · "),
+                                            HcTypeRoles.Small,
+                                            Modifier.padding(top = 4.dp),
+                                            color = HcColors.TextSecondary,
+                                            maxLines = 1,
+                                        )
+                                    },
+                                    right = { HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black.copy(alpha = 0.4f)) },
+                                )
+                            }
                             if (index < visible.lastIndex) FoodDivider()
                         }
                     }
@@ -728,12 +749,20 @@ fun DrinkDetailScreen(args: RouteArgs) {
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                             HcText(ingredient.name, HcTypeRoles.Small, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                            HcText("${daNumber(value, 2)} ${ingredient.unit}", HcTypeRoles.Title, color = HcColors.Black)
+                            dk.packroff.hellocal.ui.CaptureTapNumber(
+                                value = value,
+                                display = "${daNumber(value, 2)} ${ingredient.unit}",
+                                unit = ingredient.unit,
+                                min = 0.0,
+                                decimals = if (ingredient.step < 1) 2 else 0,
+                                role = HcTypeRoles.Title,
+                                onChange = { amounts = amounts + (ingredient.id to it) },
+                            )
                         }
                         FoodSlider(
                             value = value,
                             min = ingredient.minAmount,
-                            max = ingredient.maxAmount,
+                            max = maxOf(ingredient.maxAmount, value),
                             step = ingredient.step.takeIf { it > 0 } ?: 1.0,
                             onChange = { amounts = amounts + (ingredient.id to it) },
                         )

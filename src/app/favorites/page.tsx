@@ -11,7 +11,8 @@ import { readCache, writeCache, type CachedProduct } from "@/lib/offline-cache";
 
 // Favoritter (kan lægges i bundmenuen): brugerens favoritmadvarer
 // (/api/favorites) og favoritopskrifter fra delte retter (/api/recipe-favorites)
-// samlet ét sted. Fjernes en madvare som favorit, forsvinder den fra listen.
+// samlet ét sted. Fjernes en madvare som favorit (swipe højre → Gemt, eller
+// swipe venstre → Slet), forsvinder den fra listen.
 
 type FavoriteResponse = {
   favorites: Array<{ id: string; product: { id: string; name: string; imageUrl: string | null } | null }>;
@@ -86,6 +87,7 @@ export default function FavoritesPage() {
                 onAdd={openProduct}
                 isFavorite
                 onToggleFavorite={removeFavorite}
+                onDelete={(productId) => removeFavorite(productId, false)}
               />
             ))}
           </div>

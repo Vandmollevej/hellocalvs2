@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import { JOBS } from "@/lib/jobs/registry";
+import { JOBS, isRobot } from "@/lib/jobs/registry";
 import { isJobDue } from "@/lib/jobs/schedule";
 import { debugLog, errorText } from "@/lib/debug-log";
 import { normalizeJobResult, recordJobRun, type JobResult } from "@/lib/jobs/runs";
+import { qosBlockReason, type ServerLoad } from "@/lib/robot-qos";
+import { loadRobotQos } from "@/lib/robot-qos-config";
+import { measureServerLoad } from "@/lib/robot-qos-load";
 
 // Kører app-processens jobs (runtime "app" i src/lib/jobs/registry.ts), når
 // scheduled_jobs-rækken siger det (admin "Cron-jobs", docs/DECISIONS.md
@@ -39,14 +42,33 @@ export async function runDueAppJobs(runners: Record<string, AppJobRunner>) {
     where: { key: { in: JOBS.filter((j) => j.runtime === "app").map((j) => j.key) } },
   });
   const now = new Date();
+  const robotKeys = new Set(JOBS.filter(isRobot).map((job) => job.key));
+  const qos = await loadRobotQos();
+  // Belastningen måles højst én gang pr. tick og kun når en robot venter på at starte.
+  let load: Promise<ServerLoad> | null = null;
 
   for (const row of rows) {
     const runner = runners[row.key];
     if (!runner || running.has(row.key) || !isJobDue(row, now)) continue;
 
+    // Robot-QoS (docs/DECISIONS.md 2026-10-17): en forfalden robot venter, mens
+    // serveren er for belastet eller i en spærretid. "Kør nu" går altid udenom.
+    const manual = Boolean(row.runRequestedAt && (!row.lastStartedAt || row.runRequestedAt > row.lastStartedAt));
+    if (qos.enabled && robotKeys.has(row.key) && !manual) {
+      load ??= measureServerLoad();
+      const reason = qosBlockReason(qos.settings, await load, now);
+      if (reason) {
+        await prisma.scheduledJob.update({
+          where: { key: row.key },
+          data: { qosWaitingSince: row.qosWaitingSince ?? now, qosWaitReason: reason },
+        });
+        continue;
+      }
+    }
+
     const claimed = await prisma.scheduledJob.updateMany({
       where: { key: row.key, lastStartedAt: row.lastStartedAt },
-      data: { lastStartedAt: now, runRequestedAt: null },
+      data: { lastStartedAt: now, runRequestedAt: null, qosWaitingSince: null, qosWaitReason: null },
     });
     if (claimed.count !== 1) continue;
 

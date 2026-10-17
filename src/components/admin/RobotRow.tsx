@@ -52,6 +52,11 @@ export function RobotRow({ job, state }: { job: JobDefinition; state: JobState }
         </button>
         {running && <p className="hf-type-small mt-1 text-hf-green-dark">Kører nu…</p>}
         {runPending && !running && <p className="hf-type-small mt-1 text-text-muted">Startes inden for et minut</p>}
+        {!running && !runPending && enabled && state.qosWaitingSince && (
+          <p className="hf-type-small mt-1 max-w-[12rem] text-hf-red-dark">
+            Venter siden {formatDateTime(state.qosWaitingSince)}: {state.qosWaitReason}
+          </p>
+        )}
       </td>
       <td className="py-3 pr-4">
         <p className="hf-type-small mb-1 text-text-muted">

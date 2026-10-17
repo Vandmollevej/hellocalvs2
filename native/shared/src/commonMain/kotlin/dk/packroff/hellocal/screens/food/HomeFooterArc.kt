@@ -31,7 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -291,6 +295,7 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
         val fingerDistance = finger?.let { hypot(it.first, it.second) } ?: 0f
         val bulgeDeg = finger?.let { atan2(it.first.toDouble(), max(1f, it.second).toDouble()) * 180 / PI }
         val bulgeAmount = if (bulgeActive) ARC_BULGE_MAX * min(1f, fingerDistance / (ARC_RADIUS * 1.5f)) else 0f
+        val shadowStrength by animateFloatAsState(if (gesturing || open) 1f else 0f, tween(180))
         Canvas(
             Modifier
                 .offset(x = (cx - ARC_RADIUS).dp, y = (height - ARC_RADIUS - ARC_BULGE_MAX).dp)
@@ -301,6 +306,20 @@ fun HomeFooterArc(modifier: Modifier = Modifier, onOpenMenuSheet: () -> Unit) {
             val path = Path().apply {
                 pts.forEachIndexed { i, (x, y) -> if (i == 0) moveTo(x * s, y * s) else lineTo(x * s, y * s) }
                 close()
+            }
+            // Light shadow only upward and sideways (user wish 2026-10-17): faint at rest,
+            // stronger while touched/open. Clipped at the footer edge so nothing falls downward.
+            clipRect(bottom = (ARC_BULGE_MAX + ARC_RADIUS) * s) {
+                val lift = (1.5f + 1.5f * shadowStrength).dp.toPx()
+                translate(top = -lift) {
+                    for (i in 1..6) {
+                        drawPath(
+                            path,
+                            Color.Black.copy(alpha = 0.02f + 0.025f * shadowStrength),
+                            style = Stroke(width = (i * (1f + shadowStrength)).dp.toPx() * 2f),
+                        )
+                    }
+                }
             }
             drawPath(path, HcColors.Green)
         }

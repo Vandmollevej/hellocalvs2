@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LiveMicButton } from "@/components/voice/LiveMicButton";
 import { LiveWaveform } from "@/components/voice/LiveWaveform";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
@@ -11,8 +11,8 @@ import { useLiveSpeech } from "@/lib/use-live-speech";
 import { useMealInterpretation } from "@/components/voice/useMealInterpretation";
 import { VoiceMealSuggestions } from "@/components/voice/VoiceMealSuggestions";
 import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
-import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
-import { IconFavorite as IconBookmark, IconFavoriteFilled as IconBookmarkFilled } from "@/components/icons/Favorite";
+import { IconApple, IconCamera, IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { SwipeableRow } from "@/components/SwipeableRow";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -60,42 +60,38 @@ function ProductRow({
   onOpen?: (id: string) => void;
 }) {
   const { t } = useTranslation();
+  const router = useRouter();
+  // Som "Dagens tilføjelser" på forsiden (bruger 2026-10-17): favorit kun ved
+  // swipe til højre, Fejl ved swipe til venstre.
   return (
-    <div className={`px-4 ${isLast ? "" : "border-b border-hf-tan-dark"}`}>
-      <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
-        <FoodRow
-          image={product.imageUrl}
-          title={product.searchTitle ?? product.name}
-          subtitle={
-            <p className="hf-type-caption truncate">
-              {[
-                // Brandet står allerede forrest i søgeresultatets titel.
-                product.searchTitle ? null : product.brand?.name,
-                // Uden energitabel (nutritionMissing) er 0 kun en pladsholder.
-                product.nutritionMissing
-                  ? t("addProduct.nutritionUnknown")
-                  : t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) }),
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
-          }
-          right={
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onToggleFavorite(product.id, !isFavorite);
-              }}
-              aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-              className="text-hf-green"
-            >
-              {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
-            </button>
-          }
-        />
-      </Link>
+    <div className={isLast ? "" : "border-b border-hf-tan-dark"}>
+      <SwipeableRow
+        onFavorite={() => onToggleFavorite(product.id, !isFavorite)}
+        isFavorite={isFavorite}
+        onReportError={() => router.push(`/product/${product.id}/report-error`)}
+      >
+        <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
+          <FoodRow
+            image={product.imageUrl}
+            title={product.searchTitle ?? product.name}
+            subtitle={
+              <p className="hf-type-caption mt-1 truncate">
+                {[
+                  // Brandet står allerede forrest i søgeresultatets titel.
+                  product.searchTitle ? null : product.brand?.name,
+                  // Uden energitabel (nutritionMissing) er 0 kun en pladsholder.
+                  product.nutritionMissing
+                    ? t("addProduct.nutritionUnknown")
+                    : t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) }),
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            }
+            right={<IconChevronRight size={18} className="text-hf-black opacity-40" />}
+          />
+        </Link>
+      </SwipeableRow>
     </div>
   );
 }

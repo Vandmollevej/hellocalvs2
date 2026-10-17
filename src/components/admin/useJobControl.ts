@@ -16,6 +16,9 @@ export type JobState = {
   lastStatus: string | null;
   lastMessage: string | null;
   lastDurationMs: number | null;
+  /** Robot-QoS: forfalden, men venter på lavere belastning eller en spærretid (kun admin → Robotter). */
+  qosWaitingSince?: string | null;
+  qosWaitReason?: string | null;
 };
 
 // "continuous" = intervalMinutes 0: kører ved hvert tjek og venter hele tiden
