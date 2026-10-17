@@ -3,7 +3,7 @@
 import { FieldSlider } from "@/components/hf/FieldSlider";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconActivity, IconPlus } from "@tabler/icons-react";
+import { IconActivity } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActivityPicker } from "@/components/activity/ActivityPicker";
 import type { ActivityOption } from "@/lib/activity-types";
@@ -43,11 +43,11 @@ function ActivityCreateContent() {
   const [estimate, setEstimate] = useState<ActivityEstimate | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Træningspas: null = ikke i gang. Øvelserne ligger efter hinanden fra startedAt.
-  const [session, setSession] = useState<SessionEntry[] | null>(null);
+  // Træningspas ("Tilføjet"): tom = intet pas. Øvelserne ligger efter hinanden fra startedAt.
+  const [session, setSession] = useState<SessionEntry[]>([]);
   const [nextEntryId, setNextEntryId] = useState(1);
   const [sessionKcal, setSessionKcal] = useState<number | null>(null);
-  const sessionMinutes = session?.reduce((sum, entry) => sum + entry.minutes, 0) ?? 0;
+  const sessionMinutes = session.reduce((sum, entry) => sum + entry.minutes, 0);
 
   // Anslåede kcal fra MET (docs/ACTIVITY-PAL.md F3): taletest + evt.
   // distance for gang/løb. Brugerens eget tal i kcal-feltet vinder.
@@ -71,7 +71,7 @@ function ActivityCreateContent() {
 
   // Samlet anslået kcal for træningspasset (samme MET-skøn som serveren gemmer).
   useEffect(() => {
-    if (!session || session.length === 0) return;
+    if (session.length === 0) return;
     let cancelled = false;
     Promise.all(
       session.map((entry) =>
@@ -90,12 +90,12 @@ function ActivityCreateContent() {
   }, [session, intensity]);
 
   function addToSession(picked: ActivityOption) {
-    setSession((current) => [...(current ?? []), { id: nextEntryId, option: picked, minutes: SESSION_DEFAULT_MINUTES }]);
+    setSession((current) => [...current, { id: nextEntryId, option: picked, minutes: SESSION_DEFAULT_MINUTES }]);
     setNextEntryId((id) => id + 1);
   }
 
   async function saveSession() {
-    if (!session || session.length === 0) {
+    if (session.length === 0) {
       setError(t("activity.session.invalid"));
       return;
     }
@@ -231,87 +231,56 @@ function ActivityCreateContent() {
   );
 
   // Gem ligger fast nederst over bundmenuen (brugerens ønske 2026-10-17).
-  const footer =
-    session !== null ? (
-      <div className="flex flex-col gap-2">
-        {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-        <button
-          type="button"
-          className="hf-control hf-btn-primary w-full px-4"
-          onClick={() => void saveSession()}
-          disabled={saving || session.length === 0}
-        >
-          {t("activity.session.save")}
-        </button>
-      </div>
-    ) : option ? (
-      <div className="flex flex-col gap-2">
-        {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-        <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
-          {t("activity.save")}
-        </button>
-      </div>
-    ) : undefined;
+  const footer = option ? (
+    <div className="flex flex-col gap-2">
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
+      <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
+        {t("activity.save")}
+      </button>
+    </div>
+  ) : session.length > 0 ? (
+    <div className="flex flex-col gap-2">
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
+      <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void saveSession()} disabled={saving}>
+        {t("activity.session.save")}
+      </button>
+    </div>
+  ) : undefined;
 
   return (
     <HfScreen title={t("activity.title")} icon={<IconActivity size={20} stroke={2} />} footer={footer}>
       <div className="hf-page">
-        {session !== null ? (
+        {!option ? (
           <div className="flex flex-col gap-4">
-            <button
-              type="button"
-              className="hf-btn-text self-start text-hf-black"
-              onClick={() => {
-                setSession(null);
-                setError(null);
-              }}
-            >
-              {t("activity.session.cancel")}
-            </button>
-            <div className="flex flex-col gap-2">
-              <span className="hf-type-caption">{t("activity.startedAt")}</span>
-              <div className="flex gap-2">
-                {dateField}
-                <input
-                  className={FIELD}
-                  type="time"
-                  aria-label={t("activity.session.startTime")}
-                  value={(startedAt.split("T")[1] ?? "00:00").slice(0, 5)}
-                  onChange={(e) => e.target.value && setStartedAt(setStartClock(startedAt, e.target.value))}
-                />
-              </div>
-            </div>
-            <section className="flex flex-col gap-2">
-              <h2 className="hf-type-section-title">{t("activity.session.title")}</h2>
-              <TrainingSessionCard entries={session} onChange={setSession} />
-              {session.length > 0 && (
-                <p className="hf-type-caption text-right">
-                  {sessionKcal !== null
-                    ? t("activity.session.totalKcal", { minutes: sessionMinutes, kcal: sessionKcal })
-                    : t("activity.session.total", { minutes: sessionMinutes })}
-                </p>
-              )}
-            </section>
-            {intensityPicker}
-            <section className="flex flex-col gap-2">
-              <h2 className="hf-type-section-title">{t("activity.session.addTitle")}</h2>
-              <ActivityPicker onPick={addToSession} onAdd={addToSession} />
-            </section>
-          </div>
-        ) : !option ? (
-          <div className="flex flex-col gap-4">
-            <button
-              type="button"
-              className="hf-control hf-btn-secondary flex w-full items-center justify-center gap-2 px-4"
-              onClick={() => {
-                setSession([]);
-                setError(null);
-              }}
-            >
-              <IconPlus size={20} />
-              {t("activity.session.create")}
-            </button>
-            <ActivityPicker onPick={setOption} />
+            {/* ⊕ på en sport lægger den her; flere dele gemmes samlet som ét træningspas. */}
+            {session.length > 0 && (
+              <>
+                <section className="flex flex-col gap-2">
+                  <h2 className="hf-type-section-title">{t("activity.session.added")}</h2>
+                  <TrainingSessionCard entries={session} onChange={setSession} />
+                  <p className="hf-type-caption text-right">
+                    {sessionKcal !== null
+                      ? t("activity.session.totalKcal", { minutes: sessionMinutes, kcal: sessionKcal })
+                      : t("activity.session.total", { minutes: sessionMinutes })}
+                  </p>
+                </section>
+                <div className="flex flex-col gap-2">
+                  <span className="hf-type-caption">{t("activity.startedAt")}</span>
+                  <div className="flex gap-2">
+                    {dateField}
+                    <input
+                      className={FIELD}
+                      type="time"
+                      aria-label={t("activity.session.startTime")}
+                      value={(startedAt.split("T")[1] ?? "00:00").slice(0, 5)}
+                      onChange={(e) => e.target.value && setStartedAt(setStartClock(startedAt, e.target.value))}
+                    />
+                  </div>
+                </div>
+                {intensityPicker}
+              </>
+            )}
+            <ActivityPicker onPick={setOption} onAdd={addToSession} />
           </div>
         ) : (
           <div className="flex flex-col gap-4">

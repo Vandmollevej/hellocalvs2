@@ -9,7 +9,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 export type SessionEntry = { id: number; option: ActivityOption; minutes: number };
 
-// Øvelserne i et træningspas (Tilføj → Aktivitet → Opret træningspas): hver
+// "Tilføjet" på Tilføj → Aktivitet (træningspas): hver
 // række har sin egen varighed (±5 min) og kan fjernes.
 export function TrainingSessionCard({
   entries,
@@ -19,13 +19,6 @@ export function TrainingSessionCard({
   onChange: (entries: SessionEntry[]) => void;
 }) {
   const { t } = useTranslation();
-  if (entries.length === 0) {
-    return (
-      <AccordionCard>
-        <p className="hf-type-caption px-4 py-3">{t("activity.session.empty")}</p>
-      </AccordionCard>
-    );
-  }
   const update = (id: number, minutes: number) =>
     onChange(entries.map((entry) => (entry.id === id ? { ...entry, minutes } : entry)));
   return (

@@ -2924,19 +2924,16 @@
     "invalid": "Geef een duur boven 0 op — en calorieën, als ze niet kunnen worden geschat.",
     "saveError": "De activiteit kon niet worden opgeslagen.",
     "session": {
-      "create": "Training aanmaken",
       "title": "Training",
-      "empty": "Tik op ⊕ naast een activiteit om die aan de training toe te voegen.",
-      "addTitle": "Oefeningen toevoegen",
       "add": "{name} aan de training toevoegen",
       "remove": "{name} verwijderen",
-      "cancel": "Training annuleren",
       "save": "Training opslaan",
       "total": "Totaal {minutes} min",
       "totalKcal": "Totaal {minutes} min · ca. {kcal} kcal",
       "startTime": "Tijdstip",
       "invalid": "Voeg minstens één oefening toe.",
-      "saveError": "De training kon niet worden opgeslagen. Heb je je gewicht in je profiel ingevuld?"
+      "saveError": "De training kon niet worden opgeslagen. Heb je je gewicht in je profiel ingevuld?",
+      "added": "Toegevoegd"
     }
   },
   "addButton": {

@@ -2924,19 +2924,16 @@
     "invalid": "Indique une durée supérieure à 0 — et les calories si elles ne peuvent pas être estimées.",
     "saveError": "Impossible d'enregistrer l'activité.",
     "session": {
-      "create": "Créer une séance",
       "title": "Séance d'entraînement",
-      "empty": "Touchez ⊕ à côté d'une activité pour l'ajouter à la séance.",
-      "addTitle": "Ajouter des exercices",
       "add": "Ajouter {name} à la séance",
       "remove": "Retirer {name}",
-      "cancel": "Annuler la séance",
       "save": "Enregistrer la séance",
       "total": "Total {minutes} min",
       "totalKcal": "Total {minutes} min · env. {kcal} kcal",
       "startTime": "Heure",
       "invalid": "Ajoutez au moins un exercice.",
-      "saveError": "Impossible d'enregistrer la séance. Avez-vous indiqué votre poids dans le profil ?"
+      "saveError": "Impossible d'enregistrer la séance. Avez-vous indiqué votre poids dans le profil ?",
+      "added": "Ajouté"
     }
   },
   "addButton": {

@@ -45,7 +45,8 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FieldSlider
 import dk.packroff.hellocal.ui.HcAccordionCard
-import dk.packroff.hellocal.ui.FoodFavoriteIcon
+import dk.packroff.hellocal.ui.FoodSwipeableRow
+import dk.packroff.hellocal.ui.FoodSwipeTexts
 import dk.packroff.hellocal.ui.HcChevronRow
 import dk.packroff.hellocal.ui.HcChoiceChip
 import dk.packroff.hellocal.ui.CaptureDatePickerSheet
@@ -54,7 +55,6 @@ import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcSearchField
 import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.HcButton
-import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.CaptureTimePickerSheet
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
@@ -122,12 +122,11 @@ internal fun sportIcon(key: String): String = SPORT_ICONS[key] ?: "Activity"
 
 /**
  * src/components/activity/ActivityPicker.tsx — search + "Add … as activity".
- * onAdd = a workout is in progress: every row gets a ⊕ on the far right and a tap
- * adds the activity to the workout instead of opening it alone.
+ * onAdd: every row gets a ⊕ on the far right that adds the activity to the
+ * workout ("Added") instead of opening it alone.
  */
 @Composable
 internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = false, onAdd: ((ActivityOption) -> Unit)? = null) {
-    val pick = onAdd ?: onPick
     val t = LocalTranslator.current
     val scope = rememberCoroutineScope()
     var options by remember { mutableStateOf<List<ActivityOption>>(emptyList()) }
@@ -173,7 +172,7 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
         scope.launch {
             try {
                 val option = ApiJson.decodeFromJsonElement(ActivityOptionResponse.serializer(), Api.post("/api/activity-types", mapOf("name" to trimmed))).option
-                pick(option)
+                onPick(option)
             } catch (e: Exception) {
             } finally {
                 adding = false
@@ -193,27 +192,33 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
         @Composable
         fun OptionCard(list: List<ActivityOption>, withAdd: Boolean) {
             HcAccordionCard {
+                // Favourite by swiping right, like food (user 2026-10-17); ⊕ adds the sport to "Added".
                 list.forEachIndexed { index, option ->
-                    HcChevronRow(
-                        label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
-                        onClick = if (disabled) null else ({ pick(option) }),
-                        icon = sportIcon(option.key),
-                        divider = index < list.lastIndex || withAdd,
-                        trailing = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                    FoodSwipeableRow(
+                        texts = FoodSwipeTexts(
+                            favorite = t.t("swipeableRow.favorite"),
+                            copy = "",
+                            reportError = "",
+                            delete = "",
+                            favoriteSaved = t.t("swipeableRow.favoriteSaved"),
+                        ),
+                        onDelete = null,
+                        onFavorite = { toggleFavorite(option) },
+                        isFavorite = option.favorite,
+                    ) {
+                        HcChevronRow(
+                            label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
+                            onClick = if (disabled) null else ({ onPick(option) }),
+                            icon = sportIcon(option.key),
+                            divider = index < list.lastIndex || withAdd,
+                            trailing = if (onAdd == null) null else ({
                                 Box(
-                                    Modifier.heightIn(min = HcDimens.ControlHeight).clickable { toggleFavorite(option) }.padding(start = 4.dp),
+                                    Modifier.heightIn(min = HcDimens.ControlHeight).clickable(enabled = !disabled) { onAdd(option) }.padding(start = 4.dp, end = 16.dp),
                                     contentAlignment = Alignment.Center,
-                                ) { FoodFavoriteIcon(option.favorite, size = 20.dp, color = HcColors.Green) }
-                                if (onAdd != null) {
-                                    Box(
-                                        Modifier.heightIn(min = HcDimens.ControlHeight).clickable(enabled = !disabled) { onAdd(option) }.padding(start = 8.dp),
-                                        contentAlignment = Alignment.Center,
-                                    ) { HcIcon("CirclePlus", size = 24.dp, color = HcColors.Green) }
-                                }
-                            }
-                        },
-                    )
+                                ) { HcIcon("CirclePlus", size = 24.dp, color = HcColors.Green) }
+                            }),
+                        )
+                    }
                 }
                 if (withAdd) {
                     HcChevronRow(
@@ -281,8 +286,8 @@ fun ActivityCreateScreen(args: RouteArgs) {
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var pickDate by remember { mutableStateOf(false) }
-    // Workout (user 2026-10-17): null = not started. Exercises follow each other from startedAt.
-    var session by remember { mutableStateOf<List<SessionEntry>?>(null) }
+    // Workout ("Added", user 2026-10-17): empty = none. Exercises follow each other from startedAt.
+    var session by remember { mutableStateOf<List<SessionEntry>>(emptyList()) }
     var nextEntryId by remember { mutableIntStateOf(1) }
     var sessionKcal by remember { mutableStateOf<Int?>(null) }
     var pickTime by remember { mutableStateOf(false) }
@@ -308,7 +313,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
 
     // Total estimated kcal for the workout (same MET estimate the server saves).
     LaunchedEffect(session, intensity) {
-        val entries = session ?: return@LaunchedEffect
+        val entries = session
         if (entries.isEmpty()) return@LaunchedEffect
         val values = entries.map { entry ->
             runCatching {
@@ -322,13 +327,13 @@ fun ActivityCreateScreen(args: RouteArgs) {
     }
 
     fun addToSession(picked: ActivityOption) {
-        session = (session ?: emptyList()) + SessionEntry(nextEntryId, picked, SESSION_DEFAULT_MINUTES)
+        session = session + SessionEntry(nextEntryId, picked, SESSION_DEFAULT_MINUTES)
         nextEntryId += 1
     }
 
     fun saveSession() {
         val entries = session
-        if (entries.isNullOrEmpty()) {
+        if (entries.isEmpty()) {
             error = t.t("activity.session.invalid")
             return
         }
@@ -439,43 +444,22 @@ fun ActivityCreateScreen(args: RouteArgs) {
     val footerContent: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit = {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             HcError(error)
-            if (activeSession != null) {
-                HcButton(t.t("activity.session.save"), onClick = ::saveSession, enabled = !saving && activeSession.isNotEmpty())
-            } else {
+            if (current != null) {
                 HcButton(t.t("activity.save"), onClick = ::save, enabled = !saving)
+            } else {
+                HcButton(t.t("activity.session.save"), onClick = ::saveSession, enabled = !saving)
             }
         }
     }
 
-    HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, bottom = if (activeSession != null || current != null) footerContent else null, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
-        if (activeSession != null) {
+    HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, bottom = if (current != null || activeSession.isNotEmpty()) footerContent else null, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+        if (current == null) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                HcText(
-                    t.t("activity.session.cancel"),
-                    HcTypeRoles.Body,
-                    Modifier.clickable {
-                        session = null
-                        error = null
-                    },
-                    bold = true,
-                    underline = true,
-                    color = HcColors.Black,
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcText(t.t("activity.startedAt"), HcTypeRoles.Small, color = HcColors.TextSecondary)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Box(Modifier.weight(1f)) {
-                            CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true })
-                        }
-                        Box(Modifier.weight(1f)) {
-                            CaptureValueField(CaptureDates.clock(startedAt), onClick = { pickTime = true })
-                        }
-                    }
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcSectionTitle(t.t("activity.session.title"))
-                    TrainingSessionCard(activeSession) { session = it }
-                    if (activeSession.isNotEmpty()) {
+                // ⊕ on a sport puts it here; several parts are saved together as one workout.
+                if (activeSession.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        HcSectionTitle(t.t("activity.session.added"))
+                        TrainingSessionCard(activeSession) { session = it }
                         val total = activeSession.sumOf { it.minutes }
                         val kcalTotal = sessionKcal
                         HcText(
@@ -487,25 +471,20 @@ fun ActivityCreateScreen(args: RouteArgs) {
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        HcText(t.t("activity.startedAt"), HcTypeRoles.Small, color = HcColors.TextSecondary)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Box(Modifier.weight(1f)) {
+                                CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true })
+                            }
+                            Box(Modifier.weight(1f)) {
+                                CaptureValueField(CaptureDates.clock(startedAt), onClick = { pickTime = true })
+                            }
+                        }
+                    }
+                    IntensityPicker()
                 }
-                IntensityPicker()
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcSectionTitle(t.t("activity.session.addTitle"))
-                    ActivityPicker(onPick = ::addToSession, onAdd = ::addToSession)
-                }
-            }
-        } else if (current == null) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                HcButton(
-                    t.t("activity.session.create"),
-                    onClick = {
-                        session = emptyList()
-                        error = null
-                    },
-                    kind = HcButtonKind.Secondary,
-                    leading = { HcIcon("Plus", size = 20.dp, color = HcColors.Action) },
-                )
-                ActivityPicker(onPick = { option = it })
+                ActivityPicker(onPick = { option = it }, onAdd = ::addToSession)
             }
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -615,9 +594,6 @@ internal data class SessionEntry(val id: Int, val option: ActivityOption, val mi
 private fun TrainingSessionCard(entries: List<SessionEntry>, onChange: (List<SessionEntry>) -> Unit) {
     val t = LocalTranslator.current
     HcAccordionCard {
-        if (entries.isEmpty()) {
-            HcText(t.t("activity.session.empty"), HcTypeRoles.Caption, Modifier.padding(horizontal = 16.dp, vertical = 12.dp), color = HcColors.TextSecondary)
-        }
         entries.forEachIndexed { index, entry ->
             fun update(minutes: Int) = onChange(entries.map { if (it.id == entry.id) it.copy(minutes = minutes) else it })
             /** src/lib/activity-duration.ts stepDuration */

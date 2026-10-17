@@ -2924,19 +2924,16 @@
     "invalid": "Angiv varighed over 0 — og kalorier, hvis de ikke kan anslås.",
     "saveError": "Aktiviteten kunne ikke gemmes.",
     "session": {
-      "create": "Opret træningspas",
       "title": "Træningspas",
-      "empty": "Tryk på ⊕ ud for en aktivitet for at lægge den i træningspasset.",
-      "addTitle": "Tilføj øvelser",
       "add": "Tilføj {name} til træningspasset",
       "remove": "Fjern {name}",
-      "cancel": "Annullér træningspas",
       "save": "Gem træningspas",
       "total": "I alt {minutes} min",
       "totalKcal": "I alt {minutes} min · ca. {kcal} kcal",
       "startTime": "Klokkeslæt",
       "invalid": "Tilføj mindst én øvelse.",
-      "saveError": "Kunne ikke gemme træningspasset. Har du angivet din vægt på profilen?"
+      "saveError": "Kunne ikke gemme træningspasset. Har du angivet din vægt på profilen?",
+      "added": "Tilføjet"
     }
   },
   "addButton": {
