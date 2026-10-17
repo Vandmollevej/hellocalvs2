@@ -381,8 +381,6 @@ function ActivityCreateContent() {
                   +
                 </button>
               </div>
-              <FieldSlider value={hours} min={0} max={23} onChange={setHours} aria-label={t("activity.hours")} />
-              <FieldSlider value={mins} min={0} max={59} onChange={setMins} aria-label={t("activity.minutesShort")} />
             </div>
             {intensityPicker}
             {showsDistance && (
