@@ -370,8 +370,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
                             GlyphButton("+", { step(1) })
                         }
                     }
-                    FieldSlider(hours, 0.0, 23.0, { hours = it })
-                    FieldSlider(mins, 0.0, 59.0, { mins = it })
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HcText(t.t("activity.intensity"), HcTypeRoles.Small, color = HcColors.TextSecondary)
