@@ -5,6 +5,7 @@ import { PendingImageBoard } from "@/components/admin/PendingImageBoard";
 import { FindNewImageBoard } from "@/components/admin/FindNewImageBoard";
 import { ImagesTabs } from "@/components/admin/ImagesTabs";
 import { briaVariantUrl } from "@/lib/bria-variant";
+import { ImageReviewLog } from "@/components/admin/ImageReviewLog";
 
 const pct = (value: number) => `${Math.round(value * 100)} %`;
 
@@ -46,6 +47,8 @@ export default async function AdminImagesPage() {
     include: { brand: true },
     orderBy: { createdAt: "desc" },
   });
+
+  const logs = await prisma.imageReviewLog.findMany({ where: { scope: "SUGGESTION" }, orderBy: { createdAt: "desc" }, take: 50 });
 
   return (
     <div className="hf-admin-page">
@@ -95,6 +98,23 @@ export default async function AdminImagesPage() {
           };
         })}
       />
+      <details className="hf-surface p-3">
+        <summary className="hf-type-strong cursor-pointer text-hf-black">Log ({logs.length})</summary>
+        <div className="mt-3">
+          <ImageReviewLog
+            entries={logs.map((log) => ({
+              id: log.id,
+              action: log.action,
+              itemCount: log.itemCount,
+              createdAt: log.createdAt.toISOString(),
+              undone: false,
+              undoable: false,
+              by: null,
+              items: (log.items as unknown as { id: string; title: string }[]).map((item) => ({ id: item.id, title: item.title, imageUrl: null })),
+            }))}
+          />
+        </div>
+      </details>
     </div>
   );
 }

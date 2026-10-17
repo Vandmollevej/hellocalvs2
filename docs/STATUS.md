@@ -599,3 +599,7 @@ Last updated: 2026-10-14
 - Native `ReportBugScreen.kt` følger med (`HcBottomSheet`, `Device.takePhoto`). Migrationen skal med deployet. Ikke prøvet i browser/på telefon; Kotlin ikke kompileret lokalt.
 
 - 2026-10-16: Time-visningen i kalenderen (Kl. 22–23) viser nu produkter som forsiden (swipe, kcal/100 g, bekræft-ark), og "Slet" er omdøbt til "Fjern" i swipe-række og bekræft-ark (web + native).
+
+## 2026-10-17: Admin: Fritlagte billeder (rembg-sammenligner)
+
+- Ny fane under Billedbehandling og delt arbejdsflade på Billedforslag (se DECISIONS 2026-10-17). Migration `20261017180000_image_review`. Typecheck og lint grønne; ikke prøvet mod rigtig database herfra.

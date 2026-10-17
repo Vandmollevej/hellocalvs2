@@ -2,9 +2,10 @@ import Link from "next/link";
 
 // Faner under Billedbehandling: billedforslag til godkendelse, billeder i kø
 // til frilæggelse og logoer (docs/DECISIONS.md 2026-10-02 og 2026-10-04).
-export function ImagesTabs({ active }: { active: "suggestions" | "cutoutQueue" | "logos" }) {
+export function ImagesTabs({ active }: { active: "suggestions" | "rembg" | "cutoutQueue" | "logos" }) {
   const tabs = [
     { key: "suggestions", href: "/admin/images", label: "Billedforslag" },
+    { key: "rembg", href: "/admin/images/rembg", label: "Fritlagte billeder" },
     { key: "cutoutQueue", href: "/admin/images/cutout-queue", label: "Billeder i kø til frilæggelse" },
     { key: "logos", href: "/admin/logos", label: "Logoer" },
   ] as const;

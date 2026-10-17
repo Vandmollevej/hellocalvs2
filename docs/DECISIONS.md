@@ -5823,3 +5823,10 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-17: Kendte API-fejl forklares på admin → API-forbrug
 
 - Brugerens ønske: en advarselstype på API-oversigten i stedet for rå fejltekst. `src/lib/api-error-explain.ts` oversætter udbyderens fejl (Google: API_KEY_SERVICE_BLOCKED, SERVICE_DISABLED, ugyldig nøgle, fakturering, kvote; generelt 401) til overskrift, handling og link til hvor det rettes; kortet viser det som en gul advarselsboks. Nøgler skjules altid i viste og gemte fejl (`redactSecrets`).
+## 2026-10-17: Billedbehandling → Fritlagte billeder + fælles arbejdsflade
+
+- Ny side `/admin/images/rembg` (fane "Fritlagte billeder"): rembg-filer uploades (filnavn = EAN, filer eller hel mappe), matches på stregkode og sammenlignes med varens nuværende billede. Faner: Afventer, Eksisterende, Afvist, Accepteret, Ikke matchet, Log. Tabeller `image_reviews` og `image_review_logs` (ingen FK til Product).
+- Har varen allerede et fritlagt billede (tidligere accepteret, eller lokal PNG med alfakanal), lander filen under **Eksisterende** ved siden af det gamle; efter upload står "X importeret, Y fandtes allerede". "Marker alle" + Afvis beholder det gamle.
+- Accepter lægger filen direkte som varens `imageUrl` (vises som alle andre produktbilleder); det erstattede billede gemmes på rækken, så loggen kan fortryde. En bulk-handling er én logpost, foldet som accordion.
+- Samme arbejdsflade (`ImageWorkbench`) bruges af godkendelsessiden Billedforslag (`/admin/images`): grid med størrelse-dropdown, baggrund-dropdown (ternet/hvid/sort/rød/blå), Vælg-tilstand med Shift-interval og flueben i hjørnet, mørkt hover-lag med Afvis/Accepter, faste store knapper øverst så snart noget er valgt, stor side-om-side-visning. Billedforslag har samme log (uden fortryd) og "Behold nuværende".
+- Billeder uden fritlægning skjules IKKE i appen: det kræver en separat beslutning (påvirker alle brugere).

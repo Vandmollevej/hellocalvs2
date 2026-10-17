@@ -5719,3 +5719,56 @@ model AdminWarningMail {
 
   @@map("admin_warning_mails")
 }
+
+// Admin → Billedbehandling → Fritlagte billeder (docs/DECISIONS.md 2026-10-17):
+// rembg-filer uploades, matches på EAN i filnavnet og sammenlignes med varens
+// nuværende billede. PENDING = varen har kun et almindeligt billede; EXISTING =
+// varen har allerede et fritlagt billede (det nye står ved siden af det gamle);
+// UNMATCHED = ingen vare med den stregkode. ACCEPTED lægger filen direkte på
+// varen (imageUrl); originalUrl gemmer det billede, der blev erstattet, så
+// loggen kan fortryde.
+enum ImageReviewStatus {
+  PENDING
+  EXISTING
+  UNMATCHED
+  ACCEPTED
+  REJECTED
+}
+
+model ImageReview {
+  id            String            @id @default(cuid())
+  // Uden relation (ingen FK) så Product-modellen ikke skal ændres.
+  productId     String?
+  barcode       String?
+  fileName      String
+  processedUrl  String
+  // Varens billede da filen blev uploadet; tilbage-billedet ved fortryd.
+  originalUrl   String?
+  status        ImageReviewStatus @default(PENDING)
+  batchId       String?
+  createdById   String?
+  createdAt     DateTime          @default(now())
+  decidedAt     DateTime?
+
+  @@index([status, createdAt])
+  @@index([productId])
+  @@index([barcode])
+  @@map("image_reviews")
+}
+
+// Én linje pr. handling (bulk = én linje med mange varer, foldet ud i
+// accordion). scope: "REMBG" (Fritlagte billeder) eller "SUGGESTION"
+// (Billedforslag). items: [{ id, title, imageUrl?, previousUrl?, status? }].
+model ImageReviewLog {
+  id          String    @id @default(cuid())
+  scope       String
+  action      String
+  itemCount   Int
+  items       Json
+  createdById String?
+  createdAt   DateTime  @default(now())
+  undoneAt    DateTime?
+
+  @@index([scope, createdAt])
+  @@map("image_review_logs")
+}
