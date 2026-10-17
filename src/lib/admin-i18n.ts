@@ -1,4 +1,4 @@
-// Admin-UI-sprog (docs/DECISIONS.md 2026-09-02). Dækker navigationen og
+﻿// Admin-UI-sprog (docs/DECISIONS.md 2026-09-02). Dækker navigationen og
 // overskrifterne på siderne bygget i pointsystem-batchen (produkter,
 // brugere, fejlrapporter, besked automatisering, advarsler) — resten af det
 // ældre admin-UI er stadig kun på dansk og oversættes efterhånden i en
@@ -28,6 +28,7 @@ const DICTIONARY = {
   nav_activities: { DA: "Aktiviteter", EN: "Activities" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
   nav_warning_emails: { DA: "Mine advarselsmails", EN: "My warning emails" },
+  nav_guides: { DA: "Guides og hints", EN: "Guides and hints" },
   nav_admin_users: { DA: "Admin-brugere", EN: "Admin users" },
   nav_scan_invites: { DA: "Scan-invites", EN: "Scan invites" },
   nav_rejection_reasons: { DA: "Afvisningsårsager", EN: "Rejection reasons" },
