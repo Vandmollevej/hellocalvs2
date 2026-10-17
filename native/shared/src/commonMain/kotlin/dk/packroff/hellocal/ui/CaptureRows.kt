@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -81,8 +82,8 @@ fun CaptureSwipeableRow(
     }
 
     Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(0.dp))) {
-        // Actions under the row.
-        Row(Modifier.matchParentSize()) {
+        // Actions under the row, hidden while closed so they never show through round corners.
+        Row(Modifier.matchParentSize().alpha(if (shown == 0f) 0f else 1f)) {
             if (onFavorite != null) SwipeAction(HcColors.Green, t.t("swipeableRow.favorite"), { HcMaskIcon("/icons/favorite.png", 18.dp, HcColors.White) }) { onFavorite(); close() }
             if (onCopyToAccount != null) SwipeAction(HcColors.Watch, t.t("family.copy.action"), { HcIcon("Copy", size = 18.dp, color = HcColors.White) }) { onCopyToAccount(); close() }
             Spacer(Modifier.weight(1f))

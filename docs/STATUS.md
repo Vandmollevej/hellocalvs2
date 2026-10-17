@@ -1,3 +1,7 @@
+## 2026-10-17: Screeninger bruger den fælles swipe-række
+
+- `ScreeningSwipeRow` er slettet; Screeninger bruger den globale `SwipeableRow` med en ny `actions`-prop (Aktivér/Deaktivér) + den fælles Slet. Felterne bag en lukket række skjules nu overalt (den røde kant i sidste rækkes hjørne er væk), og et træk åbner ikke længere linket under fingeren. Native: samme skjul i `FoodSwipeableRow`, `CaptureSwipeableRow` og `ProfileSwipeActions`; Slet hedder det samme som i de andre lister. Prøvet i browser (mobilbredde, touch-swipe); native ikke kompileret lokalt.
+
 ## 2026-10-17: Delte retter: "Alle retter" med endeløs scroll
 
 - Trender og favoritter er valg under filtrenes Visning (til som standard), favoritter står på én linje, og under dem vises alle retter efter popularitet, tre rækker ad gangen med endeløs scroll. Web + native; ikke prøvet i browser eller kompileret native herfra (ingen lokal database, Android-plugin kan ikke hentes) — lint, typecheck, build og paritetsvagt er grønne.

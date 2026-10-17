@@ -7,6 +7,17 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
 
+// Ekstra handling bag rækken, til venstre for Slet (fx Deaktivér på
+// Screeninger). Samme 80 px felt og typografi som de faste handlinger.
+export type SwipeAction = {
+  key: string;
+  label: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  // Feltets farve; standard er kortets mørke tan med sort tekst.
+  className?: string;
+};
+
 export function SwipeableRow({
   onFavorite,
   isFavorite = false,
@@ -14,6 +25,7 @@ export function SwipeableRow({
   onReportError,
   onDelete,
   surfaceClassName = "bg-hf-cream",
+  actions = [],
   children,
 }: {
   onFavorite?: () => void;
@@ -26,15 +38,28 @@ export function SwipeableRow({
   onDelete: () => void;
   // Baggrund på den forreste flade; skal matche listen rækken ligger i.
   surfaceClassName?: string;
+  actions?: SwipeAction[];
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
-  const rightActionsWidth = onReportError ? ACTION_WIDTH * 2 : ACTION_WIDTH; // (Fejl +) Slet
+  const extraRight: SwipeAction[] = [...actions];
+  if (onReportError) {
+    extraRight.push({
+      key: "report-error",
+      label: t("swipeableRow.reportError"),
+      onClick: onReportError,
+      icon: <IconAlertTriangle size={18} />,
+      className: "bg-hf-gray-dark text-hf-white",
+    });
+  }
+  const rightActionsWidth = ACTION_WIDTH * (extraRight.length + 1); // (ekstra +) Slet
   const leftActionsWidth = (onFavorite ? ACTION_WIDTH : 0) + (onCopyToAccount ? ACTION_WIDTH : 0); // Favorit (+ Kopier)
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
+  // Et træk må ikke også tælle som tryk på rækken (fx et link).
+  const moved = useRef(false);
 
   const startOffset = useRef(0);
   // Som på iPhone: én bevægelse åbner kun én side. Fra lukket låses siden af
@@ -44,6 +69,7 @@ export function SwipeableRow({
   function handlePointerDown(e: React.PointerEvent) {
     startX.current = e.clientX;
     startOffset.current = dragX;
+    moved.current = false;
     side.current = dragX > 0 ? "left" : dragX < 0 ? "right" : null;
     dragging.current = true;
     setIsDragging(true);
@@ -52,6 +78,7 @@ export function SwipeableRow({
   function handlePointerMove(e: React.PointerEvent) {
     if (!dragging.current || startX.current === null) return;
     const next = startOffset.current + e.clientX - startX.current;
+    if (Math.abs(e.clientX - startX.current) > 6) moved.current = true;
     if (side.current === null && next !== 0) side.current = next > 0 ? "left" : "right";
     const minimum = side.current === "right" ? -rightActionsWidth : 0;
     const maximum = side.current === "left" ? leftActionsWidth : 0;
@@ -71,10 +98,14 @@ export function SwipeableRow({
     });
   }
 
+  // Lukket række: felterne bag skjules, så de ikke skinner igennem kortets
+  // runde hjørner (rød kant nederst til højre på sidste række).
+  const hidden = dragX === 0 && !isDragging ? " invisible" : "";
+
   return (
     <div className="relative overflow-hidden">
       {onFavorite && (
-        <div className={`absolute inset-y-0 left-0 flex w-20 items-center justify-center ${isFavorite ? "bg-hf-black" : "bg-hf-green"}`}>
+        <div className={`absolute inset-y-0 left-0 flex w-20 items-center justify-center ${isFavorite ? "bg-hf-black" : "bg-hf-green"}${hidden}`}>
           <button
             onClick={() => {
               onFavorite();
@@ -91,7 +122,7 @@ export function SwipeableRow({
       )}
       {onCopyToAccount && (
         <div
-          className={`absolute inset-y-0 flex w-20 items-center justify-center bg-hf-watch ${onFavorite ? "left-20" : "left-0"}`}
+          className={`absolute inset-y-0 flex w-20 items-center justify-center bg-hf-watch ${onFavorite ? "left-20" : "left-0"}${hidden}`}
         >
           <button
             onClick={() => {
@@ -106,22 +137,27 @@ export function SwipeableRow({
           </button>
         </div>
       )}
-      {onReportError && (
-        <div className="absolute inset-y-0 right-20 flex w-20 items-center justify-center bg-hf-gray-dark">
+      {extraRight.map((action, index) => (
+        <div
+          key={action.key}
+          className={`absolute inset-y-0 flex w-20 items-center justify-center ${action.className ?? "bg-hf-tan-dark text-hf-black"}${hidden}`}
+          style={{ right: ACTION_WIDTH * (extraRight.length - index) }}
+        >
           <button
+            type="button"
             onClick={() => {
-              onReportError();
+              action.onClick();
               setDragX(0);
             }}
-            aria-label={t("swipeableRow.reportErrorAria")}
-            className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-hf-white"
+            aria-label={action.key === "report-error" ? t("swipeableRow.reportErrorAria") : action.label}
+            className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-center"
           >
-            <IconAlertTriangle size={18} />
-            {t("swipeableRow.reportError")}
+            {action.icon}
+            {action.label}
           </button>
         </div>
-      )}
-      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
+      ))}
+      <div className={`absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark${hidden}`}>
         <button
           onClick={() => {
             onDelete();
@@ -138,10 +174,19 @@ export function SwipeableRow({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={(e) => {
+          if (moved.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            moved.current = false;
+          }
+        }}
         className={`relative transition-transform ${surfaceClassName}`}
         style={{
           transform: `translateX(${dragX}px)`,
           transitionDuration: isDragging ? "0ms" : "150ms",
+          touchAction: "pan-y",
         }}
       >
         {children}

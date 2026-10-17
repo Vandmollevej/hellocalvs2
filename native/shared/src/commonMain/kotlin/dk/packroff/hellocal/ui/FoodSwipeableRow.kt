@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -62,7 +63,8 @@ fun FoodSwipeableRow(
     val shown by animateFloatAsState(dragX, if (dragging) snap<Float>() else tween<Float>(150))
 
     Box(modifier.fillMaxWidth().height(IntrinsicSize.Min).clipToBounds()) {
-        Row(Modifier.fillMaxWidth().fillMaxHeight()) {
+        // Closed row: the tiles are hidden so they never show through a card's round corners.
+        Row(Modifier.fillMaxWidth().fillMaxHeight().alpha(if (shown == 0f) 0f else 1f)) {
             if (onFavorite != null) SwipeAction(if (isFavorite) texts.favoriteSaved else texts.favorite, if (isFavorite) HcColors.Black else HcColors.Green, icon = { FoodFavoriteIcon(isFavorite, 18.dp, HcColors.White) }) {
                 onFavorite()
                 dragX = 0f

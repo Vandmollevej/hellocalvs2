@@ -304,7 +304,7 @@ fun ScreeningsScreen(args: RouteArgs) {
                                     screenings = list.map { if (it.id == screening.id) it.copy(active = !it.active) else it }
                                     scope.launch { runCatching { ScreeningApi.setActive(screening.id, !screening.active) } }
                                 },
-                                secondLabel = t.t("screenings.delete"),
+                                secondLabel = t.t("swipeableRow.delete"),
                                 onSecond = { pendingDelete = screening },
                             ) {
                                 Box(Modifier.fillMaxWidth().background(HcColors.Tan)) {
