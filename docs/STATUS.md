@@ -1,3 +1,7 @@
+## 2026-10-17: Brand ved produktcirklen kun som logo
+
+- Uden logo vises hverken brand eller subbrand ved cirklen (før stod navnet i grøn tekst — fx hele firmanavnet "Coca-Cola Europacific Partners Services Bulgaria EOOD" fra Open Food Facts). Brands uden logo findes i admin → Brands → "Uden logo" med link til varerne. Web + native; native ikke kompileret lokalt (Android-plugin kan ikke hentes). Se DECISIONS 2026-10-17.
+
 ## 2026-10-17: Scannede kendte varer står på "Dine indscanninger"
 
 - En scanning af en vare, der allerede fandtes (fx Coca-Cola fra Open Food Facts), kom ikke på listen, fordi den kun viste egne oprettede varer. Nu gemmes hver scanning (`product_scans`), og listen viser begge dele. Web + native via samme API. Ikke prøvet mod rigtig database herfra; lint, test og build grønne. Tidligere scanninger af kendte varer kan ikke gendannes (de blev aldrig gemt).

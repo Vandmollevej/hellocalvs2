@@ -117,15 +117,16 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
   udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
   flisen. Se DECISIONS.md 2026-10-11.
-- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
-  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
-  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10, ændret 2026-10-17)**:
+  brandet står til højre for cirklen, subbrandet oven over det — **kun som logo**.
+  Har brandet/subbrandet intet logo, vises intet (bruger 2026-10-17: Coca-Cola stod
+  som "Coca-Cola Europacific Partners Services Bulgaria EOOD", fordi Open Food
+  Facts' brand-felt indeholdt producentens firmanavn, og navnet blev vist som tekst).
+  Brands uden logo findes i admin → Produkt-database → Brands → "Uden logo", hvor
+  hvert brand linker til alle dets varer, så logoet kan lægges ind. Ingen
+  hardcodede navnelister til at rette brandnavne. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
-  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
-- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
-  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
-  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
-  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-17.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
