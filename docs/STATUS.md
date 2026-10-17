@@ -1,3 +1,7 @@
+## 2026-10-17: Open Food Facts-billeder søges online og fritlægges løbende
+
+- Ny robot "Open Food Facts-billeder: søg online og fritlæg" (hver time, 50 varer ad gangen, scannede varer først) sender OFF-varer, der aldrig er behandlet, gennem samme Google-søgning og fritlægning som egne fotos. Ikke prøvet mod rigtig database herfra.
+
 ## 2026-10-17: Admin "Brugerscanninger"
 
 - Varedatabase → Brugerscanninger viser alle varer, brugerne scanner (også kendte OFF-varer), med bruger og tidspunkt og link til at rette varen. Ikke prøvet mod rigtig database herfra; lint, test og build grønne.
