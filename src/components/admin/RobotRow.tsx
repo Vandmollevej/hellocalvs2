@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import type { JobDefinition } from "@/lib/jobs/registry";
 import { describeNextRun } from "@/lib/jobs/schedule";
@@ -8,34 +9,37 @@ import { Toggle } from "@/components/ui/Toggle";
 import { JobScheduleEditor } from "@/components/admin/JobScheduleEditor";
 
 // Én række på admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot,
-// on/off-knap, KØR-knap, cron-job-kolonne, seneste kørsel (med hvor meget
-// der blev udført) og nattens kørsler (docs/DECISIONS.md 2026-10-02).
-export type RobotNightInfo = { text: string; message: string | null; error: string | null };
-
-export function RobotRow({
-  job,
-  state,
-  night,
-}: {
-  job: JobDefinition;
-  state: JobState;
-  night: RobotNightInfo | null;
-}) {
+// on/off-knap, KØR-knap, cron-job-kolonne og seneste kørsel (med hvor meget
+// der blev udført). Lange beskrivelser foldes sammen bag "Læs mere".
+export function RobotRow({ job, state }: { job: JobDefinition; state: JobState }) {
   const control = useJobControl(job.key, state);
-  const { busy, running, runPending, toggleEnabled, runNow } = control;
+  const { busy, running, runPending, toggleEnabled, runNow, enabled } = control;
+  const [expanded, setExpanded] = useState(false);
+  const longDescription = job.description.length > 110;
 
   return (
     <tr className="border-b border-hf-tan-dark align-top">
       <td className="py-3 pr-4">
         <p className="hf-type-strong text-hf-black">{job.name}</p>
-        <p className="hf-type-caption max-w-md">{job.description}</p>
+        <p className={`hf-type-caption max-w-md ${longDescription && !expanded ? "line-clamp-2" : ""}`}>
+          {job.description}
+        </p>
+        {longDescription && (
+          <button
+            type="button"
+            onClick={() => setExpanded((open) => !open)}
+            className="hf-btn-text hf-btn--inline"
+          >
+            {expanded ? "Vis mindre" : "Læs mere"}
+          </button>
+        )}
         <p className="hf-type-small text-text-muted">
           {job.runtime === "app" ? "Kører i appen (nattekørsel)" : `Container: ${job.container}`}
         </p>
       </td>
       <td className="py-3 pr-4">
-        <Toggle checked={state.enabled} ariaLabel={state.enabled ? "Slå fra" : "Slå til"} disabled={busy} onChange={toggleEnabled} />
-        <p className="hf-type-small mt-1 text-text-muted">{state.enabled ? "On" : "Off"}</p>
+        <Toggle checked={enabled} ariaLabel={enabled ? "Slå fra" : "Slå til"} disabled={busy} onChange={toggleEnabled} />
+        <p className="hf-type-small mt-1 text-text-muted">{enabled ? "On" : "Off"}</p>
       </td>
       <td className="py-3 pr-4">
         <button
@@ -52,7 +56,7 @@ export function RobotRow({
       <td className="py-3 pr-4">
         <p className="hf-type-small mb-1 text-text-muted">
           {describeNextRun({
-            enabled: state.enabled,
+            enabled,
             runAtTime: state.runAtTime,
             intervalMinutes: state.intervalMinutes,
             runRequestedAt: null,
@@ -63,37 +67,24 @@ export function RobotRow({
       </td>
       <td className="hf-type-small h-px py-3 pr-4 text-text-muted">
         <div className="flex h-full flex-col justify-between gap-2">
-        <div>
-        <p>{formatDateTime(state.lastRunAt)}</p>
-        {state.lastStatus && (
-          <p>
-            <span className={state.lastStatus === "OK" ? "text-hf-green-dark" : "text-hf-red-dark"}>
-              {state.lastStatus === "OK" ? "OK" : "Fejl"}
-            </span>
-            {state.lastDurationMs !== null && ` · ${formatDuration(state.lastDurationMs)}`}
-          </p>
-        )}
-        {state.lastMessage && state.lastMessage !== "OK" && (
-          <p className="max-w-xs break-words text-text-secondary">{state.lastMessage}</p>
-        )}
-        </div>
-        <Link href="/admin/log?tab=cron" className="hf-type-small text-hf-green-dark underline">
-          Se log
-        </Link>
-        </div>
-      </td>
-      <td className="hf-type-small py-3 pr-4 text-text-muted">
-        {night ? (
-          <>
-            <p className="text-hf-black">{night.text}</p>
-            {night.message && night.message !== "OK" && (
-              <p className="max-w-xs break-words text-text-secondary">{night.message}</p>
+          <div>
+            <p>{formatDateTime(state.lastRunAt)}</p>
+            {state.lastStatus && (
+              <p>
+                <span className={state.lastStatus === "OK" ? "text-hf-green-dark" : "text-hf-red-dark"}>
+                  {state.lastStatus === "OK" ? "OK" : "Fejl"}
+                </span>
+                {state.lastDurationMs !== null && ` · ${formatDuration(state.lastDurationMs)}`}
+              </p>
             )}
-            {night.error && <p className="max-w-xs break-words text-hf-red-dark">{night.error}</p>}
-          </>
-        ) : (
-          <p>Kørselslog ikke tilgængelig</p>
-        )}
+            {state.lastMessage && state.lastMessage !== "OK" && (
+              <p className="max-w-xs break-words text-text-secondary">{state.lastMessage}</p>
+            )}
+          </div>
+          <Link href="/admin/log?tab=cron" className="hf-type-small text-hf-green-dark underline">
+            Se log
+          </Link>
+        </div>
       </td>
     </tr>
   );

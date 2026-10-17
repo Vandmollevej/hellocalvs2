@@ -185,6 +185,7 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
 
       <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="text-text-primary hf-type-body hf-type-strong">Test et forslag</h2>
+        <p className="hf-type-caption">Kun til kontrol: skriv id på en vare, så viser robotten, hvor mange gram den ville foreslå som startværdi i mængde-slideren. Der ændres ingenting.</p>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex min-w-[200px] flex-1 flex-col gap-1 hf-type-body">
             <span className="text-text-secondary">Vare-id (produkt eller løs ingrediens)</span>

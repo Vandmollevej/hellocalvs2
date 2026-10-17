@@ -18,10 +18,10 @@ export function CronJobRow({ job, state }: { job: JobDefinition; state: JobState
             {job.name}
             <span
               className={`hf-type-micro rounded-full px-2 py-0.5 ${
-                state.enabled ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"
+                control.enabled ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"
               }`}
             >
-              {state.enabled ? "Aktiv" : "Pauset"}
+              {control.enabled ? "Aktiv" : "Pauset"}
             </span>
             {running && <span className="hf-type-micro text-hf-green-dark">Kører nu…</span>}
             {runPending && !running && <span className="hf-type-micro text-text-muted">Startes inden for et minut</span>}
@@ -45,7 +45,7 @@ export function CronJobRow({ job, state }: { job: JobDefinition; state: JobState
             onClick={toggleEnabled}
             className="hf-btn-secondary hf-btn--compact"
           >
-            {state.enabled ? "Pause" : "Genoptag"}
+            {control.enabled ? "Pause" : "Genoptag"}
           </button>
           <button
             type="button"

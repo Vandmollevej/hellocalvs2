@@ -45,6 +45,13 @@ export function useJobControl(jobKey: string, state: JobState) {
   const [scheduleType, setScheduleType] = useState<ScheduleType>(scheduleTypeOf(state));
   const [timeValue, setTimeValue] = useState(state.runAtTime ?? "03:00");
   const [intervalValue, setIntervalValue] = useState(String(state.intervalMinutes || 60));
+  // Optimistisk til/fra: kontakten skifter ved første klik uden at vente på router.refresh().
+  const [enabled, setEnabled] = useState(state.enabled);
+  const [seenEnabled, setSeenEnabled] = useState(state.enabled);
+  if (seenEnabled !== state.enabled) {
+    setSeenEnabled(state.enabled);
+    setEnabled(state.enabled);
+  }
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -52,7 +59,7 @@ export function useJobControl(jobKey: string, state: JobState) {
   const running = Boolean(state.lastStartedAt && (!state.lastRunAt || state.lastStartedAt > state.lastRunAt));
   const runPending = Boolean(state.runRequestedAt && (!state.lastStartedAt || state.runRequestedAt > state.lastStartedAt));
 
-  async function send(body: Record<string, unknown>, successNotice: string) {
+  async function send(body: Record<string, unknown>, successNotice: string): Promise<boolean> {
     setBusy(true);
     setError(null);
     setNotice(null);
@@ -65,15 +72,21 @@ export function useJobControl(jobKey: string, state: JobState) {
       if (!res.ok) throw new Error((await res.json().catch(() => null))?.message ?? "Kunne ikke gemme");
       setNotice(successNotice);
       router.refresh();
+      return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Kunne ikke gemme");
+      return false;
     } finally {
       setBusy(false);
     }
   }
 
   function toggleEnabled() {
-    void send({ enabled: !state.enabled }, state.enabled ? "Slået fra" : "Slået til");
+    const next = !enabled;
+    setEnabled(next);
+    void send({ enabled: next }, next ? "Slået til" : "Slået fra").then((ok) => {
+      if (!ok) setEnabled(!next);
+    });
   }
 
   function runNow() {
@@ -92,6 +105,7 @@ export function useJobControl(jobKey: string, state: JobState) {
     setTimeValue,
     intervalValue,
     setIntervalValue,
+    enabled,
     busy,
     error,
     notice,
