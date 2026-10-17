@@ -1,23 +1,20 @@
 import type { Certification } from "@/lib/product-certifications";
+import { certificationImageForKind } from "@/lib/certification-images";
 
-// Mærke-logoer på produktcirklen (udledt af varenavnet); filerne ligger i public/certifications.
-const LOGOS: Record<Certification, { label: string; file: string }> = {
-  organic: { label: "Økologisk", file: "oekologimaerket.png" },
-  keyhole: { label: "Nøglehulsmærket", file: "noeglehul.png" },
-  fairtrade: { label: "Fairtrade", file: "fairtrade.png" },
-  msc: { label: "MSC", file: "msc.png" },
+const LABELS: Record<Certification, string> = {
+  organic: "Økologisk",
+  keyhole: "Nøglehulsmærket",
+  fairtrade: "Fairtrade",
+  msc: "MSC",
 };
 
-export function CertificationLogo({ certification, size = 30 }: { certification: Certification; size?: number }) {
-  const logo = LOGOS[certification];
+// Kun Peters egne certifikat-billeder; aldrig tegnede mærker.
+export function CertificationLogo({ certification, size = 44 }: { certification: Certification; size?: number }) {
+  const label = LABELS[certification];
+  const image = certificationImageForKind(certification, label);
+  if (!image) return null;
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`/certifications/${logo.file}`}
-      alt={logo.label}
-      title={logo.label}
-      className="block"
-      style={{ height: size, width: "auto" }}
-    />
+    <img src={image} alt={label} title={label} width={size} height={size} style={{ width: size, height: size }} className="object-contain" />
   );
 }

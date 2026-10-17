@@ -1,36 +1,20 @@
-import { certificationLogoSrc, type CertificationBadge } from "@/lib/certification-badges";
+import type { CertificationBadge } from "@/lib/certification-badges";
+import { certificationImageForKind } from "@/lib/certification-images";
 
-// De rigtige mærke-logoer (public/certifications) vist i ens højde, højrestillet
-// under energifordelingen på produktsiden (opgave 29). Mærker uden logofil
-// bruger det fritskrabede mærke fra emballagen (natligt mærkat-job,
-// docs/DECISIONS.md 2026-10-02), og ellers en lille tekst-pille.
-const LOGO_HEIGHT = 44;
-
-function Logo({ badge }: { badge: CertificationBadge }) {
-  const src = certificationLogoSrc(badge.kind) ?? badge.imageUrl;
-  if (!src) {
-    return (
-      <span
-        className="flex items-center rounded-full bg-hf-gray-light px-3 text-hf-black hf-type-small hf-type-strong"
-        style={{ height: LOGO_HEIGHT }}
-      >
-        {badge.label}
-      </span>
-    );
-  }
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={badge.label} title={badge.label} style={{ height: LOGO_HEIGHT, width: "auto" }} className="block" />
-  );
-}
-
+// Kun Peters egne certifikat-billeder (public/certifications). Findes der
+// intet billede til et mærke, vises intet — aldrig tegnede mærker.
+// Placeres højrestillet under energifordelingen på produktsiden.
 export function CertificationLogos({ badges, className = "" }: { badges: CertificationBadge[]; className?: string }) {
-  if (!badges.length) return null;
+  const items = badges
+    .map((badge) => ({ badge, image: certificationImageForKind(badge.kind, badge.label) }))
+    .filter((item): item is { badge: CertificationBadge; image: string } => item.image !== null);
+  if (!items.length) return null;
   return (
-    <ul className={`flex flex-wrap items-center justify-end gap-3 ${className}`} aria-label="Certifikater">
-      {badges.map((badge) => (
-        <li key={badge.label}>
-          <Logo badge={badge} />
+    <ul className={`flex flex-wrap justify-end gap-2 ${className}`} aria-label="Certifikater">
+      {items.map(({ badge, image }) => (
+        <li key={badge.label} title={badge.label}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={image} alt={badge.label} width={44} height={44} className="h-11 w-11 object-contain" />
         </li>
       ))}
     </ul>
