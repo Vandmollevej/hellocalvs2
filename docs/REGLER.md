@@ -244,6 +244,9 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
   "erstatter ikke læge"-noter på sider, medmindre brugeren har bedt om dem
   (brugerens regel 2026-10-09; Hello Doc-disclaimeren er fjernet).
+  Interne noter om, hvornår noget vises ("Vises kun når der findes data …"),
+  står aldrig på kundens sider — de hører hjemme i koden/docs (bruger
+  2026-10-17; fjernet fra næringsfeltet på varesiden, web + native).
 - Hello Doc har burger-menu øverst til højre, hvor modtageren sammensætter
   dashboardet (vis/skjul + rækkefølge pr. panel, gemt på enheden).
 - Skelet-loading skal tydeligt ses at loade (user rule 2026-10-15): et smalt,

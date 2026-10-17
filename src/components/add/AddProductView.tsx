@@ -1684,14 +1684,11 @@ export function AddProductView({
                           </div>
                         );
                       })}
-                      <p className="hf-type-micro text-text-secondary px-4 py-2.5">
-                        {t("addProduct.extendedNutritionDisclaimer")}
-                      </p>
                       {/* Fridas kildeangivelse (brugerens regel 2026-10-10): kun
                           her, helt nederst i det udfoldede felt, og kun når en
                           værdi på varen kommer fra Frida. */}
                       {view.fridaSource && (
-                        <p className="hf-type-micro text-text-secondary px-4 pb-2.5">
+                        <p className="hf-type-micro text-text-secondary px-4 py-2.5">
                           <UncertaintyTilde small />
                           {t("addProduct.fridaSource")}
                         </p>
