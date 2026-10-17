@@ -695,6 +695,15 @@ textarea::selection,
     gap: 12px;
   }
 
+  /* Kort-række med én kontrol (fx en til/fra uden beskrivelse): samme højde
+     som knapper og felter (--hf-control-height), indhold centreret. */
+  .hf-card--control {
+    align-items: center;
+    min-height: var(--hf-control-height);
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
   /* Status-prik foran en række: grøn = aktiv, ellers beige. */
   .hf-status-dot {
     width: 10px;
