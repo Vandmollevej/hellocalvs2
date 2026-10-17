@@ -316,6 +316,10 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
+## Stregkode-reserve (user rule 2026-10-17)
+
+Giver billederne hverken energi eller navn, bruges stregkodeopslaget (Open Food Facts) som reserve — kun når energien passer med etikettens tal og navnet står på forsiden. Aldrig skøn. Se DECISIONS 2026-10-17.
+
 ## AI: intern AI først (user rule 2026-10-15)
 
 Natlige robotter bruger intern AI (lokalt på serveren: OpenCV, tesseract, DINOv2 …) først og spørger kun OpenAI, når den lokale søgning intet finder. Mærkat-jobbet: `label-local` → `label-scan` (se DECISIONS 2026-10-15) 2-års tjekket: `recheck-local` → `product-recheck`.
@@ -459,3 +463,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
 
 - **Vin: brand er producenten (bruger 2026-10-16)**: vintype (Rosso, Rosé), drue, appellation og kvalitetstrin (Riesling, Bourgogne, Qba, Chianti Riserva …) er aldrig brand — de står i variant. "S.C." = Santa Carolina. REMA 1000-vinene i `scripts/rema1000-import/data/rema1000_products.json` er rettet (fx Grande Alberone: brand "Grande Alberone", variant "Rosso"). Uafklaret: række 1960 (brand "Assamblage", titel "CAROLINA GRAN RESERVA") — producenten kendes ikke sikkert. Databasen skal have samme rettelse ved næste REMA-import.
+
+- **Certifikater (Peter, 2026-10-17):** appen viser KUN Peters egne certifikat-billeder (`public/certifications`, kilde NAS `Projektfiler (ikke app)\Certifikater`, mapping i `src/lib/certification-images.ts`). Aldrig tegnede/hjemmelavede mærker — findes intet billede, vises intet.

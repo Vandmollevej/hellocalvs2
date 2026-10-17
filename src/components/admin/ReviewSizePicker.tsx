@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-// Fælles visningsvælger (2/4/8 firkanter = 1/2/4 varer pr. side) for alle
+// Fælles visningsvælger (2/4/12 firkanter = 1/2/12 varer pr. side) for alle
 // billedsider i admin: Billedforslag, Logoer og Dubletter. Valget huskes pr.
 // side i browseren.
 
 export const REVIEW_SIZES = [
   { squares: 2, perPage: 1, label: "2 firkanter: én vare pr. side i fuld størrelse" },
   { squares: 4, perPage: 2, label: "4 firkanter: to varer pr. side" },
-  { squares: 8, perPage: 4, label: "8 firkanter: fire varer pr. side" },
+  { squares: 12, perPage: 12, label: "12 firkanter: tolv varer pr. side (4 kolonner, 3 rækker)" },
 ] as const;
 
 export function useReviewSize(storageKey: string) {
@@ -35,12 +35,12 @@ export function useReviewSize(storageKey: string) {
 }
 
 function SizeIcon({ squares }: { squares: number }) {
-  const cols = 2;
+  const cols = squares >= 12 ? 4 : 2;
   const rows = squares / cols;
-  const gap = rows > 2 ? 1.5 : 2.5;
-  const side = Math.min((24 - gap) / 2, (24 - gap * (rows - 1)) / rows);
+  const gap = squares >= 12 ? 1.5 : rows > 2 ? 1.5 : 2.5;
+  const side = Math.min((24 - gap * (cols - 1)) / cols, (24 - gap * (rows - 1)) / rows);
   const top = (24 - (rows * side + (rows - 1) * gap)) / 2;
-  const left = (24 - (2 * side + gap)) / 2;
+  const left = (24 - (cols * side + (cols - 1) * gap)) / 2;
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
       {Array.from({ length: squares }).map((_, i) => (

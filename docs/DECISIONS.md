@@ -5813,3 +5813,9 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - `instrumentation.ts` lå i roden siden 2026-09-03; med `src/app` finder `next build` kun `src/instrumentation.ts`, så standalone-imaget aldrig startede `startScheduler()`. Flyttet til `src/`, vagt-test tilføjet.
 - Fordi scheduleren starter for første gang, eskalerer 48-timers-jobbet kun ventende varer/fejlrapporter oprettet for 48–72 timer siden (`ESCALATION_WINDOW_HOURS`), så første kørsel ikke sender én mail pr. gammel sag. Kø, abonnementer, lukkede konti og partnerrapporter var tjekket tomme/uden risiko før start.
 - Scan-appen (`HELLOCAL_APP_MODE=scan`) kører fra samme image og startede også scheduleren, men uden SMTP-, push- og Meilisearch-nøgler (søgeindekset svingede mellem "fejlede" og "MEILI_URL mangler"). Kun hoved-appen starter nu scheduleren.
+
+## 2026-10-17: Stregkode-reserve (Open Food Facts) når billederne ikke giver energi/navn
+
+- Brugerens valg: "Ja, som reserve". `quick-enrichment-recovery` prøver én gang pr. vare (`eanReserveAt`), når jobbet er færdigt eller varen er over 10 min gammel og stadig mangler energi eller navn: `applyEanReserve` (`src/lib/quick-product-enrichment.ts`) bruger OFF-posten fra `off_products` (gemmes allerede ved scanningen, også de "tynde"), ellers hentes den.
+- Energien bruges kun, når kcal hænger sammen med makroerne (±15 %) OG matcher et energital (kcal eller kJ, ±5 %) i telefonens/serverens tekstlæsning af etiketten (`src/lib/ean-reserve-match.ts`, test). Navnet kun, når et af dets ord står på forsiden. Kilde = LABEL (producentdata), aldrig skøn. Bruger ikke OpenAI.
+- Websøgning (Google Custom Search) var planlagt som næste kilde, men nøglen afvises ("Requests to this API … are blocked") — samme grund til at billed-robotten finder 0 billeder. Kræver at Custom Search API tillades på nøglen i Google Cloud.

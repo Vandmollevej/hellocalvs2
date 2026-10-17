@@ -27,7 +27,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const product = await prisma.product.update({
     where: { id },
-    data: { imageUrl, pendingImageUrl: null, imageStatus: "APPROVED" },
+    data: { imageUrl, pendingImageUrl: null, imageStatus: "APPROVED", imageNeedsNew: false },
   });
   await resolveOpenSearches(id);
   return NextResponse.json({ product });

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ReviewSizePicker, useReviewSize } from "@/components/admin/ReviewSizePicker";
 import { BulkActionsBar, BulkRow, BulkSelection } from "@/components/admin/BulkSelection";
 
 // Fælles gennemsynsvisning til Billedbehandling (docs/DECISIONS.md 2026-10-04):
@@ -27,6 +26,8 @@ type Props = {
   rejectLabel: string;
   onApprove: (id: string, alternativeKey?: string) => Promise<boolean>;
   onReject: (id: string) => Promise<boolean>;
+  // Vælg på det nuværende billede (i stedet for forslaget): beholder det og forkaster forslaget.
+  onKeep?: (id: string) => Promise<boolean>;
   emptyText: string;
   storageKey: string;
   // Varernes id'er: rækkerne kan markeres og behandles samlet (Handlinger,
@@ -35,6 +36,9 @@ type Props = {
 };
 
 const STRIP = 6;
+// "Vis antal produkter": op til 12 (3 rækker à 4) før der sideinddeles.
+const COUNT_OPTIONS = [1, 2, 4, 8, 12];
+const DEFAULT_COUNT = 12;
 
 function Pic({ slide, onClick }: { slide: ReviewSlide; onClick?: () => void }) {
   const inner = slide.src ? (
@@ -52,14 +56,23 @@ function Pic({ slide, onClick }: { slide: ReviewSlide; onClick?: () => void }) {
   );
 }
 
-export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, emptyText, storageKey, bulkProducts = false }: Props) {
+export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabel, onApprove, onReject, onKeep, emptyText, storageKey, bulkProducts = false }: Props) {
   const [items, setItems] = useState(initialItems);
-  const { sizeIdx, perPage, choose } = useReviewSize(storageKey);
+  const [perPage, setPerPage] = useState(DEFAULT_COUNT);
+  useEffect(() => {
+    try {
+      const saved = Number(window.localStorage.getItem(`${storageKey}-count`));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- husket valg (kun i browseren)
+      if (COUNT_OPTIONS.includes(saved)) setPerPage(saved);
+    } catch {}
+  }, [storageKey]);
   const [page, setPage] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
   // Valgt alternativ pr. vare (indeks i item.alternatives).
+  // Hvilket billede i lysboksen der er markeret (standard: forslaget til højre).
+  const [chosenCurrent, setChosenCurrent] = useState<Record<string, boolean>>({});
   const [picked, setPicked] = useState<Record<string, number>>({});
 
   // Serverens liste vinder, når siden genindlæses efter en handling.
@@ -85,11 +98,14 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
     setPicked((current) => ({ ...current, [item.id]: (pickedIndex(item) + delta + count) % count }));
   };
 
-  const chooseSize = (idx: number) => {
-    // Bliv ved samme vare, når størrelsen skifter.
+  const chooseCount = (count: number) => {
+    // Bliv ved samme vare, når antallet skifter.
     const firstIndex = safePage * perPage;
-    choose(idx);
-    setPage(Math.floor(firstIndex / [1, 2, 4][idx]));
+    setPerPage(count);
+    setPage(Math.floor(firstIndex / count));
+    try {
+      window.localStorage.setItem(`${storageKey}-count`, String(count));
+    } catch {}
   };
 
   const act = useCallback(
@@ -109,6 +125,20 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
     },
     [busy, onApprove, onReject],
   );
+
+  const actKeep = async (item: ReviewItem) => {
+    if (busy || !onKeep) return;
+    setBusy(true);
+    setError(null);
+    try {
+      if (await onKeep(item.id)) setItems((list) => list.filter((candidate) => candidate.id !== item.id));
+      else setError("Handlingen blev ikke gemt. Prøv igen.");
+    } catch {
+      setError("Handlingen mislykkedes (serverfejl). Prøv igen.");
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const step = useCallback(
     (delta: number) => {
@@ -143,6 +173,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
   // side om side; pilene bladrer til næste vare. "Godkend" gælder det viste forslag.
   const lightboxSlides: ReviewSlide[] = current ? shownSlides(current).filter((slide) => slide.src) : [];
   const lightboxAlternatives = current?.alternatives ?? [];
+  const keepCurrent = Boolean(current && onKeep && chosenCurrent[current.id]);
   // Tal i bunden: højst 9 varer ad gangen omkring den aktuelle.
   const numbers: number[] = [];
   if (lightbox !== null) {
@@ -156,14 +187,24 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
         <p className="hf-type-caption">
           {items.length} {items.length === 1 ? "vare" : "varer"} · side {safePage + 1} af {pageCount}
         </p>
-        <ReviewSizePicker sizeIdx={sizeIdx} onChoose={chooseSize} />
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-3">
+          <label className="hf-type-body flex items-center gap-2">
+            <span className="text-text-secondary">Vis antal produkter</span>
+            <select value={perPage} onChange={(event) => chooseCount(Number(event.target.value))} className="hf-input">
+              {COUNT_OPTIONS.map((count) => (
+                <option key={count} value={count}>
+                  {count}
+                </option>
+              ))}
+            </select>
+          </label>
+          {bulkProducts && <BulkActionsBar />}
+        </div>
       </div>
-
-      {bulkProducts && <BulkActionsBar />}
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
 
-      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2 2xl:grid-cols-4" : perPage === 2 ? "md:grid-cols-2" : "grid-cols-1"}`}>
+      <div className={`grid gap-4 ${perPage >= 4 ? "md:grid-cols-2 2xl:grid-cols-4" : perPage === 2 ? "md:grid-cols-2" : "grid-cols-1"}`}>
         {visible.map((item) => {
           const alternatives = item.alternatives ?? [];
           const index = pickedIndex(item);
@@ -171,7 +212,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           const shown = shownSlides(item);
           const lightboxIndex = () => items.findIndex((entry) => entry.id === item.id);
           return (
-            <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form">
+            <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form h-full">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
                 {item.subtitle && <p className="hf-type-caption">{item.subtitle}</p>}
@@ -218,7 +259,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                   })}
                 </div>
               )}
-              <div className="flex gap-2">
+              <div className="mt-auto flex gap-2">
                 <button type="button" onClick={() => act(item, "reject")} disabled={busy} className="hf-btn-danger flex-1 hf-btn--large">
                   {rejectLabel}
                 </button>
@@ -232,103 +273,120 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
       </div>
 
       {pageCount > 1 && (
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-1.5" aria-label="Sider">
           <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text">
-            ‹ Forrige
+            ‹
           </button>
-          <span className="hf-type-caption">
-            {safePage + 1} / {pageCount}
-          </span>
+          {Array.from({ length: pageCount }, (_, n) => n).map((n) => (
+            <button key={n} type="button" onClick={() => setPage(n)} aria-current={n === safePage ? "page" : undefined} aria-pressed={n === safePage} className="hf-choice">
+              {n + 1}
+            </button>
+          ))}
           <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text">
-            Næste ›
+            ›
           </button>
         </div>
       )}
 
       {current && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-hf-black/85" role="dialog" aria-modal="true" aria-label="Billede i stor størrelse">
-          <div className="flex items-start justify-between gap-4 p-4 text-hf-white">
+        <div className="fixed inset-0 z-50 flex h-dvh flex-col gap-3 bg-hf-black/85 p-4" role="dialog" aria-modal="true" aria-label="Billede i stor størrelse">
+          <div className="flex shrink-0 items-start justify-between gap-4 text-hf-white">
             <div className="min-w-0">
               <p className="hf-type-strong truncate">{current.title}</p>
-              <p className="hf-type-small opacity-80">
-                {current.subtitle ?? ""}
-              </p>
+              {current.subtitle && <p className="hf-type-small opacity-80">{current.subtitle}</p>}
             </div>
             <button type="button" onClick={() => setLightbox(null)} className="hf-btn-icon" aria-label="Luk">
               ✕
             </button>
           </div>
 
-          <div className="relative flex min-h-0 flex-1 items-center justify-center gap-4 px-14">
+          <div className="relative grid min-h-0 flex-1 grid-cols-2 gap-4 px-12">
             {items.length > 1 && (
-              <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
+              <button type="button" onClick={() => step(-1)} aria-label="Forrige produkt" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
                 ‹
               </button>
             )}
-            {lightboxSlides.map((slide, idx) => (
-              <div key={idx} className="flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slide.src ?? ""} alt={slide.label} className="min-h-0 max-h-full max-w-full rounded-lg bg-hf-white object-contain" />
-                <span className="hf-type-small text-hf-white">{slide.label}</span>
-              </div>
-            ))}
+            {lightboxSlides.map((slide, idx) => {
+              const isProposal = idx === lightboxSlides.length - 1 && lightboxSlides.length > 1;
+              const selectable = lightboxSlides.length > 1 && (isProposal || Boolean(onKeep));
+              const isSelected = isProposal ? !keepCurrent : keepCurrent;
+              return (
+                <div key={idx} className="flex min-h-0 min-w-0 flex-col gap-2">
+                  <div
+                    role="button"
+                    tabIndex={selectable ? 0 : -1}
+                    aria-pressed={isSelected}
+                    aria-label={isProposal ? "Markér forslaget" : "Markér det nuværende billede"}
+                    onClick={() => selectable && setChosenCurrent((state) => ({ ...state, [current.id]: !isProposal }))}
+                    onKeyDown={(event) => {
+                      if (selectable && (event.key === "Enter" || event.key === " ")) setChosenCurrent((state) => ({ ...state, [current.id]: !isProposal }));
+                    }}
+                    className={`flex min-h-0 flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-hf-white ${isSelected && lightboxSlides.length > 1 ? "outline outline-4 outline-hf-green" : ""}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={slide.src ?? ""} alt={slide.label} className="h-full w-full object-contain" />
+                  </div>
+                  <p className="hf-type-small shrink-0 truncate text-center text-hf-white">{slide.label}</p>
+                </div>
+              );
+            })}
             {items.length > 1 && (
-              <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
+              <button type="button" onClick={() => step(1)} aria-label="Næste produkt" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
                 ›
               </button>
             )}
           </div>
 
-          <div className="flex flex-col gap-3 p-4">
-            {lightboxAlternatives.length > 1 && (
-              <div className="flex flex-wrap items-center justify-center gap-2" aria-label="Alternativer">
-                {lightboxAlternatives.map((alt, altIndex) => (
-                  <button
-                    key={alt.key ?? altIndex}
-                    type="button"
-                    onClick={() => setPicked((currentPicked) => ({ ...currentPicked, [current.id]: altIndex }))}
-                    aria-label={`Vis alternativ ${altIndex + 1}: ${alt.label}`}
-                    aria-pressed={altIndex === pickedIndex(current)}
-                    className={`hf-pick-thumb ${altIndex === pickedIndex(current) ? "is-selected" : ""}`}
-                  >
-                    {alt.src && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={alt.src} alt="" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-            <div className="flex flex-wrap items-center justify-center gap-1.5">
-              {numbers[0] > 0 && <span className="hf-type-small text-hf-white/70">…</span>}
-              {numbers.map((n) => (
+          {lightboxAlternatives.length > 1 && (
+            <div className="flex shrink-0 flex-wrap items-center justify-center gap-2" aria-label="Alternativer">
+              {lightboxAlternatives.map((alt, altIndex) => (
                 <button
-                  key={n}
+                  key={alt.key ?? altIndex}
                   type="button"
-                  onClick={() => setLightbox(n)}
-                  aria-current={n === lightbox}
-                  aria-pressed={n === lightbox}
-                  className="hf-choice"
+                  onClick={() => setPicked((currentPicked) => ({ ...currentPicked, [current.id]: altIndex }))}
+                  aria-label={`Vis alternativ ${altIndex + 1}: ${alt.label}`}
+                  aria-pressed={altIndex === pickedIndex(current)}
+                  className={`hf-pick-thumb h-14 w-14 ${altIndex === pickedIndex(current) ? "is-selected" : ""}`}
                 >
-                  {n + 1}
+                  {alt.src && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={alt.src} alt="" />
+                  )}
                 </button>
               ))}
-              {numbers.length > 0 && numbers[numbers.length - 1] < items.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
             </div>
-            <div className="mx-auto flex w-full max-w-xl gap-2">
-              <button type="button" onClick={() => act(current, "reject")} disabled={busy} // eslint-disable-next-line no-restricted-syntax -- ligger på det mørke fuldskærmsoverlay; .hf-btn-danger er gennemsigtig og ville være ulæselig
-          className="hf-btn-danger flex-1 bg-hf-white hf-btn--large">
-                {rejectLabel}
-              </button>
+          )}
+
+          <div className="flex shrink-0 flex-wrap items-center justify-center gap-1.5">
+            {numbers[0] > 0 && <span className="hf-type-small text-hf-white/70">…</span>}
+            {numbers.map((n) => (
               <button
+                key={n}
                 type="button"
-                onClick={() => act(current, "approve", pickedKey(current))}
-                disabled={busy}
-                className="hf-btn-primary flex-1 hf-btn--large"
+                onClick={() => setLightbox(n)}
+                aria-current={n === lightbox}
+                aria-pressed={n === lightbox}
+                className="hf-choice"
               >
-                {approveLabel}
+                {n + 1}
               </button>
-            </div>
+            ))}
+            {numbers.length > 0 && numbers[numbers.length - 1] < items.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
+          </div>
+
+          <div className="mx-auto flex w-full max-w-xl shrink-0 gap-2">
+            {/* eslint-disable-next-line no-restricted-syntax -- ligger på det mørke fuldskærmsoverlay; .hf-btn-danger er gennemsigtig og ville være ulæselig */}
+            <button type="button" onClick={() => act(current, "reject")} disabled={busy} className="hf-btn-danger hf-btn--large flex-1 bg-hf-white">
+              {rejectLabel}
+            </button>
+            <button
+              type="button"
+              onClick={() => (keepCurrent && onKeep ? actKeep(current) : act(current, "approve", pickedKey(current)))}
+              disabled={busy}
+              className="hf-btn-primary hf-btn--large flex-1"
+            >
+              {approveLabel}
+            </button>
           </div>
         </div>
       )}

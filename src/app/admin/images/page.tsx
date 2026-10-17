@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { PendingImageBoard } from "@/components/admin/PendingImageBoard";
+import { FindNewImageBoard } from "@/components/admin/FindNewImageBoard";
 import { ImagesTabs } from "@/components/admin/ImagesTabs";
 import { briaVariantUrl } from "@/lib/bria-variant";
 
@@ -25,6 +26,7 @@ export default async function AdminImagesPage() {
   const products = await prisma.product.findMany({
     where: {
       deletedAt: null,
+      imageNeedsNew: false,
       OR: [{ imageStatus: "PENDING" }, { imageSearches: { some: { status: "PENDING_REVIEW" } } }],
     },
     include: {
@@ -39,10 +41,25 @@ export default async function AdminImagesPage() {
     orderBy: { createdAt: "asc" },
   });
 
+  const needNew = await prisma.product.findMany({
+    where: { deletedAt: null, imageNeedsNew: true },
+    include: { brand: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <div className="hf-admin-page">
       <h1 className="hf-type-title text-hf-black">Billedbehandling</h1>
       <ImagesTabs active="suggestions" />
+      <FindNewImageBoard
+        items={needNew.map((product) => ({
+          id: product.id,
+          title: product.name,
+          subtitle: product.brand?.name ?? null,
+          imageUrl: product.imageUrl,
+          pendingImageUrl: product.pendingImageUrl,
+        }))}
+      />
       <PendingImageBoard
         items={products.map((product) => {
           const candidates = product.imageSearches[0]?.candidates ?? [];
@@ -50,8 +67,8 @@ export default async function AdminImagesPage() {
           // Kvalitet 0-100: fundne billeder = match (70 %) + opløsning (30 %); udklip og Bria
           // kan ikke måles og får et fast skøn. Sorteret så det bedste står først.
           const scored = [
-            ...(product.pendingImageUrl ? [{ key: "pending", src: product.pendingImageUrl, name: "Forslag (udklip)", quality: 75 }] : []),
-            ...(briaUrl ? [{ key: "pending-bria", src: briaUrl, name: "Forslag (Bria)", quality: 85 }] : []),
+            ...(product.pendingImageUrl ? [{ key: "pending", src: product.pendingImageUrl, name: "Forslag (fritlagt udklip)", quality: 90 }] : []),
+            ...(briaUrl ? [{ key: "pending-bria", src: briaUrl, name: "Forslag (fritlagt, Bria)", quality: 95 }] : []),
             ...candidates.map((candidate) => ({
               key: candidate.id,
               src: candidate.imageUrl,

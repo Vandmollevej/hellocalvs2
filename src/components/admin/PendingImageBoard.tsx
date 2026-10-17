@@ -9,8 +9,12 @@ import { ImageReviewBoard, type ReviewItem } from "@/components/admin/ImageRevie
 export function PendingImageBoard({ items }: { items: ReviewItem[] }) {
   const router = useRouter();
 
-  async function call(id: string, action: "accept" | "reject") {
-    const res = await fetch(`/api/admin/products/${id}/image/${action}`, { method: "POST" });
+  async function call(id: string, action: "accept" | "reject", mode?: "keep" | "both") {
+    const res = await fetch(`/api/admin/products/${id}/image/${action}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode }),
+    });
     if (res.ok) router.refresh();
     return res.ok;
   }
@@ -43,10 +47,11 @@ export function PendingImageBoard({ items }: { items: ReviewItem[] }) {
   return (
     <ImageReviewBoard
       items={items}
-      approveLabel="Brug forslaget til højre"
-      rejectLabel="Behold nuværende"
+      approveLabel="Vælg"
+      rejectLabel="Afvis"
       onApprove={approve}
-      onReject={(id) => call(id, "reject")}
+      onReject={(id) => call(id, "reject", "both")}
+      onKeep={(id) => call(id, "reject", "keep")}
       emptyText="Ingen billedforslag afventer godkendelse."
       storageKey="hc-admin-image-board-size"
       bulkProducts
