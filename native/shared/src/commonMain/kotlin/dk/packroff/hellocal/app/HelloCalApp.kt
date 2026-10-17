@@ -58,6 +58,7 @@ import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import dk.packroff.hellocal.ui.LocalCompactLandscape
 import dk.packroff.hellocal.ui.VSpace
 import dk.packroff.hellocal.ui.icons.HcIcon
@@ -208,11 +209,13 @@ private fun AppFrame(navigator: Navigator) {
         CompositionLocalProvider(LocalCompactLandscape provides compact) {
             Column(Modifier.fillMaxSize().imePadding()) {
                 Box(Modifier.weight(1f).fillMaxWidth()) {
-                    if (resolved == null) {
-                        NotNativeYet(location)
-                    } else {
-                        val (route, params) = resolved
-                        route.content(RouteArgs(params, location.query, location.fragment))
+                    CompositionLocalProvider(LocalBottomArcInset provides if (showNav) 40.dp else 0.dp) {
+                        if (resolved == null) {
+                            NotNativeYet(location)
+                        } else {
+                            val (route, params) = resolved
+                            route.content(RouteArgs(params, location.query, location.fragment))
+                        }
                     }
                     // The bottom circle shows on every page with the bottom bar (user 2026-10-09).
                     if (showNav) {

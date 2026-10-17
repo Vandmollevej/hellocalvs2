@@ -288,6 +288,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/images/rembg",
+      "web": "src/app/admin/images/rembg/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/ingredient-requests",
       "web": "src/app/admin/ingredient-requests/page.tsx",
       "status": "web-only",

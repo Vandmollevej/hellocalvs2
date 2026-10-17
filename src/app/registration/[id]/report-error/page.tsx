@@ -97,8 +97,25 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
     }
   }
 
+  const showForm = Boolean(points) && !result;
+
   return (
-    <HfScreen title={t("registrationReportError.title")}>
+    <HfScreen
+      title={t("registrationReportError.title")}
+      footer={
+        showForm ? (
+          // Fast nederst over bundcirklen (REGLER: knapper nederst), aldrig bag den.
+          <button
+            type="submit"
+            form="report-error-form"
+            disabled={!canSubmit || submitting}
+            className="hf-control hf-btn-primary w-full"
+          >
+            {submitting ? t("registrationReportError.sending") : t("registrationReportError.submit")}
+          </button>
+        ) : undefined
+      }
+    >
       <div className="px-4 pt-4 pb-8">
         {points === undefined ? (
           <p className="hf-type-body text-text-secondary mt-8 text-center">{t("common.loading")}</p>
@@ -121,7 +138,7 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
             )}
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form id="report-error-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
             <p className="hf-type-body text-text-secondary">{t("registrationReportError.intro")}</p>
             <ul className="flex flex-col">
               {points.map((point) => {
@@ -170,13 +187,6 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
               })}
             </ul>
             {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
-            <button
-              type="submit"
-              disabled={!canSubmit || submitting}
-              className="hf-control hf-btn-primary w-full"
-            >
-              {submitting ? t("registrationReportError.sending") : t("registrationReportError.submit")}
-            </button>
           </form>
         )}
       </div>

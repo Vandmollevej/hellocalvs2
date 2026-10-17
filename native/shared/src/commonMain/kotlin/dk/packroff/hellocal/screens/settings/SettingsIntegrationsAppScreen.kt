@@ -694,10 +694,8 @@ private fun SettingsIntegrationsConnectedView(
         contentPadding = SettingsPagePadding,
         icon = { SettingsIntegrationsLogo(integration.icon, name, 24.dp, rounded = false) },
         bottom = {
-            // web: HfScreen footer has 1rem + 40 px below — the bottom circle (FooterArc) rises over the menu.
-            Column(Modifier.fillMaxWidth().padding(bottom = 40.dp)) {
-                HcButton(label = t.t("integrations.connected.deactivate"), onClick = onDisconnect, enabled = !busy)
-            }
+            // HcScreen keeps the footer above the bottom circle (LocalBottomArcInset).
+            HcButton(label = t.t("integrations.connected.deactivate"), onClick = onDisconnect, enabled = !busy)
         },
     ) {
         SettingsPage(gap = HcDimens.SpaceBlock) {

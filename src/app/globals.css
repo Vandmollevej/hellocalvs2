@@ -2902,6 +2902,26 @@ textarea.hf-input {
   display: none;
 }
 
+/* Bundcirklen (FooterArc) rager 40 px op over menuen: indhold uden fast footer
+   får samme luft i bunden, så intet ender bag cirklen. Ikke i desktop-skallen. */
+.hf-screen-scroll--arc {
+  padding-bottom: 40px;
+}
+
+.web-shell .hf-screen-scroll--arc {
+  padding-bottom: 0;
+}
+
+.web-shell .hf-screen-footer {
+  padding-bottom: 1rem;
+}
+
+/* Userbacks "Feedback"-knap ligger over bundmenuen og bundcirklen, aldrig bag
+   eller oven i dem (bruger 2026-10-17). Kun i appen, ikke i desktop-skallen. */
+body:has(.hf-bottom-nav):not(:has(.web-shell)) .userback-button {
+  bottom: calc(env(safe-area-inset-bottom) + 132px) !important;
+}
+
 /* I desktop-skallen bliver appens grønne app-bjælke til en sideoverskrift som
    i admin: lys flade, mørk tekst, venstrestillet titel. Profilcirklen sidder i
    skallens topbjælke, så den skjules her; forsidens topbar er ikke i brug. */
