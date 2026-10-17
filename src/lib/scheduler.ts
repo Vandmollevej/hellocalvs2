@@ -38,12 +38,17 @@ import { backfillProductLanguages, translateProductsAhead } from "@/lib/product-
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
 // hvad som helst i morgen) — bevidst IKKE afhængig af OS-cron/Synology Task
-// Scheduler. Starter via instrumentation.ts' register()-hook.
+// Scheduler. Starter via src/instrumentation.ts' register()-hook.
 //
 // globalThis-guard, samme mønster som src/lib/prisma.ts, for at undgå at
 // starte flere parallelle intervaller ved Next.js' dev-hot-reload.
 
 const ESCALATION_HOURS = 48;
+// Kun varer/fejlrapporter, der netop har passeret 48 timer, eskaleres (vindue
+// 48-72 t). Scheduleren kørte aldrig i produktion før 2026-10-17 (instrumentation
+// lå i roden), og uden vinduet ville første kørsel sende én mail pr. gammel
+// ventende vare. Ældre sager ses under admin → Godkendelser.
+const ESCALATION_WINDOW_HOURS = 72;
 // Jobs styres fra admin "Cron-jobs" (docs/DECISIONS.md 2026-09-25): hvert
 // minut tjekkes jobtabellen for forfaldne jobs; selve intervallet/tidspunktet
 // pr. job står i scheduled_jobs (standard 15 min for vedligeholdet).
@@ -59,8 +64,9 @@ const globalForScheduler = globalThis as unknown as { hellocalSchedulerStarted?:
 
 async function escalateStalePendingProducts(now: Date) {
   const cutoff = new Date(now.getTime() - ESCALATION_HOURS * 60 * 60 * 1000);
+  const windowStart = new Date(now.getTime() - ESCALATION_WINDOW_HOURS * 60 * 60 * 1000);
   const stale = await prisma.product.findMany({
-    where: { status: "PENDING", privateOwnerId: null, createdAt: { lt: cutoff }, escalationSentAt: null },
+    where: { status: "PENDING", privateOwnerId: null, createdAt: { lt: cutoff, gte: windowStart }, escalationSentAt: null },
   });
 
   for (const product of stale) {
@@ -81,8 +87,9 @@ async function escalateStalePendingProducts(now: Date) {
 
 async function escalateStaleBugReports(now: Date) {
   const cutoff = new Date(now.getTime() - ESCALATION_HOURS * 60 * 60 * 1000);
+  const windowStart = new Date(now.getTime() - ESCALATION_WINDOW_HOURS * 60 * 60 * 1000);
   const stale = await prisma.bugReport.findMany({
-    where: { status: "PENDING", createdAt: { lt: cutoff }, escalationSentAt: null },
+    where: { status: "PENDING", createdAt: { lt: cutoff, gte: windowStart }, escalationSentAt: null },
     include: { user: true },
   });
 

@@ -1,3 +1,9 @@
+## 2026-10-17: Appens planlagte job kørte aldrig i produktion
+
+- Rodårsag: `instrumentation.ts` lå i projektroden, men appen bruger `src/app`, så Next leder kun i `src/`. Standalone-imaget fik ingen instrumentation-fil, og `startScheduler()` kørte aldrig — ingen af appens job (`quick-enrichment-recovery`, `maintenance`, `back-photo-scan`, `frida-estimates`, `search-index`, `product-translations`, `api-alerts` …) havde `lastStartedAt` i produktion. Kun Python-agenterne kørte. Derfor blev fx Änglamark-letmælken aldrig repareret.
+- Rettet: flyttet til `src/instrumentation.ts`; vagt-test `src/lib/instrumentation-location.test.mjs`. Første kørsel: 48-timers-eskaleringen mailer kun sager i vinduet 48–72 t (ellers 53 mails om gamle ventende varer).
+- Også rettet fra et direkte push på master: manglende `}` i `prisma/schema.prisma` (buildet fejlede), genveje for `/admin/guides` og `/admin/warning-emails`, sidetræet og lint i advarselsmail-siden.
+
 ## 2026-10-16: Lokal genlæsning af gemte billeder
 
 - Nye varer uden navn eller med 0 kcal rettes nu af serverens egen tekstlæsning af de gemte billeder — også mens OpenAI-kreditten er tom (fx Änglamark-letmælken). Ikke prøvet mod rigtig database herfra; afhænger af, at tesseract kan læse tabellen. Se DECISIONS 2026-10-16.

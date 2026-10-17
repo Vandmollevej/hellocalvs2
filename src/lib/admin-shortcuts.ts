@@ -26,6 +26,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
   "/admin/integrations": ["Alt+I"],
   "/admin/economy": ["Alt+Shift+E"],
   "/admin/api-usage": ["Alt+Shift+3"],
+  "/admin/warning-emails": ["Alt+Shift+5"],
   "/admin/hello-doc": ["Alt+H"],
   "/admin/log": ["Alt+L"],
 
@@ -58,6 +59,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
 
   // Flows
   "/admin/flows": ["Alt+Shift+W"],
+  "/admin/guides": ["Alt+Shift+4"],
   "/admin/guide-builder": ["Alt+Shift+G"],
 
   // Design og opbygning

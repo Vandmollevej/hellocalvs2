@@ -332,6 +332,8 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 
 ## Proces
 
+- `instrumentation.ts` hører til i `src/` (appen bruger `src/app`); i roden ignorerer Next instrumentation, og de planlagte job starter aldrig (fundet 2026-10-17, vagt i `src/lib/instrumentation-location.test.mjs`).
+
 - **Udrulning: kun den nyeste (user rule 2026-10-15)**: deploy-jobbet i `.github/workflows/build.yml` har `concurrency: production-deploy` og trinnet "Skip stale release". Fjern dem aldrig; en ældre commit må aldrig udrulles oven på en nyere. Se DEPLOYMENT.md.
 
 - Spørgsmål til brugeren stilles ALTID i spørgsmålsboksen (AskUserQuestion),

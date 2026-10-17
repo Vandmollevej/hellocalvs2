@@ -21,7 +21,7 @@ export default async function AdminWarningEmailsPage() {
       </p>
       <form action={setWarningEmails} className="flex items-center gap-3">
         <label className="hf-type-body flex items-center gap-2 text-hf-black">
-          <input type="checkbox" name="enabled" defaultChecked={me?.adminWarningEmails ?? true} />
+          <input type="checkbox" className="hf-native-choice" name="enabled" defaultChecked={me?.adminWarningEmails ?? true} />
           Send mig advarselsmails
         </label>
         <button type="submit" className="hf-btn hf-btn-primary">Gem</button>

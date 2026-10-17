@@ -8,7 +8,7 @@ import { isEditableKey } from "@/lib/api-keys/catalog";
 // rettet nøgle virker med det samme uden genstart. Slettes rækken, gælder
 // værdien fra .env.production igen.
 //
-// Tilstanden ligger på globalThis, fordi instrumentation.ts og route-
+// Tilstanden ligger på globalThis, fordi src/instrumentation.ts og route-
 // handlerne bundtes hver for sig og ellers ville have hver deres kopi.
 
 type SecretState = {
@@ -61,7 +61,7 @@ function applyOverride(key: string, value: string, updatedAt: Date) {
   s.unreadable.delete(key);
 }
 
-// Kaldes ved opstart (instrumentation.ts) og igen af admin-siden, hvis
+// Kaldes ved opstart (src/instrumentation.ts) og igen af admin-siden, hvis
 // opstarten ikke nåede databasen.
 export async function loadStoredSecrets() {
   const s = state();

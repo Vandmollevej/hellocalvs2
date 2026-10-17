@@ -5707,6 +5707,8 @@ model ApiAlertSettings {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@map("api_alert_settings")
+}
+
 // Hvornår hver admin-advarsel sidst blev mailet (src/lib/admin-warnings.ts),
 // så samme advarsel kun sendes igen efter 24 timer.
 model AdminWarningMail {
