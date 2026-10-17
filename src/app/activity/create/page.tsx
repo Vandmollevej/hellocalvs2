@@ -12,6 +12,13 @@ import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { clockToMinutes, durationMinutes, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
+import {
+  TrainingCategoryRows,
+  TrainingExerciseCard,
+  TrainingExerciseSheet,
+  newTrainingEntry,
+} from "@/components/activity/TrainingSession";
+import { TRAINING_SPORT, type TrainingCategory, type TrainingEntry } from "@/lib/training-exercises";
 
 // Tilføj aktivitet (tilføj-menuen og kalenderens "Tilføj"). date/time fra
 // kalenderen forudfylder starttidspunktet.
@@ -39,6 +46,26 @@ function ActivityCreateContent() {
   const [estimate, setEstimate] = useState<ActivityEstimate | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Træningspas: valgt kategori, øvelser med sæt og den åbne øvelses-popup.
+  const [trainingCategory, setTrainingCategory] = useState<TrainingCategory | null>(null);
+  const [entries, setEntries] = useState<TrainingEntry[]>([]);
+  const [sheetCategory, setSheetCategory] = useState<TrainingCategory | null>(null);
+
+  function addExercise(category: TrainingCategory, key: string) {
+    if (!option || trainingCategory !== category) {
+      setOption({ key: TRAINING_SPORT[category], label: t(`activity.training.category.${category}`), custom: false, pending: false });
+      setTrainingCategory(category);
+      setEntries([newTrainingEntry(key, category)]);
+      return;
+    }
+    setEntries((current) => [...current, newTrainingEntry(key, category)]);
+  }
+
+  function changeActivity() {
+    setOption(null);
+    setTrainingCategory(null);
+    setEntries([]);
+  }
 
   // Anslåede kcal fra MET (docs/ACTIVITY-PAL.md F3): taletest + evt.
   // distance for gang/løb. Brugerens eget tal i kcal-feltet vinder.
@@ -108,6 +135,7 @@ function ActivityCreateContent() {
           durationMinutes: totalMinutes,
           caloriesBurned: ownKcal,
           intensity,
+          exercises: trainingCategory && entries.length > 0 ? entries : undefined,
           distanceKm: showsDistance && Number(distanceKm) > 0 ? Number(distanceKm) : null,
         }),
       });
@@ -125,12 +153,39 @@ function ActivityCreateContent() {
     <HfScreen title={t("activity.title")} icon={<IconActivity size={20} stroke={2} />}>
       <div className="hf-page">
         {!option ? (
-          <ActivityPicker onPick={setOption} />
+          <div className="flex flex-col gap-6">
+            <TrainingCategoryRows onPick={setSheetCategory} />
+            <section className="flex flex-col gap-2">
+              <h2 className="hf-type-section-title">{t("activity.training.allActivities")}</h2>
+              <ActivityPicker onPick={setOption} />
+            </section>
+          </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
+            <button type="button" className="hf-btn-text self-start text-hf-black" onClick={changeActivity}>
               {option.label} · {t("activity.change")}
             </button>
+            {trainingCategory && (
+              <section className="flex flex-col gap-6">
+                <h2 className="hf-type-section-title">{t("activity.training.exercises")}</h2>
+                {entries.map((entry, index) => (
+                  <TrainingExerciseCard
+                    key={`${entry.key}-${index}`}
+                    entry={entry}
+                    category={trainingCategory}
+                    onChange={(next) => setEntries((current) => current.map((item, i) => (i === index ? next : item)))}
+                    onRemove={() => setEntries((current) => current.filter((_, i) => i !== index))}
+                  />
+                ))}
+                <button
+                  type="button"
+                  className="hf-control hf-btn-secondary w-full px-4"
+                  onClick={() => setSheetCategory(trainingCategory)}
+                >
+                  {t("activity.training.addExercise")}
+                </button>
+              </section>
+            )}
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.startedAt")}</span>
               <input
@@ -250,6 +305,13 @@ function ActivityCreateContent() {
           </div>
         )}
       </div>
+      {sheetCategory && (
+        <TrainingExerciseSheet
+          category={sheetCategory}
+          onPick={(key) => addExercise(sheetCategory, key)}
+          onClose={() => setSheetCategory(null)}
+        />
+      )}
     </HfScreen>
   );
 }

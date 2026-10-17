@@ -2920,7 +2920,29 @@
     "kcal": "Forbrente kalorier",
     "save": "Lagre aktivitet",
     "invalid": "Oppgi varighet over 0 — og kalorier hvis de ikke kan anslås.",
-    "saveError": "Aktiviteten kunne ikke lagres."
+    "saveError": "Aktiviteten kunne ikke lagres.",
+    "training": {
+      "title": "Treningsøkt",
+      "allActivities": "Alle aktiviteter",
+      "category": {
+        "machines": "Styrketrening i maskiner",
+        "free_weights": "Frivekter",
+        "crossfit": "CrossFit"
+      },
+      "search": "Søk øvelse på dansk eller engelsk",
+      "noResults": "Ingen øvelser funnet",
+      "exercises": "Øvelser",
+      "set": "Sett {n}",
+      "reps": "repetisjoner",
+      "weight": "Vekt",
+      "bodyweight": "Kroppsvekt",
+      "addSet": "Legg til sett",
+      "addExercise": "Legg til øvelse",
+      "removeSet": "Fjern sett",
+      "removeExercise": "Fjern øvelse",
+      "fewerReps": "Færre repetisjoner",
+      "moreReps": "Flere repetisjoner"
+    }
   },
   "addButton": {
     "screenings": "Screeninger",

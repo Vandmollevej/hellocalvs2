@@ -2920,7 +2920,29 @@
     "kcal": "Forbrændte kalorier",
     "save": "Gem aktivitet",
     "invalid": "Angiv varighed over 0 — og kalorier, hvis de ikke kan anslås.",
-    "saveError": "Aktiviteten kunne ikke gemmes."
+    "saveError": "Aktiviteten kunne ikke gemmes.",
+    "training": {
+      "title": "Træningspas",
+      "allActivities": "Alle aktiviteter",
+      "category": {
+        "machines": "Styrketræning på maskiner",
+        "free_weights": "Løsvægte",
+        "crossfit": "CrossFit"
+      },
+      "search": "Søg øvelse på dansk eller engelsk",
+      "noResults": "Ingen øvelser fundet",
+      "exercises": "Øvelser",
+      "set": "Sæt {n}",
+      "reps": "gentagelser",
+      "weight": "Vægt",
+      "bodyweight": "Kropsvægt",
+      "addSet": "Tilføj sæt",
+      "addExercise": "Tilføj øvelse",
+      "removeSet": "Fjern sæt",
+      "removeExercise": "Fjern øvelse",
+      "fewerReps": "Færre gentagelser",
+      "moreReps": "Flere gentagelser"
+    }
   },
   "addButton": {
     "screenings": "Screeninger",

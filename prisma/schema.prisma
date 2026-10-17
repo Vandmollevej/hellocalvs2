@@ -1040,6 +1040,9 @@ model Activity {
   distanceKm      Float?
   perceivedEffort TrainingIntensity?
   energySource    ActivityEnergySource @default(USER)
+  // 2026-10-17 Træningspas: [{ key, sets: [{ weightKg, reps }] }], key fra
+  // src/lib/training-exercises.ts. Kun manuelle aktiviteter.
+  exercises       Json?
   createdAt       DateTime       @default(now())
 
   @@map("activities")

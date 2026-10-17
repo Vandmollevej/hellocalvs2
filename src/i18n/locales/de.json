@@ -2920,7 +2920,29 @@
     "kcal": "Verbrannte Kalorien",
     "save": "Aktivität speichern",
     "invalid": "Gib eine Dauer über 0 an — und Kalorien, falls sie nicht geschätzt werden können.",
-    "saveError": "Die Aktivität konnte nicht gespeichert werden."
+    "saveError": "Die Aktivität konnte nicht gespeichert werden.",
+    "training": {
+      "title": "Trainingseinheit",
+      "allActivities": "Alle Aktivitäten",
+      "category": {
+        "machines": "Krafttraining an Geräten",
+        "free_weights": "Freie Gewichte",
+        "crossfit": "CrossFit"
+      },
+      "search": "Übung auf Dänisch oder Englisch suchen",
+      "noResults": "Keine Übungen gefunden",
+      "exercises": "Übungen",
+      "set": "Satz {n}",
+      "reps": "Wdh.",
+      "weight": "Gewicht",
+      "bodyweight": "Körpergewicht",
+      "addSet": "Satz hinzufügen",
+      "addExercise": "Übung hinzufügen",
+      "removeSet": "Satz entfernen",
+      "removeExercise": "Übung entfernen",
+      "fewerReps": "Weniger Wiederholungen",
+      "moreReps": "Mehr Wiederholungen"
+    }
   },
   "addButton": {
     "screenings": "Screenings",

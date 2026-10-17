@@ -1,3 +1,7 @@
+## 2026-10-17: Træningspas på Tilføj aktivitet
+
+Ny sektion "Træningspas" øverst på Tilføj aktivitet (web + native) med Styrketræning på maskiner, Løsvægte og CrossFit. Hver åbner et bundark med øvelserne (110 i alt, billede + navn) og søgefelt, der finder på både dansk og engelsk. Valgte øvelser vises med billedet som på en produktside og én bar pr. sæt: gentagelser på plus/minus, vægt på slider, "Tilføj sæt" nedenunder. Gemmes på aktiviteten (`activities.exercises`, migration `20261018000000_activity_exercises`); kcal regnes som før. Billederne er fra Free Exercise DB (public domain) i `public/training/`. Prøvet i browser (mobilbredde) uden database; native ikke kompileret lokalt. Øvelserne vises endnu ikke igen i kalenderen.
+
 ## 2026-10-17: Slet på Madvarer → Mest brugte
 
 Swipe til venstre på "Mest brugte" giver nu både Fejl og Slet (web + native). Slet fjerner favoritten og skjuler varen (`most_used_hides`, migration 20261017235000), indtil den registreres igen. Søgeresultater har kun Fejl. Native er ikke kompileret i cloud-sessionen; CI tjekker.

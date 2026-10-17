@@ -2920,7 +2920,29 @@
     "kcal": "Verbrande calorieën",
     "save": "Activiteit opslaan",
     "invalid": "Geef een duur boven 0 op — en calorieën, als ze niet kunnen worden geschat.",
-    "saveError": "De activiteit kon niet worden opgeslagen."
+    "saveError": "De activiteit kon niet worden opgeslagen.",
+    "training": {
+      "title": "Training",
+      "allActivities": "Alle activiteiten",
+      "category": {
+        "machines": "Krachttraining op machines",
+        "free_weights": "Vrije gewichten",
+        "crossfit": "CrossFit"
+      },
+      "search": "Zoek oefening in het Deens of Engels",
+      "noResults": "Geen oefeningen gevonden",
+      "exercises": "Oefeningen",
+      "set": "Set {n}",
+      "reps": "herh.",
+      "weight": "Gewicht",
+      "bodyweight": "Lichaamsgewicht",
+      "addSet": "Set toevoegen",
+      "addExercise": "Oefening toevoegen",
+      "removeSet": "Set verwijderen",
+      "removeExercise": "Oefening verwijderen",
+      "fewerReps": "Minder herhalingen",
+      "moreReps": "Meer herhalingen"
+    }
   },
   "addButton": {
     "screenings": "Screenings",
