@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { JobDefinition } from "@/lib/jobs/registry";
 import { describeNextRun } from "@/lib/jobs/schedule";
 import { formatDateTime, formatDuration, useJobControl, type JobState } from "@/components/admin/useJobControl";
@@ -60,7 +61,9 @@ export function RobotRow({
         </p>
         <JobScheduleEditor control={control} />
       </td>
-      <td className="hf-type-small py-3 pr-4 text-text-muted">
+      <td className="hf-type-small h-px py-3 pr-4 text-text-muted">
+        <div className="flex h-full flex-col justify-between gap-2">
+        <div>
         <p>{formatDateTime(state.lastRunAt)}</p>
         {state.lastStatus && (
           <p>
@@ -73,6 +76,11 @@ export function RobotRow({
         {state.lastMessage && state.lastMessage !== "OK" && (
           <p className="max-w-xs break-words text-text-secondary">{state.lastMessage}</p>
         )}
+        </div>
+        <Link href="/admin/log?tab=cron" className="hf-type-small text-hf-green-dark underline">
+          Se log
+        </Link>
+        </div>
       </td>
       <td className="hf-type-small py-3 pr-4 text-text-muted">
         {night ? (

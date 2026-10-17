@@ -29,6 +29,7 @@ i app-processen).
 import datetime
 import logging
 import time
+import uuid
 from zoneinfo import ZoneInfo
 
 import psycopg2
@@ -148,6 +149,19 @@ def _finish(conn, key, started_at, status, message, item_count, duration_ms):
                 WHERE key = %s""",
             (status, message, duration_ms, key),
         )
+        # Kørselstid i admin → Log → Cron (kun rigtige kørsler: >= 1 s eller fejl,
+        # så "Løbende" job der ikke havde noget at lave ikke fylder loggen).
+        if status != "OK" or (duration_ms or 0) >= 1000:
+            try:
+                cur.execute(
+                    f"""INSERT INTO debug_logs (id, "createdAt", category, event, level, "durationMs", message)
+                        SELECT %s, {UTC_NOW}, 'cron', %s, %s, %s, %s
+                        WHERE COALESCE((SELECT enabled FROM debug_log_settings WHERE id = 'default'), true)""",
+                    (uuid.uuid4().hex, key[:64], "info" if status == "OK" else "error", duration_ms, (message or "OK")[:500]),
+                )
+            except Exception:  # noqa: BLE001 - logging must never break a job
+                conn.rollback()
+                log.exception("could not write run log for %s", key)
     conn.commit()
     # Historikken må aldrig vælte selve jobbet (fx før migrationen er kørt).
     try:
