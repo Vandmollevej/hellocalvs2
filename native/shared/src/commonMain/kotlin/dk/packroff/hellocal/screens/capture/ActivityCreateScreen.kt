@@ -373,7 +373,10 @@ fun ActivityCreateScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
+    HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection),
+        // Gem står fast over bundcirklen (HcScreen bottom), aldrig nederst i indholdet.
+        bottom = if (option == null) null else ({ HcButton(t.t("activity.save"), onClick = ::save, enabled = !saving) }),
+    ) {
         if (current == null) {
             ActivityPicker(onPick = { option = it })
         } else {
@@ -471,7 +474,6 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     FieldSlider(if (kcal.isNotEmpty()) kcal else if (estKcal > 0) estKcal.toString() else "", 0.0, 3000.0, { kcal = it }, step = 10.0)
                 }
                 HcError(error)
-                HcButton(t.t("activity.save"), onClick = ::save, enabled = !saving)
             }
         }
     }

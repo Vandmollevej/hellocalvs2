@@ -47,6 +47,7 @@ import dk.packroff.hellocal.ui.FoodSwipeableRow
 import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcLink
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -177,7 +178,7 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             HcSectionTitle(t.t("dailyList.heading"), Modifier.padding(horizontal = 16.dp))
-            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 36.dp)) {
+            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = LocalBottomArcInset.current + 16.dp)) {
                 val shape = RoundedCornerShape(HcDimens.RadiusCard)
                 Column(Modifier.fillMaxWidth().let { if (entries.isNotEmpty()) it.clip(shape).background(HcColors.Tan) else it }) {
                     entries.forEachIndexed { i, entry ->

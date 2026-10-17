@@ -2360,7 +2360,7 @@ function DayDetails({
         </div>
       )}
       <div
-        className="flex-1 overflow-y-auto p-4 touch-pan-y"
+        className="hf-screen-scroll--arc flex-1 overflow-y-auto p-4 touch-pan-y"
         onPointerDown={(event) => {
           pointerStart.current = event.clientX;
         }}
@@ -2990,7 +2990,7 @@ function HourEntriesOverlay({
           })}
         </h2>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="hf-screen-scroll--arc flex-1 overflow-y-auto p-4">
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
