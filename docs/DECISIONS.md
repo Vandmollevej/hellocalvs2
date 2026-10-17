@@ -5835,3 +5835,8 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - Admin → Billedbehandling → Billedforslag: Afvis på ét forslag sender originalfotoet (ImageCutoutJob.sourceUrl) til OpenAI images/edits (model OPENAI_IMAGE_EDIT_MODEL, standard gpt-image-1) med en prompt, der forbyder at opfinde, tegne om eller ændre noget. Resultatet gemmes som cutouts/openai-*.png og står som nyt forslag. Kun ét forsøg pr. vare: er forslaget allerede fra OpenAI, eller fejler kaldet, afvises det som før (Find nyt billede). Gruppe-afvisning kalder ikke OpenAI. Koden: src/lib/openai-cutout.ts + reject-ruten (retryOpenAi). Prisen tælles i OpenAI's omkostnings-API (admin → API-forbrug).
 - Værktøjsknapper under forslaget: "For lyst" (lysstyrke -12 %), "For mørkt" (+14 %) og "Kant ind (1 px)" (æder alfakanten én pixel, fjerner hvide rester). Rute: /api/admin/products/[id]/image/adjust (sharp); gemmer cutouts/adj-*.png som nyt forslag, originalen røres ikke. Kan gentages.
+## 2026-10-17 - "Har du fundet en fejl?" fra en registrering: kamera direkte under punkterne
+
+- Under Produktbillede, EAN og Energi står altid en knap: "Tag nyt produktbillede", "Scan stregkoden" og "Tag billede af energiindholdet". Knappen vælger punktet og vedhæfter fotoet; et punkt med kun foto kan sendes.
+- EAN: på web tages et foto, som ZXing læser; koden skrives i feltet ("Rigtig EAN: …"). I appen bruges den levende scanner. Kan koden ikke læses, skriver brugeren den selv.
+- Rapporten sendes nu som sektioner + sectionPhotos (som /profile/report-bug): Produktbillede → IMAGE, Navn/Mærke → TITLE, EAN → OTHER, Energi/Makro → ENERGY, Indhold → INGREDIENTS. Kode: src/lib/registration-report-points.ts (buildReportSections).

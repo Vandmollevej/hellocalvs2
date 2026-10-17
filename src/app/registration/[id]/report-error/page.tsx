@@ -2,15 +2,18 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { IconBarcode, IconCamera } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
-  buildReportDescription,
+  buildReportSections,
   reportPointsFor,
+  type ReportCapture,
   type ReportPoint,
   type ReportPointKey,
 } from "@/lib/registration-report-points";
 import { imageThumb } from "@/lib/image-thumb";
+import { fileToDownscaledDataUrl } from "@/lib/image-downscale";
 
 type Registration = { id: string; productId: string | null; titleSnapshot: string };
 
@@ -27,6 +30,10 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
   const [points, setPoints] = useState<ReportPoint[] | null | undefined>(undefined);
   const [productId, setProductId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Partial<Record<ReportPointKey, string>>>({});
+  // Photo taken with the point's own camera button (user rule 2026-10-17).
+  const [photos, setPhotos] = useState<Partial<Record<ReportPointKey, string>>>({});
+  const [capturing, setCapturing] = useState<ReportPointKey | null>(null);
+  const [captureError, setCaptureError] = useState<Partial<Record<ReportPointKey, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<"sent" | "pending" | null>(null);
@@ -62,10 +69,53 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
       else next[key] = "";
       return next;
     });
+    setPhotos((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }
+
+  // The camera button selects the point and attaches the photo; for EAN the
+  // barcode is read from the photo and written into the note.
+  async function handleCapture(point: ReportPoint, files: FileList | null) {
+    const file = files?.[0];
+    if (!file) return;
+    const key = point.key;
+    setCapturing(key);
+    setCaptureError((prev) => ({ ...prev, [key]: undefined }));
+    try {
+      const dataUrl = await fileToDownscaledDataUrl(file);
+      let note: string | null = null;
+      if (point.capture === "barcode") {
+        try {
+          const { BrowserMultiFormatReader } = await import("@zxing/browser");
+          const code = (await new BrowserMultiFormatReader().decodeFromImageUrl(dataUrl)).getText();
+          note = t("registrationReportError.barcodeRead", { code });
+        } catch {
+          setCaptureError((prev) => ({ ...prev, [key]: t("registrationReportError.barcodeUnreadable") }));
+        }
+      }
+      setPhotos((prev) => ({ ...prev, [key]: dataUrl }));
+      setNotes((prev) => ({ ...prev, [key]: note && !prev[key]?.trim() ? note : (prev[key] ?? "") }));
+    } catch {
+      setCaptureError((prev) => ({ ...prev, [key]: t("registrationReportError.photoFailed") }));
+    } finally {
+      setCapturing(null);
+    }
+  }
+
+  function removePhoto(key: ReportPointKey) {
+    setPhotos((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
   }
 
   const selected = (points ?? []).filter((p) => p.key in notes);
-  const canSubmit = selected.length > 0 && selected.every((p) => (notes[p.key] ?? "").trim().length > 0);
+  const canSubmit =
+    selected.length > 0 && selected.every((p) => (notes[p.key] ?? "").trim().length > 0 || Boolean(photos[p.key]));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,7 +128,9 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productId,
-          description: buildReportDescription(selected.map((p) => ({ label: t(p.labelKey), note: notes[p.key] ?? "" }))),
+          ...buildReportSections(
+            selected.map((p) => ({ key: p.key, label: t(p.labelKey), note: notes[p.key] ?? "", photo: photos[p.key] }))
+          ),
           categories: [...new Set(selected.flatMap((p) => (p.category ? [p.category] : [])))],
         }),
       });
@@ -172,9 +224,29 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
                         !
                       </button>
                     </div>
+                    {point.capture && (
+                      <CaptureButton
+                        capture={point.capture}
+                        busy={capturing === point.key}
+                        hasPhoto={Boolean(photos[point.key])}
+                        onFiles={(files) => void handleCapture(point, files)}
+                      />
+                    )}
+                    {photos[point.key] && (
+                      <div className="mt-2 flex items-center gap-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={photos[point.key]} alt="" className="h-16 w-16 object-cover rounded-card" />
+                        <button type="button" onClick={() => removePhoto(point.key)} className="hf-btn-text">
+                          {t("registrationReportError.removePhoto")}
+                        </button>
+                      </div>
+                    )}
+                    {captureError[point.key] && (
+                      <p className="hf-type-caption text-hf-red-dark mt-1">{captureError[point.key]}</p>
+                    )}
                     {isSelected && (
                       <textarea
-                        autoFocus
+                        autoFocus={!photos[point.key]}
                         rows={2}
                         value={notes[point.key] ?? ""}
                         onChange={(e) => setNotes((prev) => ({ ...prev, [point.key]: e.target.value }))}
@@ -191,5 +263,48 @@ export default function RegistrationReportErrorPage({ params }: { params: Promis
         )}
       </div>
     </HfScreen>
+  );
+}
+
+const CAPTURE_LABEL: Record<ReportCapture, string> = {
+  photo: "registrationReportError.capturePhoto",
+  barcode: "registrationReportError.captureBarcode",
+  nutrition: "registrationReportError.captureNutrition",
+};
+
+// Direct camera button under Produktbillede, EAN and Energi.
+function CaptureButton({
+  capture,
+  busy,
+  hasPhoto,
+  onFiles,
+}: {
+  capture: ReportCapture;
+  busy: boolean;
+  hasPhoto: boolean;
+  onFiles: (files: FileList | null) => void;
+}) {
+  const { t } = useTranslation();
+  const Icon = capture === "barcode" ? IconBarcode : IconCamera;
+  return (
+    <label className="hf-control hf-btn-secondary mt-2 flex w-full cursor-pointer items-center justify-center gap-2">
+      <Icon size={20} stroke={1.75} />
+      {busy
+        ? t("registrationReportError.reading")
+        : hasPhoto
+          ? t("registrationReportError.retake")
+          : t(CAPTURE_LABEL[capture])}
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        hidden
+        disabled={busy}
+        onChange={(event) => {
+          onFiles(event.target.files);
+          event.target.value = "";
+        }}
+      />
+    </label>
   );
 }

@@ -956,19 +956,25 @@ fun selectRawContextImageUrl(defaultUrl: String?, images: List<TaggedImage>): St
 // ---------------------------------------------------------------------------
 // src/lib/registration-report-points.ts
 
-data class ReportPoint(val key: String, val labelKey: String, val value: String, val imageUrl: String? = null, val category: String? = null)
+// capture: "photo" | "barcode" | "nutrition" — direct camera button under the point (user rule 2026-10-17).
+data class ReportPoint(val key: String, val labelKey: String, val value: String, val imageUrl: String? = null, val category: String? = null, val capture: String? = null)
+
+private val REPORT_POINT_SECTION = mapOf(
+    "image" to "IMAGE", "name" to "TITLE", "brand" to "TITLE", "ean" to "OTHER",
+    "energy" to "ENERGY", "macros" to "ENERGY", "ingredients" to "INGREDIENTS",
+)
 
 fun reportPointsFor(product: ProductDto): List<ReportPoint> {
     fun r(n: Double?) = if (n == null) "–" else jsNumberText(round1(n))
     val points = mutableListOf(
-        ReportPoint("image", "registrationReportError.point.image", "", product.imageUrl, "PRODUCT_IMAGE"),
+        ReportPoint("image", "registrationReportError.point.image", "", product.imageUrl, "PRODUCT_IMAGE", capture = "photo"),
         ReportPoint("name", "registrationReportError.point.name", product.name),
         ReportPoint("brand", "registrationReportError.point.brand", product.brand?.name ?: ""),
     )
     if (product.barcodes.isNotEmpty()) {
-        points += ReportPoint("ean", "registrationReportError.point.ean", product.barcodes.joinToString(", ") { it.code }, category = "EAN")
+        points += ReportPoint("ean", "registrationReportError.point.ean", product.barcodes.joinToString(", ") { it.code }, category = "EAN", capture = "barcode")
     }
-    points += ReportPoint("energy", "registrationReportError.point.energy", "${jsRound(product.kcalPer100g)} kcal / 100 g", category = "ENERGY")
+    points += ReportPoint("energy", "registrationReportError.point.energy", "${jsRound(product.kcalPer100g)} kcal / 100 g", category = "ENERGY", capture = "nutrition")
     points += ReportPoint(
         "macros", "registrationReportError.point.macros",
         "P ${r(product.proteinPer100g)} g · K ${r(product.carbsPer100g)} g · F ${r(product.fatPer100g)} g", category = "ENERGY",
@@ -977,7 +983,20 @@ fun reportPointsFor(product: ProductDto): List<ReportPoint> {
     return points
 }
 
-fun buildReportDescription(items: List<Pair<String, String>>): String = items.joinToString("\n") { "${it.first}: ${it.second.trim()}" }
+data class ReportEntry(val key: String, val label: String, val note: String, val photo: String? = null)
+
+/** Sections and photos for POST /api/bug-reports (web: buildReportSections). */
+fun buildReportSections(entries: List<ReportEntry>): Pair<Map<String, String>, Map<String, String>> {
+    val sections = linkedMapOf<String, String>()
+    val photos = linkedMapOf<String, String>()
+    entries.forEach { entry ->
+        val section = REPORT_POINT_SECTION[entry.key] ?: "OTHER"
+        val note = entry.note.trim()
+        if (note.isNotEmpty()) sections[section] = listOfNotNull(sections[section], "${entry.label}: $note").joinToString("\n")
+        entry.photo?.let { photos[section] = it }
+    }
+    return sections to photos
+}
 
 // ---------------------------------------------------------------------------
 // src/lib/food-latin.ts — non-Danish ingredient words linked to "Mad på latin".
