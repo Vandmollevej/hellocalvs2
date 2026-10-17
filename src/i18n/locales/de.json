@@ -2922,7 +2922,22 @@
     "kcal": "Verbrannte Kalorien",
     "save": "Aktivität speichern",
     "invalid": "Gib eine Dauer über 0 an — und Kalorien, falls sie nicht geschätzt werden können.",
-    "saveError": "Die Aktivität konnte nicht gespeichert werden."
+    "saveError": "Die Aktivität konnte nicht gespeichert werden.",
+    "session": {
+      "create": "Trainingseinheit erstellen",
+      "title": "Trainingseinheit",
+      "empty": "Tippe auf ⊕ neben einer Aktivität, um sie zur Trainingseinheit hinzuzufügen.",
+      "addTitle": "Übungen hinzufügen",
+      "add": "{name} zur Trainingseinheit hinzufügen",
+      "remove": "{name} entfernen",
+      "cancel": "Trainingseinheit abbrechen",
+      "save": "Trainingseinheit speichern",
+      "total": "Insgesamt {minutes} Min.",
+      "totalKcal": "Insgesamt {minutes} Min. · ca. {kcal} kcal",
+      "startTime": "Uhrzeit",
+      "invalid": "Füge mindestens eine Übung hinzu.",
+      "saveError": "Die Trainingseinheit konnte nicht gespeichert werden. Hast du dein Gewicht im Profil angegeben?"
+    }
   },
   "addButton": {
     "screenings": "Screenings",

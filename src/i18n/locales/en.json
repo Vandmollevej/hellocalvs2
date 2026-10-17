@@ -2922,7 +2922,22 @@
     "kcal": "Calories burned",
     "save": "Save activity",
     "invalid": "Enter a duration above 0 — and calories if they can't be estimated.",
-    "saveError": "The activity could not be saved."
+    "saveError": "The activity could not be saved.",
+    "session": {
+      "create": "Create workout",
+      "title": "Workout",
+      "empty": "Tap ⊕ next to an activity to add it to the workout.",
+      "addTitle": "Add exercises",
+      "add": "Add {name} to the workout",
+      "remove": "Remove {name}",
+      "cancel": "Cancel workout",
+      "save": "Save workout",
+      "total": "Total {minutes} min",
+      "totalKcal": "Total {minutes} min · approx. {kcal} kcal",
+      "startTime": "Time",
+      "invalid": "Add at least one exercise.",
+      "saveError": "Could not save the workout. Have you entered your weight in your profile?"
+    }
   },
   "addButton": {
     "screenings": "Screenings",

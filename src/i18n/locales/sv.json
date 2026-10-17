@@ -2922,7 +2922,22 @@
     "kcal": "Förbrända kalorier",
     "save": "Spara aktivitet",
     "invalid": "Ange en varaktighet över 0 — och kalorier, om de inte kan uppskattas.",
-    "saveError": "Aktiviteten kunde inte sparas."
+    "saveError": "Aktiviteten kunde inte sparas.",
+    "session": {
+      "create": "Skapa träningspass",
+      "title": "Träningspass",
+      "empty": "Tryck på ⊕ bredvid en aktivitet för att lägga den i träningspasset.",
+      "addTitle": "Lägg till övningar",
+      "add": "Lägg till {name} i träningspasset",
+      "remove": "Ta bort {name}",
+      "cancel": "Avbryt träningspass",
+      "save": "Spara träningspass",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca {kcal} kcal",
+      "startTime": "Klockslag",
+      "invalid": "Lägg till minst en övning.",
+      "saveError": "Kunde inte spara träningspasset. Har du angett din vikt i profilen?"
+    }
   },
   "addButton": {
     "screenings": "Screeningar",

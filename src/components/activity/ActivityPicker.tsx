@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconCirclePlus, IconPlus, IconSearch } from "@tabler/icons-react";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
 import { getSportMeta } from "@/lib/sport-icons";
@@ -10,7 +10,17 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Søgefelt blandt aktiviteter + "Tilføj … som aktivitet" (docs/DECISIONS.md
 // 2026-09-29). Bruges af /activity/create og pulsudsvings-spørgsmålet.
-export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOption) => void; busy?: boolean }) {
+// onAdd = et træningspas er i gang: hver række får et ⊕ yderst til højre, og
+// et tryk lægger aktiviteten i passet i stedet for at åbne den alene.
+export function ActivityPicker({
+  onPick,
+  onAdd,
+  busy,
+}: {
+  onPick: (option: ActivityOption) => void;
+  onAdd?: (option: ActivityOption) => void;
+  busy?: boolean;
+}) {
   const { t } = useTranslation();
   const [options, setOptions] = useState<ActivityOption[]>([]);
   const [query, setQuery] = useState("");
@@ -46,7 +56,7 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
       });
       if (!res.ok) return;
       const { option } = (await res.json()) as { option: ActivityOption };
-      onPick(option);
+      (onAdd ?? onPick)(option);
     } finally {
       setAdding(false);
     }
@@ -79,6 +89,7 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
     onClick: () => void;
     favorite?: boolean;
     onToggleFavorite?: () => void;
+    onAdd?: () => void;
   };
   const toRow = (option: ActivityOption): Row => {
     const Icon = getSportMeta(option.key).icon;
@@ -86,9 +97,10 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
       key: option.key,
       icon: <Icon size={20} />,
       label: option.pending ? `${option.label} (${t("activity.pending")})` : option.label,
-      onClick: () => onPick(option),
+      onClick: () => (onAdd ?? onPick)(option),
       favorite: option.favorite === true,
       onToggleFavorite: () => void toggleFavorite(option),
+      onAdd: onAdd ? () => onAdd(option) : undefined,
     };
   };
   const addRow: Row[] =
@@ -113,14 +125,26 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
             divider={index < rows.length - 1}
             trailing={
               row.onToggleFavorite ? (
-                <button
-                  type="button"
-                  onClick={row.onToggleFavorite}
-                  aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
-                  className="flex h-12 items-center pl-1 pr-4 text-hf-green"
-                >
-                  {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={row.onToggleFavorite}
+                    aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
+                    className={`flex h-12 items-center pl-1 text-hf-green ${row.onAdd ? "pr-2" : "pr-4"}`}
+                  >
+                    {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
+                  </button>
+                  {row.onAdd && (
+                    <button
+                      type="button"
+                      onClick={busy || adding ? undefined : row.onAdd}
+                      aria-label={t("activity.session.add", { name: row.label })}
+                      className="flex h-12 items-center pl-1 pr-4 text-hf-green"
+                    >
+                      <IconCirclePlus size={24} />
+                    </button>
+                  )}
+                </>
               ) : undefined
             }
           />

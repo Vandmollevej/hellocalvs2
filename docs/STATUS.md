@@ -1,3 +1,9 @@
+## 2026-10-17: Træningspas under Tilføj → Aktivitet
+
+- Øverst på aktivitetsvælgeren: "Opret træningspas". Mens et pas er i gang, har hver aktivitetsrække et ⊕ yderst til højre, der lægger aktiviteten i passet (15 min som start, ±5 min pr. øvelse, kan fjernes). Fælles starttidspunkt og taletest; samlet tid og anslået kcal vises.
+- Gem ligger nu fast nederst over bundmenuen (også for en enkelt aktivitet).
+- `POST /api/activities` med `{ session: { startedAt, intensity, items } }` gemmer øvelserne efter hinanden med fælles `sessionId` (migration `20261018000000_activity_session`, `src/lib/training-session.ts`). Web + native; native ikke kompileret lokalt.
+
 ## 2026-10-17: Flere træningsformer under Tilføj → Aktivitet
 
 - 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
