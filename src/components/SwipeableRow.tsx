@@ -13,7 +13,7 @@ export function SwipeableRow({
   onCopyToAccount,
   onReportError,
   onDelete,
-  surfaceClassName = "bg-hf-cream",
+  surfaceClassName = "bg-hf-tan px-4",
   children,
 }: {
   onFavorite?: () => void;
@@ -24,7 +24,8 @@ export function SwipeableRow({
   onCopyToAccount?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
-  // Baggrund på den forreste flade; skal matche listen rækken ligger i.
+  // Baggrund (+ gutter) på den forreste flade; skal matche listen rækken ligger i.
+  // Standard = den fælles kortliste (src/components/hf/ItemList.tsx).
   surfaceClassName?: string;
   children: React.ReactNode;
 }) {
@@ -36,22 +37,47 @@ export function SwipeableRow({
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
 
+  const startY = useRef(0);
   const startOffset = useRef(0);
   // Som på iPhone: én bevægelse åbner kun én side. Fra lukket låses siden af
   // første retning; en åben række kan kun lukkes, ikke trækkes over i modsat side.
   const side = useRef<"left" | "right" | null>(null);
+  // Først når fingeren tydeligt går vandret, er det et swipe; går den lodret,
+  // er det scroll, og rækken rører sig ikke (før blev den hængende halvt åben).
+  const axis = useRef<"x" | "y" | null>(null);
+  const moved = useRef(false);
+
+  function snap(x: number) {
+    if (leftActionsWidth > 0 && x > leftActionsWidth / 2) return leftActionsWidth;
+    if (x < -rightActionsWidth / 2) return -rightActionsWidth;
+    return 0;
+  }
 
   function handlePointerDown(e: React.PointerEvent) {
     startX.current = e.clientX;
+    startY.current = e.clientY;
     startOffset.current = dragX;
     side.current = dragX > 0 ? "left" : dragX < 0 ? "right" : null;
+    axis.current = null;
+    moved.current = false;
     dragging.current = true;
-    setIsDragging(true);
   }
 
   function handlePointerMove(e: React.PointerEvent) {
     if (!dragging.current || startX.current === null) return;
-    const next = startOffset.current + e.clientX - startX.current;
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - startY.current;
+    if (axis.current === null) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      axis.current = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      if (axis.current === "x") {
+        setIsDragging(true);
+        (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+      }
+    }
+    if (axis.current !== "x") return;
+    moved.current = true;
+    const next = startOffset.current + dx;
     if (side.current === null && next !== 0) side.current = next > 0 ? "left" : "right";
     const minimum = side.current === "right" ? -rightActionsWidth : 0;
     const maximum = side.current === "left" ? leftActionsWidth : 0;
@@ -63,18 +89,29 @@ export function SwipeableRow({
     setIsDragging(false);
     startX.current = null;
     side.current = null;
+    axis.current = null;
     // Snap to a fully open/closed position instead of a random in-between one.
-    setDragX((x) => {
-      if (leftActionsWidth > 0 && x > leftActionsWidth / 2) return leftActionsWidth;
-      if (x < -rightActionsWidth / 2) return -rightActionsWidth;
-      return 0;
-    });
+    setDragX(snap);
   }
 
+  // Browseren tog bevægelsen (scroll): luk pænt i stedet for at blive stående.
+  function handlePointerCancel() {
+    dragging.current = false;
+    setIsDragging(false);
+    startX.current = null;
+    side.current = null;
+    axis.current = null;
+    setDragX((x) => (moved.current ? snap(x) : startOffset.current));
+  }
+
+  // Handlingerne bag rækken vises kun, mens den er trukket til side, så intet
+  // farvet kan skinne igennem kanten på en lukket række.
+  const open = dragX !== 0 || isDragging;
+
   return (
-    <div className="relative overflow-hidden">
+    <div className={`relative overflow-hidden ${open ? "" : "[&>[data-swipe-action]]:invisible"}`}>
       {onFavorite && (
-        <div className={`absolute inset-y-0 left-0 flex w-20 items-center justify-center ${isFavorite ? "bg-hf-black" : "bg-hf-green"}`}>
+        <div data-swipe-action className={`absolute inset-y-0 left-0 flex w-20 items-center justify-center ${isFavorite ? "bg-hf-black" : "bg-hf-green"}`}>
           <button
             onClick={() => {
               onFavorite();
@@ -91,6 +128,7 @@ export function SwipeableRow({
       )}
       {onCopyToAccount && (
         <div
+          data-swipe-action
           className={`absolute inset-y-0 flex w-20 items-center justify-center bg-hf-watch ${onFavorite ? "left-20" : "left-0"}`}
         >
           <button
@@ -107,7 +145,7 @@ export function SwipeableRow({
         </div>
       )}
       {onReportError && (
-        <div className="absolute inset-y-0 right-20 flex w-20 items-center justify-center bg-hf-gray-dark">
+        <div data-swipe-action className="absolute inset-y-0 right-20 flex w-20 items-center justify-center bg-hf-gray-dark">
           <button
             onClick={() => {
               onReportError();
@@ -121,7 +159,7 @@ export function SwipeableRow({
           </button>
         </div>
       )}
-      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
+      <div data-swipe-action className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-red-dark">
         <button
           onClick={() => {
             onDelete();
@@ -138,8 +176,18 @@ export function SwipeableRow({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        // Et swipe må ikke samtidig åbne rækkens link.
+        onClickCapture={(e) => {
+          if (moved.current) {
+            e.preventDefault();
+            e.stopPropagation();
+            moved.current = false;
+          }
+        }}
         className={`relative transition-transform ${surfaceClassName}`}
         style={{
+          touchAction: "pan-y",
           transform: `translateX(${dragX}px)`,
           transitionDuration: isDragging ? "0ms" : "150ms",
         }}

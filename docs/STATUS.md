@@ -1,3 +1,8 @@
+## 2026-10-17: Ét fælles listekort med swipe (som "Dine indscanninger")
+
+- Nye fælles `ItemListCard`/`ItemListSection` (`src/components/hf/ItemList.tsx`; native `FoodListSection`/`FoodDayHeading`). Forsidens dagsliste, Dine indscanninger, Vand, Indtast og tale-forslagene på Madvarer bruger nu samme tan kort, `FoodRow` og datooverskrift. Vand kan swipes → Slet (med bekræftelse).
+- `SwipeableRow` blev hængende halvt åben efter lodret scroll (rød stribe i kanten): nu låses swipe først ved tydelig vandret bevægelse, scroll lukker rækken, og handlingerne bag er skjult, når rækken er lukket. Native `CaptureSwipeableRow` er nu bare `FoodSwipeableRow`. Web + native; ikke prøvet på telefon herfra.
+
 ## 2026-10-17: Delte retter: "Alle retter" med endeløs scroll
 
 - Trender og favoritter er valg under filtrenes Visning (til som standard), favoritter står på én linje, og under dem vises alle retter efter popularitet, tre rækker ad gangen med endeløs scroll. Web + native; ikke prøvet i browser eller kompileret native herfra (ingen lokal database, Android-plugin kan ikke hentes) — lint, typecheck, build og paritetsvagt er grønne.

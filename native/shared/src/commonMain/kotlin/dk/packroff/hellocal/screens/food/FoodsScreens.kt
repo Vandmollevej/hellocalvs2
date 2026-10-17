@@ -79,6 +79,7 @@ import dk.packroff.hellocal.screens.capture.persistVoiceItems
 import dk.packroff.hellocal.ui.CaptureDetailRow
 import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.FoodListSection
 import kotlin.math.roundToInt
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -430,8 +431,7 @@ fun FoodsScreen(args: RouteArgs) {
             val savedVoice = voiceItems.filter { it.saved }
             if (suggestedVoice.isNotEmpty()) {
                 Column {
-                    HcText(t.t("voice.suggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
-                    suggestedVoice.forEachIndexed { index, entry ->
+                    FoodListSection(t.t("voice.suggested")) { suggestedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
                             onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
@@ -440,8 +440,8 @@ fun FoodsScreen(args: RouteArgs) {
                             onAdd = { addVoiceItems(listOf(entry)) },
                             adding = adding,
                         )
-                        if (index < suggestedVoice.lastIndex) HcLine()
-                    }
+                        if (index < suggestedVoice.lastIndex) FoodDivider()
+                    } }
                     if (suggestedVoice.size > 1) {
                         HcButton(
                             if (adding) t.t("voice.adding") else t.t("voice.addShownItems"),
@@ -454,8 +454,7 @@ fun FoodsScreen(args: RouteArgs) {
             }
             if (savedVoice.isNotEmpty()) {
                 Column {
-                    HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
-                    savedVoice.forEachIndexed { index, entry ->
+                    FoodListSection(t.t("voice.added")) { savedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
                             onFavorite = entry.item.productId?.let { id -> { favoriteVoiceItem(id) } },
@@ -463,8 +462,8 @@ fun FoodsScreen(args: RouteArgs) {
                             onDelete = { deleteVoiceItem(entry) },
                             onOpen = { nav.push("/registration/${entry.id}") },
                         )
-                        if (index < savedVoice.lastIndex) HcLine()
-                    }
+                        if (index < savedVoice.lastIndex) FoodDivider()
+                    } }
                 }
             }
             if (!isSearching && ready && favorites.isNotEmpty()) {

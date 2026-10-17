@@ -38,7 +38,13 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureBrandCard
 import dk.packroff.hellocal.ui.CaptureCenteredError
 import dk.packroff.hellocal.ui.CaptureDates
-import dk.packroff.hellocal.ui.CaptureFoodRow
+import dk.packroff.hellocal.ui.CaptureSwipeableRow
+import dk.packroff.hellocal.ui.FoodDetailRow
+import dk.packroff.hellocal.ui.FoodDivider
+import dk.packroff.hellocal.ui.FoodEntryDetailsSheet
+import dk.packroff.hellocal.ui.FoodListSection
+import dk.packroff.hellocal.ui.FoodRow
+import dk.packroff.hellocal.screens.food.FoodTime
 import dk.packroff.hellocal.ui.CaptureFormCard
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcMaskIcon
@@ -91,6 +97,8 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
     var entries by remember { mutableStateOf<List<WaterEntry>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var reload by remember { mutableStateOf(0) }
+    // Swipe → Slet opens the same confirmation as the front page's daily list.
+    var confirmDelete by remember { mutableStateOf<WaterEntry?>(null) }
 
     LaunchedEffect(reload) {
         entries = try {
@@ -183,23 +191,28 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                     HcText(t.t("waterLog.noEntriesYet"), HcTypeRoles.Small, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
                 }
                 if (entries.isNotEmpty()) {
-                    Column {
+                    // The shared list card with date headings, like "Dine indscanninger".
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         groupWaterByDate(entries).forEach { group ->
-                            HcSectionTitle(group.label)
-                            group.entries.forEachIndexed { i, entry ->
-                                val local = CaptureDates.local(entry.loggedAt)
-                                CaptureFoodRow(
-                                    title = "${entry.amountMl} ml",
-                                    thumbnail = { WaterGlassIcon(22.dp) },
-                                    right = {
-                                        HcText(
-                                            "${t.t("common.clockPrefix")} ${local?.let { CaptureDates.time(it) } ?: ""}",
-                                            HcTypeRoles.Small,
-                                            color = HcColors.TextSecondary,
+                            FoodListSection(waterDayHeading(group.date, t)) {
+                                group.entries.forEachIndexed { i, entry ->
+                                    val local = CaptureDates.local(entry.loggedAt)
+                                    CaptureSwipeableRow(onDelete = { confirmDelete = entry }, surface = HcColors.Tan) {
+                                        FoodRow(
+                                            title = "${entry.amountMl} ml",
+                                            modifier = Modifier.padding(horizontal = 16.dp),
+                                            thumbnail = { WaterGlassIcon(22.dp) },
+                                            right = {
+                                                HcText(
+                                                    "${t.t("common.clockPrefix")} ${local?.let { CaptureDates.time(it) } ?: ""}",
+                                                    HcTypeRoles.Small,
+                                                    color = HcColors.TextSecondary,
+                                                )
+                                            },
                                         )
-                                    },
-                                )
-                                if (i < group.entries.lastIndex) HcLine()
+                                    }
+                                    if (i < group.entries.lastIndex) FoodDivider()
+                                }
                             }
                         }
                     }
@@ -207,9 +220,37 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             }
         }
     }
+
+    confirmDelete?.let { entry ->
+        val local = CaptureDates.local(entry.loggedAt)
+        FoodEntryDetailsSheet(
+            title = t.t("calendar.waterTitle"),
+            subtitle = "${t.t("common.clockPrefix")} ${local?.let { CaptureDates.time(it) } ?: ""}",
+            rows = listOf(FoodDetailRow(t.t("entrySheet.amount"), "${entry.amountMl} ml")),
+            deleteLabel = t.t("entrySheet.delete"),
+            cancelLabel = t.t("common.cancel"),
+            closeLabel = t.t("common.close"),
+            deleteWarning = t.t("entrySheet.deleteWarning"),
+            onDelete = {
+                entries = entries.filter { it.id != entry.id }
+                scope.launch {
+                    runCatching { Api.delete("/api/water-entries/${entry.id}") }
+                    reload++
+                }
+            },
+            onClose = { confirmDelete = null },
+        )
+    }
 }
 
-private class WaterGroup(val key: String, val label: String, val entries: MutableList<WaterEntry>)
+private fun waterDayHeading(date: kotlinx.datetime.LocalDate?, t: dk.packroff.hellocal.i18n.Translator): String = when (date) {
+    null -> ""
+    FoodTime.today() -> t.t("myScans.today")
+    FoodTime.yesterday() -> t.t("myScans.yesterday")
+    else -> FoodTime.longDate(date, t.locale, withYear = date.year != FoodTime.today().year)
+}
+
+private class WaterGroup(val key: String, val date: kotlinx.datetime.LocalDate?, val entries: MutableList<WaterEntry>)
 
 // Newest first; entries from the same calendar day share one date separator.
 private fun groupWaterByDate(entries: List<WaterEntry>): List<WaterGroup> {
@@ -220,7 +261,7 @@ private fun groupWaterByDate(entries: List<WaterEntry>): List<WaterGroup> {
         val key = date?.toString() ?: entry.loggedAt
         val last = groups.lastOrNull()
         if (last != null && last.key == key) last.entries += entry
-        else groups += WaterGroup(key, date?.let { CaptureDates.dayMonthShort(it) } ?: "", mutableListOf(entry))
+        else groups += WaterGroup(key, date, mutableListOf(entry))
     }
     return groups
 }

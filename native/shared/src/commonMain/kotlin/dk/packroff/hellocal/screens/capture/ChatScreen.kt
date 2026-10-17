@@ -37,6 +37,8 @@ import dk.packroff.hellocal.ui.CaptureDetailRow
 import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.FoodDivider
+import dk.packroff.hellocal.ui.FoodListSection
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
@@ -199,8 +201,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
 
                 if (suggested.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
-                        HcText(t.t("web.chatSuggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
-                        suggested.forEachIndexed { index, entry ->
+                        FoodListSection(t.t("web.chatSuggested")) { suggested.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
                                 onFavorite = null,
@@ -210,8 +211,8 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 adding = isAdding,
                                 addLabel = t.t("web.chatAdd"),
                             )
-                            if (index < suggested.lastIndex) HcLine()
-                        }
+                            if (index < suggested.lastIndex) FoodDivider()
+                        } }
                         if (suggested.size > 1) {
                             HcButton(
                                 if (isAdding) t.t("voice.adding") else t.t("web.chatAddAll"),
@@ -225,8 +226,7 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
 
                 if (saved.isNotEmpty()) {
                     Column(Modifier.padding(top = 16.dp)) {
-                        HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
-                        saved.forEachIndexed { index, entry ->
+                        FoodListSection(t.t("voice.added")) { saved.forEachIndexed { index, entry ->
                             VoiceItemRow(
                                 entry,
                                 onFavorite = null,
@@ -234,8 +234,8 @@ fun ChatScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                 onDelete = { deleteItem(entry) },
                                 onOpen = { nav.push("/registration/${entry.id}") },
                             )
-                            if (index < saved.lastIndex) HcLine()
-                        }
+                            if (index < saved.lastIndex) FoodDivider()
+                        } }
                     }
                 }
             }

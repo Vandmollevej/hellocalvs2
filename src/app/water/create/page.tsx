@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { FoodRow } from "@/components/FoodRow";
@@ -8,6 +8,11 @@ import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
+import { SwipeableRow } from "@/components/SwipeableRow";
+import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
+import { ItemListRow, ItemListSection } from "@/components/hf/ItemList";
+import { dayHeadingLabel, dayKey } from "@/lib/day-heading";
+import { intlLocale } from "@/i18n";
 
 type WaterEntry = {
   id: string;
@@ -39,36 +44,24 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatDateLabel(value: string) {
-  const date = new Date(value);
-  return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
-    ...(date.getFullYear() !== new Date().getFullYear() ? { year: "numeric" as const } : {}),
-  }).format(date);
-}
-
-function localDateKey(value: string) {
-  const date = new Date(value);
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-}
-
 // Newest first; entries from the same calendar day share one date separator.
 function groupByDate(entries: WaterEntry[]) {
   const sorted = [...entries].sort((a, b) => new Date(b.loggedAt).getTime() - new Date(a.loggedAt).getTime());
-  const groups: { key: string; label: string; entries: WaterEntry[] }[] = [];
+  const groups: { key: string; date: Date; entries: WaterEntry[] }[] = [];
   for (const entry of sorted) {
-    const key = localDateKey(entry.loggedAt);
+    const key = dayKey(new Date(entry.loggedAt));
     const last = groups[groups.length - 1];
     if (last && last.key === key) last.entries.push(entry);
-    else groups.push({ key, label: formatDateLabel(entry.loggedAt), entries: [entry] });
+    else groups.push({ key, date: new Date(entry.loggedAt), entries: [entry] });
   }
   return groups;
 }
 
 export default function WaterCreatePage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [amountMl, setAmountMl] = useState(250);
+  // Swipe → Slet åbner samme bekræftelse som forsidens dagsliste.
+  const [confirmDelete, setConfirmDelete] = useState<WaterEntry | null>(null);
   // Rå tekst mens mængdefeltet redigeres, så et tomt felt ikke tvinges til 0.
   const [amountDraft, setAmountDraft] = useState<string | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -92,6 +85,14 @@ export default function WaterCreatePage() {
   useEffect(() => {
     load();
   }, []);
+
+  async function deleteEntry(entry: WaterEntry) {
+    const previous = entries;
+    setEntries((current) => current.filter((candidate) => candidate.id !== entry.id));
+    const response = await fetch(`/api/water-entries/${entry.id}`, { method: "DELETE" }).catch(() => null);
+    if (!response?.ok) setEntries(previous);
+    else load();
+  }
 
   function pickContainer(key: string, ml: number) {
     setSelectedKey(key);
@@ -201,7 +202,7 @@ export default function WaterCreatePage() {
           </button>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("waterLog.recentTitle")}</p>
           )}
@@ -214,37 +215,44 @@ export default function WaterCreatePage() {
           {!loading && entries.length === 0 && (
             <p className="hf-type-caption text-center">{t("waterLog.noEntriesYet")}</p>
           )}
-          {entries.length > 0 && (
-            // Datogrupperne bruger den ene fælles overskrift med streger
-            // (.hf-type-section-title); den første har ingen luft over sig.
-            <div>
-              {groupByDate(entries).map((group) => (
-                <Fragment key={group.key}>
-                  <h2 className="hf-type-section-title">{group.label}</h2>
-                  <ul>
-                    {group.entries.map((entry, i) => (
-                      <li
-                        key={entry.id}
-                        className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
-                      >
-                        <FoodRow
-                          thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
-                          title={`${entry.amountMl} ml`}
-                          right={
-                            <span className="hf-type-caption">
-                              {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
-                            </span>
-                          }
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </Fragment>
-              ))}
-            </div>
-          )}
+          {entries.length > 0 &&
+            // Den fælles kortliste med datooverskrifter (som "Dine indscanninger").
+            groupByDate(entries).map((group) => (
+              <ItemListSection
+                key={group.key}
+                heading={dayHeadingLabel(group.date, intlLocale(locale), {
+                  today: t("myScans.today"),
+                  yesterday: t("myScans.yesterday"),
+                })}
+              >
+                {group.entries.map((entry) => (
+                  <ItemListRow key={entry.id} padded={false}>
+                    <SwipeableRow onDelete={() => setConfirmDelete(entry)}>
+                      <FoodRow
+                        thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
+                        title={`${entry.amountMl} ml`}
+                        right={
+                          <span className="hf-type-caption">
+                            {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
+                          </span>
+                        }
+                      />
+                    </SwipeableRow>
+                  </ItemListRow>
+                ))}
+              </ItemListSection>
+            ))}
         </div>
       </div>
+      {confirmDelete && (
+        <EntryDetailsSheet
+          title={t("calendar.waterTitle")}
+          subtitle={`${t("common.clockPrefix")} ${formatTime(confirmDelete.loggedAt)}`}
+          rows={[{ label: t("entrySheet.amount"), value: `${confirmDelete.amountMl} ml` }]}
+          onDelete={() => void deleteEntry(confirmDelete)}
+          onClose={() => setConfirmDelete(null)}
+        />
+      )}
     </HfScreen>
   );
 }

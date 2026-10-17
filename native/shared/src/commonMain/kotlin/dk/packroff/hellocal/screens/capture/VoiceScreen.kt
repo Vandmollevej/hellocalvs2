@@ -60,6 +60,7 @@ import dk.packroff.hellocal.ui.CaptureEntryDetailsSheet
 import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.CaptureSwipeableRow
+import dk.packroff.hellocal.ui.FoodRow
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcRemoteImage
@@ -131,38 +132,36 @@ internal fun VoiceItemRow(
 ) {
     val t = LocalTranslator.current
     val item = entry.item
-    CaptureSwipeableRow(onDelete = onDelete, onFavorite = onFavorite, onReportError = onReportError) {
-        Row(
-            Modifier.fillMaxWidth().let { if (entry.saved && onOpen != null) it.clickable(onClick = onOpen) else it }.padding(vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Box(Modifier.size(44.dp).clip(RoundedCornerShape(8.dp)).background(HcColors.Tan)) {
-                if (item.image != null) HcRemoteImage(item.image, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
-            }
-            Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    HcText(item.title, HcTypeRoles.Body, Modifier.weight(1f, fill = false), bold = true, color = HcColors.Black, maxLines = 1)
+    // Same row as the shared list card (src/components/voice/VoiceMealSuggestions.tsx → FoodRow).
+    CaptureSwipeableRow(onDelete = onDelete, onFavorite = onFavorite, onReportError = onReportError, surface = HcColors.Tan) {
+        FoodRow(
+            title = item.title,
+            image = item.image,
+            modifier = Modifier.let { if (entry.saved && onOpen != null) it.clickable(onClick = onOpen) else it }.padding(horizontal = 16.dp),
+            subtitle = {
+                Row(Modifier.padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     if (item.estimated) {
-                        Box(Modifier.clip(RoundedCornerShape(50)).background(HcColors.Tan).alpha(0.7f).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                        Box(Modifier.clip(RoundedCornerShape(50)).background(HcColors.TanDark).padding(horizontal = 6.dp, vertical = 2.dp)) {
                             HcText(t.t("voice.aiEstimate").uppercase(), HcTypeRoles.Micro, bold = true, color = HcColors.Black)
                         }
                     }
+                    HcText(item.amountLabel, HcTypeRoles.Small, color = HcColors.TextSecondary, maxLines = 1)
                 }
-                HcText(item.amountLabel, HcTypeRoles.Small, Modifier.padding(top = 4.dp), color = HcColors.TextSecondary)
-            }
-            HcText("${jsNumber(item.kcal)} kcal", HcTypeRoles.Small, color = HcColors.TextSecondary)
-            if (entry.saved) HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black.copy(alpha = 0.4f))
-            if (!entry.saved && onAdd != null) {
-                HcButton(
-                    addLabel ?: t.t("voice.addOne"),
-                    onClick = onAdd,
-                    modifier = Modifier.widthIn(max = 120.dp).height(40.dp),
-                    kind = HcButtonKind.Secondary,
-                    enabled = !adding,
-                )
-            }
-        }
+            },
+            right = {
+                HcText("${jsNumber(item.kcal)} kcal", HcTypeRoles.Small, color = HcColors.TextSecondary)
+                if (entry.saved) HcIcon("ChevronRight", size = 18.dp, color = HcColors.Black.copy(alpha = 0.4f))
+                if (!entry.saved && onAdd != null) {
+                    HcButton(
+                        addLabel ?: t.t("voice.addOne"),
+                        onClick = onAdd,
+                        modifier = Modifier.widthIn(max = 120.dp).height(40.dp),
+                        kind = HcButtonKind.Secondary,
+                        enabled = !adding,
+                    )
+                }
+            },
+        )
     }
 }
 

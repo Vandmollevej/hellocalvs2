@@ -46,6 +46,7 @@ import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.FoodDivider
 import dk.packroff.hellocal.ui.FoodImage
 import dk.packroff.hellocal.ui.FoodListCard
+import dk.packroff.hellocal.ui.FoodListSection
 import dk.packroff.hellocal.ui.FoodProductResult
 import dk.packroff.hellocal.ui.FoodProductResultRow
 import dk.packroff.hellocal.ui.FoodSearchField
@@ -463,11 +464,7 @@ fun MyScansScreen(args: RouteArgs) {
                 else -> if (groups.isEmpty()) HcText(t.t("myScans.empty"), HcTypeRoles.Body, Modifier.fillMaxWidth(), color = HcColors.TextSecondary, align = TextAlign.Center)
             }
             groups.forEach { (day, items) ->
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcText(dayHeading(day), HcTypeRoles.Small, color = HcColors.Black, bold = true)
-                    FoodDivider()
-                    FoodListCard { ProductResultList(items, favoriteIds, t, true, { nav.push("/add/$it") }, ::toggleFavorite) }
-                }
+                FoodListSection(dayHeading(day)) { ProductResultList(items, favoriteIds, t, true, { nav.push("/add/$it") }, ::toggleFavorite) }
             }
         }
     }

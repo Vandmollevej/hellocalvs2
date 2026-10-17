@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { ProductResultRow, type ProductResult } from "@/components/ProductResultRow";
 import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
+import { ItemListSection } from "@/components/hf/ItemList";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useConnectionMessage } from "@/lib/use-online-status";
 import { intlLocale } from "@/i18n";
 import type { UserScan } from "@/lib/user-scans";
+import { dayHeadingLabel, dayKey } from "@/lib/day-heading";
 
 // "Se dine indscanninger" (bruger 2026-10-02): brugerens egne fotograferede
 // varer, grupperet under en overskrift med skillelinje pr. dato, de blev taget.
@@ -16,10 +18,6 @@ import type { UserScan } from "@/lib/user-scans";
 
 type LoadState = "loading" | "ready" | "error";
 type DayGroup = { key: string; date: Date; scans: ProductResult[] };
-
-function dayKey(date: Date) {
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-}
 
 function groupByDay(scans: UserScan[]): DayGroup[] {
   const groups: DayGroup[] = [];
@@ -100,17 +98,7 @@ export default function MyScansPage() {
   }
 
   function dayHeading(date: Date) {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    if (dayKey(date) === dayKey(today)) return t("myScans.today");
-    if (dayKey(date) === dayKey(yesterday)) return t("myScans.yesterday");
-    return new Intl.DateTimeFormat(intlLocale(locale), {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      ...(date.getFullYear() !== today.getFullYear() ? { year: "numeric" } : {}),
-    }).format(date);
+    return dayHeadingLabel(date, intlLocale(locale), { today: t("myScans.today"), yesterday: t("myScans.yesterday") });
   }
 
   return (
@@ -128,22 +116,17 @@ export default function MyScansPage() {
           <p className="hf-type-body text-text-secondary px-1 text-center">{t("myScans.empty")}</p>
         )}
         {groups.map((group) => (
-          <section key={group.key} className="flex flex-col gap-2">
-            <h2 className="hf-type-small hf-type-strong border-b border-hf-tan-dark pb-1 text-hf-black first-letter:uppercase">
-              {dayHeading(group.date)}
-            </h2>
-            <div className="overflow-hidden bg-hf-tan rounded-card">
-              {group.scans.map((scan) => (
-                <ProductResultRow
-                  key={scan.id}
-                  {...scan}
-                  onAdd={openProduct}
-                  isFavorite={favoriteIds.has(scan.id)}
-                  onToggleFavorite={toggleFavorite}
-                />
-              ))}
-            </div>
-          </section>
+          <ItemListSection key={group.key} heading={dayHeading(group.date)} as="div">
+            {group.scans.map((scan) => (
+              <ProductResultRow
+                key={scan.id}
+                {...scan}
+                onAdd={openProduct}
+                isFavorite={favoriteIds.has(scan.id)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))}
+          </ItemListSection>
         ))}
       </div>
     </HfScreen>

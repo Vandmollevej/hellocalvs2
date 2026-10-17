@@ -48,8 +48,8 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * src/components/SwipeableRow.tsx — swipe right for Favorit (+ copy), swipe
- * left for (Fejl +) Slet. One gesture opens one side; release snaps open/closed.
+ * src/components/SwipeableRow.tsx — kept for the capture/calendar screens, but it is the
+ * one shared swipe row (FoodSwipeableRow) underneath, so every list swipes and looks alike.
  */
 @Composable
 fun CaptureSwipeableRow(
@@ -61,67 +61,21 @@ fun CaptureSwipeableRow(
     content: @Composable () -> Unit,
 ) {
     val t = LocalTranslator.current
-    val density = LocalDensity.current
-    val actionPx = with(density) { 80.dp.toPx() }
-    val rightWidth = if (onReportError != null) actionPx * 2 else actionPx
-    val leftWidth = (if (onFavorite != null) actionPx else 0f) + (if (onCopyToAccount != null) actionPx else 0f)
-    var dragX by remember { mutableFloatStateOf(0f) }
-    var dragging by remember { mutableStateOf(false) }
-    var side by remember { mutableStateOf(0) }
-    val shown by animateFloatAsState(dragX, animationSpec = tween(if (dragging) 0 else 150))
-    val state = rememberDraggableState { delta ->
-        val next = dragX + delta
-        if (side == 0 && next != 0f) side = if (next > 0) 1 else -1
-        val minimum = if (side == -1) -rightWidth else 0f
-        val maximum = if (side == 1) leftWidth else 0f
-        dragX = max(minimum, min(maximum, next))
-    }
-    fun close() {
-        dragX = 0f
-    }
-
-    Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(0.dp))) {
-        // Actions under the row.
-        Row(Modifier.matchParentSize()) {
-            if (onFavorite != null) SwipeAction(HcColors.Green, t.t("swipeableRow.favorite"), { HcMaskIcon("/icons/favorite.png", 18.dp, HcColors.White) }) { onFavorite(); close() }
-            if (onCopyToAccount != null) SwipeAction(HcColors.Watch, t.t("family.copy.action"), { HcIcon("Copy", size = 18.dp, color = HcColors.White) }) { onCopyToAccount(); close() }
-            Spacer(Modifier.weight(1f))
-            if (onReportError != null) SwipeAction(HcColors.GrayDark, t.t("swipeableRow.reportError"), { HcIcon("AlertTriangle", size = 18.dp, color = HcColors.White) }) { onReportError(); close() }
-            SwipeAction(HcColors.RedDark, t.t("swipeableRow.delete"), null) { onDelete(); close() }
-        }
-        Box(
-            Modifier.fillMaxWidth().offset { IntOffset(shown.roundToInt(), 0) }.background(surface)
-                .draggable(
-                    state = state,
-                    orientation = Orientation.Horizontal,
-                    onDragStarted = {
-                        dragging = true
-                        side = if (dragX > 0) 1 else if (dragX < 0) -1 else 0
-                    },
-                    onDragStopped = {
-                        dragging = false
-                        side = 0
-                        dragX = when {
-                            leftWidth > 0 && dragX > leftWidth / 2 -> leftWidth
-                            dragX < -rightWidth / 2 -> -rightWidth
-                            else -> 0f
-                        }
-                    },
-                ),
-        ) { content() }
-    }
-}
-
-@Composable
-private fun SwipeAction(color: Color, label: String, icon: (@Composable () -> Unit)?, onClick: () -> Unit) {
-    Column(
-        Modifier.width(80.dp).fillMaxHeight().background(color).clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-    ) {
-        icon?.invoke()
-        HcText(label, HcTypeRoles.Small, bold = true, color = HcColors.White, align = TextAlign.Center)
-    }
+    FoodSwipeableRow(
+        texts = FoodSwipeTexts(
+            favorite = t.t("swipeableRow.favorite"),
+            copy = t.t("family.copy.action"),
+            reportError = t.t("swipeableRow.reportError"),
+            delete = t.t("swipeableRow.delete"),
+            favoriteSaved = t.t("swipeableRow.favoriteSaved"),
+        ),
+        onDelete = onDelete,
+        onFavorite = onFavorite,
+        onCopyToAccount = onCopyToAccount,
+        onReportError = onReportError,
+        surface = surface,
+        content = content,
+    )
 }
 
 /** One row in an EntryDetailsSheet (label left, bold value right). */

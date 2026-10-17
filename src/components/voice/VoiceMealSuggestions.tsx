@@ -5,8 +5,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconChevronRight } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { imageThumb } from "@/lib/image-thumb";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { FoodRow } from "@/components/FoodRow";
+import { ItemListCard, ItemListDayHeading, ItemListRow } from "@/components/hf/ItemList";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import type { VoiceItem, VoiceMealError } from "@/components/voice/useMealInterpretation";
 
@@ -34,38 +35,37 @@ function VoiceItemRow({
   t: T;
 }) {
   const content = (
-    <div className="flex items-center gap-2.5 py-2.5">
-      <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
-        {item.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageThumb(item.image, 128)} alt="" className="h-full w-full object-contain" />
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <span className="flex items-center gap-1.5">
-          <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
+    <FoodRow
+      image={item.image}
+      title={item.title}
+      subtitle={
+        <p className="hf-type-caption mt-1 flex items-center gap-1.5">
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan-dark px-1.5 py-0.5 uppercase text-hf-black">
               {t("voice.aiEstimate")}
             </span>
           )}
-        </span>
-        <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
-      </div>
-      <span className="hf-type-caption flex-shrink-0">{item.kcal} kcal</span>
-      {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
-      {!item.saved && onAdd && (
-        <button
-          type="button"
-          onClick={onAdd}
-          disabled={adding}
-          aria-label={`${t("voice.addOne")}: ${item.title}`}
-          className="hf-btn-secondary h-10 flex-shrink-0 px-3"
-        >
-          {t("voice.addOne")}
-        </button>
-      )}
-    </div>
+          <span className="truncate">{item.amountLabel}</span>
+        </p>
+      }
+      right={
+        <>
+          <span className="hf-type-caption">{item.kcal} kcal</span>
+          {item.saved && <IconChevronRight size={18} className="text-hf-black opacity-40" />}
+          {!item.saved && onAdd && (
+            <button
+              type="button"
+              onClick={onAdd}
+              disabled={adding}
+              aria-label={`${t("voice.addOne")}: ${item.title}`}
+              className="hf-btn-secondary h-10 px-3"
+            >
+              {t("voice.addOne")}
+            </button>
+          )}
+        </>
+      }
+    />
   );
 
   return (
@@ -119,10 +119,11 @@ export function VoiceMealSuggestions({
 
       {suggestedItems.length > 0 && (
         <section>
-          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.suggested")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ItemListDayHeading>{t("voice.suggested")}</ItemListDayHeading>
+          <div className="mt-2 max-h-[45vh] overflow-y-auto">
+          <ItemListCard>
             {suggestedItems.map((item) => (
-              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+              <ItemListRow key={item.id} padded={false}>
                 <VoiceItemRow
                   item={item}
                   onFavorite={item.productId ? () => favorite(item.productId as string) : undefined}
@@ -131,9 +132,10 @@ export function VoiceMealSuggestions({
                   adding={adding}
                   t={t}
                 />
-              </li>
+              </ItemListRow>
             ))}
-          </ul>
+          </ItemListCard>
+          </div>
           {suggestedItems.length > 1 && (
             <button type="button" onClick={() => onAdd(suggestedItems)} disabled={adding} className="hf-btn-primary mt-4 h-12 w-full px-4">
               {adding ? t("voice.adding") : t("voice.addShownItems")}
@@ -144,10 +146,11 @@ export function VoiceMealSuggestions({
 
       {savedItems.length > 0 && (
         <section>
-          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ItemListDayHeading>{t("voice.added")}</ItemListDayHeading>
+          <div className="mt-2 max-h-[45vh] overflow-y-auto">
+          <ItemListCard>
             {savedItems.map((item) => (
-              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+              <ItemListRow key={item.id} padded={false}>
                 <VoiceItemRow
                   item={item}
                   onFavorite={item.productId ? () => favorite(item.productId as string) : undefined}
@@ -155,9 +158,10 @@ export function VoiceMealSuggestions({
                   onDelete={() => deleteItem(item)}
                   t={t}
                 />
-              </li>
+              </ItemListRow>
             ))}
-          </ul>
+          </ItemListCard>
+          </div>
         </section>
       )}
 

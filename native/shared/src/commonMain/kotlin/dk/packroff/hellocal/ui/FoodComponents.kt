@@ -258,6 +258,27 @@ fun FoodListCard(modifier: Modifier = Modifier, radius: Dp = HcDimens.RadiusCard
     Column(modifier.fillMaxWidth().clip(RoundedCornerShape(radius)).background(HcColors.Tan), content = content)
 }
 
+/**
+ * src/components/hf/ItemList.tsx — the one shared list for products/intake (user 2026-10-17,
+ * modelled on "Dine indscanninger"): a small bold date heading with a line under it and the
+ * tan list card below. Rows inside: FoodRow with 16 dp gutter, FoodDivider between them.
+ */
+@Composable
+fun FoodDayHeading(text: String, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        HcText(text.replaceFirstChar { it.uppercase() }, HcTypeRoles.Small, color = HcColors.Black, bold = true)
+        FoodDivider()
+    }
+}
+
+@Composable
+fun FoodListSection(heading: String, modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        FoodDayHeading(heading)
+        FoodListCard(content = content)
+    }
+}
+
 /** .hf-search — 48 px search field with the magnifier (design.md §6.5). */
 @Composable
 fun FoodSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onFocus: () -> Unit = {}, trailing: (@Composable () -> Unit)? = null) =

@@ -5,12 +5,13 @@ import Link from "next/link";
 import { IconChevronRight, IconSend } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { FoodRow } from "@/components/FoodRow";
+import { ItemListCard, ItemListDayHeading, ItemListRow } from "@/components/hf/ItemList";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 import { mealShareBody } from "@/lib/meal-share";
 import { MealLanguagePicker } from "@/components/voice/MealLanguagePicker";
 import { useMealInputLanguage } from "@/components/voice/useMealInputLanguage";
-import { imageThumb } from "@/lib/image-thumb";
 
 // "Indtast" afløser mikrofonen på desktop-versionen: beskrivelsen skrives i
 // stedet for at tales og tolkes af samme endpoint som stemmesiden. Opbygningen
@@ -72,37 +73,38 @@ function ItemRow({
   onDelete: () => void;
 }) {
   const content = (
-    <div className="flex items-center gap-2.5 py-2.5">
-      <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
-        {item.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageThumb(item.image, 128)} alt="" className="h-full w-full object-contain" />
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <span className="flex items-center gap-1.5">
-          <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
+    <FoodRow
+      image={item.image}
+      title={item.title}
+      subtitle={
+        <p className="hf-type-caption mt-1 flex items-center gap-1.5">
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{estimateLabel}</span>
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan-dark px-1.5 py-0.5 uppercase text-hf-black">
+              {estimateLabel}
+            </span>
           )}
-        </span>
-        <span className="hf-type-caption mt-1 block">{item.amountLabel}</span>
-      </div>
-      <span className="hf-type-caption flex-shrink-0">{item.kcal} kcal</span>
-      {item.saved ? (
-        <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
-      ) : (
-        <button
-          type="button"
-          onClick={onAdd}
-          disabled={disabled}
-          aria-label={`${addLabel}: ${item.title}`}
-          className="hf-btn-secondary h-10 flex-shrink-0 px-3"
-        >
-          {addLabel}
-        </button>
-      )}
-    </div>
+          <span className="truncate">{item.amountLabel}</span>
+        </p>
+      }
+      right={
+        <>
+          <span className="hf-type-caption">{item.kcal} kcal</span>
+          {item.saved ? (
+            <IconChevronRight size={18} className="text-hf-black opacity-40" />
+          ) : (
+            <button
+              type="button"
+              onClick={onAdd}
+              disabled={disabled}
+              aria-label={`${addLabel}: ${item.title}`}
+              className="hf-btn-secondary h-10 px-3"
+            >
+              {addLabel}
+            </button>
+          )}
+        </>
+      }
+    />
   );
 
   return (
@@ -293,10 +295,11 @@ export default function ChatPage() {
 
         {suggestedItems.length > 0 && (
           <section className="mt-4">
-            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("web.chatSuggested")}</h2>
-            <ul>
+            <div className="flex flex-col gap-2">
+            <ItemListDayHeading>{t("web.chatSuggested")}</ItemListDayHeading>
+            <ItemListCard>
               {suggestedItems.map((item) => (
-                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                <ItemListRow key={item.id} padded={false}>
                   <ItemRow
                     item={item}
                     estimateLabel={t("voice.aiEstimate")}
@@ -305,9 +308,10 @@ export default function ChatPage() {
                     onAdd={() => void addShownItems([item.id])}
                     onDelete={() => deleteItem(item)}
                   />
-                </li>
+                </ItemListRow>
               ))}
-            </ul>
+            </ItemListCard>
+            </div>
             {suggestedItems.length > 1 && (
               <button type="button" onClick={() => void addShownItems()} disabled={isAdding} className="hf-btn-primary mt-4 h-12 w-full px-4">
                 {isAdding ? t("voice.adding") : t("web.chatAddAll")}
@@ -318,10 +322,11 @@ export default function ChatPage() {
 
         {savedItems.length > 0 && (
           <section className="mt-4">
-            <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-            <ul>
+            <div className="flex flex-col gap-2">
+            <ItemListDayHeading>{t("voice.added")}</ItemListDayHeading>
+            <ItemListCard>
               {savedItems.map((item) => (
-                <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                <ItemListRow key={item.id} padded={false}>
                   <ItemRow
                     item={item}
                     estimateLabel={t("voice.aiEstimate")}
@@ -330,9 +335,10 @@ export default function ChatPage() {
                     onAdd={() => void addShownItems([item.id])}
                     onDelete={() => deleteItem(item)}
                   />
-                </li>
+                </ItemListRow>
               ))}
-            </ul>
+            </ItemListCard>
+            </div>
           </section>
         )}
       </div>

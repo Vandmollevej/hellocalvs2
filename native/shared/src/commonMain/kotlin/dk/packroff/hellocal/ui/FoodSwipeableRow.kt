@@ -51,7 +51,8 @@ fun FoodSwipeableRow(
     isFavorite: Boolean = false,
     onCopyToAccount: (() -> Unit)? = null,
     onReportError: (() -> Unit)? = null,
-    surface: Color = HcColors.Cream,
+    // Default = the shared list card (FoodListCard), like "Dine indscanninger".
+    surface: Color = HcColors.Tan,
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current.density

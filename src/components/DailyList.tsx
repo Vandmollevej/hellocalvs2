@@ -11,6 +11,7 @@ import { useConnectionMessage } from "@/lib/use-online-status";
 import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
 import { SkeletonMediaRows } from "@/components/hf/Skeleton";
+import { ItemListCard, ItemListRow } from "@/components/hf/ItemList";
 import { EntryDetailsSheet } from "@/components/hf/EntryDetailsSheet";
 
 type Entry = {
@@ -185,15 +186,11 @@ export function DailyList() {
     <div className="relative flex h-full min-h-0 flex-col">
       <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
-      {/* Samme tan-kort som søgelisterne (src/app/search/page.tsx). */}
-      <ul className={entries.length > 0 ? "overflow-hidden rounded-[8px] bg-hf-tan" : ""}>
-        {entries.map((entry, i) => (
-          <li
-            key={entry.id}
-            className={i < entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
-          >
+      {/* Den fælles kortliste, samme som "Dine indscanninger" (ItemList.tsx). */}
+      <ItemListCard className={entries.length > 0 ? "" : "!rounded-none !bg-transparent"}>
+        {entries.map((entry) => (
+          <ItemListRow key={entry.id} padded={false}>
             <SwipeableRow
-              surfaceClassName="bg-hf-tan px-4"
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
               isFavorite={entry.productId ? favoriteIds.has(entry.productId) : false}
               onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}
@@ -218,7 +215,7 @@ export function DailyList() {
                 />
               </Link>
             </SwipeableRow>
-          </li>
+          </ItemListRow>
         ))}
         {loading && (
           <li role="status" aria-busy="true" aria-label={t("dailyList.loading")}>
@@ -231,7 +228,7 @@ export function DailyList() {
           </li>
         )}
         {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{connectionMessage(error)}</li>}
-      </ul>
+      </ItemListCard>
       {hasScans && !loading && (
         <div className={entries.length > 0 ? "mt-3" : "-mt-5 text-center"}>
           <Link href="/my-scans" className="hf-type-body inline-block text-hf-black underline underline-offset-2">

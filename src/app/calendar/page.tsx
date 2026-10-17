@@ -3099,6 +3099,7 @@ function HourEntriesOverlay({
                     return (
                       <div key={item.id} className={rowClass}>
                         <SwipeableRow
+                          surfaceClassName="bg-hf-cream"
                           onReportError={() => router.push(`/registration/${registration.id}/report-error`)}
                           onDelete={() => setConfirmDelete(registration)}
                         >
