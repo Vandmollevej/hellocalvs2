@@ -15,6 +15,7 @@ import {
   loadSearchKpis,
   parseSearchView,
 } from "@/lib/admin-search-analytics";
+import { LinkSelect } from "@/components/admin/LinkSelect";
 import { StatsFilters } from "@/components/admin/stats/StatsFilters";
 import { ReviewMissesButton } from "@/components/admin/stats/ReviewMissesButton";
 import { VoiceSessions } from "@/components/admin/stats/VoiceSessions";
@@ -171,14 +172,11 @@ export default async function SearchAnalyticsPage({
           ))}
         </nav>
         {rows.kind !== "voice" && (
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="hf-type-caption">Sortér:</span>
-            {SEARCH_SORTS.filter((s) => !(view.tab === "misses" && s.id === "misses")).map((sort) => (
-              <Link key={sort.id} href={href({ sort: sort.id })} className={btn(view.sort === sort.id)}>
-                {sort.label}
-              </Link>
-            ))}
-          </div>
+          <LinkSelect
+            label="Sortér"
+            value={view.sort}
+            options={SEARCH_SORTS.filter((s) => !(view.tab === "misses" && s.id === "misses")).map((sort) => ({ value: sort.id, label: sort.label, href: href({ sort: sort.id }) }))}
+          />
         )}
 
         {rows.kind === "voice" && <VoiceSessions sessions={rows.list} />}

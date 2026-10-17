@@ -149,17 +149,19 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
       </AccordionSection>
 
       <AccordionSection title={t("recipeFilters.sortTitle")} icon={<IconArrowsSort size={20} stroke={1.75} />}>
-        <div className="bg-hf-cream px-4">
-          {RECIPE_SORTS.map((sort, index) => (
-            <Row
-              key={sort}
-              label={t(SORT_KEYS[sort])}
-              checked={filters.sort === sort}
-              // Kun én sortering ad gangen; slås den valgte fra, gælder Relevans.
-              onChange={(on) => update({ ...filters, sort: on ? sort : "relevance" })}
-              divider={index < RECIPE_SORTS.length - 1}
-            />
-          ))}
+        <div className="bg-hf-cream px-4 py-3">
+          <select
+            value={filters.sort}
+            onChange={(event) => update({ ...filters, sort: event.target.value as (typeof RECIPE_SORTS)[number] })}
+            aria-label={t("recipeFilters.sortTitle")}
+            className="hf-field hf-type-body w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 text-hf-black"
+          >
+            {RECIPE_SORTS.map((sort) => (
+              <option key={sort} value={sort}>
+                {t(SORT_KEYS[sort])}
+              </option>
+            ))}
+          </select>
         </div>
       </AccordionSection>
 
