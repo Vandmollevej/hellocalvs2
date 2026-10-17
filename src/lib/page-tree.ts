@@ -232,7 +232,7 @@ export const PAGE_TREE: PageArea[] = [
               {
                 path: "/viden-om/[category]",
                 label: "Kategori",
-                note: "Vitaminer, sundhedstips, kalorieforbrænding, WHO, Mad på latin",
+                note: "Vitaminer, allergener, sundhedstips, kalorieforbrænding, WHO, Mad på latin",
                 children: [{ path: "/viden-om/[category]/[slug]", label: "Artikel / ord" }],
               },
               {
@@ -488,6 +488,11 @@ export const PAGE_TREE: PageArea[] = [
             path: "/admin/spelling",
             label: "Stavekontrol",
             note: "Nattens stavekontrol-robot: rettelser og forslag til ingredienslister — godkend, afvis eller skriv egen rettelse",
+          },
+          {
+            path: "/admin/allergen-words",
+            label: "Allergen-ord",
+            note: "Nattens allergen-robot: nye allergen-ord fra Open Food Facts og ord skrevet med STORT — godkend eller afvis",
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
           { path: "/admin/pet-food-filter", label: "Dyrefoder-filter", note: "Se og redigér filteret, der afviser dyrefoder; afprøv varer og stregkoder" },

@@ -3,8 +3,9 @@
 // Kilder skal være officielle (Fødevarestyrelsen m.fl.), se DECISIONS 2026-09-29.
 
 import { RESEARCH_ARTICLES } from "@/lib/knowledge-research";
+import { ALLERGEN_ARTICLES } from "@/lib/knowledge-allergens";
 
-export type KnowledgeCategory = "vitaminer" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder";
+export type KnowledgeCategory = "vitaminer" | "allergener" | "sundhedstips" | "kalorieforbraending" | "who-og-kilder";
 
 export type KnowledgeArticle = {
   slug: string;
@@ -257,6 +258,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     ],
   },
   ...RESEARCH_ARTICLES,
+  ...ALLERGEN_ARTICLES,
 ];
 
 export function knowledgeHref(slug: string): string {

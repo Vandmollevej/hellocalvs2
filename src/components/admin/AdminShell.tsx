@@ -48,6 +48,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/quality-control", key: "nav_quality_control" },
       { href: "/admin/uncertainties", key: "nav_uncertainties" },
       { href: "/admin/spelling", key: "nav_spelling" },
+      { href: "/admin/allergen-words", key: "nav_allergen_words" },
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
       { href: "/admin/images", key: "nav_images", alsoActive: ["/admin/logos"] },

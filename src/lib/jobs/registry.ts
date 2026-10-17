@@ -155,6 +155,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "04:15",
   },
   {
+    // Allergen-robotten (docs/DECISIONS.md 2026-10-17): rapporten ligger under
+    // admin → Allergen-ord og som admin-advarsel, når der er nye ord.
+    key: "allergen-words",
+    name: "Allergen-robot: nye allergen-ord",
+    description:
+      "Læser alle nye og ændrede ingredienslister og finder allergen-ord, som fremhævningen med STORT ikke fanger endnu. Ord, Open Food Facts' åbne opslagsværk kender som allergen på varens sprog, godkendes straks og vises med STORT og link til allergenets side. Ord, kun producenten har skrevet med STORT, venter på admin under Allergen-ord. Nye fund rapporteres som admin-advarsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "04:20",
+  },
+  {
     // Ubeskårne bagsidebilleder (docs/DECISIONS.md 2026-10-15): hvert billede
     // analyseres præcis én gang og indgår aldrig i senere kørsler.
     key: "back-photo-scan",

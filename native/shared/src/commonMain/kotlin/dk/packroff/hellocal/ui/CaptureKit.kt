@@ -24,7 +24,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
+import dk.packroff.hellocal.theme.HcTypeRole
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +61,7 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.theme.style
 import dk.packroff.hellocal.ui.icons.HcIcon
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 // Components used by the capture & logging screens (water, weight, period,
@@ -121,6 +135,73 @@ fun CaptureSlider(value: Int, min: Int, max: Int, step: Int = 1, onChange: (Int)
                     .border(2.dp, HcColors.Green, CircleShape),
             )
         }
+    }
+}
+
+/**
+ * src/components/hf/TapNumberInput.tsx — the number above a slider. Looks like plain text
+ * until tapped; then it gets a white background and the number keyboard opens.
+ * Done / tapping away commits (user rule 2026-10-17).
+ */
+@Composable
+fun CaptureTapNumber(
+    value: Double?,
+    display: String,
+    onChange: (Double) -> Unit,
+    role: HcTypeRole,
+    modifier: Modifier = Modifier,
+    unit: String? = null,
+    min: Double? = null,
+    max: Double? = null,
+    decimals: Int = 0,
+    bold: Boolean = false,
+    align: TextAlign = TextAlign.End,
+) {
+    var editing by remember { mutableStateOf(false) }
+    var field by remember { mutableStateOf(TextFieldValue("")) }
+    val focus = remember { FocusRequester() }
+    var hadFocus by remember { mutableStateOf(false) }
+    fun format(n: Double): String =
+        if (decimals == 0) n.roundToInt().toString()
+        else (kotlin.math.round(n * 10.0.pow(decimals)) / 10.0.pow(decimals)).toString().removeSuffix(".0").replace(".", ",")
+    fun commit() {
+        if (!editing) return
+        val parsed = field.text.trim().replace(",", ".").toDoubleOrNull()
+        if (parsed != null) {
+            var next = if (decimals == 0) parsed.roundToInt().toDouble() else kotlin.math.round(parsed * 10.0.pow(decimals)) / 10.0.pow(decimals)
+            if (min != null) next = maxOf(min, next)
+            if (max != null) next = minOf(max, next)
+            onChange(next)
+        }
+        editing = false
+        hadFocus = false
+    }
+    if (editing) {
+        LaunchedEffect(Unit) { focus.requestFocus() }
+        Row(
+            modifier.clip(RoundedCornerShape(8.dp)).background(HcColors.White).padding(horizontal = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BasicTextField(
+                value = field,
+                onValueChange = { field = it },
+                singleLine = true,
+                textStyle = role.style(HcColors.Black).let { if (bold) it.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) else it }.copy(textAlign = TextAlign.End),
+                cursorBrush = SolidColor(HcColors.Action),
+                keyboardOptions = KeyboardOptions(keyboardType = if (decimals > 0) KeyboardType.Decimal else KeyboardType.Number, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { commit() }),
+                modifier = Modifier.width((maxOf(2, field.text.length + 1) * role.size * 0.62f).dp).focusRequester(focus).onFocusChanged {
+                    if (it.isFocused) hadFocus = true else if (hadFocus) commit()
+                },
+            )
+            if (unit != null) HcText(" $unit", role, color = HcColors.Black, bold = bold)
+        }
+    } else {
+        HcText(display, role, modifier.clickable {
+            val text = value?.let(::format) ?: ""
+            field = TextFieldValue(text, TextRange(0, text.length))
+            editing = true
+        }, color = HcColors.Black, bold = bold, align = align)
     }
 }
 

@@ -2,6 +2,7 @@
 
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 import { HfSlider } from "@/components/hf/HfSlider";
+import { TapNumberInput } from "@/components/hf/TapNumberInput";
 import {
   scaleRange,
   type ScreeningInputType,
@@ -60,9 +61,24 @@ export function ScreeningInput({
 
       {inputType === "SLIDER" && (
         <div className="flex flex-col gap-2">
-          <p className="hf-type-page-title text-center text-hf-black">
-            {value === null ? "–" : `${value}${suffix}`}
-          </p>
+          {readOnly ? (
+            <p className="hf-type-page-title text-center text-hf-black">
+              {value === null ? "–" : `${value}${suffix}`}
+            </p>
+          ) : (
+            <div className="flex justify-center">
+              <TapNumberInput
+                value={value}
+                display={value === null ? "–" : `${value}${suffix}`}
+                unit={suffix.trim() || undefined}
+                min={min}
+                max={max}
+                aria-label={`${min}–${max}`}
+                onChange={(next) => onChange(clamp(next))}
+                className="hf-type-page-title text-center text-hf-black"
+              />
+            </div>
+          )}
           <HfSlider value={current} min={min} max={max} step={step} onChange={onChange} aria-label={`${min}–${max}`} />
         </div>
       )}
