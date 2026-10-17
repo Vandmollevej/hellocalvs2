@@ -5845,6 +5845,10 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - EAN: på web tages et foto, som ZXing læser; koden skrives i feltet ("Rigtig EAN: …"). I appen bruges den levende scanner. Kan koden ikke læses, skriver brugeren den selv.
 - Rapporten sendes nu som sektioner + sectionPhotos (som /profile/report-bug): Produktbillede → IMAGE, Navn/Mærke → TITLE, EAN → OTHER, Energi/Makro → ENERGY, Indhold → INGREDIENTS. Kode: src/lib/registration-report-points.ts (buildReportSections).
 
+## 2026-10-17 - Én swipe-række overalt
+
+- Brugeren påpegede, at swipe-bokse så forskellige ud (screeninger havde egne knapper, kalender/vand/tale/chat lå ikke i kort). Beslutning: `SwipeableRow` er den eneste swipe-komponent; andre knapper gives som `rightActions`/`leftActions`. Standardflade er `bg-hf-tan px-4` i et `rounded-card bg-hf-tan`-kort. Swipe låses først, når bevægelsen er mest vandret, og `pointercancel` snapper rækken helt åben/lukket (før kunne den hænge halvvejs med en rød kant synlig). Se `docs/REGLER.md` → UI.
+
 ## 2026-10-17: "Dine indscanninger" viser også kendte varer, brugeren scanner
 
 - Listen viste kun varer, brugeren selv havde oprettet. En scannet kendt vare (fx en cola fra Open Food Facts) manglede. Stregkodeopslaget gemmer nu en `ProductScan` (én række pr. bruger og vare, `scannedAt` flyttes frem), og `/api/my-scans` samler oprettede og scannede varer efter seneste tidspunkt. Svarformatet er uændret, så native følger med. Kode: `src/lib/user-scans.ts`, migration `20261017200000_product_scans`.

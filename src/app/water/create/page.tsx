@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { FoodRow } from "@/components/FoodRow";
+import { SwipeableRow } from "@/components/SwipeableRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -92,6 +93,18 @@ export default function WaterCreatePage() {
   useEffect(() => {
     load();
   }, []);
+
+  // Swipe til venstre → Fjern, som på forsidens "Dagens tilføjelser".
+  async function deleteEntry(id: string) {
+    const previous = entries;
+    setEntries((current) => current.filter((entry) => entry.id !== id));
+    try {
+      const response = await fetch(`/api/water-entries/${id}`, { method: "DELETE" });
+      if (!response.ok) setEntries(previous);
+    } catch {
+      setEntries(previous);
+    }
+  }
 
   function pickContainer(key: string, ml: number) {
     setSelectedKey(key);
@@ -221,12 +234,14 @@ export default function WaterCreatePage() {
               {groupByDate(entries).map((group) => (
                 <Fragment key={group.key}>
                   <h2 className="hf-type-section-title">{group.label}</h2>
-                  <ul>
+                  {/* Samme tan-kort med swipe som "Dagens tilføjelser" på forsiden. */}
+                  <ul className="overflow-hidden rounded-card bg-hf-tan">
                     {group.entries.map((entry, i) => (
                       <li
                         key={entry.id}
                         className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
                       >
+                        <SwipeableRow onDelete={() => void deleteEntry(entry.id)}>
                         <FoodRow
                           thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
                           title={`${entry.amountMl} ml`}
@@ -236,6 +251,7 @@ export default function WaterCreatePage() {
                             </span>
                           }
                         />
+                        </SwipeableRow>
                       </li>
                     ))}
                   </ul>
