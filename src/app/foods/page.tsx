@@ -147,6 +147,10 @@ function MadvarerContent() {
     return speechLangFor(currentMealLanguage(), regionRef.current);
   }
   const startMic = startSpeech;
+  // Safari på iPhone afviser mikrofonen, når den startes automatisk ved
+  // åbning (?mic=1) uden et tryk på siden. Den afvisning vises ikke som fejl —
+  // et tryk på knappen spørger om lov igen.
+  const [autoStarted, setAutoStarted] = useState(autoStartMic);
   useEffect(() => {
     if (autoStartMic) startMic(speechLang());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
@@ -392,13 +396,17 @@ function MadvarerContent() {
             listening={isListening}
             unsupported={speech.phase === "unsupported"}
             label={t(isListening ? "voice.stopMic" : "voice.startMic")}
-            onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
+            onClick={() => {
+              setAutoStarted(false);
+              if (isListening) speech.stop();
+              else startSpeech(speechLang());
+            }}
           />
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
           </p>
           <LiveWaveform active={isListening} />
-          {speech.error && (
+          {speech.error && !(autoStarted && speech.error === "denied") && (
             <p className="hf-type-small mt-2 max-w-[310px] text-center text-hf-red-dark">
               {t(
                 speech.error === "denied"

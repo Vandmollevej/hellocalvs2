@@ -2,6 +2,9 @@
 
 Aktivitetsvælgeren (/activity/create) viser favoritter i blokken "Mine favoritter" over "Alle aktiviteter", som under retter. Under søgning én liste. Web og native.
 
+## 2026-10-17: Spring energi over i kameraflowet
+"Spring over" på energi-trinnet (varer uden næringstabel, fx danskvand); sprungne trin får en rød streg over knappen (web + native). Serveren opretter varen uden energifoto med "næring ukendt".
+
 ## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
 
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
