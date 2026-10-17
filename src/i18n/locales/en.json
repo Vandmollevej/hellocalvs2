@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Ask about last night's sleep",
-    "toggleDescription": "The first time you open the app each day, you are asked to rate last night's sleep from 1 to 5. The rating is shown on the day in the calendar and in the statistics."
+    "toggleDescription": "You are asked to rate last night's sleep from 1 to 5 the first time you open the app. Choose below how often you want to be asked.",
+    "calendarDesc": "The rating is shown on the day in the calendar.",
+    "todayTitle": "Today"
   },
   "sleepQuality": {
     "question": "How do you feel your night was?",

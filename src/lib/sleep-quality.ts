@@ -3,6 +3,23 @@
 
 export const SLEEP_QUALITY_RATINGS = [1, 2, 3, 4, 5] as const;
 
+// Hvor ofte søvnspørgsmålet stilles (User.sleepQualityFrequency, samme valg som
+// screeninger). MANUAL = spørg aldrig selv; brugeren vurderer fra Søvn-siden.
+export const SLEEP_QUALITY_FREQUENCIES = ["DAILY", "WEEKLY", "MONTHLY", "MANUAL"] as const;
+export type SleepQualityFrequency = (typeof SLEEP_QUALITY_FREQUENCIES)[number];
+
+export function isSleepQualityFrequency(value: unknown): value is SleepQualityFrequency {
+  return typeof value === "string" && (SLEEP_QUALITY_FREQUENCIES as readonly string[]).includes(value);
+}
+
+/** Antal dage tilbage (inkl. i dag) uden vurdering, før der spørges igen; null = spørg aldrig. */
+export function sleepPromptWindowDays(frequency: unknown): number | null {
+  if (frequency === "MANUAL") return null;
+  if (frequency === "WEEKLY") return 7;
+  if (frequency === "MONTHLY") return 30;
+  return 1;
+}
+
 export function isValidSleepQualityRating(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 5;
 }

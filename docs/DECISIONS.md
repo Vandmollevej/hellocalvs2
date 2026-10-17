@@ -5935,3 +5935,7 @@ Brugeren: "Man kan kun tilføje favorit ved at swipe til højre. Og man kan alti
 ## 2026-10-17: Træningspas = flere aktiviteter med fælles sessionId
 
 Brugerens ønske: flere øvelser under samme træning. Et træningspas er ikke en ny tabel, men almindelige `activities`-rækker med samme `sessionId`, lagt efter hinanden fra passets start. Kalender, statistik og kalorie-bank virker derfor uændret pr. øvelse. Kcal anslås altid fra MET pr. øvelse (vægt kræves). Gem-knappen på Tilføj → Aktivitet står fast nederst (HfScreen footer / HcScreen bottom).
+
+## 2026-10-17: Søvn-siden under Screeninger kan redigeres
+
+Brugeren: "Når jeg klikker ind på søvn skal jeg jo kunne redigere frekvens mv. Tænd sluk skulle jo bare være øverst." Søvn-siden (`/settings/display/sleep-quality`) har nu til/fra øverst, derefter "Hvor ofte skal du spørges?" (Hver dag/uge/måned/Ad hoc, som screeninger), "Vis i kalenderen" og "I dag" med 1–5, hvor dagens vurdering kan sættes eller rettes. Gemmes på `User.sleepQualityFrequency` (standard DAILY) og `User.sleepQualityShowInCalendar` (standard til), migration `20261018000200_sleep_quality_settings`. Spørgsmålet stilles kun, når der ikke er en vurdering inden for perioden (1/7/30 dage, `sleepPromptWindowDays`); Ad hoc spørger aldrig. Web + native.

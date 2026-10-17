@@ -2105,9 +2105,15 @@ function DayDetails({
   const [sleepRating, setSleepRating] = useState<number | null>(null);
   useEffect(() => {
     let cancelled = false;
-    fetchSleepQuality(localDateKey(date))
-      .then((entries) => {
-        if (!cancelled) setSleepRating(entries[0]?.rating ?? null);
+    // "Vis i kalenderen" (User.sleepQualityShowInCalendar) kan slå bjælken fra.
+    Promise.all([
+      fetchSleepQuality(localDateKey(date)),
+      fetch("/api/profile").then((response) => (response.ok ? response.json() : null)),
+    ])
+      .then(([entries, profile]) => {
+        if (cancelled) return;
+        const hidden = (profile as { user?: { sleepQualityShowInCalendar?: boolean } } | null)?.user?.sleepQualityShowInCalendar === false;
+        setSleepRating(hidden ? null : (entries[0]?.rating ?? null));
       })
       .catch(() => undefined);
     return () => {

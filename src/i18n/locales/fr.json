@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Demander pour le sommeil de la nuit",
-    "toggleDescription": "La première fois que tu ouvres l'appli chaque jour, on te demande d'évaluer ton sommeil de la nuit de 1 à 5. L'évaluation s'affiche sur le jour dans le calendrier et dans les statistiques."
+    "toggleDescription": "On te demande de noter ta nuit de 1 à 5 la première fois que tu ouvres l'appli. Choisis ci-dessous à quelle fréquence tu veux qu'on te le demande.",
+    "calendarDesc": "La note s'affiche sur le jour dans le calendrier.",
+    "todayTitle": "Aujourd'hui"
   },
   "sleepQuality": {
     "question": "Comment as-tu trouvé la qualité de ton sommeil ?",

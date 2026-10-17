@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.api.Api
+import dk.packroff.hellocal.screens.settings.settingsBool
+import dk.packroff.hellocal.screens.settings.settingsLoadProfile
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
@@ -154,7 +156,9 @@ internal fun DayDetails(
     // Oplevelse af søvn: the day's 1–5 rating as a black bar at the top.
     LaunchedEffect(date) {
         val key = date.toString()
-        sleepRating = runCatching { Api.get("/api/sleep-quality?from=$key&to=$key") }.getOrNull()
+        // "Vis i kalenderen" (User.sleepQualityShowInCalendar) can hide the bar.
+        val hidden = runCatching { settingsLoadProfile().settingsBool("sleepQualityShowInCalendar") }.getOrNull() == false
+        sleepRating = if (hidden) null else runCatching { Api.get("/api/sleep-quality?from=$key&to=$key") }.getOrNull()
             ?.asObj()?.objects("entries")?.firstOrNull()?.dbl("rating")?.toInt()
     }
 

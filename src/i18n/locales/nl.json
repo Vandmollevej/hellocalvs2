@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Vraag naar de slaap van afgelopen nacht",
-    "toggleDescription": "De eerste keer dat je de app elke dag opent, word je gevraagd de slaap van afgelopen nacht te beoordelen van 1 tot 5. De beoordeling wordt getoond bij de dag in de agenda en in de statistieken."
+    "toggleDescription": "Je wordt gevraagd je nachtrust te beoordelen van 1 tot 5 de eerste keer dat je de app opent. Kies hieronder hoe vaak je dat gevraagd wilt worden.",
+    "calendarDesc": "De beoordeling wordt op de dag in de kalender getoond.",
+    "todayTitle": "Vandaag"
   },
   "sleepQuality": {
     "question": "Hoe heb je je slaapkwaliteit ervaren?",
