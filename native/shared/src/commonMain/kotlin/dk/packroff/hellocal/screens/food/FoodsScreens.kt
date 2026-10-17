@@ -734,12 +734,20 @@ fun DrinkDetailScreen(args: RouteArgs) {
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                             HcText(ingredient.name, HcTypeRoles.Small, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                            HcText("${daNumber(value, 2)} ${ingredient.unit}", HcTypeRoles.Title, color = HcColors.Black)
+                            dk.packroff.hellocal.ui.CaptureTapNumber(
+                                value = value,
+                                display = "${daNumber(value, 2)} ${ingredient.unit}",
+                                unit = ingredient.unit,
+                                min = 0.0,
+                                decimals = if (ingredient.step < 1) 2 else 0,
+                                role = HcTypeRoles.Title,
+                                onChange = { amounts = amounts + (ingredient.id to it) },
+                            )
                         }
                         FoodSlider(
                             value = value,
                             min = ingredient.minAmount,
-                            max = ingredient.maxAmount,
+                            max = maxOf(ingredient.maxAmount, value),
                             step = ingredient.step.takeIf { it > 0 } ?: 1.0,
                             onChange = { amounts = amounts + (ingredient.id to it) },
                         )
