@@ -21,6 +21,7 @@ import {
   isJunkToken,
   nutritionTailStart,
   replaceAt,
+  tidyIngredientPunctuation,
   tokenize,
   type SpellingDictionary,
 } from "./spelling-engine.ts";
@@ -82,7 +83,8 @@ export function reviewIngredientsText(
 ): IngredientTextReview {
   const fixes: string[] = [];
   const doubts: string[] = [];
-  let text = raw.trim();
+  let text = tidyIngredientPunctuation(raw.trim());
+  if (text !== raw.trim()) fixes.push("Tegnsætning og E-numre rettet");
   if (!text) return { text, fixes, doubts };
 
   if (/^\s*(?:[EF][nm]erg[iq1l]|energy|næringsindhold|nutrition)/i.test(text)) {
@@ -107,6 +109,9 @@ export function reviewIngredientsText(
     const junk = junkTokens(text);
     if (junk.length) doubts.push(`Volapyk i listen: ${junk.slice(0, 5).join(" ")}`);
   }
+
+  // Igen efter stavning: "£150d" bliver først til "E150d" her.
+  text = tidyIngredientPunctuation(text);
 
   const odd = text.match(ODD_CHARS);
   if (odd) doubts.push(`Usædvanligt tegn "${odd[0]}" i listen`);

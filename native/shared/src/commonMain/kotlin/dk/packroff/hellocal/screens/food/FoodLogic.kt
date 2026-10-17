@@ -753,8 +753,25 @@ private fun fixOcrWord(token: String): String {
     }
 }
 
+/**
+ * src/lib/spelling-engine.ts tidyIngredientPunctuation — ret begge. E-numre står
+ * frit ("karamelE150d" → "karamel E150d", "E-150D" → "E150d"), ", ," → ",",
+ * "aromaer(inkl." → "aromaer (inkl." og dobbelte mellemrum.
+ */
+fun tidyIngredientPunctuation(text: String): String {
+    var out = Regex("""(?<![${TEXT_LETTERS}0-9])[eE][-.]?(\d{3,4}[a-dA-D]?)(?!\d)""").replace(text) { "E" + it.groupValues[1].lowercase() }
+    out = Regex("""([a-zæøåäöüéè])(E\d{3,4}[a-d]?)(?!\d)""").replace(out, "$1 $2")
+    out = Regex(""",(?:\s*,)+""").replace(out, ",")
+    out = Regex("""[ \t]+([,;)])""").replace(out, "$1")
+    out = Regex("""([,;])(?=[${TEXT_LETTERS}(])""").replace(out, "$1 ")
+    out = Regex("""([$TEXT_LETTERS]{2,})\(""").replace(out, "$1 (")
+    out = Regex("""\([ \t]+""").replace(out, "(")
+    out = Regex("""\)(?=[$TEXT_LETTERS])""").replace(out, ") ")
+    return Regex("""[ \t]{2,}""").replace(out, " ")
+}
+
 fun displayIngredientsText(text: String): String {
-    var out = text.trim()
+    var out = tidyIngredientPunctuation(text.trim())
     val nutrition = NUTRITION_START.find(out)
     if (nutrition != null && nutrition.range.first > 0) {
         out = out.substring(0, nutrition.range.first)
@@ -768,6 +785,7 @@ fun displayIngredientsText(text: String): String {
         out = SOYA.replace(out) { m -> m.groupValues[1] + (if (m.groupValues[2] == "Y") "J" else "j") + m.groupValues[3] }
         out = Regex("""[${TEXT_LETTERS}1]+""").replace(out) { m -> if (m.value.any { it.isLetter() }) fixOcrWord(m.value) else m.value }
     }
+    out = tidyIngredientPunctuation(out)
     return out.ifEmpty { text }
 }
 

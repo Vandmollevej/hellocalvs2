@@ -284,6 +284,24 @@ export const NUTRITION_START = new RegExp(
 // E-nummer, hvor "E" er læst som pund- eller eurotegn ("£202").
 export const CURRENCY_E_NUMBER = /[£€]\s?(\d{3,4}[a-d]?)(?!\d)/gi;
 
+// Sikker tegnsætning i en ingrediensliste (bruger 2026-10-17): E-numre skal
+// stå frit, så de kan blive til links. Rent mekanisk, intet sprog:
+// "karamelE150d" → "karamel E150d", "E-150d"/"e150d" → "E150d", ", ," → ",",
+// "aromaer(inkl." → "aromaer (inkl.", "), ," og dobbelte mellemrum.
+// Native-kopi: tidyIngredientPunctuation i FoodLogic.kt — ret begge.
+export function tidyIngredientPunctuation(text: string): string {
+  return text
+    .replace(/(?<![\p{L}\d])[eE][-.]?(\d{3,4}[a-dA-D]?)(?!\d)/gu, (_m, code: string) => `E${code.toLowerCase()}`)
+    .replace(/(\p{Ll})(E\d{3,4}[a-d]?)(?!\d)/gu, "$1 $2")
+    .replace(/,(?:\s*,)+/g, ",")
+    .replace(/[ \t]+([,;)])/g, "$1")
+    .replace(/([,;])(?=[\p{L}(])/gu, "$1 ")
+    .replace(/(\p{L}{2,})\(/gu, "$1 (")
+    .replace(/\([ \t]+/g, "(")
+    .replace(/\)(?=\p{L})/gu, ") ")
+    .replace(/[ \t]{2,}/g, " ");
+}
+
 // Hvor næringstabellen begynder: ved støj før den ("£202. ee .06 kcal")
 // fra listens sidste punktum.
 export function nutritionTailStart(text: string): number | null {

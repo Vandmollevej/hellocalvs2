@@ -85,3 +85,14 @@ test("volapyk giver tvivl: ':699k1', 'ee', men ikke E-numre, B12 eller 12%", asy
   assert.deepEqual(junkTokens("Vand, sukker (12%), E330, vitamin B12, D3, omega-3, 2,5 g salt"), []);
   assert.ok(reviewIngredientsText("Vand, sukker, salt, xq7z, olie", "da").doubts.some((d) => d.startsWith("Volapyk")));
 });
+
+test("E-numre står frit og tegnsætning ryddes (bruger 2026-10-17)", () => {
+  assert.equal(
+    displayIngredientsText(
+      "Vand, sukker, kuldioxid, farvestof (karamelE150d), surhedsregulerende middel (E338), , naturlige aromaer(inkl. koffein).",
+    ),
+    "Vand, sukker, kuldioxid, farvestof (karamel E150d), surhedsregulerende middel (E338), naturlige aromaer (inkl. koffein).",
+  );
+  assert.equal(displayIngredientsText("Water, colour E-150D ,acid e338"), "Water, colour E150d, acid E338");
+  assert.equal(displayIngredientsText("emulgator E471(ii), E160a(ii), 1,5% salt"), "emulgator E471(ii), E160a(ii), 1,5% salt");
+});

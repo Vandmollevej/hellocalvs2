@@ -6,10 +6,12 @@ import { displayIngredientsText } from "@/lib/ingredient-text-quality";
 // Ingredient list with allergens shown in UPPERCASE and bold. Ikke-danske ord
 // fra "Mad på latin" er links uden særlig styling (brugerens ønske 2026-09-28).
 // Ældre lister vises med sikre tegnrettelser ("£202" → "E202", dansk "soja").
-export function IngredientsText({ text }: { text: string }) {
+// `cleaned`: teksten er allerede rettet som helhed (stykker mellem E-numre må
+// ikke rettes hver for sig — det trimmer mellemrummet foran E-nummeret væk).
+export function IngredientsText({ text, cleaned = false }: { text: string; cleaned?: boolean }) {
   return (
     <>
-      {segmentIngredients(displayIngredientsText(text)).map((segment, index) => {
+      {segmentIngredients(cleaned ? text : displayIngredientsText(text)).map((segment, index) => {
         const content = splitFoodTerms(segment.text).map((part, partIndex) =>
           part.term ? (
             <Link key={partIndex} href={foodTermHref(part.term)} className="text-inherit no-underline">
