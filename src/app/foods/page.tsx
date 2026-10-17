@@ -414,10 +414,7 @@ function MadvarerContent() {
         </section>
 
         <div className="hf-search hf-search--grow">
-          {/* Kameraet i søgefeltet åbner billedfunktionen (afløser knappen "Scan nyt produkt" nederst). */}
-          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
-            <IconCamera size={22} stroke={1.8} />
-          </Link>
+          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
           <textarea
             ref={searchInputRef}
             rows={1}
@@ -436,7 +433,10 @@ function MadvarerContent() {
             enterKeyHint="search"
             placeholder={t("foods.searchPlaceholder")}
           />
-          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
+          {/* Luppen står forrest og kameraet til højre (brugerregel); kameraet åbner billedfunktionen (afløser knappen "Scan nyt produkt" nederst). */}
+          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
+            <IconCamera size={22} stroke={1.8} />
+          </Link>
         </div>
 
         <VoiceMealSuggestions
