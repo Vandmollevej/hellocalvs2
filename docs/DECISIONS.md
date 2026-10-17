@@ -5852,3 +5852,14 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-17: "Dine indscanninger" viser også kendte varer, brugeren scanner
 
 - Listen viste kun varer, brugeren selv havde oprettet. En scannet kendt vare (fx en cola fra Open Food Facts) manglede. Stregkodeopslaget gemmer nu en `ProductScan` (én række pr. bruger og vare, `scannedAt` flyttes frem), og `/api/my-scans` samler oprettede og scannede varer efter seneste tidspunkt. Svarformatet er uændret, så native følger med. Kode: `src/lib/user-scans.ts`, migration `20261017200000_product_scans`.
+## 2026-10-17 — Tegnsætning i ingredienslister rettes automatisk
+
+Brugerens cola-liste viste "karamelE150d", "(E338), , naturlige" og
+"aromaer(inkl.". Årsager: (1) produktsiden splittede E-numrene ud først og
+rensede hvert stykke for sig, så mellemrummet før E-nummeret blev trimmet væk;
+nu renses hele listen før splittet (som appen allerede gjorde). (2) Ingen kontrol
+af tegnsætning. `normalizeIngredientPunctuation` (web og app) fjerner dobbelte
+kommaer, indsætter mellemrum før parentes/E-nummer og efter komma/parentes og
+fjerner mellemrum før komma/punktum — både ved visning og når en liste gemmes.
+Decimaltal ("1,5 %") og E-nummer-varianter ("E160a(ii)") røres ikke.
+E-numre med bogstav (E150d, E160a …) er gyldige EU-koder og bevares.
