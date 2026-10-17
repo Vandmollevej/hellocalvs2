@@ -55,10 +55,11 @@ import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcSearchField
 import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.HcButton
+import dk.packroff.hellocal.ui.HcButtonKind
+import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.CaptureTimePickerSheet
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
-import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileSleepRangeSlider
 import dk.packroff.hellocal.screens.food.GlyphButton
@@ -296,6 +297,27 @@ fun ActivityCreateScreen(args: RouteArgs) {
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var pickDate by remember { mutableStateOf(false) }
+    // Træningspas: chosen category, exercises with sets and the open exercise popup.
+    var trainingCategory by remember { mutableStateOf<String?>(null) }
+    var entries by remember { mutableStateOf<List<TrainingEntry>>(emptyList()) }
+    var sheetCategory by remember { mutableStateOf<String?>(null) }
+    val trainingCatalog = rememberTrainingCatalog()
+
+    fun addExercise(category: String, key: String) {
+        if (option == null || trainingCategory != category) {
+            option = ActivityOption(key = TRAINING_SPORT[category] ?: "strength", label = t.t("activity.training.category.$category"))
+            trainingCategory = category
+            entries = listOf(newTrainingEntry(key, category))
+        } else {
+            entries = entries + newTrainingEntry(key, category)
+        }
+    }
+
+    fun changeActivity() {
+        option = null
+        trainingCategory = null
+        entries = emptyList()
+    }
     // Workout ("Added", user 2026-10-17): empty = none. Exercises follow each other from startedAt.
     var session by remember { mutableStateOf<List<SessionEntry>>(emptyList()) }
     var nextEntryId by remember { mutableIntStateOf(1) }
@@ -437,6 +459,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
                     if (ownKcal != null) put("caloriesBurned", ownKcal)
                     put("intensity", intensity)
                     put("distanceKm", if (showsDistance && km != null && km > 0) km else null)
+                    if (trainingCategory != null && entries.isNotEmpty()) put("exercises", entries.map { it.toBody() })
                 }
                 Api.post("/api/activities", body)
                 NativeHooks.onRegistrationChanged()
@@ -486,6 +509,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
     HcScreen(title = t.t("activity.title"), icon = { HcIcon("Activity", size = 20.dp, stroke = 2f, color = HcColors.White) }, bottom = if (current != null || activeSession.isNotEmpty()) footerContent else null, contentPadding = PaddingValues(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.SpaceBlock, bottom = HcDimens.SpaceSection)) {
         if (current == null) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                TrainingCategoryRows(onPick = { sheetCategory = it })
                 // ⊕ on a sport puts it here; several parts are saved together as one workout.
                 if (activeSession.isNotEmpty()) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -522,11 +546,27 @@ fun ActivityCreateScreen(args: RouteArgs) {
                 HcText(
                     current.label,
                     HcTypeRoles.Body,
-                    Modifier.clickable { option = null },
+                    Modifier.clickable { changeActivity() },
                     bold = true,
                     underline = true,
                     color = HcColors.Black,
                 )
+                val category = trainingCategory
+                if (category != null) {
+                    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                        HcSectionTitle(t.t("activity.training.exercises"))
+                        entries.forEachIndexed { index, entry ->
+                            TrainingExerciseCard(
+                                entry = entry,
+                                category = category,
+                                catalog = trainingCatalog,
+                                onChange = { next -> entries = entries.mapIndexed { i, e -> if (i == index) next else e } },
+                                onRemove = { entries = entries.filterIndexed { i, _ -> i != index } },
+                            )
+                        }
+                        HcButton(t.t("activity.training.addExercise"), onClick = { sheetCategory = category }, kind = HcButtonKind.Secondary)
+                    }
+                }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HcText(t.t("activity.startedAt"), HcTypeRoles.Small, color = HcColors.TextSecondary)
                     CaptureValueField(CaptureDates.dayMonthShort(startedAt.date, withYear = true, locale = t.locale), onClick = { pickDate = true })
@@ -595,6 +635,15 @@ fun ActivityCreateScreen(args: RouteArgs) {
                 }
             }
         }
+    }
+
+    sheetCategory?.let { category ->
+        TrainingExerciseSheet(
+            category = category,
+            catalog = trainingCatalog,
+            onPick = { key -> addExercise(category, key) },
+            onDismiss = { sheetCategory = null },
+        )
     }
 
     if (pickDate) {

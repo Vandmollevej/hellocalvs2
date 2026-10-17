@@ -2922,6 +2922,27 @@
     "save": "Enregistrer l'activité",
     "invalid": "Indique une durée supérieure à 0 — et les calories si elles ne peuvent pas être estimées.",
     "saveError": "Impossible d'enregistrer l'activité.",
+    "training": {
+      "title": "Séance d'entraînement",
+      "category": {
+        "machines": "Musculation sur machines",
+        "free_weights": "Poids libres",
+        "crossfit": "CrossFit"
+      },
+      "search": "Chercher un exercice en danois ou en anglais",
+      "noResults": "Aucun exercice trouvé",
+      "exercises": "Exercices",
+      "set": "Série {n}",
+      "reps": "rép.",
+      "weight": "Poids",
+      "bodyweight": "Poids du corps",
+      "addSet": "Ajouter une série",
+      "addExercise": "Ajouter un exercice",
+      "removeSet": "Supprimer la série",
+      "removeExercise": "Supprimer l'exercice",
+      "fewerReps": "Moins de répétitions",
+      "moreReps": "Plus de répétitions"
+    },
     "session": {
       "title": "Séance d'entraînement",
       "add": "Ajouter {name} à la séance",

@@ -1,3 +1,6 @@
+## 2026-10-17: Træningspas på Tilføj aktivitet
+
+Ny sektion "Træningspas" øverst på Tilføj aktivitet (over søgefeltet og "Mine favoritter"; web + native) med Styrketræning på maskiner, Løsvægte og CrossFit. Hver åbner et bundark med øvelserne (110 i alt, billede + navn) og søgefelt, der finder på både dansk og engelsk. Valgte øvelser vises med billedet som på en produktside og én bar pr. sæt: gentagelser på plus/minus, vægt på slider, "Tilføj sæt" nedenunder. Gemmes på aktiviteten (`activities.exercises`, migration `20261018000100_activity_exercises`); kcal regnes som før. Billederne er fra Free Exercise DB (public domain) i `public/training/`. Prøvet i browser (mobilbredde) uden database; native ikke kompileret lokalt. Øvelserne vises endnu ikke igen i kalenderen.
 ## 2026-10-17: Træningspas under Tilføj → Aktivitet
 
 - Hver aktivitetsrække har et ⊕ yderst til højre (bogmærket er væk; favorit sættes med swipe til højre som på madvarer). ⊕ lægger sporten i "Tilføjet" øverst (15 min, ±5 min pr. del, kan fjernes) med fælles starttidspunkt og taletest; samlet tid og anslået kcal vises, og Gem gemmer det hele som ét træningspas. Tryk på selve rækken registrerer stadig én aktivitet.

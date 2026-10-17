@@ -2922,6 +2922,27 @@
     "save": "Spara aktivitet",
     "invalid": "Ange en varaktighet över 0 — och kalorier, om de inte kan uppskattas.",
     "saveError": "Aktiviteten kunde inte sparas.",
+    "training": {
+      "title": "Träningspass",
+      "category": {
+        "machines": "Styrketräning i maskiner",
+        "free_weights": "Fria vikter",
+        "crossfit": "CrossFit"
+      },
+      "search": "Sök övning på danska eller engelska",
+      "noResults": "Inga övningar hittades",
+      "exercises": "Övningar",
+      "set": "Set {n}",
+      "reps": "repetitioner",
+      "weight": "Vikt",
+      "bodyweight": "Kroppsvikt",
+      "addSet": "Lägg till set",
+      "addExercise": "Lägg till övning",
+      "removeSet": "Ta bort set",
+      "removeExercise": "Ta bort övning",
+      "fewerReps": "Färre repetitioner",
+      "moreReps": "Fler repetitioner"
+    },
     "session": {
       "title": "Träningspass",
       "add": "Lägg till {name} i träningspasset",

@@ -104,6 +104,9 @@ const PUBLIC_STATIC_PREFIXES = [
   "/apple-icon",
   "/favicon",
   "/flag-",
+  // Træningspas-øvelsernes billeder (public domain, Free Exercise DB). Skal
+  // være åbne, så /_next/image kan hente dem uden cookie.
+  "/training/",
 ];
 
 // Beskyttede billeder: produkter, opskrifter, mærkelogoer, dummy-/målebilleder.

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
 import { estimateActivityKcal, isTrainingIntensity } from "@/lib/activity-met";
+import { parseTrainingEntries } from "@/lib/training-exercises";
 import { parseSessionItems, sessionStarts } from "@/lib/training-session";
 import { randomUUID } from "node:crypto";
 
@@ -33,13 +34,14 @@ export async function GET() {
 export async function POST(req: Request) {
   const body = await req.json();
   if (body && typeof body === "object" && "session" in body) return createSession(body.session);
-  const { sportType, startedAt, durationMinutes, caloriesBurned, intensity, distanceKm } = body as {
+  const { sportType, startedAt, durationMinutes, caloriesBurned, intensity, distanceKm, exercises } = body as {
     sportType?: string;
     startedAt?: string;
     durationMinutes?: number;
     caloriesBurned?: number;
     intensity?: unknown;
     distanceKm?: number | null;
+    exercises?: unknown;
   };
 
   // Kalorier må udelades: så anslås de fra MET (docs/ACTIVITY-PAL.md F3) ud
@@ -52,6 +54,8 @@ export async function POST(req: Request) {
   }
   const perceivedEffort = isTrainingIntensity(intensity) ? intensity : null;
   const distance = typeof distanceKm === "number" && distanceKm > 0 ? distanceKm : null;
+  // Træningspas: øvelser med sæt (src/lib/training-exercises.ts).
+  const trainingEntries = parseTrainingEntries(exercises);
 
   const parsedStartedAt = startedAt ? new Date(startedAt) : new Date();
   if (Number.isNaN(parsedStartedAt.getTime())) {
@@ -79,6 +83,7 @@ export async function POST(req: Request) {
         distanceKm: distance,
         perceivedEffort,
         energySource: caloriesBurned === undefined ? "ESTIMATED_MET" : "USER",
+        ...(trainingEntries ? { exercises: trainingEntries } : {}),
       },
     });
 

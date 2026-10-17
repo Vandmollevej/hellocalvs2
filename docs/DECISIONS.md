@@ -1,3 +1,12 @@
+## 2026-10-17: Træningspas — øvelser med sæt på en aktivitet
+
+Brugerens ønske: "Tilføj ny række øverst (overskrift) kaldet Træningspas … styrketræning på maskiner, løsvægte og crossfit … popup med alle øvelser med illustrationer og søgefelt … søge på både dansk og engelsk … en bar per sæt … sæt på plus/minus, vægt på slider-bar."
+
+- **Katalog:** `src/lib/training-exercises.ts` er eneste kilde (110 øvelser, dansk + engelsk navn, kategori `machines` / `free_weights` / `crossfit`). Native henter det via `GET /api/training-exercises`. Søgningen matcher alle ord i dansk eller engelsk navn uanset appens sprog; navnet vises på dansk for `da`, ellers engelsk.
+- **Billeder:** Free Exercise DB (github.com/yuhonas/free-exercise-db, Unlicense/public domain), startpositionen beskåret til kvadrat 384 px WebP i `public/training/<key>.webp`. Stien er åben uden login (`PUBLIC_STATIC_PREFIXES`), så `/_next/image` kan hente dem.
+- **Sportstype:** maskiner og løsvægte gemmes som `strength`, CrossFit som `crossfit`; kcal anslås fra MET som før (sæt/vægt påvirker ikke kcal).
+- **Lagring:** `activities.exercises` (JSONB) = `[{ key, sets: [{ weightKg, reps }] }]`. Serveren smider ukendte øvelser og ugyldige sæt væk (vægt 0–300 kg i halve kg, 1–100 gentagelser). 0 kg = kropsvægt.
+- **UI:** gentagelser på plus/minus (start 10), vægt kun på slider (maks 200/250/150 kg for maskiner/løsvægte/CrossFit; start 20 kg, CrossFit 0). "Tilføj sæt" kopierer forrige sæt.
 ## 2026-10-17: Eksterne kilder flettes automatisk ind ved scanning, oprettelse og søgning
 
 Brugeren: "Så snart en vare scannes, oprettes eller fremsøges skal eksterne

@@ -20,6 +20,13 @@ import {
   type WorkShiftEntry,
 } from "@/lib/sleep-window";
 import { clockToMinutes, durationMinutes, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
+import {
+  TrainingCategoryRows,
+  TrainingExerciseCard,
+  TrainingExerciseSheet,
+  newTrainingEntry,
+} from "@/components/activity/TrainingSession";
+import { TRAINING_SPORT, type TrainingCategory, type TrainingEntry } from "@/lib/training-exercises";
 import { SESSION_DEFAULT_MINUTES } from "@/lib/training-session";
 import { TrainingSessionCard, type SessionEntry } from "@/components/activity/TrainingSessionCard";
 
@@ -50,6 +57,26 @@ function ActivityCreateContent() {
   const [estimate, setEstimate] = useState<ActivityEstimate | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Træningspas: valgt kategori, øvelser med sæt og den åbne øvelses-popup.
+  const [trainingCategory, setTrainingCategory] = useState<TrainingCategory | null>(null);
+  const [entries, setEntries] = useState<TrainingEntry[]>([]);
+  const [sheetCategory, setSheetCategory] = useState<TrainingCategory | null>(null);
+
+  function addExercise(category: TrainingCategory, key: string) {
+    if (!option || trainingCategory !== category) {
+      setOption({ key: TRAINING_SPORT[category], label: t(`activity.training.category.${category}`), custom: false, pending: false });
+      setTrainingCategory(category);
+      setEntries([newTrainingEntry(key, category)]);
+      return;
+    }
+    setEntries((current) => [...current, newTrainingEntry(key, category)]);
+  }
+
+  function changeActivity() {
+    setOption(null);
+    setTrainingCategory(null);
+    setEntries([]);
+  }
   // Træningspas ("Tilføjet"): tom = intet pas. Øvelserne ligger efter hinanden fra startedAt.
   const [session, setSession] = useState<SessionEntry[]>([]);
   const [nextEntryId, setNextEntryId] = useState(1);
@@ -206,6 +233,7 @@ function ActivityCreateContent() {
           durationMinutes: totalMinutes,
           caloriesBurned: ownKcal,
           intensity,
+          exercises: trainingCategory && entries.length > 0 ? entries : undefined,
           distanceKm: showsDistance && Number(distanceKm) > 0 ? Number(distanceKm) : null,
         }),
       });
@@ -287,6 +315,7 @@ function ActivityCreateContent() {
       <div className="hf-page">
         {!option ? (
           <div className="flex flex-col gap-4">
+            <TrainingCategoryRows onPick={setSheetCategory} />
             {/* ⊕ på en sport lægger den her; flere dele gemmes samlet som ét træningspas. */}
             {session.length > 0 && (
               <>
@@ -319,9 +348,30 @@ function ActivityCreateContent() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
+            <button type="button" className="hf-btn-text self-start text-hf-black" onClick={changeActivity}>
               {option.label}
             </button>
+            {trainingCategory && (
+              <section className="flex flex-col gap-6">
+                <h2 className="hf-type-section-title">{t("activity.training.exercises")}</h2>
+                {entries.map((entry, index) => (
+                  <TrainingExerciseCard
+                    key={`${entry.key}-${index}`}
+                    entry={entry}
+                    category={trainingCategory}
+                    onChange={(next) => setEntries((current) => current.map((item, i) => (i === index ? next : item)))}
+                    onRemove={() => setEntries((current) => current.filter((_, i) => i !== index))}
+                  />
+                ))}
+                <button
+                  type="button"
+                  className="hf-control hf-btn-secondary w-full px-4"
+                  onClick={() => setSheetCategory(trainingCategory)}
+                >
+                  {t("activity.training.addExercise")}
+                </button>
+              </section>
+            )}
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.startedAt")}</span>
               {dateField}
@@ -412,6 +462,13 @@ function ActivityCreateContent() {
           </div>
         )}
       </div>
+      {sheetCategory && (
+        <TrainingExerciseSheet
+          category={sheetCategory}
+          onPick={(key) => addExercise(sheetCategory, key)}
+          onClose={() => setSheetCategory(null)}
+        />
+      )}
     </HfScreen>
   );
 }

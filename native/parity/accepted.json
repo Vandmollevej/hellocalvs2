@@ -69,7 +69,7 @@
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/activity/create": {
-    "src/app/activity/create/page.tsx": "30d1c51a0122ab4a",
+    "src/app/activity/create/page.tsx": "83a00cbd9307217f",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -77,9 +77,11 @@
     "src/components/FooterArc.tsx": "7e405515f5bd4257",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "b16396e5807051df",
+    "src/components/ProductImageCircle.tsx": "dfdd4a851ab4e2e4",
     "src/components/ProfileAvatarLink.tsx": "598cd23c3331619d",
     "src/components/SwipeableRow.tsx": "b705ce8b998cdeb0",
     "src/components/activity/ActivityPicker.tsx": "cc6327341a3cac48",
+    "src/components/activity/TrainingSession.tsx": "0f4fba5a9e572f3c",
     "src/components/activity/TrainingSessionCard.tsx": "260b4b7db5ac4b5d",
     "src/components/add/AddMenuList.tsx": "bb07041c0b1742cc",
     "src/components/add/AddMenuSheet.tsx": "da5cc2553ea30e9e",
@@ -98,6 +100,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
+    "src/components/ui/RemoveCircleButton.tsx": "d228868894a54436",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/add/[id]": {

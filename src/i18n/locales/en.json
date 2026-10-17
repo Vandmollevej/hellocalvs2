@@ -2922,6 +2922,27 @@
     "save": "Save activity",
     "invalid": "Enter a duration above 0 — and calories if they can't be estimated.",
     "saveError": "The activity could not be saved.",
+    "training": {
+      "title": "Workout",
+      "category": {
+        "machines": "Strength training on machines",
+        "free_weights": "Free weights",
+        "crossfit": "CrossFit"
+      },
+      "search": "Search exercise in Danish or English",
+      "noResults": "No exercises found",
+      "exercises": "Exercises",
+      "set": "Set {n}",
+      "reps": "reps",
+      "weight": "Weight",
+      "bodyweight": "Bodyweight",
+      "addSet": "Add set",
+      "addExercise": "Add exercise",
+      "removeSet": "Remove set",
+      "removeExercise": "Remove exercise",
+      "fewerReps": "Fewer reps",
+      "moreReps": "More reps"
+    },
     "session": {
       "title": "Workout",
       "add": "Add {name} to the workout",
