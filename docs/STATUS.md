@@ -1,3 +1,8 @@
+## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
+
+- Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
+- Ny side `/product/[id]/report-error` (fejlmelding direkte på en vare). Slet på indscanninger skjuler varen (`product_scans.hiddenAt`, migration `20261017230000_product_scan_hidden`), til den scannes igen. Vejninger kan swipes væk i kalenderen. Web + native; native ikke kompileret lokalt.
+
 ## 2026-10-17: Open Food Facts-billeder søges online og fritlægges løbende
 
 - Ny robot "Open Food Facts-billeder: søg online og fritlæg" (hver time, 50 varer ad gangen, scannede varer først) sender OFF-varer, der aldrig er behandlet, gennem samme Google-søgning og fritlægning som egne fotos. Ikke prøvet mod rigtig database herfra.

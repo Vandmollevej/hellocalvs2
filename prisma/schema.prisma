@@ -2740,6 +2740,8 @@ model ProductScan {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   scannedAt DateTime @default(now())
+  // "Slet" på Dine indscanninger: skjult, indtil varen scannes igen (scannedAt > hiddenAt).
+  hiddenAt  DateTime?
 
   @@unique([userId, productId])
   @@index([userId, scannedAt])

@@ -1055,6 +1055,14 @@
       ]
     },
     {
+      "route": "/product/[id]/report-error",
+      "web": "src/app/product/[id]/report-error/page.tsx",
+      "status": "ported",
+      "native": [
+        "native/shared/src/commonMain/kotlin/dk/packroff/hellocal/screens/food/RegistrationScreens.kt"
+      ]
+    },
+    {
       "route": "/product/create",
       "web": "src/app/product/create/page.tsx",
       "status": "ported",

@@ -50,7 +50,8 @@ data class FoodSwipeTexts(val favorite: String, val copy: String, val reportErro
 @Composable
 fun FoodSwipeableRow(
     texts: FoodSwipeTexts,
-    onDelete: () -> Unit,
+    /** null = no Slet (e.g. search results: products you can't delete from the list). */
+    onDelete: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onFavorite: (() -> Unit)? = null,
     isFavorite: Boolean = false,
@@ -61,7 +62,7 @@ fun FoodSwipeableRow(
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current.density
-    val rightWidth = ACTION_WIDTH * (1 + rightActions.size + (if (onReportError != null) 1 else 0))
+    val rightWidth = ACTION_WIDTH * (rightActions.size + (if (onReportError != null) 1 else 0) + (if (onDelete != null) 1 else 0))
     val leftWidth = (if (onFavorite != null) ACTION_WIDTH else 0f) + (if (onCopyToAccount != null) ACTION_WIDTH else 0f)
     var dragX by remember { mutableStateOf(0f) }
     var dragging by remember { mutableStateOf(false) }
@@ -89,7 +90,7 @@ fun FoodSwipeableRow(
                 onReportError()
                 dragX = 0f
             }
-            SwipeAction(texts.delete, HcColors.RedDark, icon = { HcIcon("Trash", size = 20.dp, color = HcColors.White) }) {
+            if (onDelete != null) SwipeAction(texts.delete, HcColors.RedDark, icon = { HcIcon("Trash", size = 20.dp, color = HcColors.White) }) {
                 onDelete()
                 dragX = 0f
             }
@@ -114,7 +115,7 @@ fun FoodSwipeableRow(
                             dragging = false
                             dragX = when {
                                 leftWidth > 0 && dragX > leftWidth / 2 -> leftWidth
-                                dragX < -rightWidth / 2 -> -rightWidth
+                                rightWidth > 0 && dragX < -rightWidth / 2 -> -rightWidth
                                 else -> 0f
                             }
                         },
@@ -122,7 +123,7 @@ fun FoodSwipeableRow(
                             dragging = false
                             dragX = when {
                                 leftWidth > 0 && dragX > leftWidth / 2 -> leftWidth
-                                dragX < -rightWidth / 2 -> -rightWidth
+                                rightWidth > 0 && dragX < -rightWidth / 2 -> -rightWidth
                                 else -> 0f
                             }
                         },

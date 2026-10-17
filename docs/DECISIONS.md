@@ -5888,6 +5888,10 @@ fjerner mellemrum før komma/punktum — både ved visning og når en liste gemm
 Decimaltal ("1,5 %") og E-nummer-varianter ("E160a(ii)") røres ikke.
 E-numre med bogstav (E150d, E160a …) er gyldige EU-koder og bevares.
 
+## 2026-10-17: Favorit kun ved swipe, forsidens række i alle lister
+
+Brugeren: "Man kan kun tilføje favorit ved at swipe til højre. Og man kan altid slette og fejlmelde ved swipe til venstre … alle steder det oplistes tilføjelser skal visningen fra forsiden være bestemmende." Lister med varer har derfor ingen favoritknap; `ProductResultRow` (web) og `FoodProductResultRow` (native) er swipe-rækker med pil. Fejl på en vare uden registrering går til `/product/[id]/report-error` (samme skærm som registreringens). Slet på "Dine indscanninger" sletter ikke varen, men sætter `ProductScan.hiddenAt`; en ny scanning (`scannedAt > hiddenAt`) viser den igen. Varesidens egen favoritknap (ikke en liste) er bevaret.
+
 ## 2026-10-17: Admin "Brugerscanninger"
 
 - Ny side under Varedatabase (`/admin/product-database/scans`): hver vare, en bruger har scannet — både kendte varer (`product_scans`, fx fra Open Food Facts) og varer brugeren selv har oprettet — med hvem, hvornår, kilde og status, nyeste først (300 rækker). Hver række åbner varen i admin, så den kan rettes. Kode: `src/lib/admin-user-scans.ts`. Kun scanninger efter deployet af #532 er med for kendte varer.

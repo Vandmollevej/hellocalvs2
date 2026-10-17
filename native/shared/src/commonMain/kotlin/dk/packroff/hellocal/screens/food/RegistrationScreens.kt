@@ -103,11 +103,14 @@ fun RegistrationScreen(args: RouteArgs) {
 }
 
 /**
- * Native port of src/app/registration/[id]/report-error/page.tsx — pick the
+ * Native port of src/components/report/ReportErrorScreen.tsx
+ * (/registration/[id]/report-error and /product/[id]/report-error) — pick the
  * wrong points of the product (green "!" circles) and describe each correction.
+ * [byProduct]: the id is a product id ("Fejl" on search, favourites, my scans,
+ * foods — every list of products has it, user 2026-10-17), not a registration id.
  */
 @Composable
-fun ReportErrorScreen(args: RouteArgs) {
+fun ReportErrorScreen(args: RouteArgs, byProduct: Boolean = false) {
     val t = LocalTranslator.current
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
@@ -127,8 +130,11 @@ fun ReportErrorScreen(args: RouteArgs) {
 
     LaunchedEffect(id) {
         try {
-            val reg = runCatching { ApiJson.decodeFromJsonElement(RegistrationResponse.serializer(), Api.get("/api/registrations/$id")).registration }.getOrNull()
-            val pid = reg?.productId
+            val pid = if (byProduct) {
+                id.takeIf { it.isNotBlank() }
+            } else {
+                runCatching { ApiJson.decodeFromJsonElement(RegistrationResponse.serializer(), Api.get("/api/registrations/$id")).registration }.getOrNull()?.productId
+            }
             if (pid != null) {
                 val product = runCatching { ApiJson.decodeFromJsonElement(ProductResponse.serializer(), Api.get("/api/products/$pid")).product }.getOrNull()
                 productId = pid

@@ -187,7 +187,7 @@ fun HomeDailyList(modifier: Modifier = Modifier) {
                             onFavorite = if (entry.productId != null) ({ favoriteEntry(entry.productId) }) else null,
                             isFavorite = entry.productId != null && entry.productId in favoriteIds,
                             onCopyToAccount = if (copyTargets.isNotEmpty()) ({ startCopy(entry.id) }) else null,
-                            onReportError = { nav.push("/registration/${entry.id}/report-error") },
+                            onReportError = if (entry.productId != null) ({ nav.push("/registration/${entry.id}/report-error") }) else null,
                             onDelete = { confirmDelete = entry },
                         ) {
                             FoodRow(

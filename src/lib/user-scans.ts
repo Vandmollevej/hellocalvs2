@@ -14,6 +14,9 @@ import { hasEstimatedMacros } from "@/lib/nutrients";
 // Facts), skal også stå på listen. Opslaget af stregkoden gemmer derfor en
 // ProductScan, og listen samler egne oprettede varer og scannede varer.
 // createdAt er så tidspunktet for den seneste scanning.
+//
+// Bruger 2026-10-17: indscanninger kan slettes ved swipe. Det skjuler kun
+// varen fra listen (ProductScan.hiddenAt); scannes den igen, kommer den tilbage.
 
 const SCAN_HISTORY_DAYS = 90;
 const SCAN_HISTORY_LIMIT = 200;
@@ -40,6 +43,17 @@ export async function recordProductScanSafely(userId: string, productId: string)
       create: { userId, productId, scannedAt },
     })
     .catch((error) => console.error("Could not record product scan", error));
+}
+
+// Skjuler en vare fra brugerens indscanninger (swipe → Slet).
+export async function hideUserScan(userId: string, productId: string) {
+  const now = new Date();
+  await prisma.productScan.upsert({
+    where: { userId_productId: { userId, productId } },
+    update: { hiddenAt: now },
+    // Egen oprettet vare uden scanningsrække: scannedAt før hiddenAt holder den skjult.
+    create: { userId, productId, scannedAt: new Date(0), hiddenAt: now },
+  });
 }
 
 const scanProductSelect = (scannerId: string, profileId: string) =>
@@ -77,6 +91,11 @@ export async function listUserScans(scannerId: string, profileId: string): Promi
       select: { scannedAt: true, product: { select } },
     }),
   ]);
+  const hidden = await prisma.productScan.findMany({
+    where: { userId: scannerId, hiddenAt: { not: null } },
+    select: { productId: true, hiddenAt: true },
+  });
+  const hiddenAt = new Map(hidden.map((row) => [row.productId, row.hiddenAt as Date]));
 
   // Samme vare kan være både oprettet og scannet: seneste tidspunkt vinder.
   type Row = { product: (typeof created)[number]; at: Date };
@@ -90,6 +109,10 @@ export async function listUserScans(scannerId: string, profileId: string): Promi
   }
 
   return [...byId.values()]
+    .filter(({ product, at }) => {
+      const hiddenSince = hiddenAt.get(product.id);
+      return !hiddenSince || at > hiddenSince;
+    })
     .sort((a, b) => b.at.getTime() - a.at.getTime())
     .slice(0, SCAN_HISTORY_LIMIT)
     .map(({ product, at }) => ({

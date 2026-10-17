@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorized } from "@/lib/session";
 import { getProfileContext } from "@/lib/family-access";
-import { listUserScans, recordProductScanSafely } from "@/lib/user-scans";
+import { hideUserScan, listUserScans, recordProductScanSafely } from "@/lib/user-scans";
 import { getSessionUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
@@ -16,6 +16,21 @@ export async function GET() {
   } catch (error) {
     console.error("GET /api/my-scans failed", error);
     return NextResponse.json({ error: "Kunne ikke hente indscanninger" }, { status: 500 });
+  }
+}
+
+// Swipe → Slet: skjuler varen fra listen, indtil den scannes igen.
+export async function DELETE(request: Request) {
+  try {
+    const context = await getProfileContext("registrations", "VIEWED");
+    if (!context) return unauthorized();
+    const productId = new URL(request.url).searchParams.get("productId");
+    if (!productId) return NextResponse.json({ error: "productId mangler" }, { status: 400 });
+    await hideUserScan(context.login.id, productId);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("DELETE /api/my-scans failed", error);
+    return NextResponse.json({ error: "Kunne ikke slette indscanningen" }, { status: 500 });
   }
 }
 

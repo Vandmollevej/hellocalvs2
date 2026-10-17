@@ -55,6 +55,7 @@ import kotlin.math.roundToInt
 fun CaptureSwipeableRow(
     onDelete: () -> Unit,
     onFavorite: (() -> Unit)? = null,
+    isFavorite: Boolean = false,
     onCopyToAccount: (() -> Unit)? = null,
     onReportError: (() -> Unit)? = null,
     surface: Color = HcColors.Tan,
@@ -72,6 +73,7 @@ fun CaptureSwipeableRow(
         ),
         onDelete = onDelete,
         onFavorite = onFavorite,
+        isFavorite = isFavorite,
         onCopyToAccount = onCopyToAccount,
         onReportError = onReportError,
         surface = surface,
