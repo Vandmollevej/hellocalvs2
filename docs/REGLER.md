@@ -117,15 +117,16 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
   udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
   flisen. Se DECISIONS.md 2026-10-11.
-- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
-  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
-  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10, ændret 2026-10-17)**:
+  brandet står til højre for cirklen, subbrandet oven over det — **kun som logo**.
+  Har brandet/subbrandet intet logo, vises intet (bruger 2026-10-17: Coca-Cola stod
+  som "Coca-Cola Europacific Partners Services Bulgaria EOOD", fordi Open Food
+  Facts' brand-felt indeholdt producentens firmanavn, og navnet blev vist som tekst).
+  Brands uden logo findes i admin → Produkt-database → Brands → "Uden logo", hvor
+  hvert brand linker til alle dets varer, så logoet kan lægges ind. Ingen
+  hardcodede navnelister til at rette brandnavne. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
-  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
-- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
-  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
-  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
-  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-17.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -192,6 +193,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
+- **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
 - **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
 - **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
