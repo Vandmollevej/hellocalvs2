@@ -3796,7 +3796,7 @@
       "DAILY": "Elke dag",
       "WEEKLY": "Elke week",
       "MONTHLY": "Elke maand",
-      "MANUAL": "Alleen als ik het wil"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knoppen",

@@ -3796,7 +3796,7 @@
       "DAILY": "Hver dag",
       "WEEKLY": "Hver uke",
       "MONTHLY": "Hver måned",
-      "MANUAL": "Bare når jeg vil"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knapper",

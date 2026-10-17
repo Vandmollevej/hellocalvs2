@@ -3796,7 +3796,7 @@
       "DAILY": "Chaque jour",
       "WEEKLY": "Chaque semaine",
       "MONTHLY": "Chaque mois",
-      "MANUAL": "Seulement quand je veux"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Boutons",
