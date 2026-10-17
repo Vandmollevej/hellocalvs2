@@ -69,6 +69,9 @@ export default function AdminVerifyPage() {
       <Link href="/admin/login" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
         Ingen adgang til authenticator? Log ind med Face ID / passkey
       </Link>
+      <Link href="/admin/forgot-password" className="hf-type-body mt-2 text-center text-hf-green-dark underline">
+        Har aldrig oprettet koden eller mistet den? Få mail og ny QR-kode
+      </Link>
     </div>
   );
 }
