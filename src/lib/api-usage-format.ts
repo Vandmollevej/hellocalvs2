@@ -12,7 +12,7 @@ export const STATE_LABEL: Record<UsageState, string> = {
 
 export const STATE_CHIP: Record<UsageState, string> = {
   ok: "bg-hf-green-light text-hf-green-dark",
-  warn: "bg-hf-warning-bg text-hf-warning-text",
+  warn: "bg-hf-warning-bg text-hf-warning",
   fail: "bg-hf-red-dark text-hf-white",
   idle: "bg-hf-tan text-text-secondary",
   missing: "bg-hf-tan text-text-secondary",

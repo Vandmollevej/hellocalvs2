@@ -5819,3 +5819,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - Brugerens valg: "Ja, som reserve". `quick-enrichment-recovery` prøver én gang pr. vare (`eanReserveAt`), når jobbet er færdigt eller varen er over 10 min gammel og stadig mangler energi eller navn: `applyEanReserve` (`src/lib/quick-product-enrichment.ts`) bruger OFF-posten fra `off_products` (gemmes allerede ved scanningen, også de "tynde"), ellers hentes den.
 - Energien bruges kun, når kcal hænger sammen med makroerne (±15 %) OG matcher et energital (kcal eller kJ, ±5 %) i telefonens/serverens tekstlæsning af etiketten (`src/lib/ean-reserve-match.ts`, test). Navnet kun, når et af dets ord står på forsiden. Kilde = LABEL (producentdata), aldrig skøn. Bruger ikke OpenAI.
 - Websøgning (Google Custom Search) var planlagt som næste kilde, men nøglen afvises ("Requests to this API … are blocked") — samme grund til at billed-robotten finder 0 billeder. Kræver at Custom Search API tillades på nøglen i Google Cloud.
+
+## 2026-10-17: Kendte API-fejl forklares på admin → API-forbrug
+
+- Brugerens ønske: en advarselstype på API-oversigten i stedet for rå fejltekst. `src/lib/api-error-explain.ts` oversætter udbyderens fejl (Google: API_KEY_SERVICE_BLOCKED, SERVICE_DISABLED, ugyldig nøgle, fakturering, kvote; generelt 401) til overskrift, handling og link til hvor det rettes; kortet viser det som en gul advarselsboks. Nøgler skjules altid i viste og gemte fejl (`redactSecrets`).

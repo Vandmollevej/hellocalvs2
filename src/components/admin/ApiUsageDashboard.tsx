@@ -83,7 +83,19 @@ function ServiceTile({ service, onSaved }: { service: ServiceOverview; onSaved: 
             .join(" · ")}
         </p>
       )}
-      <p className="hf-type-small text-text-secondary">{service.stateText}</p>
+      {service.problem ? (
+        <div className="flex flex-col gap-1 rounded-card bg-hf-warning-bg p-2">
+          <p className="hf-type-strong text-hf-warning">{service.problem.title}</p>
+          <p className="hf-type-small text-hf-warning">{service.problem.action}</p>
+          {service.problem.fixUrl && (
+            <a href={service.problem.fixUrl} target="_blank" rel="noreferrer" className="hf-type-small text-hf-warning underline">
+              Ret det hos udbyderen
+            </a>
+          )}
+        </div>
+      ) : (
+        <p className="hf-type-small text-text-secondary">{service.stateText}</p>
+      )}
       <p className="hf-type-small text-text-muted">
         {service.spentNote ??
           (live

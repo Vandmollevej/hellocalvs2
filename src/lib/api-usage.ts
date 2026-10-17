@@ -3,6 +3,7 @@ import { ensureSecretsLoaded } from "@/lib/api-keys/store";
 import { LOW_BALANCE_USD, getOpenAiUsage, type OpenAiUsage } from "@/lib/openai-usage";
 import { monthKey } from "@/lib/api-usage-record";
 import { formatMoney, type UsageState } from "@/lib/api-usage-format";
+import { explainApiError, redactSecrets, type ApiProblem } from "@/lib/api-error-explain";
 
 // Admin → API-forbrug (docs/DECISIONS.md 2026-10-16): status, månedens
 // forbrug og budget for hver tjeneste, der koster penge. OpenAI læses live
@@ -138,6 +139,8 @@ export type ServiceOverview = {
   budgetUse: number | null;
   priceNote: string;
   billingUrl: string;
+  /** Kendt fejl (fx afvist nøgle) med hvad der skal gøres og hvor. */
+  problem: ApiProblem | null;
 };
 
 export type ApiUsageOverview = {
@@ -228,6 +231,7 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
         spent,
         spentNote: openai.costs.available ? null : openai.costs.message,
         budgetUse: use,
+        problem: null,
       };
     }
 
@@ -236,12 +240,16 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
     const use = spent !== null && budget ? spent / budget : null;
     let state: ServiceState;
     let stateText: string;
+    let problem: ApiProblem | null = null;
     if (!configured) {
       state = "missing";
       stateText = "Ingen nøgle — tjenesten er ikke i brug.";
     } else if (row?.lastErrorAt && (!row.lastOkAt || row.lastErrorAt > row.lastOkAt)) {
       state = "fail";
-      stateText = `Seneste kald fejlede: ${row.lastError ?? "ukendt fejl"}`;
+      problem = explainApiError(service.id, row.lastError);
+      stateText = problem
+        ? `${problem.title}. ${problem.action}`
+        : `Seneste kald fejlede: ${redactSecrets(row.lastError ?? "ukendt fejl")}`;
     } else if (!row) {
       state = "idle";
       stateText = "Ingen kald denne måned.";
@@ -252,7 +260,7 @@ export async function getApiUsageOverview(now = new Date(), forceStatus = false)
     const alertReached = alertAt !== null && spent !== null && spent >= alertAt;
     const overBudget = state === "ok" || state === "idle" ? budgetState(use, alertReached, alertAt, service.currency) : null;
     if (overBudget) ({ state, text: stateText } = overBudget);
-    return { ...base, state, stateText, alertReached, calls, errors: row?.errors ?? 0, spent, spentNote: null, budgetUse: use };
+    return { ...base, state, stateText, problem, alertReached, calls, errors: row?.errors ?? 0, spent, spentNote: null, budgetUse: use };
   });
 
   return { checkedAt: now.toISOString(), month, services, openai };

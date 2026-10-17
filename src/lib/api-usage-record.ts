@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { redactSecrets } from "@/lib/api-error-explain";
 
 // Tælling af kald til betalte API'er (admin → API-forbrug, src/lib/api-usage.ts).
 // Egen lille fil, så sms/mail/places kan importere den uden resten.
@@ -21,7 +22,7 @@ export function monthKey(date = new Date()) {
 export function recordApiCall(serviceId: PaidServiceId, ok: boolean, error?: string | null) {
   const now = new Date();
   const month = monthKey(now);
-  const message = ok ? null : (error ?? "Ukendt fejl").slice(0, 300);
+  const message = ok ? null : redactSecrets(error ?? "Ukendt fejl").slice(0, 300);
   void prisma.apiUsageMonth
     .upsert({
       where: { serviceId_month: { serviceId, month } },
