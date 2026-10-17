@@ -1,3 +1,7 @@
+## 2026-10-17: Flere træningsformer under Tilføj → Aktivitet
+
+- 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
+
 ## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
 
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
