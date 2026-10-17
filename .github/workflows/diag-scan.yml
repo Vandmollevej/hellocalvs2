@@ -15,11 +15,18 @@ jobs:
           set -uo pipefail
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
-          echo "=== Latest 10 user-created products ==="
-          q "SELECT p.id, to_char(p.\"createdAt\",'MM-DD HH24:MI') t, left(p.name,30) AS name, p.\"kcalPer100g\" kcal, p.\"nutritionMissing\" nm, p.\"pendingFields\" pf, p.\"imageUrl\" IS NOT NULL img FROM products p WHERE p.\"createdByUserId\" IS NOT NULL ORDER BY p.\"createdAt\" DESC LIMIT 10"
-          echo "=== AI/scan errors+warnings last 2 days ==="
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, left(coalesce(\"productId\",'-'),8) pid, event, level, \"durationMs\" ms, left(message,700) msg FROM debug_logs WHERE level IN ('error','warn') AND category IN ('ai','scan') AND \"createdAt\" > now() - interval '2 days' ORDER BY \"createdAt\" DESC LIMIT 80"
-          echo "=== All logs for the 3 newest user-created products ==="
-          q "WITH prods AS (SELECT id FROM products WHERE \"createdByUserId\" IS NOT NULL ORDER BY \"createdAt\" DESC LIMIT 3), flows AS (SELECT DISTINCT \"flowId\" FROM debug_logs WHERE \"productId\" IN (SELECT id FROM prods) AND \"flowId\" IS NOT NULL) SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, left(coalesce(\"productId\",'-'),8) pid, category, event, level, \"durationMs\" ms, left(message,500) msg, left(data::text,600) data FROM debug_logs WHERE \"productId\" IN (SELECT id FROM prods) OR \"flowId\" IN (SELECT \"flowId\" FROM flows) ORDER BY \"createdAt\" LIMIT 300"
-          echo "=== Quick enrichment jobs (newest 6) ==="
-          q "SELECT left(\"productId\",8) pid, attempts, \"finishedAt\", left(\"lastError\",400) err FROM quick_enrichment_jobs ORDER BY \"createdAt\" DESC LIMIT 6"
+          P=cmvawb4ue000s01oeu5bem334
+          echo "=== Letmaelk product now ==="
+          q "SELECT id, left(name,40) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"nutrientSources\"::text src, \"pendingFields\" pf, \"imageUrl\", \"pendingImageUrl\", \"updatedAt\" FROM products WHERE id='$P'"
+          echo "=== Its original/back photos ==="
+          q "SELECT step, left(\"imageUrl\",70) url, \"localScannedAt\", \"analyzedAt\", left(coalesce(\"localResult\"->>'text',''),400) text, \"localResult\"->>'confidence' conf, \"createdAt\" FROM product_back_photos WHERE \"productId\"='$P' ORDER BY \"createdAt\""
+          echo "=== Its enrichment job ==="
+          q "SELECT attempts, \"finishedAt\", left(\"lastError\",300) err, left(input::text,900) input FROM quick_enrichment_jobs WHERE \"productId\"='$P'"
+          echo "=== Its logs since yesterday 19:00 UTC ==="
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, level, left(message,300) msg FROM debug_logs WHERE \"productId\"='$P' AND \"createdAt\" > '2026-10-16 19:00' ORDER BY \"createdAt\" LIMIT 80"
+          echo "=== Recovery job runs (last 10) ==="
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, event, level, left(message,300) msg FROM debug_logs WHERE \"createdAt\" > now() - interval '12 hours' AND (event LIKE '%recovery%' OR event = 'local_reread' OR event LIKE 'enrich_front%') ORDER BY \"createdAt\" DESC LIMIT 15"
+          echo "=== OpenAI errors last 12h ==="
+          q "SELECT count(*), max(\"createdAt\") FROM debug_logs WHERE category='ai' AND level='error' AND \"createdAt\" > now() - interval '12 hours'"
+          echo "=== Running app version ==="
+          grep -E '^HELLOCAL_TAG=' .env.production || true
