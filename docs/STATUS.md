@@ -1,3 +1,8 @@
+## 2026-10-17: Ingen rød kant i swipe-kortets hjørne
+
+- Knapperne bag en lukket swipe-række skjules nu (web `SwipeableRow`, native `FoodSwipeableRow`), så Slet ikke skinner rødt igennem kortets runde hjørne nederst til højre (set på Screeninger).
+- Swipe med fingeren blev afbrudt med det samme i den nye fælles `SwipeableRow` (#539): når rækken overtog fingeren fra linket, boblede linkets `lostpointercapture` op og lukkede trækket. Nu reagerer den kun på fladens egen. Prøvet i browser på mobilbredde med touch-swipe (før: ingen bevægelse, efter: Aktivér/Fjern vises).
+
 ## 2026-10-17: Alle swipe-rækker ser ens ud
 
 - Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.
