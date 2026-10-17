@@ -24,18 +24,18 @@ export function RobotRow({ job, state }: { job: JobDefinition; state: JobState }
         <p className={`hf-type-caption max-w-md ${longDescription && !expanded ? "line-clamp-2" : ""}`}>
           {job.description}
         </p>
+        <p className="hf-type-small text-text-muted">
+          {job.runtime === "app" ? "Kører i appen (nattekørsel)" : `Container: ${job.container}`}
+        </p>
         {longDescription && (
           <button
             type="button"
             onClick={() => setExpanded((open) => !open)}
-            className="hf-btn-text hf-btn--inline"
+            className="hf-btn-text hf-btn--inline mt-1"
           >
             {expanded ? "Vis mindre" : "Læs mere"}
           </button>
         )}
-        <p className="hf-type-small text-text-muted">
-          {job.runtime === "app" ? "Kører i appen (nattekørsel)" : `Container: ${job.container}`}
-        </p>
       </td>
       <td className="py-3 pr-4">
         <Toggle checked={enabled} ariaLabel={enabled ? "Slå fra" : "Slå til"} disabled={busy} onChange={toggleEnabled} />
