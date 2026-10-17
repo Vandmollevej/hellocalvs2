@@ -61,6 +61,8 @@ function ReadingSkeleton({ label, children }: { label: string; children: ReactNo
   );
 }
 
+import { OFF_PHOTO_POINTS } from "@/lib/points-constants";
+
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
   NUTRITION: "photoAward.photoTypeNutrition",
@@ -92,12 +94,15 @@ type Product = {
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
   brand: { name: string; logoUrl?: string | null } | null;
+  subbrandLogoUrl?: string | null;
   // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
   packageSizeText?: string | null;
   variant?: string | null;
   imageUrl?: string | null;
+  externalSource?: string | null;
+  photoSubmissionUrl?: string | null;
   // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
   // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
   pendingImageUrl?: string | null;
@@ -685,6 +690,16 @@ export function AddProductView({
 
         {view && (
           <>
+            {!isLoading && !forDish && !!id && state.status === "loaded" &&
+              state.product.externalSource === "OPEN_FOOD_FACTS" &&
+              !state.product.photoSubmissionUrl && (
+                <Link
+                  href={`/add/${id}/new-photo`}
+                  className="hf-type-small hf-type-strong hf-control flex items-center justify-center bg-hf-black px-4 text-center text-hf-white"
+                >
+                  {t("photoAward.offBannerSingle", { points: OFF_PHOTO_POINTS })}
+                </Link>
+              )}
             {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
@@ -741,6 +756,16 @@ export function AddProductView({
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
                       bund og venstre kant 3/4 inde; uden logo brandnavnet i
                       fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
+                  {/* Subbrand-logo (Brand - Subbrand i logomappen) ligger
+                      oven over brand-logoet. */}
+                  {view.brand && view.brand.logoUrl && view.subbrandLogoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={view.subbrandLogoUrl}
+                      alt=""
+                      className="pointer-events-none absolute bottom-[95px] left-3/4 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                    />
+                  )}
                   {view.brand &&
                     (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element

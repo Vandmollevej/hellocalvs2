@@ -53,7 +53,28 @@ export async function GET(
             select: { amountGrams: true },
           })
         : null;
-      return NextResponse.json({ product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null } });
+      // Subbrand-logo (logomappen: «Brand - Subbrand»): vises oven over
+      // brand-logoet, når subbrandet har et logo.
+      const subbrandLogo =
+        product.brand && product.subbrand
+          ? await prisma.brand
+              .findFirst({
+                where: {
+                  name: { equals: `${product.brand.name} - ${product.subbrand}`, mode: "insensitive" },
+                  logoUrl: { not: null },
+                },
+                select: { logoUrl: true },
+              })
+              .catch(() => null)
+          : null;
+      return NextResponse.json({
+        product: {
+          ...product,
+          nutrients,
+          lastAmountGrams: last?.amountGrams ?? null,
+          subbrandLogoUrl: subbrandLogo?.logoUrl ?? null,
+        },
+      });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose

@@ -5,6 +5,9 @@ besluttes: tilføj den HER først (og i DECISIONS.md hvis den er arkitektonisk).
 Søg aldrig i STATUS.md/DECISIONS.md/gamle sessioner efter en regel — står den
 ikke her, er den ikke registreret og skal tilføjes.
 
+## Mapper og filorganisering
+
+- **Opret kun de præcise mapper, Peter udtrykkeligt befaler.** Opret aldrig ekstra undermapper, brandmapper, arkivmapper eller sorteringsmapper på eget initiativ. En tilladelse til én mappe giver ikke tilladelse til undermapper. Kilde: direkte brugerinstruks 2026-10-11.
 ## Varer og navngivning
 
 - **Key-format**: `Brand Produktnavn (Mængde)`. Mængden står præcis én gang;
@@ -50,6 +53,18 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Logoer og billeder
 
+- **Logooprydning 2026-10-17 (Peter):** Alle færdige filer i hovedmappen `Logoer` bevares. Gengangere af disse fjernes fra `Originale` (også ZIP-indhold), `Mangler udklipning` og `Afvigere` efter sammenligning. Reglen om at bevare produktfotos gælder fortsat; samme mærke på et produktfoto gør ikke fotoet til en logodublet.
+
+- **OFF-produktfotos: kantbeskæring (Peter, 2026-10-12)**: I `Produkter/Lidl og Aldi`, `Produkter/Kvickly billeder`, `Produkter/Änglamark` og `Produkter/Nøglehul og Økologi` beskæres billeder rektangulært omkring produktet. Ingen baggrundsfjernelse eller ændring af produktets udseende. Erstat originalerne med kontrollerede beskæringer under samme filnavne; behold ikke originalkopier. Billeder i ZIP-filer skal også beskæres og gemmes tilbage i de samme ZIP-filer (udtrykkeligt bekræftet af Peter). Regneark ændres ikke.
+
+- **Logoarbejde 2026-10-12**: Slå først logoet op på nettet. Eneste alternativ til det indbyggede AI-billedværktøj er opslag efter originale online logoassets; almindelig alpha-reparation og SVG-til-PNG-rendering er ikke godkendt. Den tidligere tilladelse til tabsfri alpha=0-kanttrim gælder stadig. Fortsæt arbejdet uden stop for nye spørgsmål; en særskilt agent håndterer afklaringer (Peters direkte instruktion).
+
+- **Oprydning af logodubletter gælder kun logofiler, ikke produktfotos**, også når et produktfoto viser et mærke, som allerede har et færdigt logo (Peter, 2026-10-12).
+
+- Færdige logofiler hedder kun **Brand** eller **Brand - Subbrand**. Ingen ord som færdig, restaureret, transparent eller farve/form som opdigtet subbrand. Dubletter sammenholdes visuelt, og den bedste beholdes (Peter, 2026-10-11).
+- Denne logorestaurering bruger det indbyggede AI-billedværktøj; eksisterende originale logoassets må findes online. Ingen almindelig rasterbehandling uden udtrykkelig undtagelse fra Peter. Logoets officielle artwork skal bevares, emballageperspektiv rettes, baggrund fritlægges og gennemsigtige margener trimmes.
+- Peter har godkendt tabsfri beskæring med almindelige værktøjer KUN af helt gennemsigtige kantpixels (alpha = 0). Alle pixels med alpha > 0 bevares uændret; ingen anden almindelig rasterbehandling er tilladt (2026-10-11).
+- Kilder klippes til den udtrykkeligt bestilte mappe **Under udarbejdelse**. Slet først kilden, når det færdige resultat er gemt og visuelt kontrolleret; behold kilden ved fejl. Originaldubletter slettes efter sammenligning med hovedmappens logo. Ingen ekstra arkiv-/sorteringsmapper.
 - Kun mad-/drikkevaremærker får logo (ikke husholdning/rengøring/køkkenudstyr);
   foretræk rent wordmark uden tagline. Se docs/LOGO-AGENT.md.
 - Brugerens uploadede PNG-kunst bruges som den er (skaleret/CSS-mask), aldrig
@@ -66,6 +81,8 @@ ikke her, er den ikke registreret og skal tilføjes.
   (email/adgangskode, Face ID, Google/Apple/Facebook).
 
 ## Proces
+
+- Ved midlertidig fejl i drev-/filadgang: gentag kontrollen løbende og fortsæt automatisk, når adgang kommer tilbage; én fejlet kontrol er ikke bevis for, at brugerens drev er frakoblet (Peter, 2026-10-11).
 
 - Flere parallelle sessioner: stage snævert, deploy-linjen er origin/master.
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
@@ -142,3 +159,63 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **dm, EDEKA, REWE, Wolt optimeret efter Bilka-mønsteret** (2026-10-11): faste regler `Excelark/optimer_ark.py` + AI-gennemgang af produkttype/variation/keywords `Excelark/anvend_ai_forslag.py`; vin/spiritus røres ikke (vin-sessionen). Detaljer i Excelark/NAVNEREGLER.md ("Optimering af dm, EDEKA, REWE og Wolt").
 - **Vin** (alle ark, brugerens ønske 2026-10-10): vin-rækker er delt i Product Type (Rødvin/Hvidvin/Rosévin/Mousserende vin …), Brand (producent), Subbrand (kun egen linje med logo), Variation (vinens navn: appellation/cuvée/druesorter) og nøgleord (sødme, kvalitet, årgang); land, økologisk, alkoholfri og alkohol-% står i egne felter. Gennemført i Bilka, REMA, SPAR, Nemlig, Wolt, DRK, EDEKA og REWE. Se Excelark/NAVNEREGLER.md ("Vin: produkttype …") og Excelark/vin_regler_spec.md.
 - **Open Food Facts-import: Lidl, Aldi, Kvickly/Coop** (brugerens ønske 2026-10-11, afsluttet 2026-10-16): egne mærker hentes fra OFF (kun varer solgt i Danmark) og ligger i `Produkter/lidl.xlsx`, `aldi.xlsx`, `kvickly.xlsx` i Bilkas kolonner; originalkolonnerne er rå OFF og rettes aldrig. Felter krydstjekkes mod label/navn/ingredienser/allergener/næringsindhold (økologisk, glutenfri, vegansk, sukkerfri, fedt-%, alkohol, frost), produkttype matches mod de eksisterende arks vokabular, og alt gættet/mistænkeligt står i `Produkter/Backup/Excelark/off_kvalitetskontrol.xlsx` og `Produkter/Backup/off_afslutning_*.xlsx`. Lidl/Aldi: Brand = kæden, Subbrand = det egne mærke (som `OFF Dansk.xlsx`); Quantity aldrig "stk". Håndrettelser: `Produkter/Backup/Excelark/off_rettelser.txt`, lagt ind i de gældende ark med `anvend_off_rettelser_ark.py` (overskriver aldrig det andre sessioner har rettet). Menu/Meny har ingen egne mærker ud over Dagrofas (står i `spar.xlsx`). Se Produkter/NAVNEREGLER.md ("Open Food Facts-import").
+
+
+- Logoarbejde (Peter, 2026-10-11): Ret perspektiv og krumning fra emballage til flade, lige logoer uden redesign. Kun AI til billedarbejdet. Navngiv efter teksten i logoet. Færdige PNG'er i Logoer-hovedmappen; fjern kun originaler og sikre dubletter efter et godkendt resultat. Afvigere skal have både original og resultat i eksisterende Afvigere, ingen ekstra undermapper. Vælg den bedste original ved dubletter.
+
+- Logo-feedback (Peter, 2026-10-11): Magnum kun cirkelmedaljonen, ingen emballage udenom. Dan Cake kun røde logoformer med gennemsigtigt mellemrum. Premier Is i denne bunke skal have ensartet flad orange baggrund uden pletter. Første 100 færdiggøres og gennemgås af Peter før de yderligere 300.
+
+- **Logoers filnavne i hovedmappen**: kun Brand eller Brand - Subbrand. Ingen Færdigt, restaureret, isoleret, baggrundsbeskrivelser eller andre arbejdsetiketter. Subbrand adskilles med mellemrum, bindestreg, mellemrum. Direkte brugerinstruks 2026-10-11.
+
+- Logo-upload til biblioteket (Peter, 2026-10-12): tilføj kun manglende logoer; overskriv aldrig eksisterende bibliotekslogoer. Færdige filer fra Logoer-hovedmappen bevares byte-identisk. Upload til biblioteket ændrer ikke automatisk brandtilknytninger.
+
+- **Subbrand og Co-brand i arkene** (Peter, 2026-10-15): Subbrand = brandets egne linjenavne (Haribo Goldbären, Tuborg Grøn). Co-brand = et subbrand der låner et andet brand (Baileys i Frisko-is, Milka i Jacobs-kaffe, Oreo i Marabou) — eget logo vises sammen med brandet; ny kolonne `Co-brand` (kolonne 38 af 46, lige før originalkolonnerne) i alle butiksark. Almindelige ord, smagsretninger og produkttyper (crème fraîche, pommes, BBQ, creamy, extra …) er aldrig subbrands, og en logofil eller gentagelser alene er ikke bevis. Titlen må ikke blive tom. Logofiler sammenlignes med brandnavne uden specialtegn (apostrof m.fl.). Se Produkter/NAVNEREGLER.md ("2026-10-15: Subbrand og Co-brand").
+
+
+## 2026-10-12: Aldi/Lidl-produktbilleder
+- Peter: Produktbillederne til `Aldi_Danmark.xlsx` og `Lidl_Danmark.xlsx` skal ligge direkte i samme mappe som arkene (`Produkter/Lidl og Aldi`), navngivet efter EAN med originalt billedformat. Bevar indledende nuller. Hent eksisterende produktfotos uden billedbearbejdning; kontrollér filernes læsbarhed og tilknytning til EAN.
+
+## 2026-10-12: Kontrol efter arbejde
+- Peter: Kør altid kontrol efter arbejdet og før færdigmelding. For produktark: kontrollér resultatet mod kilde/backup, udvælgelsesregler, EAN, rækkeantal og bevaret indhold. Et vellykket gem alene er ikke nok.
+
+## 2026-10-12: Én arbejdsmappe for produktark
+- Peters eneste arbejdsmappe for produktark er `C:\Users\Peter\Desktop\Hello Cal\Produkter`, inklusive eksisterende butiksmapper. Ingen aktive arbejdsark i `Excelark` eller på F-drevet fremover.
+- Ved sammenlægning har Peters seneste egne rettelser forrang. REMA-master er `Produkter\rema 1000\rema1000_version 2.xlsx`. Ingen overskrivning ud fra dato alene; sammenlign rækker og celler, og bevar bevidst slettede rækker.
+- Bevar originale filnavne. Alle sikkerhedskopier samles i én `Produkter\Backup`-mappe. Ingen nye versionsark eller mellemresultater i arbejdsmapperne.
+- Åbne/ugemte Excel-rettelser skal være afklaret inden ændring af eksisterende ark.
+
+- **Aldi/Lidl Danmark-udtræk (Peter, 2026-10-12)**: I råarkene i `Produkter/Lidl og Aldi` fjernes varer over fem år og EAN, som allerede findes i Excel-ark direkte i `Produkter`. Dansk tekst/sprog, dokumenteret dansk scanning og Danmark som salgsland flyttes (klippes) til de udtrykkeligt bestilte `Aldi_Danmark.xlsx` og `Lidl_Danmark.xlsx`. Peter har særskilt bekræftet salgslandsreglen. Alle originalkolonner og metadata bevares.
+
+- **Aktive produktark efter samling 2026-10-12**: Alle 13 butikker bevares. Aktuelle præcise arbejdsstier står i `Produkter/NAVNEREGLER.md` under "Gældende arbejdsfiler fra 2026-10-12". Alle tidligere `Excelark/`-referencer er historiske; mappen er flyttet til `Produkter/Backup/Excelark`. Kør ikke arkivscripts mod arkivkopier. Rå OFF-udtræk i Produkters eksisterende kildemapper er bevarede kilder; den bearbejdede 45-kolonneversion er butikkens arbejdsark.
+
+## 2026-10-12: Änglamark_Danmark (Peters konkrete instruktion)
+- Änglamark-kilden skal hedde Änglamark_Danmark og opdeles i hovedark + produktdetaljer efter Bilkas aktuelle kolonner. Denne navngivning er en udtrykkeligt bestilt undtagelse til reglen om at bevare filnavne.
+- Kun produkter med dokumenteret dansk registrering/salgsland eller oprindelse medtages. Præcise EAN-dubletter må i denne opgave slettes efter Peters direkte instruktion. Alder vurderes på seneste produktredigering, med oprettelsesdato som reserve; automatiske OFF-opdateringer nulstiller ikke alderen. Metode, afgrænsning og resultat: docs/ANGLAMARK-DANMARK.md.
+
+
+- **Änglamark-fødevarer (Peter, 2026-10-12)**: Aftersun, zinkcreme og øvrige plejeprodukter hører ikke til i fødevarearkene. De to konkrete produkter er fjernet fra både hovedark og alle produktdetaljefaner.
+
+## 2026-10-12: Kvickly — grammatik og feltplacering
+- Variationer bruger grammatisk med/uden/i/af/på/fra, hvor betydningen kræver det. Opremsninger: a og b; a, b og c. Eksisterende sidste og må ikke få det foregående komma ændret til et ekstra og. & som listeadskiller rettes til og; egennavne bevares.
+- Surdejs- sættes før produkttypen, fx Surdejs-pizzabund. Hele/halve og bøjelige tillægsord står foran produkttypen. Tilberedning (fx stenovnsbagt, paneret, marineret) står i _is_cooked; tilberedning af en ingrediens inde i en variant må ikke flyttes som tilberedning af hele produktet.
+- Alle almindelige ord i Variation og Keyword-felter har små begyndelsesbogstaver. Stave- og sammenskrivningsdubletter normaliseres, fx Chia frø → Chiafrø. Originalkolonnerne bevares.
+- Fuld alene i Kvickly-pizzavarianten betyder fuldkorn og flyttes til _is_whole_grain (Peter). Størrelser S/M/L/XL står i Size, svarende til eksisterende ProductProperties.size; ikke i smagsvarianten. Kvickly har nu en ekstra Size-kolonne efter de oprindelige 45 kolonner. Der er ikke ændret appimport eller database.
+
+## 2026-10-12: Kvickly-billeder fra Open Food Facts
+- Peter har bestilt én billedmappe ved siden af Produkter/kvickly.xlsx: Produkter/Kvickly billeder. Ingen ekstra undermapper. Hent billeder for netop arbejdsarkets EAN: forside, alle uploadede originalfotos og tilgængelige øvrige etiketter i fuld opløsning. Filnavne EAN.ext, EAN_2.ext osv.; eksisterende forskellige filer bevares. Manglende OFF-billeder og downloadfejl dokumenteres hver for sig. Originalfelternes billed-URL'er i arket ændres ikke.
+
+- **Nøglehul og Økologi: OFF-billeder** (Peter, 2026-10-12): alle produktfotos ligger direkte sammen med produktarkene i `Produkter/Nøglehul og Økologi`; hovedbillede = `EAN.jpg`, ekstra billeder = `EAN_2.jpg`, `EAN_3.jpg` osv. Foranstillede nuller bevares. Ingen ekstra billedmappe. Billedregister: docs/NOGLEHUL-OKOLOGI-BILLEDER-20261012.json.
+- Kvickly-billedarkivering (Peter, 2026-10-12): EAN med præfiks 57 pakkes i ZIP-filer i samme billedmappe, højst 200 billeder pr. ZIP (inklusive eventuel restportion). Originalerne slettes først, når alle ZIP-filer og hvert billedindhold er kontrolleret mod SHA256 og CRC. Øvrige EAN-billeder bevares.
+
+## 2026-10-12: OFF Energimærkning
+- Peter har bestilt en undermappe med det præcise navn `OFF Energimærkning` i hver eksisterende hovedmappe `Produkter/Nøglehul og Økologi`, `Produkter/Kvickly billeder` og den fælles `Produkter/Lidl og Aldi`. OFF-billeder af tekst, beskrivelser, næringsindhold, ingredienser og øvrige deklarationer flyttes dertil; almindelige produktforsider bevares i hovedmappen.
+- Instruktionen omfatter også ZIP-indhold: relevante billeder flyttes ud i den bestilte undermappe og fjernes fra ZIP-filen efter hash-/CRC-kontrol. Øvrige ZIP-poster og billedindhold bevares. Ingen billedbearbejdning eller omdøbning i denne sorteringsopgave.
+
+## 2026-10-14: Sprogark og Bilka-behandling
+- **Sprogark (Peter, 2026-10-14)**: `Produkter/Dansk.xlsx` og `Produkter/Tysk.xlsx` samler varerne på tværs af butiksarkene efter sprog. Sproget afgøres af varens titel/produkttype (Wurst = tysk, pølse = dansk, sausage = engelsk) — ikke af butikken. Rækkerne kopieres (butiksarkene røres ikke), Bilkas kolonner. Andre sprog (svensk, norsk, engelsk m.fl.) laves bagefter. Metode, tal og værktøj: Produkter/NAVNEREGLER.md ("2026-10-14: Sprogark …").
+- **Bilka-behandling af Nemlig, DRK, Årstiderne, Wolt, Kvickly, Lidl, Aldi og Nøglehul (2026-10-14)**: økologi-flag fra originaltitlen, nøgleord uden dobbeltord, `Product type plural` udfyldt, subbrand fra kendte brand/subbrand-par, DRK-brand fra titlen. Derudover AI-gennemgang af Product Type/Variation/Keywords for Nemlig, DRK og Årstiderne (Peter sagde ja til kørslen) og AI-udfyldning af tomme produkttyper i SPAR/Nøglehul/Wolt (kun høj sikkerhed; resten står tomt hellere end gæt). Alkohol (vin/øl/spiritus) røres ikke af disse trin — det ejes af vin-reglerne.
+- **Tyske ark (dm, EDEKA, REWE) behandlet efter samme princip som Bilka (Peter, 2026-10-14)**: AI-gennemgang af rækker hvor Product Type/Variation/Keywords var forskudt i forhold til titlen eller svage (EDEKA ca. 430 rækker, REWE 77, dm 8), faste regler (Pack Count, afkoffeineret/sukkerfri-flag, nøgleord der dublerer brand/produkttype/variant) og EDEKA-arkets ødelagte matrixformler genskabt (arket kunne ikke åbnes i Excel). Dyrefoder/ikke-mad rettes ikke her, kun listet til den separate spærring. Se Produkter/NAVNEREGLER.md.
+- **OFF-sprogsortering (Peter, 2026-10-15)**: "ark kun på dansk / kun på tysk" gjaldt Open Food Facts-filerne (Lidl.xlsx, Aldi.xlsx, Lidl/Aldi Danmark, Nøglehul/Økologi, Änglamark, Kvickly-JSON), ikke butiksarkene. Sproget afgøres af titlen; resultat i `Produkter/OFF Dansk.xlsx`, `OFF Tysk.xlsx` og `OFF Sprogindeks.xlsx` (alle 147.278 rækker) med energifordeling (protein 4/kulhydrat 4/fedt 9 kcal/g). Andre sprog og Bilka-opsætning af OFF-varerne følger bagefter. Se Produkter/NAVNEREGLER.md ("2026-10-15: OFF-sprogsortering").
+- **Regel ved ark med matrixformler (B-kolonnen)**: tjek altid først for matrixceller på forkert række eller med `ref` ≠ egen celle (`xml_scan.py` og `arr_scan.py` i Produkter/Backup/Excelark) — openpyxl-roundtrip ødelægger dem ellers, og Excel kan slet ikke åbne filen. Genskab formlerne fra rækkens egen skabelon (`reparer_titelformler.py`) og kontrollér i Excel (`excel_final.ps1`).
+
+- **Subbrand-logo på produktet (Peter, 2026-10-17):** Produktet viser altid brand-logoet. Matcher produktets Subbrand en logofil «Brand - Subbrand» (Brand.name i logobiblioteket), vises subbrand-logoet oven over brand-logoet (`subbrandLogoUrl` fra /api/products/[id], vist i AddProductView). Nye logoer lægges i NAS `Projektfiler (ikke app)\Logoer`; ved navneskift til «Brand - Subbrand» fjernes gamle navnevarianter (Backup\Dubletter 2026-10-17) så der ikke ligger dubletter.
