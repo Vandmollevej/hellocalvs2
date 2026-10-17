@@ -16,12 +16,13 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          echo "=== Backlog before first scheduler start ==="
-          q "SELECT channel, event, count(*), min(\"createdAt\"), max(\"createdAt\") FROM outbound_messages WHERE status='QUEUED' GROUP BY 1,2 ORDER BY 3 DESC"
-          q "SELECT provider, status, count(*) FROM subscriptions GROUP BY 1,2"
-          q "SELECT count(*) AS closed_over_90d FROM users WHERE \"closedAt\" < now() - interval '90 days' AND \"forgottenAt\" IS NULL"
-          q "SELECT count(*) AS closed_any FROM users WHERE \"closedAt\" IS NOT NULL"
-          q "SELECT enabled, count(*), min(\"nextRunAt\") FROM partner_report_schedules GROUP BY 1"
-          q "SELECT count(*) AS pending_products_48h FROM products WHERE status='PENDING' AND \"privateOwnerId\" IS NULL AND \"createdAt\" < now() - interval '48 hours' AND \"escalationSentAt\" IS NULL"
-          q "SELECT count(*) AS pending_bugs_48h FROM bug_reports WHERE status='PENDING' AND \"createdAt\" < now() - interval '48 hours' AND \"escalationSentAt\" IS NULL"
-          q "SELECT \"key\", enabled, \"lastStartedAt\" FROM scheduled_jobs ORDER BY 1"
+          P=cmvawb4ue000s01oeu5bem334
+          echo "=== Scheduler lines in app log ==="
+          $C logs --no-log-prefix --since 30m app 2>&1 | grep -i -E "scheduler|api-keys|jobs" | head -30 || true
+          $C exec -T app sh -c 'ls -la .next/server/instrumentation.js' || true
+          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",160) msg FROM scheduled_jobs ORDER BY \"lastStartedAt\" DESC NULLS LAST"
+          q "SELECT id, left(name,40) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"pendingFields\" pf, \"imageUrl\", \"updatedAt\" FROM products WHERE id='$P'"
+          q "SELECT attempts, \"finishedAt\", left(\"lastError\",300) err FROM quick_enrichment_jobs WHERE \"productId\"='$P'"
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, level, left(message,300) msg FROM debug_logs WHERE \"productId\"='$P' AND \"createdAt\" > now() - interval '40 minutes' ORDER BY \"createdAt\" LIMIT 40"
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, left(message,250) msg FROM debug_logs WHERE category='ai' AND \"createdAt\" > now() - interval '40 minutes' ORDER BY \"createdAt\" DESC LIMIT 15"
+          q "SELECT count(*) AS escalations_sent FROM products WHERE \"escalationSentAt\" > now() - interval '40 minutes'"
