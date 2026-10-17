@@ -16,7 +16,18 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          echo "reserve code deployed: $($C exec -T app sh -c 'grep -rl Stregkode-reserve .next/server 2>/dev/null | wc -l')"
-          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",250) msg FROM scheduled_jobs WHERE key IN ('quick-enrichment-recovery','search-index','maintenance')"
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, left(\"productId\",10) pid, level, left(message,250) msg FROM debug_logs WHERE event='ean_reserve' ORDER BY \"createdAt\" DESC LIMIT 20"
-          $C logs --no-log-prefix --since 8m app 2>&1 | grep -i -E "fejlede|error" | head -15 || true
+          envval() { grep -E "^$1=" .env.production | tail -1 | cut -d= -f2- | tr -d '"' ; }
+          GK=$(envval GOOGLE_API_KEY); GC=$(envval GOOGLE_CSE_ID); GP=$(envval GOOGLE_PLACES_API_KEY); GV=$(envval GOOGLE_VISION_API_KEY)
+          echo "names of GOOGLE* vars in .env.production:"; grep -oE '^GOOGLE[A-Z_]*' .env.production | sort -u
+          echo "GOOGLE_API_KEY set=$([ -n "$GK" ] && echo yes || echo no) len=${#GK}; same as PLACES=$([ -n "$GK" ] && [ "$GK" = "$GP" ] && echo yes || echo no); same as VISION=$([ -n "$GK" ] && [ "$GK" = "$GV" ] && echo yes || echo no)"
+          echo "env file modified: $(stat -c %y .env.production)"
+          echo "=== Google error detail (no key printed) ==="
+          curl -s -m 20 "https://www.googleapis.com/customsearch/v1?key=$GK&cx=$GC&q=test" | python3 -c 'import sys,json; e=json.load(sys.stdin).get("error",{}); print(e.get("code"), e.get("status"), e.get("message")); [print(d.get("reason"), d.get("metadata")) for d in e.get("details",[]) if d.get("reason")]'
+          echo "=== same key against Vision API (only status) ==="
+          curl -s -m 20 -X POST "https://vision.googleapis.com/v1/images:annotate?key=$GK" -H 'Content-Type: application/json' -d '{"requests":[]}' | python3 -c 'import sys,json; d=json.load(sys.stdin); e=d.get("error",{}); print(e.get("code"), e.get("status"), (e.get("message") or "OK")[:200])'
+          echo "=== app_secrets names (no values) ==="
+          q "SELECT key, \"updatedAt\" FROM app_secrets WHERE key ILIKE '%GOOGLE%' OR key ILIKE '%CSE%' ORDER BY 1"
+          echo "=== image-agent run history ==="
+          q "SELECT to_char(\"startedAt\",'MM-DD HH24:MI') s, status, left(message,150) msg FROM scheduled_job_runs WHERE \"jobKey\"='image-agent' ORDER BY \"startedAt\" DESC LIMIT 5"
+          q "SELECT to_char(min(\"startedAt\"),'MM-DD') first, count(*) runs, count(*) FILTER (WHERE message NOT LIKE '0 billeder%') with_images FROM scheduled_job_runs WHERE \"jobKey\"='image-agent'"
+          $C logs --no-log-prefix --since 24h image-agent 2>&1 | grep -i -E "403|blocked|error" | tail -5 || true
