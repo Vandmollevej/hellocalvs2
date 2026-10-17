@@ -55,6 +55,7 @@ import dk.packroff.hellocal.ui.HcChevron
 import dk.packroff.hellocal.ui.HcRemoteImage
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.HcToggle
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import dk.packroff.hellocal.ui.VSpace
 import dk.packroff.hellocal.ui.formatNumber
 import dk.packroff.hellocal.ui.icons.HcIcon
@@ -116,7 +117,7 @@ internal fun HourEntriesOverlay(
                 color = HcColors.White,
             )
         }
-        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
+        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp).padding(bottom = LocalBottomArcInset.current)) {
             for (goal in goals) GoalAccordion(goal)
             for ((key, items) in groups) {
                 // A weigh-in alone at its time opens the details sheet directly (no fold-out).
