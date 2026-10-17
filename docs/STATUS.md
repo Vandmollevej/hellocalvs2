@@ -1,3 +1,7 @@
+## 2026-10-17: Admin "Brugerscanninger"
+
+- Varedatabase → Brugerscanninger viser alle varer, brugerne scanner (også kendte OFF-varer), med bruger og tidspunkt og link til at rette varen. Ikke prøvet mod rigtig database herfra; lint, test og build grønne.
+
 ## 2026-10-17: Alle swipe-rækker ser ens ud
 
 - Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.

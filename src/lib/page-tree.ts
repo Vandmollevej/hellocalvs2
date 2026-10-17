@@ -499,6 +499,11 @@ export const PAGE_TREE: PageArea[] = [
             note: "Sender videre til Varer",
             children: [
               { path: "/admin/product-database/products", label: "Varer" },
+              {
+                path: "/admin/product-database/scans",
+                label: "Brugerscanninger",
+                note: "Alle varer brugerne scanner (også kendte varer fra Open Food Facts), nyeste først, med link til at rette varen",
+              },
               { path: "/admin/product-database/generics", label: "Generiske produkter" },
               { path: "/admin/product-database/brands", label: "Brands" },
               { path: "/admin/product-database/labels", label: "Labels" },

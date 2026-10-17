@@ -43,6 +43,7 @@ export const ADMIN_PAGE_SHORTCUTS: Record<string, readonly string[]> = {
 
   // Varedatabase
   "/admin/product-database/products": ["Alt+P", "Ctrl+P"],
+  "/admin/product-database/scans": ["Alt+Shift+6"],
   "/admin/product-database/generics": ["Alt+Shift+2"],
   "/admin/product-database/brands": ["Alt+Shift+R"],
   "/admin/product-database/labels": ["Alt+Shift+0"],
