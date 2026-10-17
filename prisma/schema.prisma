@@ -1040,8 +1040,12 @@ model Activity {
   distanceKm      Float?
   perceivedEffort TrainingIntensity?
   energySource    ActivityEnergySource @default(USER)
+  // 2026-10-17: træningspas — øvelser gemt sammen deler samme id
+  // (src/lib/training-session.ts). Null = enkeltstående aktivitet.
+  sessionId       String?
   createdAt       DateTime       @default(now())
 
+  @@index([sessionId])
   @@map("activities")
 }
 

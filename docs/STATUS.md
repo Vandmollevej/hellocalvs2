@@ -1,3 +1,9 @@
+## 2026-10-17: Træningspas under Tilføj → Aktivitet
+
+- Hver aktivitetsrække har et ⊕ yderst til højre (bogmærket er væk; favorit sættes med swipe til højre som på madvarer). ⊕ lægger sporten i "Tilføjet" øverst (15 min, ±5 min pr. del, kan fjernes) med fælles starttidspunkt og taletest; samlet tid og anslået kcal vises, og Gem gemmer det hele som ét træningspas. Tryk på selve rækken registrerer stadig én aktivitet.
+- Gem ligger nu fast nederst over bundmenuen (også for en enkelt aktivitet).
+- `POST /api/activities` med `{ session: { startedAt, intensity, items } }` gemmer øvelserne efter hinanden med fælles `sessionId` (migration `20261018000000_activity_session`, `src/lib/training-session.ts`). Web + native; native ikke kompileret lokalt.
+
 ## 2026-10-17: Sprogflaget som mærke på mikrofonen
 Madvarer: sprogflaget sidder på mikrofonens øverste venstre kant (spejl af favoritmærket på varesiden), ikke længere alene ude i venstre side. Web + native.
 

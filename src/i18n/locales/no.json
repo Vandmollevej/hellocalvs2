@@ -2921,7 +2921,19 @@
     "kcal": "Forbrente kalorier",
     "save": "Lagre aktivitet",
     "invalid": "Oppgi varighet over 0 — og kalorier hvis de ikke kan anslås.",
-    "saveError": "Aktiviteten kunne ikke lagres."
+    "saveError": "Aktiviteten kunne ikke lagres.",
+    "session": {
+      "title": "Treningsøkt",
+      "add": "Legg til {name} i treningsøkten",
+      "remove": "Fjern {name}",
+      "save": "Lagre treningsøkt",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca. {kcal} kcal",
+      "startTime": "Klokkeslett",
+      "invalid": "Legg til minst én øvelse.",
+      "saveError": "Kunne ikke lagre treningsøkten. Har du oppgitt vekten din i profilen?",
+      "added": "Lagt til"
+    }
   },
   "addButton": {
     "screenings": "Screeninger",
