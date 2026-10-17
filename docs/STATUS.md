@@ -16,6 +16,10 @@
 - Puls er en blå kurve med en stiplet grå linje, hvor moderat intensitet begynder (64 % af maxpuls efter alder; 190 uden alder).
 - Alle linjer og pinde har samme tykkelse (2 px). Nye vidensartikler: `energifordeling-over-dagen` og `anbefalet-puls` med kilder. Web + native; native er ikke kompileret lokalt.
 
+## 2026-10-17: API-forbrug forklarer afviste nøgler
+
+- Admin → API-forbrug viser nu fx "Nøglen må ikke bruge Custom Search API" med hvad der skal gøres og et link til Google Cloud, i stedet for den rå fejltekst. Ny Google-nøgle står på `docs/GO-LIVE.md`.
+
 ## 2026-10-17: Google-nøglen skjules i robotternes logs
 
 - image-agent skrev hele Google-nøglen i sin fejllog (requests' fejl indeholder adressen med `?key=`). Nu skjules `key=...` i alle log-linjer og i API-kaldslogningen; logo-agent har samme filter. Nøglen bør skiftes i Google Cloud, da den har stået i logs.

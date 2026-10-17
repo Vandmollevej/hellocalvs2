@@ -1465,7 +1465,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/recipes/RecipeFiltersBody.tsx": "007a24d0d31ba071",
+    "src/components/recipes/RecipeFiltersBody.tsx": "134f847cbcc1e2c7",
     "src/components/recipes/RecipeRow.tsx": "8907b05999f9f888",
     "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
@@ -1530,7 +1530,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/recipes/RecipeFiltersBody.tsx": "007a24d0d31ba071",
+    "src/components/recipes/RecipeFiltersBody.tsx": "134f847cbcc1e2c7",
     "src/components/ui/Toggle.tsx": "e97721c99f8d60e1",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },

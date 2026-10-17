@@ -34,6 +34,8 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureFilledField
 import dk.packroff.hellocal.ui.HcLine
+import dk.packroff.hellocal.ui.SettingsFieldSelect
+import dk.packroff.hellocal.ui.SettingsOption
 import dk.packroff.hellocal.ui.CaptureSlider
 import dk.packroff.hellocal.ui.ChevronDirection
 import dk.packroff.hellocal.ui.HcButton
@@ -295,11 +297,14 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
             }
         }
         AccordionSection(t.t("recipeFilters.sortTitle"), icon = "ArrowsSort") {
-            Column(Modifier.padding(horizontal = 16.dp)) {
-                RecipeFilterLists.sorts.forEachIndexed { index, sort ->
-                    // One sort at a time; switching the chosen one off falls back to relevance.
-                    FilterRow(t.t(SORT_KEYS.getValue(sort)), filters.sort == sort, { on -> update(filters.copy(sort = if (on) sort else "relevance")) }, divider = index < RecipeFilterLists.sorts.lastIndex)
-                }
+            // Web: one <select> with the sort orders (REGLER: sortering som dropdown).
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                SettingsFieldSelect(
+                    value = filters.sort,
+                    options = RecipeFilterLists.sorts.map { SettingsOption(it, t.t(SORT_KEYS.getValue(it))) },
+                    onChange = { update(filters.copy(sort = it)) },
+                    description = t.t("recipeFilters.sortTitle"),
+                )
             }
         }
         AccordionSection(t.t("recipeFilters.allergiesTitle"), icon = "MedicalCross", count = filters.allergens.size.takeIf { it > 0 }) {
