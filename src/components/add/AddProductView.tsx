@@ -6,14 +6,12 @@ import {
   BRAND_NAME_HEIGHT_PX,
   brandLogoLeftPx,
   brandLogoRenderedHeight,
-  brandNameMaxWidthPx,
   brandSlotHeight,
   circleLogoFor,
   circleLogoSize,
   subbrandBottomPx,
 } from "@/lib/brand-logo-layout";
 import { displayedSubbrand } from "@/lib/subbrand-names";
-import { useElementSize } from "@/lib/use-element-size";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -386,9 +384,6 @@ export function AddProductView({
   const [subbrandLogoRatio, setSubbrandLogoRatio] = useState<number | null>(null);
   // Brand- og subbrandnavne brydes i linjer inden for sidens kant; deres
   // målte højde flytter dem ud fra cirklen (src/lib/brand-logo-layout.ts).
-  const [circleColumnRef, circleColumnSize] = useElementSize<HTMLDivElement>();
-  const [brandNameRef, brandNameSize] = useElementSize<HTMLParagraphElement>();
-  const [subbrandNameRef, subbrandNameSize] = useElementSize<HTMLParagraphElement>();
   // Logoet, der står stort i cirklen uden produktbillede (samme fil).
   const [circleLogoRatio, setCircleLogoRatio] = useState<number | null>(null);
   const extendedNutritionOpen = extendedNutritionToggle ?? Boolean(profile?.showExtendedNutrition);
@@ -879,15 +874,8 @@ export function AddProductView({
       ? circleLogoFor({ brand: view.brand, subbrand, subbrandLogoUrl: view.subbrandLogoUrl })
       : null;
   const subbrandBottom = subbrandBottomPx(
-    brandSlotHeight(
-      circleLogo?.kind === "brand" ? null : view?.brand,
-      brandLogoRatio,
-      brandNameSize?.height || BRAND_NAME_HEIGHT_PX,
-    ),
+    brandSlotHeight(circleLogo?.kind === "brand" ? null : view?.brand, brandLogoRatio),
   );
-  const columnWidth = circleColumnSize?.width ?? null;
-  const brandNameLeft = brandLogoLeftPx(brandNameSize?.height || BRAND_NAME_HEIGHT_PX);
-  const subbrandNameLeft = brandLogoLeftPx(subbrandNameSize?.height || BRAND_NAME_HEIGHT_PX, subbrandBottom);
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   function translationNote(translation: ProductTranslationInfo) {
@@ -1013,7 +1001,7 @@ export function AddProductView({
                   og 62 px under appbaren (16 + 46), 33 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
                   mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
-              <div ref={circleColumnRef} className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
+              <div className="relative flex flex-col items-start gap-[33px] pt-[46px] text-left">
                 <ProductCircleBadges topBadges={topBadges} certificates={circleCertificates} />
                 <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
                   <div className={`flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full ${bakedCircle ? "" : "bg-hf-tan"}`}>
@@ -1093,9 +1081,8 @@ export function AddProductView({
                       {isFavorite ? <IconFavoriteFilled size={24} /> : <IconFavorite size={24} />}
                     </button>
                   )}
-                  {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
-                      bund og venstre kant 3/4 inde; uden logo brandnavnet i
-                      fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
+                  {/* Brandet vises kun på cirklen og kun som logo, med bunden i
+                      cirklens bund; uden logo vises intet (REGLER 2026-10-17). */}
                   {/* Mens brandet læses, står en glimtende flade på brandets
                       plads i stedet for brand og subbrand (REGLER 2026-10-15). */}
                   {isPending("brand") && (
@@ -1108,63 +1095,35 @@ export function AddProductView({
                       </ReadingSkeleton>
                     </span>
                   )}
-                  {!isPending("brand") &&
-                    view.brand &&
-                    circleLogo?.kind !== "brand" &&
-                    (view.brand.logoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imageThumb(view.brand.logoUrl, 384)}
-                        alt={view.brand.name}
-                        onLoad={(event) =>
-                          setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
-                        }
-                        style={{ left: brandLogoLeftPx(brandLogoRenderedHeight(brandLogoRatio)) }}
-                        className="pointer-events-none absolute bottom-0 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
-                      />
-                    ) : (
-                      <p
-                        ref={brandNameRef}
-                        style={{ left: brandNameLeft, maxWidth: brandNameMaxWidthPx(columnWidth, brandNameLeft) }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 z-10 w-max text-hf-green"
-                      >
-                        {view.brand.name}
-                      </p>
-                    ))}
-                  {/* Subbrandet står oven over brandet efter samme regel:
-                      logoet, hvis det findes, ellers navnet i fed grøn tekst
-                      (DECISIONS 2026-10-10). Uden brand står det i bunden.
-                      Navne brydes i linjer i stedet for at gå ud over kanten. */}
-                  {!isPending("brand") &&
-                    subbrand &&
-                    circleLogo?.kind !== "subbrand" &&
-                    (view.subbrandLogoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imageThumb(view.subbrandLogoUrl, 384)}
-                        alt={subbrand}
-                        onLoad={(event) =>
-                          setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
-                        }
-                        style={{
-                          bottom: subbrandBottom,
-                          left: brandLogoLeftPx(brandLogoRenderedHeight(subbrandLogoRatio), subbrandBottom),
-                        }}
-                        className="pointer-events-none absolute z-10 h-[66px] w-[95px] object-contain object-left-bottom"
-                      />
-                    ) : (
-                      <p
-                        ref={subbrandNameRef}
-                        style={{
-                          bottom: subbrandBottom,
-                          left: subbrandNameLeft,
-                          maxWidth: brandNameMaxWidthPx(columnWidth, subbrandNameLeft),
-                        }}
-                        className="hf-type-title hf-type-strong pointer-events-none absolute z-10 w-max text-hf-green"
-                      >
-                        {subbrand}
-                      </p>
-                    ))}
+                  {!isPending("brand") && view.brand?.logoUrl && circleLogo?.kind !== "brand" && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageThumb(view.brand.logoUrl, 384)}
+                      alt={view.brand.name}
+                      onLoad={(event) =>
+                        setBrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                      }
+                      style={{ left: brandLogoLeftPx(brandLogoRenderedHeight(brandLogoRatio)) }}
+                      className="pointer-events-none absolute bottom-0 z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                    />
+                  )}
+                  {/* Subbrandet står oven over brandet efter samme regel: kun
+                      som logo (REGLER 2026-10-17). Uden brandlogo står det i bunden. */}
+                  {!isPending("brand") && subbrand && view.subbrandLogoUrl && circleLogo?.kind !== "subbrand" && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageThumb(view.subbrandLogoUrl, 384)}
+                      alt={subbrand}
+                      onLoad={(event) =>
+                        setSubbrandLogoRatio(event.currentTarget.naturalWidth / (event.currentTarget.naturalHeight || 1))
+                      }
+                      style={{
+                        bottom: subbrandBottom,
+                        left: brandLogoLeftPx(brandLogoRenderedHeight(subbrandLogoRatio), subbrandBottom),
+                      }}
+                      className="pointer-events-none absolute z-10 h-[66px] w-[95px] object-contain object-left-bottom"
+                    />
+                  )}
                 </div>
                 <div className="relative flex w-full flex-col items-start">
                 {/* Oversat-linjen ligger over overskriften uden at flytte den

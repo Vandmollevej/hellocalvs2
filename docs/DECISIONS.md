@@ -1,3 +1,7 @@
+## 2026-10-17: Brand ved produktcirklen kun som logo
+
+Brugerens beslutning: brand og subbrand ved produktcirklen vises kun som logo; uden logo vises intet (web `AddProductView`, native `AddProductScreen`). Erstatter navnet i fed grøn tekst fra 2026-10-10/2026-10-15. Baggrund: Open Food Facts' brand-felt indeholder for mange varer producentens firmanavn ("Coca-Cola Europacific Partners Services Bulgaria EOOD"), og det kan ikke rettes med navnelister på millioner af varer. Brands uden logo samles i admin → Brands → "Uden logo" med link til brandets varer.
+
 ## 2026-10-17: Genåbning læser forsiden, når AI'en aldrig har læst den
 
 - `reopenBrokenProducts` tager nu også varer uden FRONT-analyse (AI'en har aldrig læst forsiden), selv om de har navn og energi fra den lokale tekstlæsning; ellers manglede brand og fritlægning (Änglamark-letmælken). Runde 3 (`repairRound`), én gang pr. vare.
