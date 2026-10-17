@@ -31,6 +31,7 @@ import { searchResultTitle } from "@/lib/search-result-title";
 import { parseSpokenFoodQuery } from "@/lib/spoken-food-query";
 import { logVoiceSearch } from "@/lib/voice-search-log";
 import { rankingPoints, type ReasonPoints } from "@/lib/search-explain";
+import { formatQuantityText } from "@/lib/quantity-text";
 import { queueExternalEnrichment, queueStaleExternalEnrichment } from "@/lib/external-enrichment";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
@@ -637,7 +638,7 @@ export async function POST(req: Request) {
   const brandName = cleanOptionalString(body.brand);
   const subbrand = cleanOptionalString(body.subbrand);
   const variant = cleanOptionalString(body.variant);
-  const packageSizeText = cleanOptionalString(body.packageSizeText);
+  const packageSizeText = formatQuantityText(cleanOptionalString(body.packageSizeText)) ?? undefined;
   // Manuel "Nyt produkt" (docs/DECISIONS.md 2026-09-23) sender ingen name,
   // men en productType — name sammensættes så af Sub brand + Produkttype +
   // Variant. Andre flows sender fortsat et eksplicit name.

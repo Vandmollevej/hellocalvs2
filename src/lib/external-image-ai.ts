@@ -4,6 +4,7 @@ import { analyzeFrontPhoto } from "@/lib/product-photo-analysis";
 import { createFrontCutoutJobs, discardPendingFrontImage, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { debugLog, errorText } from "@/lib/debug-log";
 import { newBrandAllowed } from "@/lib/brand-match";
+import { formatQuantityText } from "@/lib/quantity-text";
 
 // Natlig robot "external-image-ai" (docs/DECISIONS.md 2026-10-02). Når en
 // Open Food Facts-/USDA-vare vises første gang, tilbydes brugeren 10 points for at
@@ -78,7 +79,7 @@ export async function analyzeDeclinedExternalImages(): Promise<string> {
       }
       if (!product.subbrand && result.subbrand) changes.subbrand = result.subbrand;
       if (!product.variant && result.variant) changes.variant = result.variant;
-      if (!product.packageSizeText && result.packageSizeText) changes.packageSizeText = result.packageSizeText;
+      if (!product.packageSizeText && result.packageSizeText) changes.packageSizeText = formatQuantityText(result.packageSizeText);
       await prisma.product.update({ where: { id: product.id }, data: changes });
 
       // analyzeFrontPhoto gemmer kun data-URL'er lokalt; Open Food Facts-

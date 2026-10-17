@@ -791,7 +791,10 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
 - Råfotoet (før fritskrabningen) dækker HELE cirklen: `object-cover` uden
   padding, beskåret af cirklen (brugerens krav 2026-10-16, afløser
   `object-contain` + `p-3`, som gav et firkantet foto med tomme kanter inde i
-  cirklen). Aldrig `height: auto`, billed-aspect-ratio-baseret sizing eller
+  cirklen). Undtagelse (bruger 2026-10-17): et højt eller bredt råfoto
+  (mere end 25 % fra kvadratisk, fx en karton fra Open Food Facts) vises helt
+  — `object-contain` + 14 px luft på hvid bund — så varen ikke zoomes ind
+  (`src/lib/product-photo-fit.ts`, native `rawPhotoShouldContain`). Aldrig `height: auto`, billed-aspect-ratio-baseret sizing eller
   anden dynamisk størrelse afledt af billedfilen — cirklens mål er låst.
 - Fritskrabet billede (PNG fra billedrobotten, 2026-10-02): lægges oven på
   den fastlåste cirkel i 110 % (198 px) — stående varer med bunden i cirklens

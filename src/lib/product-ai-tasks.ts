@@ -38,7 +38,7 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 // varianten (Original, Jalapeño) er aldrig varenavnet.
 // Desuden alcoholPercent (% vol), så alkoholiske drikke uden næringstabel kan
 // få et kalorieskøn (src/lib/alcohol-nutrition.ts).
-export const FRONT_PROMPT_VERSION = "front-v6-2026-10-15-product-type-alcohol";
+export const FRONT_PROMPT_VERSION = "front-v7-2026-10-17-claims";
 
 // Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
 // fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
@@ -131,6 +131,7 @@ export const FRONT_SYSTEM = [
   "logoConfidence = 0-1 hvor sikker du er på logoText.",
   "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
   "productBox = rektangel om hele den fysiske vare/emballage i billedet, samme format. null hvis varen ikke kan afgrænses.",
+  "claims = påstande, der står som TEKST på forsiden, ordret og hver for sig: fx Økologisk/Bio, Vegansk, Vegetarisk, Plantebaseret, Glutenfri, Laktosefri, Sukkerfri, Uden tilsat sukker, Fuldkorn, Frost/Dybfrost, Koffeinfri, Alkoholfri, Light, fedtprocent (fx 1,5 % fedt), Dansk/oprindelsesland, MSC, Fairtrade. Kun det du faktisk ser. Tom liste hvis ingen.",
   "certifications = de officielle mærkningslogoer, der ses på emballagen, med disse navne: Ø-mærket, EU-økologisk (EU-bladet), Biologisch, Bioland, Nøglehullet, Fuldkornslogoet, Bedre Dyrevelfærd 1/2/3 (antal hjerter), Anbefalet af Dyrenes Beskyttelse, NaturSkånsom, MSC, ASC, Fairtrade, Rainforest Alliance, UTZ. Kun mærker du faktisk ser. Tom liste hvis ingen.",
   "Brug ikke producentens juridiske firmanavn fra småt bagsidetekst som brand, medmindre det også tydeligt er mærket på forsiden.",
   "Prioritér de oplyste sprog, men de er IKKE en whitelist. Genkend andre sprog hvis emballagen kræver det.",

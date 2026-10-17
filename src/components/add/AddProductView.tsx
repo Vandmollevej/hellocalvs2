@@ -34,6 +34,8 @@ import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { DragNumberStrip } from "@/components/hf/DragNumberStrip";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { ProductCircleBadges } from "@/components/hf/ProductCircleBadges";
+import { photoFitFor, type PhotoFit } from "@/lib/product-photo-fit";
+import { formatQuantityText } from "@/lib/quantity-text";
 import {
   certificationBadges,
   type CertificationFilters,
@@ -378,6 +380,10 @@ export function AddProductView({
   // 10 % ud til højre — hele varen ses altid (brugerens regel 2026-10-02).
   const [imageLandscape, setImageLandscape] = useState(false);
   const [compositeWidth, setCompositeWidth] = useState<number | null>(null);
+  // Råfoto, der ikke er (næsten) kvadratisk — fx en høj karton fra Open Food
+  // Facts. Det vises helt i cirklen i stedet for at blive zoomet ind (bruger
+  // 2026-10-17), se src/lib/product-photo-fit.ts.
+  const [rawPhotoFit, setRawPhotoFit] = useState<{ url: string; fit: PhotoFit } | null>(null);
   const [compositeFailed, setCompositeFailed] = useState<string | null>(null);
   // Brand-logoets bredde/højde — bestemmer hvor langt ud det står, så der er
   // luft mellem logoet og cirklen (src/lib/brand-logo-layout.ts).
@@ -864,7 +870,7 @@ export function AddProductView({
   const bakedCircle = isCutoutImage && compositeWidth !== null && compositeFailed !== displayImageUrl;
   // Siden tegnes med en tom vare, mens den rigtige hentes.
   const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
-  const subtitle = view ? [view.packageSizeText, ...heading.variants].filter(Boolean).join(" · ") : "";
+  const subtitle = view ? [formatQuantityText(view.packageSizeText), ...heading.variants].filter(Boolean).join(" · ") : "";
   // Subbrandet står over brandet ved cirklen (docs/DECISIONS.md 2026-10-10).
   const subbrand = view ? displayedSubbrand(view.brand?.name, view.subbrand) : null;
   // Uden produktbillede (og ikke mens billedet hentes/fritlægges) står et logo
@@ -1014,7 +1020,17 @@ export function AddProductView({
                       <img
                         src={imageThumb(displayImageUrl, 640)}
                         alt=""
-                        className="block h-full w-full object-cover"
+                        onLoad={(e) =>
+                          setRawPhotoFit({
+                            url: displayImageUrl,
+                            fit: photoFitFor(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight),
+                          })
+                        }
+                        className={
+                          rawPhotoFit?.url === displayImageUrl && rawPhotoFit.fit === "contain"
+                            ? "block h-full w-full bg-white object-contain p-[14px]"
+                            : "block h-full w-full object-cover"
+                        }
                       />
                     ) : displayImageUrl ? null : shouldPoll || isLoading ? (
                       <Skeleton type="circle" width="100%" height="100%" />

@@ -25,6 +25,7 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
+import { applySheetRulesToScannedProduct } from "@/lib/scan-sheet-rules";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
 import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
@@ -38,6 +39,7 @@ import { fetchOffProductRaw } from "@/lib/openFoodFacts";
 import { linkOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
 import { OFF_USE_NAME_MIN_CONFIDENCE, type OffNutrition } from "@/lib/off-record";
 import { judgeReserveNutrition, nameMatchesFront, type ReserveVerdict } from "@/lib/ean-reserve-match";
+import { formatQuantityText } from "@/lib/quantity-text";
 import { enrichFromExternalSources } from "@/lib/external-enrichment";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
@@ -398,7 +400,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     // sit felt og vises på den grønne linje under titlen — de må aldrig
     // gentages i selve navnet (brugerens regel 2026-10-02).
     const variant = result.variant?.trim() ?? "";
-    const packageSizeText = result.packageSizeText?.trim() ?? "";
+    const packageSizeText = formatQuantityText(result.packageSizeText) ?? "";
     const rawName = result.productName?.trim() ?? "";
     // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
     // ud fra brand, variant og synlig tekst (fx Eierlikör), ellers spørges
@@ -455,6 +457,18 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       console.error("Could not save certifications", productId, error);
       return [];
     });
+    // Arkenes `_is_`-regler (økologisk, vegansk, glutenfri, fedt-% …) læst ud
+    // af forsidens tekst, som når varen kommer fra arkene (bruger 2026-10-17).
+    const sheetFilters = await applySheetRulesToScannedProduct(productId, {
+      productName: rawName || productName,
+      variant,
+      brand: brand?.name,
+      packageSizeText,
+      claims: result.claims ?? [],
+    }).catch((error) => {
+      console.error("Could not apply sheet rules", productId, error);
+      return [] as string[];
+    });
     await linkCutoutJobsToProduct({
       frontAnalysisId: analysisId,
       productId,
@@ -480,6 +494,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
         packageSizeText: result.packageSizeText ?? null,
         certificationsRead: result.certifications ?? [],
         certificationsSaved: certifications,
+        sheetFiltersSaved: sheetFilters,
       },
     });
   } catch (error) {
