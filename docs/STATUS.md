@@ -1,3 +1,7 @@
+## 2026-10-17: Delte retter hænger ikke længere i pladsholdere
+
+- "Trender netop nu" kunne stå med grå pladsholdere for evigt, hvis en forespørgsel hang (fx mens serveren genstartes ved en deploy): `/api/shared-recipes`, `/api/profile` og `/api/subscription` hentes nu med tidsgrænse (15 s) og op til 4 forsøg (`src/lib/fetch-retry.ts`); ellers vises fejlteksten. Nyt indeks `registrations(productId, createdAt)` (migration `20261017210000_registrations_product_index`) — tabellen havde ingen indeks, og trender/alle retter tæller tilføjelser pr. ret. Kunne ikke genskabes mod produktion herfra (ingen adgang); lokalt med 3.000 retter og 1,5 mio. registreringer svarer endpointet på 0,2 s. Native har allerede 60 s tidsgrænse.
+
 ## 2026-10-17: Robot-QoS på admin → Robotter
 
 - Ny boks "Belastningsstyring (QoS)": robotter starter først, når CPU/RAM er under grænsen, og aldrig i spærretider. Viser serverens belastning lige nu og hvor mange robotter der venter; hver robotrække viser grunden. Kræver migration `20261017220000_robot_qos` og genbyg af agent-containerne (ny `job_control.py`). Se DECISIONS 2026-10-17.

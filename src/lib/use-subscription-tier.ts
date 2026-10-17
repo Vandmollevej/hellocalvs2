@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { SubscriptionTier } from "@/lib/subscription";
 import { useIsClientRender } from "@/lib/use-client-render";
+import { fetchJsonWithRetry } from "@/lib/fetch-retry";
 
 // Klientens syn på abonnementsniveau til Seriøs-låste funktioner
 // (docs/DECISIONS.md 2026-09-26). Hentes én gang pr. sideindlæsning og deles
@@ -16,9 +17,13 @@ let resolved: SubscriptionTier | null = null;
 
 function fetchTier(): Promise<SubscriptionTier> {
   if (!cached) {
-    cached = fetch("/api/subscription")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json: { tier?: SubscriptionTier } | null) => {
+    cached = fetchJsonWithRetry<{ tier?: SubscriptionTier } | null>("/api/subscription")
+      .catch((error) => {
+        // Ikke logget ind o.l. (4xx): som før behandlet som Gratis.
+        if ((error as { final?: boolean }).final) return null;
+        throw error;
+      })
+      .then((json) => {
         const tier = json?.tier ?? "FREE";
         resolved = tier;
         return tier;
