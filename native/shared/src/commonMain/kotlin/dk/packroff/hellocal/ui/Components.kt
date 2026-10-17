@@ -285,6 +285,13 @@ fun HcProfileAvatarLink(outlined: Boolean = false) {
     }
 }
 
+/**
+ * How far the bottom circle (HomeFooterArc, 40 dp at rest) reaches up over the
+ * page. AppFrame provides it on pages with the bottom bar; HcScreen keeps its
+ * fixed buttons and the end of its content above it — never behind (user rule).
+ */
+val LocalBottomArcInset = compositionLocalOf { 0.dp }
+
 /** A screen: app bar on top, scrolling content in the page colour. */
 @Composable
 fun HcScreen(
@@ -305,13 +312,20 @@ fun HcScreen(
         if (title != null) {
             HcAppBar(title, back = back, onBack = onBack, trailing = trailing, icon = icon, leading = leading, profile = profile, settingsButton = settingsButton)
         }
+        val arcInset = LocalBottomArcInset.current
         val body = Modifier.weight(1f).fillMaxWidth()
         Column(
-            (if (scroll) body.verticalScroll(rememberScrollState()) else body).padding(contentPadding),
-
+            (if (scroll) body.verticalScroll(rememberScrollState()) else body)
+                .padding(contentPadding)
+                .padding(bottom = if (bottom == null) arcInset else 0.dp),
             content = content,
         )
-        if (bottom != null) Column(Modifier.fillMaxWidth().padding(HcDimens.Gutter), content = bottom)
+        if (bottom != null) {
+            Column(
+                Modifier.fillMaxWidth().padding(start = HcDimens.Gutter, end = HcDimens.Gutter, top = HcDimens.Gutter, bottom = HcDimens.Gutter + arcInset),
+                content = bottom,
+            )
+        }
     }
 }
 

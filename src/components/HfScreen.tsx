@@ -41,11 +41,12 @@ export function HfScreen({
       />
       <div className="relative min-h-0 flex-1">
         {topBanner}
-        <div className="h-full overflow-y-auto overscroll-contain">{children}</div>
+        {/* Uden footer får indholdet 40 px luft i bunden, så knapper sidst på siden kan rulles op over bundcirklen. */}
+        <div className={`h-full overflow-y-auto overscroll-contain${footer ? "" : " hf-screen-scroll--arc"}`}>{children}</div>
       </div>
       {/* pb: bundcirklen (FooterArc, 40 px) rager op over menuen — knapperne skal ligge over den */}
       {footer && (
-        <div className="flex-shrink-0 bg-hf-cream px-4 pb-[calc(1rem+40px)] pt-4">{footer}</div>
+        <div className="hf-screen-footer flex-shrink-0 bg-hf-cream px-4 pb-[calc(1rem+40px)] pt-4">{footer}</div>
       )}
       <BottomNav />
     </div>

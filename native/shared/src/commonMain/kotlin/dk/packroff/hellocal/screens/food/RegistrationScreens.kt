@@ -163,7 +163,21 @@ fun ReportErrorScreen(args: RouteArgs) {
         }
     }
 
-    HcScreen(t.t("registrationReportError.title"), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp)) {
+    // The send button sits in the fixed footer above the bottom circle (REGLER: knapper nederst).
+    val showForm = loaded && list != null && result == null
+    HcScreen(
+        t.t("registrationReportError.title"),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp),
+        bottom = if (showForm) {
+            {
+                HcButton(
+                    if (submitting) t.t("registrationReportError.sending") else t.t("registrationReportError.submit"),
+                    onClick = ::submit,
+                    enabled = canSubmit && !submitting,
+                )
+            }
+        } else null,
+    ) {
         when {
             !loaded -> HcText(t.t("common.loading"), HcTypeRoles.Body, Modifier.fillMaxWidth().padding(top = 32.dp), color = HcColors.TextSecondary, align = TextAlign.Center)
             list == null -> Column(Modifier.fillMaxWidth().padding(top = 32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -214,11 +228,6 @@ fun ReportErrorScreen(args: RouteArgs) {
                     }
                 }
                 HcError(error)
-                HcButton(
-                    if (submitting) t.t("registrationReportError.sending") else t.t("registrationReportError.submit"),
-                    onClick = ::submit,
-                    enabled = canSubmit && !submitting,
-                )
             }
         }
     }
