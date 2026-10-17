@@ -20,37 +20,6 @@ import {
 // Alle filtre er dropdowns; mærke, sub brand, kategori, varetype og kilde er
 // flervalg.
 
-function Segment<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1">
-      <span className="hf-type-label text-text-secondary">{label}</span>
-      <div className="flex gap-1 rounded-md border border-hf-tan-dark bg-hf-white p-1">
-        {options.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            aria-pressed={value === option.value}
-            onClick={() => onChange(option.value)}
-            className="hf-choice flex-1"
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const PRODUCT_CATEGORY_OPTIONS = PRODUCT_CATEGORIES.map((key) => ({ value: key, label: PRODUCT_CATEGORY_LABELS[key] }));
 const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUCT_SOURCE_LABELS[key] }));
 const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
@@ -179,14 +148,15 @@ export function ProductDatabaseFilters({
             onChange={(sort) => go({ sort: sort as Filters["sort"] })}
             className="md:w-52"
           />
-          <Segment
+          <FilterDropdown
             label="Visning"
             value={filters.view}
             options={[
               { value: "list", label: "Liste" },
               { value: "grid", label: "Galleri" },
             ]}
-            onChange={(view) => go({ view, page: filters.page })}
+            onChange={(view) => go({ view: view as Filters["view"], page: filters.page })}
+            className="md:w-40"
           />
         </div>
       </div>

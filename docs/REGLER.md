@@ -219,3 +219,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Regel ved ark med matrixformler (B-kolonnen)**: tjek altid først for matrixceller på forkert række eller med `ref` ≠ egen celle (`xml_scan.py` og `arr_scan.py` i Produkter/Backup/Excelark) — openpyxl-roundtrip ødelægger dem ellers, og Excel kan slet ikke åbne filen. Genskab formlerne fra rækkens egen skabelon (`reparer_titelformler.py`) og kontrollér i Excel (`excel_final.ps1`).
 
 - **Subbrand-logo på produktet (Peter, 2026-10-17):** Produktet viser altid brand-logoet. Matcher produktets Subbrand en logofil «Brand - Subbrand» (Brand.name i logobiblioteket), vises subbrand-logoet oven over brand-logoet (`subbrandLogoUrl` fra /api/products/[id], vist i AddProductView). Nye logoer lægges i NAS `Projektfiler (ikke app)\Logoer`; ved navneskift til «Brand - Subbrand» fjernes gamle navnevarianter (Backup\Dubletter 2026-10-17) så der ikke ligger dubletter.
+
+## UI: Sortering og Visning = dropdown (2026-10-17)
+
+- Sortering og Visning (liste/galleri, evigheds-scroll/sideinddelt m.fl.) er ALTID en dropdown (`<select>`/FilterDropdown), aldrig knapper/chips/segmenter. Gælder overalt: admin, web og app.

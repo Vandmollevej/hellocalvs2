@@ -130,16 +130,18 @@ function RecipeFiltersContent() {
 
           <AccordionSection title={t("recipeFilters.sortTitle")} icon={<IconArrowsSort size={20} stroke={1.75} />}>
             <div className="bg-hf-cream px-4">
-              {RECIPE_SORTS.map((sort, index) => (
-                <Row
-                  key={sort}
-                  label={t(SORT_KEYS[sort])}
-                  checked={filters.sort === sort}
-                  // Kun én sortering ad gangen; slås den valgte fra, gælder Relevans.
-                  onChange={(on) => update({ ...filters, sort: on ? sort : "relevance" })}
-                  divider={index < RECIPE_SORTS.length - 1}
-                />
-              ))}
+              <select
+                value={filters.sort}
+                onChange={(e) => update({ ...filters, sort: e.target.value as (typeof RECIPE_SORTS)[number] })}
+                aria-label={t("recipeFilters.sortTitle")}
+                className="hf-field my-2 w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black"
+              >
+                {RECIPE_SORTS.map((sort) => (
+                  <option key={sort} value={sort}>
+                    {t(SORT_KEYS[sort])}
+                  </option>
+                ))}
+              </select>
             </div>
           </AccordionSection>
 

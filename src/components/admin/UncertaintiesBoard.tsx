@@ -77,21 +77,20 @@ export function UncertaintiesBoard({
       </div>
 
       <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-muted">
-        Sortér:
-        {SORTS.map((s) => (
-          <button
-            key={s.key}
-            type="button"
-            onClick={() => setSort(s.key)}
-            className={`rounded-full border px-2.5 py-1 ${
-              sort === s.key
-                ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
-            }`}
+        <label className="flex items-center gap-1.5">
+          Sortér
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortKey)}
+            className="hf-field rounded-md border border-hf-tan-dark bg-hf-cream px-2 text-hf-black"
           >
-            {s.label}
-          </button>
-        ))}
+            {SORTS.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </label>
         <span className="ml-auto">
           Mål: mindst {Math.round(target * 100)} % sikkerhed (vejledende) · under {Math.round(urgentBelow * 100)} % er
           rød · under {Math.round(hideBelow * 100)} % skjules i søgningen, til den er gennemgået
