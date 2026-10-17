@@ -117,15 +117,16 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
   udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
   flisen. Se DECISIONS.md 2026-10-11.
-- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
-  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
-  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10, ændret 2026-10-17)**:
+  brandet står til højre for cirklen, subbrandet oven over det — **kun som logo**.
+  Har brandet/subbrandet intet logo, vises intet (bruger 2026-10-17: Coca-Cola stod
+  som "Coca-Cola Europacific Partners Services Bulgaria EOOD", fordi Open Food
+  Facts' brand-felt indeholdt producentens firmanavn, og navnet blev vist som tekst).
+  Brands uden logo findes i admin → Produkt-database → Brands → "Uden logo", hvor
+  hvert brand linker til alle dets varer, så logoet kan lægges ind. Ingen
+  hardcodede navnelister til at rette brandnavne. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
-  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
-- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
-  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
-  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
-  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-17.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -289,6 +290,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge). Ord med STORE bogstaver er allergener og rettes til det nærmeste allergen. Ingredienslisten slutter, hvor næringstabellen begynder (også "Energi"/kJ/kcal uden overskrift).
 - Stavelogik findes ét sted: `src/lib/spelling-engine.ts` (robot, kontrol ved gem og visning). Ny ordbog/regel = grundlisten `src/lib/ingredient-words.ts`, katalogets ordforråd eller admins afgørelser på Stavekontrol — aldrig en særregel for ét ord i koden. Nattens robot (`spelling-check`) retter kun sikre fund og lægger resten på admin → Stavekontrol; hvad admin har afvist/fortrudt, rettes aldrig igen.
+- E-numre i ingredienslisten vises fede og klikbare, men aldrig understregede — web og native (bruger 2026-10-17).
 - Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
 
 ## Kropsmål: stemmeguiden (user rule 2026-10-14)

@@ -292,7 +292,7 @@
       "title": "Support",
       "intro": "Eftersom vi värnar om dina data har Hello Cal Support som utgångspunkt inte tillgång till dina personuppgifter eller ditt konto. Du bestämmer själv vilka data Support tillfälligt får se.",
       "description": "Nedan kan du ge tillstånd till vilka data vi får se och ange under vilken period data kan nås.",
-      "period": "Åtkomstperiod",
+      "period": "Tillåt åtkomst under perioden",
       "from": "Från",
       "until": "Till",
       "dataTitle": "Data som Support får se",

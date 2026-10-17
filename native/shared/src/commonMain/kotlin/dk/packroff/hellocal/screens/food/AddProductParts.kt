@@ -46,7 +46,6 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
@@ -220,7 +219,7 @@ fun IngredientsTextView(text: String, onAdditive: (String) -> Unit) {
                     withLink(
                         LinkAnnotation.Clickable(
                             tag = "e:$code",
-                            styles = TextLinkStyles(SpanStyle(color = HcColors.Black, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)),
+                            styles = TextLinkStyles(SpanStyle(color = HcColors.Black, fontWeight = FontWeight.Bold)),
                         ) { onAdditive(code) },
                     ) { append(part.text) }
                     continue

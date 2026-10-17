@@ -24,28 +24,12 @@ export const SUBBRAND_GAP_PX = 6;
 
 const AIR_PX = 8;
 
-/** Højden brandet fylder ved cirklen: logoets rendrede højde, navnets linje eller 0 uden brand. */
+/** Højden brandet fylder ved cirklen: logoets rendrede højde, eller 0 uden brandlogo (intet vises). */
 export function brandSlotHeight(
   brand: { logoUrl?: string | null } | null | undefined,
   logoRatio: number | null,
-  nameHeightPx: number = BRAND_NAME_HEIGHT_PX,
 ): number {
-  if (!brand) return 0;
-  return brand.logoUrl ? brandLogoRenderedHeight(logoRatio) : nameHeightPx;
-}
-
-/** Mindste bredde et navn får, selv på en meget smal skærm. */
-const BRAND_NAME_MIN_WIDTH_PX = 60;
-
-/**
- * Største bredde (px) for et brand-/subbrandnavn, der starter `leftPx` fra
- * cirklens venstre kant, når cirklen står midt i en kolonne `columnWidthPx`
- * bred — så navnet brydes i linjer i stedet for at gå ud over kanten.
- */
-export function brandNameMaxWidthPx(columnWidthPx: number | null, leftPx: number): number | undefined {
-  if (!columnWidthPx || !Number.isFinite(columnWidthPx)) return undefined;
-  const room = Math.floor(columnWidthPx / 2 + PRODUCT_CIRCLE_PX / 2 - leftPx);
-  return Math.max(BRAND_NAME_MIN_WIDTH_PX, room);
+  return brand?.logoUrl ? brandLogoRenderedHeight(logoRatio) : 0;
 }
 
 /** Hvor højt subbrandet står over cirklens bund: over brandet med luft, eller i bunden uden brand. */
