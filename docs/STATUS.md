@@ -1,3 +1,6 @@
+## 2026-10-17: Sprogflaget som mærke på mikrofonen
+Madvarer: sprogflaget sidder på mikrofonens øverste venstre kant (spejl af favoritmærket på varesiden), ikke længere alene ude i venstre side. Web + native.
+
 ## 2026-10-17: Spring energi over i kameraflowet
 "Spring over" på energi-trinnet (varer uden næringstabel, fx danskvand); sprungne trin får en rød streg over knappen (web + native). Serveren opretter varen uden energifoto med "næring ukendt".
 
