@@ -2865,6 +2865,8 @@
   "activity": {
     "title": "Activité",
     "searchPlaceholder": "Rechercher une activité",
+    "favoritesTitle": "Mes favoris",
+    "allTitle": "Toutes les activités",
     "addManual": "Ajouter « {name} » comme activité",
     "pending": "en attente de validation",
     "spikeTitle": "Tu as brûlé {kcal} calories en plus {day}. Qu'as-tu fait ?",
