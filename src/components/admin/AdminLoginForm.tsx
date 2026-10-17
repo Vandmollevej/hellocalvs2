@@ -78,7 +78,7 @@ export function AdminLoginForm() {
         type="button"
         onClick={loginWithPasskey}
         disabled={passkeyBusy}
-        className="hf-btn-secondary hf-btn--compact hf-btn--inline"
+        className="hf-btn-secondary hf-btn--large"
       >
         {passkeyBusy ? "Venter på Face ID…" : "Log ind med Face ID / passkey"}
       </button>
@@ -111,12 +111,12 @@ export function AdminLoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="hf-btn-brand hf-btn--compact"
+          className="hf-btn-brand hf-btn--large"
         >
           {loading ? "Logger ind…" : "Fortsæt"}
         </button>
       </form>
-      <a href="/admin/forgot-password" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
+      <a href="/admin/forgot-password" className="hf-btn-text hf-btn--inline mt-4 self-center">
         Glemt adgangskode?
       </a>
     </div>

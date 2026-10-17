@@ -104,7 +104,7 @@ export function AdminInviteForm({ token }: { token: string }) {
           <button
             type="submit"
             disabled={loading || code.length !== 6}
-            className="hf-btn-brand hf-btn--compact"
+            className="hf-btn-brand hf-btn--large"
           >
             {loading ? "Bekræfter…" : "Bekræft og opret"}
           </button>
@@ -127,7 +127,7 @@ export function AdminInviteForm({ token }: { token: string }) {
       <button
         type="submit"
         disabled={loading}
-        className="hf-btn-brand hf-btn--compact"
+        className="hf-btn-brand hf-btn--large"
       >
         {loading ? "Genererer…" : "Fortsæt til QR-kode"}
       </button>

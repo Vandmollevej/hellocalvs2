@@ -55,13 +55,13 @@ export function AdminForgotPasswordForm() {
           <button
             type="submit"
             disabled={loading}
-            className="hf-btn-brand hf-btn--compact"
+            className="hf-btn-brand hf-btn--large"
           >
             {loading ? "Sender…" : "Send link"}
           </button>
         </form>
       )}
-      <Link href="/admin/login" className="hf-type-body mt-6 text-center text-hf-green-dark underline">
+      <Link href="/admin/login" className="hf-btn-text hf-btn--inline mt-6 self-center">
         Tilbage til login
       </Link>
     </div>

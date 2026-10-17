@@ -74,7 +74,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
     return (
       <div className="mx-auto max-w-sm px-4 py-10">
         <p className="hf-type-body mb-4">Linket er ugyldigt.</p>
-        <Link href="/admin/forgot-password" className="hf-type-body text-hf-green-dark underline">
+        <Link href="/admin/forgot-password" className="hf-btn-text hf-btn--inline">
           Anmod om et nyt link
         </Link>
       </div>
@@ -112,7 +112,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
             <button
               type="submit"
               disabled={loading || code.length !== 6}
-              className="hf-btn-brand hf-btn--compact"
+              className="hf-btn-brand hf-btn--large"
             >
               {loading ? "Bekræfter…" : "Bekræft og log ind"}
             </button>
@@ -132,7 +132,7 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
           <button
             type="submit"
             disabled={loading}
-            className="hf-btn-brand hf-btn--compact"
+            className="hf-btn-brand hf-btn--large"
           >
             {loading ? "Gemmer…" : "Fortsæt til QR-kode"}
           </button>

@@ -61,15 +61,15 @@ export default function AdminVerifyPage() {
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="hf-btn-primary hf-btn--large"
+          className="hf-btn-brand hf-btn--large"
         >
           {loading ? "Bekræfter…" : "Log ind"}
         </button>
       </form>
-      <Link href="/admin/login" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
+      <Link href="/admin/login" className="hf-btn-text hf-btn--inline mt-4 self-center">
         Ingen adgang til authenticator? Log ind med Face ID / passkey
       </Link>
-      <Link href="/admin/forgot-password" className="hf-type-body mt-2 text-center text-hf-green-dark underline">
+      <Link href="/admin/forgot-password" className="hf-btn-text hf-btn--inline mt-2 self-center">
         Har aldrig oprettet koden eller mistet den? Få mail og ny QR-kode
       </Link>
     </div>
