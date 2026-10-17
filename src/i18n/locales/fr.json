@@ -1054,6 +1054,7 @@
     "stepNutrition": "Énergie",
     "stepIngredients": "Contenu",
     "stepDone": "{step} : pris et lu",
+    "stepSkipped": "{step} : ignoré",
     "bothFound": "Énergie et contenu trouvés sur la même image",
     "chooseObject": "Appuie sur le produit à mettre au point",
     "useWholePhoto": "Utiliser toute la photo",
