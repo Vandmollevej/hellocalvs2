@@ -53,6 +53,8 @@ const FINGER_CLEARANCE = 62;
 const TOP_ROOM = 90;
 const ANIMATION_MS = 200;
 const ICON_SIZE = 26;
+// Plads omkring halvcirklen til skyggen (opad og til siderne).
+const SHADOW_PAD = 16;
 
 export type ArcSlot = {
   key: string;
@@ -390,13 +392,36 @@ export function FooterArc() {
         />
       )}
 
+      {/* Let skygge kun opad og til siderne (brugerens ønske 2026-10-17): svag i hvile,
+          tydeligere mens man rører/har åbnet cirklen. SVG'en klipper ved footerkanten,
+          så der aldrig falder skygge nedad. */}
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute"
-        style={{ left: cx - ARC_RADIUS, bottom: 0, width: ARC_RADIUS * 2, height: ARC_RADIUS + ARC_BULGE_MAX }}
-        viewBox={`0 0 ${ARC_RADIUS * 2} ${ARC_RADIUS + ARC_BULGE_MAX}`}
+        style={{
+          left: cx - ARC_RADIUS - SHADOW_PAD,
+          bottom: 0,
+          width: ARC_RADIUS * 2 + SHADOW_PAD * 2,
+          height: ARC_RADIUS + ARC_BULGE_MAX + SHADOW_PAD,
+          overflow: "hidden",
+        }}
+        viewBox={`${-SHADOW_PAD} ${-SHADOW_PAD} ${ARC_RADIUS * 2 + SHADOW_PAD * 2} ${ARC_RADIUS + ARC_BULGE_MAX + SHADOW_PAD}`}
       >
-        <path d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)} className="fill-hf-green" />
+        <defs>
+          <filter id="footer-arc-shadow-soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="-1.5" stdDeviation="3" floodColor="#000" floodOpacity="0.12" />
+          </filter>
+          <filter id="footer-arc-shadow-strong" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="-3" stdDeviation="6" floodColor="#000" floodOpacity="0.26" />
+          </filter>
+        </defs>
+        <path d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)} className="fill-hf-green" filter="url(#footer-arc-shadow-soft)" />
+        <path
+          d={segmentPath(visibleHeight, bulgeDeg, bulgeAmount)}
+          className="fill-hf-green"
+          filter="url(#footer-arc-shadow-strong)"
+          style={{ opacity: gesturing || open ? 1 : 0, transition: "opacity 180ms ease" }}
+        />
       </svg>
 
       <span
