@@ -172,7 +172,43 @@ def parse_recipe(html, url):
         "total_minutes": minutes_from_text(stats.get("Tid i alt")),
         "servings": servings or 4,
         "image_url": image_el.get("content") if image_el else None,
+        "popularity": parse_popularity(soup),
     }
+
+
+def parse_popularity(soup):
+    """Valdemarsros egen bedømmelse (schema.org aggregateRating), hvis siden har den.
+
+    Nedarves til "Trender netop nu" (docs/DECISIONS.md 2026-10-17).
+    """
+    def number(text):
+        try:
+            return float(str(text).replace(",", ".").strip())
+        except (TypeError, ValueError):
+            return None
+
+    rating = count = None
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            data = json.loads(script.string or "")
+        except ValueError:
+            continue
+        nodes = data if isinstance(data, list) else data.get("@graph", [data]) if isinstance(data, dict) else []
+        for node in nodes:
+            agg = node.get("aggregateRating") if isinstance(node, dict) else None
+            if isinstance(agg, dict):
+                rating = number(agg.get("ratingValue"))
+                count = number(agg.get("ratingCount") or agg.get("reviewCount"))
+                break
+    if rating is None:
+        el = soup.select_one('[itemprop="ratingValue"]')
+        rating = number(el.get("content") or el.get_text()) if el else None
+    if count is None:
+        el = soup.select_one('[itemprop="ratingCount"], [itemprop="reviewCount"]')
+        count = number(el.get("content") or el.get_text()) if el else None
+    if rating is None and count is None:
+        return None
+    return {"rating": rating, "ratingCount": count}
 
 
 def download_image(http, image_url, slug):
@@ -271,6 +307,7 @@ def upsert_recipe(conn, http, url, parsed, category_id):
         "source": "valdemarsro",
         # Til Frida-skønnet af retter uden næring (src/lib/frida-estimates.ts).
         "servings": servings,
+        "sourcePopularity": parsed.get("popularity"),
     }
     image_url = download_image(http, parsed["image_url"], slug)
     ingredients_text = ", ".join(name or raw for raw, (_, _, name) in zip(parsed["lines"], parsed_lines))

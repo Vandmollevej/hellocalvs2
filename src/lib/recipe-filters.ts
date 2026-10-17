@@ -71,6 +71,9 @@ export type RecipeFilters = {
   persons: number;
   showKcal: boolean;
   showEnergySplit: boolean;
+  // Sektionerne over "Alle retter" (brugerens krav 2026-10-17): slået til som standard.
+  showTrending: boolean;
+  showFavorites: boolean;
 };
 
 export const DEFAULT_RECIPE_FILTERS: RecipeFilters = {
@@ -82,6 +85,8 @@ export const DEFAULT_RECIPE_FILTERS: RecipeFilters = {
   persons: 0,
   showKcal: true,
   showEnergySplit: false,
+  showTrending: true,
+  showFavorites: true,
 };
 
 // Energiprocent-grænser. Protein "høj" følger EU's anprisningsregel
@@ -124,6 +129,8 @@ export function filtersFromParams(params: URLSearchParams): RecipeFilters {
     persons: Math.min(6, Math.max(0, Math.round(Number(params.get("persons")) || 0))),
     showKcal: params.get("kcal") !== "0",
     showEnergySplit: params.get("split") === "1",
+    showTrending: params.get("trend") !== "0",
+    showFavorites: params.get("favs") !== "0",
   };
 }
 
@@ -139,6 +146,8 @@ export function filtersToParams(filters: RecipeFilters, params = new URLSearchPa
   params.set("persons", String(filters.persons));
   params.set("kcal", filters.showKcal ? "1" : "0");
   params.set("split", filters.showEnergySplit ? "1" : "0");
+  params.set("trend", filters.showTrending ? "1" : "0");
+  params.set("favs", filters.showFavorites ? "1" : "0");
   return params;
 }
 

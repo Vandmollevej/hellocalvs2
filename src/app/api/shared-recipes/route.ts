@@ -27,6 +27,13 @@ import {
   MEAL_KIT_KEYS,
   type MealKitKey,
 } from "@/lib/meal-kit-providers";
+import {
+  compareTrending,
+  fictiveScore,
+  readSourcePopularity,
+  sourceScore,
+  type TrendingCandidate,
+} from "@/lib/trending-score";
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24).
 //
@@ -55,22 +62,16 @@ type Item = {
   split: { protein: number; carbs: number; fat: number } | null;
   warnings: RecipeWarning[];
   popularity: number;
+  // Kildens egen popularitet (0-50), nedarvet til "Trender netop nu".
+  sourceScore: number | null;
+  // Kun med i "Trender netop nu" som opfyldning: faldt på et næringsfilter
+  // (ofte pga. ukendt næring), aldrig på allergener eller kostretning.
+  relaxed: boolean;
   createdAt: string;
   score: number;
 };
 
 const TRENDING_LIMIT = 10;
-
-// Deterministisk "tilfældig" rækkefølge (FNV-1a), så tilfældigt udvalg ikke
-// skifter ved hver genindlæsning, men først næste dag.
-function dailyOrder(text: string) {
-  let hash = 2166136261;
-  for (let i = 0; i < text.length; i += 1) {
-    hash ^= text.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
 
 function relevance(name: string, searchText: string, q: string) {
   if (!q) return 0;
@@ -160,6 +161,14 @@ export async function GET(req: Request) {
   const withIngredientData = needsIngredientData(filters);
   // trending=1: kun til "Trender netop nu" (ingen søgning), se nedenfor.
   const trending = params.get("trending") === "1" && !q;
+  // Uden søgning og uden trending: "Alle retter" under favoritterne, sorteret
+  // efter popularitet (nedarvet fra kilden) og hentet side for side (endeløs
+  // scroll, brugerens krav 2026-10-17). offset/limit vælger siden.
+  const browsing = !q && !trending;
+  const offset = Math.max(0, Math.floor(Number(params.get("offset")) || 0));
+  const limit = Math.min(60, Math.max(1, Math.floor(Number(params.get("limit")) || 60)));
+  // Uden søgning rangeres hele kataloget, så der hentes flere kandidater.
+  const candidateLimit = q ? 200 : 1000;
 
   try {
     const user = await getSessionUser();
@@ -179,7 +188,7 @@ export async function GET(req: Request) {
         ...(q ? { searchText: { contains: q } } : {}),
       },
       orderBy: { createdAt: "desc" },
-      take: 200,
+      take: candidateLimit,
     });
 
     const parsed = recipes.map((r) => ({ recipe: r, ingredients: parseIngredients(r.ingredients) ?? [] }));
@@ -222,7 +231,9 @@ export async function GET(req: Request) {
           sugar?.amount != null && sugar.totalGrams > 0 ? (sugar.amount / sugar.totalGrams) * 100 : null,
       };
       const result = evaluateRecipe(facts, filters);
-      if (!result.pass) continue;
+      // "Trender netop nu" må aldrig være tom: et næringsfilter (makro, keto,
+      // sukker, næringsstoffer) frasorterer ikke her, kun allergener og kost.
+      if (!result.pass && !(trending && result.reason === "nutrition")) continue;
       items.push({
         kind: "shared",
         id: r.id,
@@ -234,6 +245,8 @@ export async function GET(req: Request) {
         split: energyPercents(facts),
         warnings: result.warnings,
         popularity: r.popularity,
+        sourceScore: null,
+        relaxed: !result.pass,
         createdAt: r.createdAt.toISOString(),
         score: relevance(r.name, r.searchText, q),
       });
@@ -267,7 +280,7 @@ export async function GET(req: Request) {
             : {}),
         },
         orderBy: { createdAt: "desc" },
-        take: 200,
+        take: candidateLimit,
         select: {
           ...PRODUCT_FACTS_SELECT,
           imageUrl: true,
@@ -290,6 +303,15 @@ export async function GET(req: Request) {
           })
         : [];
       const usageById = new Map(usage.map((u) => [u.productId, u._count._all]));
+      // Kildens popularitet (recipeDetails.sourcePopularity) hentes alene, så
+      // hele opskriftsteksten ikke læses for hver ret.
+      const popularityById = new Map<string, number | null>();
+      if (!q && hfProducts.length) {
+        const rows = await prisma.$queryRaw<{ id: string; sp: unknown }[]>`
+          SELECT id, "recipeDetails"->'sourcePopularity' AS sp FROM products
+          WHERE id = ANY(${hfProducts.map((p) => p.id)}) AND "recipeDetails"->'sourcePopularity' IS NOT NULL`.catch(() => []);
+        for (const row of rows) popularityById.set(row.id, sourceScore(readSourcePopularity({ sourcePopularity: row.sp })));
+      }
       for (const p of hfProducts) {
         // Én servering af opskriften (100 g, når udbyderen ikke oplyser
         // portionsvægt, fx BetterFeast).
@@ -313,7 +335,7 @@ export async function GET(req: Request) {
           sugarPer100g: per100g(p, "sugar"),
         };
         const result = evaluateRecipe(facts, filters);
-        if (!result.pass) continue;
+        if (!result.pass && !(trending && result.reason === "nutrition")) continue;
         items.push({
           kind: mealKitBySource(p.externalSource)?.key ?? "valdemarsro",
           id: p.id,
@@ -325,6 +347,8 @@ export async function GET(req: Request) {
           split: energyPercents(facts),
           warnings: result.warnings,
           popularity: usageById.get(p.id) ?? 0,
+          sourceScore: popularityById.get(p.id) ?? null,
+          relaxed: !result.pass,
           createdAt: p.createdAt.toISOString(),
           score: relevance(p.name, `${p.name} ${p.ingredientsText ?? ""}`.toLowerCase(), q),
         });
@@ -352,10 +376,11 @@ export async function GET(req: Request) {
       }
     }
 
-    // "Trender netop nu" (brugerens krav 2026-10-10): de 10 retter med flest nye
-    // klik den seneste måned (seneste uge tæller dobbelt, så stigning vinder).
-    // Er der færre end 10 med klik, fyldes op med tilfældige retter (samme
-    // rækkefølge hele dagen), så der altid vises mindst tre, når de findes.
+    // "Trender netop nu" (brugerens krav 2026-10-10 og 2026-10-17): de 10 retter
+    // med flest nye klik den seneste måned (seneste uge tæller dobbelt, så
+    // stigning vinder). Resten fyldes op efter et trender-tal, der nedarves fra
+    // kilden (HelloFresh/Valdemarsro-bedømmelser, delte retters popularitet) og
+    // ellers er fiktivt (samme hele dagen), så der altid vises noget.
     if (trending) {
       const keyOf = (item: Item) => `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
       const now = Date.now();
@@ -373,31 +398,48 @@ export async function GET(req: Request) {
         clickScore.set(click.recipeKey, (clickScore.get(click.recipeKey) ?? 0) + (click.createdAt >= weekAgo ? 2 : 1));
       }
       const day = new Date(now).toISOString().slice(0, 10);
-      const shuffled = items
-        .map((item) => ({ item, order: dailyOrder(`${day}:${keyOf(item)}`) }))
-        .sort((a, b) => a.order - b.order)
-        .map((entry) => entry.item);
-      const clicked = shuffled
-        .filter((item) => (clickScore.get(keyOf(item)) ?? 0) > 0)
-        .sort((a, b) => (clickScore.get(keyOf(b)) ?? 0) - (clickScore.get(keyOf(a)) ?? 0));
-      // Retter med kendt energi først i opfyldningen; dem uden vises kun, hvis
-      // der ellers ikke er nok (klienterne viser da ingen kcal-tekst).
-      const rest = shuffled
-        .filter((item) => !clickScore.has(keyOf(item)))
-        .sort((a, b) => Number(b.kcal > 0) - Number(a.kcal > 0));
-      items.splice(0, items.length, ...[...clicked, ...rest].slice(0, TRENDING_LIMIT));
+      const ranked = items
+        .map((item) => {
+          const key = keyOf(item);
+          const inherited = item.kind === "shared" ? (item.popularity > 0 ? item.popularity : null) : item.sourceScore;
+          const candidate: TrendingCandidate = {
+            key,
+            clicks: clickScore.get(key) ?? 0,
+            relaxed: item.relaxed,
+            // Retter med kendt energi først; dem uden vises kun, hvis der ellers
+            // ikke er nok (klienterne viser da ingen kcal-tekst).
+            hasEnergy: item.kcal > 0,
+            trendScore: inherited ?? fictiveScore(key, day),
+          };
+          return { item, candidate };
+        })
+        .sort((a, b) => compareTrending(a.candidate, b.candidate));
+      items.splice(0, items.length, ...ranked.slice(0, TRENDING_LIMIT).map((entry) => entry.item));
     }
 
-    const sort = filters.sort;
+    // Popularitet nedarves fra kilden (brugerens regel 2026-10-17): egne
+    // tilføjelser/bedømmelser vejer tungest, derefter kildens tal, ellers et
+    // fiktivt tal (samme hele dagen, så siderne i endeløs scroll passer sammen).
+    if (!trending) {
+      const day = new Date().toISOString().slice(0, 10);
+      for (const item of items) {
+        const key = `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
+        item.popularity = item.popularity * 100 + (item.sourceScore ?? fictiveScore(key, day));
+      }
+    }
+
+    const sort = browsing && filters.sort === "relevance" ? "popular" : filters.sort;
     if (!trending) items.sort((a, b) => {
-      if (sort === "popular") return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
+      if (sort === "popular")
+        return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id);
       if (sort === "date") return b.createdAt.localeCompare(a.createdAt);
       return b.score - a.score || b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
     });
 
     return NextResponse.json({
       portionKcal,
-      recipes: items.slice(0, 60).map((item) => ({
+      hasMore: browsing && items.length > offset + limit,
+      recipes: (browsing ? items.slice(offset, offset + limit) : items.slice(0, 60)).map((item) => ({
         kind: item.kind,
         id: item.id,
         name: item.name,

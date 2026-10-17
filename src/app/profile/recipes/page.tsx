@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconAdjustmentsHorizontal, IconPlus, IconSearch } from "@tabler/icons-react";
@@ -171,6 +171,32 @@ function MineTab({ t }: { t: Translate }) {
 // fylder op med tilfældige, så der altid er mindst tre (DECISIONS 2026-10-10).
 const TRENDING_SKELETONS = 3;
 
+// "Alle retter" (brugerens krav 2026-10-17): et gitter under favoritterne,
+// sorteret efter popularitet. Der hentes tre rækker ad gangen; flere hentes,
+// når man scroller ned (endeløs scroll). Kolonner efter bredden.
+const ALL_ROWS_PER_PAGE = 3;
+
+function columnsFor(width: number) {
+  if (width >= 720) return 4;
+  if (width >= 480) return 3;
+  return 2;
+}
+
+// Gitterets kolonnetal følger containerens bredde (mobil 2, bredere 3-4).
+function useGridColumns() {
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
+  const [columns, setColumns] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    if (!element) return;
+    const observer = new ResizeObserver(() => setColumns(columnsFor(element.clientWidth)));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [element]);
+  return [setElement, columns] as const;
+}
+
+type AllPage = { key: string; recipes: SearchResult[]; hasMore: boolean; error: boolean };
+
 type FavoriteSnapshot = { id: string; name: string; kcal: number; per100g?: boolean; images?: string[] };
 
 function SharedTab({ t }: { t: Translate }) {
@@ -188,6 +214,12 @@ function SharedTab({ t }: { t: Translate }) {
   const [state, setState] = useState<LoadState>("loading");
   const [favorites, setFavorites] = useState<FavoriteSnapshot[] | null>(null);
   const searching = query.trim().length > 0;
+  const [gridRef, gridColumns] = useGridColumns();
+  const [allPage, setAllPage] = useState<AllPage>({ key: "", recipes: [], hasMore: false, error: false });
+  // Nøglen til den side, der hentes nu (undgår dobbelthentning og gamle svar).
+  const allLoadingKey = useRef<string | null>(null);
+  const allLatestKey = useRef("");
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -228,6 +260,78 @@ function SharedTab({ t }: { t: Translate }) {
       clearTimeout(timeout);
     };
   }, [query, filters, providers, isSerious, source]);
+
+  // Fælles parametre til "Alle retter" (uden søgning og trending). Nøglen
+  // skifter, når filtre, kilde eller integrationer ændres.
+  const allKey =
+    providers === null || isSerious === null
+      ? ""
+      : (() => {
+          const params = isSerious ? filtersToParams(filters) : new URLSearchParams({ sort: "relevance" });
+          if (providers.length > 0 && isSerious) params.set("providers", providers.join(","));
+          if (source !== "all") params.set("source", source);
+          return params.toString();
+        })();
+  const allCurrent = allKey !== "" && allPage.key === allKey;
+  const allRecipes = allCurrent ? allPage.recipes : [];
+  const allHasMore = allCurrent && allPage.hasMore;
+  const allError = allCurrent && allPage.error;
+  const allFirstLoading = !allCurrent;
+
+  const loadMoreAll = useCallback(
+    async (key: string, offset: number) => {
+      if (!key || gridColumns === null || allLoadingKey.current === `${key}@${offset}`) return;
+      allLoadingKey.current = `${key}@${offset}`;
+      const params = new URLSearchParams(key);
+      params.set("offset", String(offset));
+      params.set("limit", String(ALL_ROWS_PER_PAGE * gridColumns));
+      try {
+        const res = await fetch(`/api/shared-recipes?${params.toString()}`);
+        if (!res.ok) throw new Error("offline");
+        const data = (await res.json()) as { recipes: SearchResult[]; hasMore?: boolean };
+        if (allLatestKey.current !== key) return;
+        setAllPage((current) => ({
+          key,
+          recipes: offset === 0 || current.key !== key ? data.recipes : [...current.recipes, ...data.recipes],
+          hasMore: Boolean(data.hasMore),
+          error: false,
+        }));
+      } catch {
+        if (allLatestKey.current !== key) return;
+        setAllPage((current) =>
+          current.key === key ? { ...current, hasMore: false, error: true } : { key, recipes: [], hasMore: false, error: true },
+        );
+      } finally {
+        if (allLoadingKey.current === `${key}@${offset}`) allLoadingKey.current = null;
+      }
+    },
+    [gridColumns],
+  );
+
+  // Første side, når filtre, kilde eller integrationer ændres.
+  const columnsKnown = gridColumns !== null;
+  useEffect(() => {
+    if (!allKey || !columnsKnown) return;
+    allLatestKey.current = allKey;
+    const timeout = setTimeout(() => void loadMoreAll(allKey, 0), 200);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved nye filtre, ikke ved ny kolonnebredde
+  }, [allKey, columnsKnown]);
+
+  // Endeløs scroll: næste tre rækker, når bunden af gitteret nærmer sig.
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !allHasMore || searching) return;
+    const offset = allRecipes.length;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) void loadMoreAll(allKey, offset);
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [allHasMore, allRecipes.length, allKey, loadMoreAll, searching]);
 
   const sourceOptions: { value: Source; label: string }[] = [
     { value: "all", label: t("recipes.sourceAll") },
@@ -373,45 +477,80 @@ function SharedTab({ t }: { t: Translate }) {
         </>
       ) : (
         <>
-          <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
-          {state === "loading" && (
-            <div className="-mx-4 flex gap-3 overflow-hidden px-4">
-              {Array.from({ length: TRENDING_SKELETONS }, (_, index) => (
-                <RecipeCardSkeleton key={index} />
-              ))}
-            </div>
-          )}
-          {state === "error" && status(connectionMessage(t("recipes.loadError")))}
-          {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
-          {state === "ready" && trending.length > 0 && (
-            <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
-              {trending.map((result) => (
-                <RecipeCard key={`${result.kind}-${result.id}`} row={rowFor(result)} />
-              ))}
-            </div>
+          {view.showTrending && (
+            <>
+              <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
+              {state === "loading" && (
+                <div className="-mx-4 flex gap-3 overflow-hidden px-4">
+                  {Array.from({ length: TRENDING_SKELETONS }, (_, index) => (
+                    <RecipeCardSkeleton key={index} />
+                  ))}
+                </div>
+              )}
+              {state === "error" && status(connectionMessage(t("recipes.loadError")))}
+              {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
+              {state === "ready" && trending.length > 0 && (
+                <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
+                  {trending.map((result) => (
+                    <RecipeCard key={`${result.kind}-${result.id}`} row={rowFor(result)} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
 
-          <h2 className="hf-type-section-title">{t("recipes.favoritesTitle")}</h2>
-          {favorites === null && <LoadingRows count={3} />}
-          {favorites?.length === 0 && status(t("recipes.favoritesEmpty"))}
-          {favorites && favorites.length > 0 && (
-            <div>
-              {favorites.map((recipe) => (
-                <RecipeRow
-                  key={`fav-${recipe.id}`}
-                  row={{
-                    key: recipe.id,
-                    href: recipeHref(recipe.id),
-                    name: recipe.name,
-                    imageUrl: recipe.images?.[0] ?? null,
-                    subtitle: favoriteKcalText(t, recipe),
-                  }}
-                />
-              ))}
-            </div>
+          {/* Favoritter står på én linje som Trender (brugerens krav 2026-10-17). */}
+          {view.showFavorites && (
+            <>
+              <h2 className="hf-type-section-title">{t("recipes.favoritesTitle")}</h2>
+              {favorites === null && (
+                <div className="-mx-4 flex gap-3 overflow-hidden px-4">
+                  {Array.from({ length: TRENDING_SKELETONS }, (_, index) => (
+                    <RecipeCardSkeleton key={index} />
+                  ))}
+                </div>
+              )}
+              {favorites?.length === 0 && status(t("recipes.favoritesEmpty"))}
+              {favorites && favorites.length > 0 && (
+                <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
+                  {favorites.map((recipe) => (
+                    <RecipeCard
+                      key={`fav-${recipe.id}`}
+                      row={{
+                        key: recipe.id,
+                        href: recipeHref(recipe.id),
+                        name: recipe.name,
+                        imageUrl: recipe.images?.[0] ?? null,
+                        subtitle: favoriteKcalText(t, recipe),
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
+
+          <h2 className="hf-type-section-title">{t("recipes.allTitle")}</h2>
+          {allError && allRecipes.length === 0 && status(connectionMessage(t("recipes.loadError")))}
+          {allCurrent && !allError && allRecipes.length === 0 && status(t("recipes.allEmpty"))}
         </>
       )}
+      {/* Gitteret er altid i DOM'en (skjult under søgning), så kolonnebredden kan måles. */}
+      <div ref={gridRef} className={searching ? "hidden" : ""}>
+        <div
+          className="grid gap-x-3 gap-y-4"
+          style={{ gridTemplateColumns: `repeat(${gridColumns ?? 2}, minmax(0, 1fr))` }}
+        >
+          {allRecipes.map((result) => (
+            <RecipeCard key={`all-${result.kind}-${result.id}`} row={rowFor(result)} fluid />
+          ))}
+          {(allFirstLoading || allHasMore) &&
+            Array.from({ length: (gridColumns ?? 2) * (allFirstLoading ? ALL_ROWS_PER_PAGE : 1) }, (_, index) => (
+              <RecipeCardSkeleton key={`all-skeleton-${index}`} fluid />
+            ))}
+        </div>
+        <div ref={sentinelRef} aria-hidden className="h-px" />
+      </div>
     </div>
   );
 }

@@ -287,7 +287,23 @@ def build_recipe_details(conn, market, recipe):
         "steps": steps,
         "nutrition": nutrition,
         "websiteUrl": text_or_none(recipe.get("websiteUrl")),
+        # Kildens popularitet nedarves til "Trender netop nu" (docs/DECISIONS.md 2026-10-17).
+        "sourcePopularity": source_popularity(recipe),
     }
+
+
+def source_popularity(recipe):
+    """HelloFreshs egne tal: gennemsnitlig bedømmelse, antal bedømmelser og favoritter."""
+    def number(key):
+        value = recipe.get(key)
+        return value if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+    data = {
+        "rating": number("averageRating"),
+        "ratingCount": number("ratingsCount"),
+        "favoriteCount": number("favoritesCount"),
+    }
+    return data if any(v is not None for v in data.values()) else None
 
 
 def upsert_recipe(conn, market, recipe, retter_category_id):

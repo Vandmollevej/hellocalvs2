@@ -267,45 +267,53 @@ export function needsIngredientData(filters: RecipeFilters) {
   return filters.allergens.length > 0 || filters.diets.length > 0 || filters.nutrients.length > 0;
 }
 
-export function evaluateRecipe(facts: RecipeFacts, filters: RecipeFilters): { pass: boolean; warnings: RecipeWarning[] } {
-  const fail = { pass: false, warnings: [] };
+// Hvorfor en ret blev frasorteret: allergener og kostretninger (indhold) er
+// altid strenge; "nutrition" (keto, lidt sukker, makro- og næringsfiltre) kan
+// skyldes ukendt næring, så "Trender netop nu" bruger dem som opfyldning.
+export type RecipeFailReason = "allergen" | "diet" | "nutrition";
+
+export function evaluateRecipe(
+  facts: RecipeFacts,
+  filters: RecipeFilters,
+): { pass: boolean; warnings: RecipeWarning[]; reason?: RecipeFailReason } {
+  const failWith = (reason: RecipeFailReason) => ({ pass: false, warnings: [], reason });
 
   for (const allergen of filters.allergens) {
-    if (recipeContains(facts, allergen)) return fail;
+    if (recipeContains(facts, allergen)) return failWith("allergen");
   }
 
   const split = energyPercents(facts);
   for (const diet of filters.diets) {
     if (diet === "vegan") {
-      if (!isMeatFree(facts) || !isFishFree(facts)) return fail;
-      if (recipeContains(facts, "milk") || recipeContains(facts, "eggs")) return fail;
+      if (!isMeatFree(facts) || !isFishFree(facts)) return failWith("diet");
+      if (recipeContains(facts, "milk") || recipeContains(facts, "eggs")) return failWith("diet");
       const texts = [facts.title, ...facts.segments.map((s) => `${s.name} ${splitTraces(s.text).body}`)];
-      if (texts.some((text) => OTHER_ANIMAL.test(text) && !VEGAN_OK.test(text))) return fail;
+      if (texts.some((text) => OTHER_ANIMAL.test(text) && !VEGAN_OK.test(text))) return failWith("diet");
     } else if (diet === "vegetarian") {
-      if (!isMeatFree(facts) || !isFishFree(facts)) return fail;
+      if (!isMeatFree(facts) || !isFishFree(facts)) return failWith("diet");
     } else if (diet === "pescetarian") {
-      if (!isMeatFree(facts)) return fail;
+      if (!isMeatFree(facts)) return failWith("diet");
     } else if (diet === "glutenFree") {
-      if (recipeContains(facts, "gluten")) return fail;
+      if (recipeContains(facts, "gluten")) return failWith("diet");
     } else if (diet === "lactoseFree") {
-      if (facts.segments.some((segment) => segmentContains(segment, "milk", true))) return fail;
+      if (facts.segments.some((segment) => segmentContains(segment, "milk", true))) return failWith("diet");
     } else if (diet === "keto") {
-      if (!split || split.carbs > KETO_MAX_CARBS_PERCENT) return fail;
+      if (!split || split.carbs > KETO_MAX_CARBS_PERCENT) return failWith("nutrition");
     } else if (diet === "lowSugar") {
-      if (facts.sugarPer100g === null || facts.sugarPer100g > LOW_SUGAR_MAX_PER_100G) return fail;
+      if (facts.sugarPer100g === null || facts.sugarPer100g > LOW_SUGAR_MAX_PER_100G) return failWith("nutrition");
     }
   }
 
   for (const key of MACRO_KEYS) {
     const level = filters.macros[key];
-    if (level && (!split || !macroOk(split[key], key, level))) return fail;
+    if (level && (!split || !macroOk(split[key], key, level))) return failWith("nutrition");
   }
 
   for (const nutrient of filters.nutrients) {
     const amount = facts.nutrients[nutrient];
     const rule = NUTRIENT_RULES[nutrient];
-    if (amount === null || amount === undefined || facts.kcal <= 0) return fail;
-    if ((amount / facts.kcal) * rule.perKcal < rule.min) return fail;
+    if (amount === null || amount === undefined || facts.kcal <= 0) return failWith("nutrition");
+    if ((amount / facts.kcal) * rule.perKcal < rule.min) return failWith("nutrition");
   }
 
   // Advarsler: kun for de allergener, brugeren har valgt, og kun for
