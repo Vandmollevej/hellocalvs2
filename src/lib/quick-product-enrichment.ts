@@ -38,6 +38,7 @@ import { fetchOffProductRaw } from "@/lib/openFoodFacts";
 import { linkOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
 import { OFF_USE_NAME_MIN_CONFIDENCE, type OffNutrition } from "@/lib/off-record";
 import { judgeReserveNutrition, nameMatchesFront, type ReserveVerdict } from "@/lib/ean-reserve-match";
+import { formatQuantityText } from "@/lib/quantity-text";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -375,7 +376,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     // sit felt og vises på den grønne linje under titlen — de må aldrig
     // gentages i selve navnet (brugerens regel 2026-10-02).
     const variant = result.variant?.trim() ?? "";
-    const packageSizeText = result.packageSizeText?.trim() ?? "";
+    const packageSizeText = formatQuantityText(result.packageSizeText) ?? "";
     const rawName = result.productName?.trim() ?? "";
     // Intet varenavn på forsiden (fx Verpoorten Original): varetypen navngives
     // ud fra brand, variant og synlig tekst (fx Eierlikör), ellers spørges

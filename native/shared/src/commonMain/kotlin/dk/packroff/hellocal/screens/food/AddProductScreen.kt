@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -432,7 +433,7 @@ fun AddProductView(
     val (productTitle, certifications) = if (product != null) extractCertifications(heading.title) else ("" to emptyList())
     val isCutout = displayImageUrl?.contains("/cutouts/") == true
     val view = product ?: if (isLoading) ProductDto() else null
-    val subtitle = if (view != null) (listOf(view.packageSizeText) + heading.variants).filter { !it.isNullOrBlank() }.joinToString(" · ") else ""
+    val subtitle = if (view != null) (listOf(formatQuantityText(view.packageSizeText)) + heading.variants).filter { !it.isNullOrBlank() }.joinToString(" · ") else ""
     val title = if (forDish) t.t("addProduct.titleForDish") else t.t("addProduct.title")
 
     Column(Modifier.fillMaxSize().background(HcColors.Page)) {
@@ -834,7 +835,22 @@ private fun ProductCircle(
         Box(Modifier.size(180.dp).clip(CircleShape).background(HcColors.Tan), contentAlignment = Alignment.Center) {
             when {
                 // Råfotoet dækker hele cirklen (brugerens krav 2026-10-16, design.md §6.12).
-                imageUrl != null && !isCutout -> FoodImage(imageUrl, Modifier.size(180.dp), ContentScale.Crop, thumbWidth = 640)
+                // Et højt/bredt foto (fx en karton fra Open Food Facts) vises helt på hvid bund i stedet for
+                // at blive zoomet ind (bruger 2026-10-17, QuantityText.kt / src/lib/product-photo-fit.ts).
+                imageUrl != null && !isCutout -> {
+                    var contain by remember(imageUrl) { mutableStateOf(false) }
+                    AsyncImage(
+                        model = Api.thumbUrl(imageUrl, 640),
+                        contentDescription = null,
+                        contentScale = if (contain) ContentScale.Fit else ContentScale.Crop,
+                        onState = { s ->
+                            if (s is AsyncImagePainter.State.Success) {
+                                contain = rawPhotoShouldContain(s.result.image.width, s.result.image.height)
+                            }
+                        },
+                        modifier = if (contain) Modifier.size(180.dp).background(Color.White).padding(14.dp) else Modifier.size(180.dp),
+                    )
+                }
                 imageUrl == null && showSkeleton -> FoodSkeleton(Modifier.size(180.dp), CircleShape)
             }
         }

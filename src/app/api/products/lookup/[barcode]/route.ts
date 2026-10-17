@@ -15,6 +15,7 @@ import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { getSessionUser } from "@/lib/session";
 import { isProductRecheckDue } from "@/lib/product-recheck";
 import { recordProductScanSafely } from "@/lib/user-scans";
+import { formatQuantityText } from "@/lib/quantity-text";
 
 // GET /api/products/lookup/:barcode
 //
@@ -207,7 +208,7 @@ export async function GET(
         vitaminAPer100g: offProduct?.vitaminAPer100g ?? null,
         vitaminCPer100g: offProduct?.vitaminCPer100g ?? null,
         nutritionExtra: offProduct?.nutritionExtraPer100 ?? undefined,
-        packageSizeText: split?.quantityText ?? offProduct?.packageSizeText ?? undefined,
+        packageSizeText: split?.quantityText ?? formatQuantityText(offProduct?.packageSizeText) ?? undefined,
         ...(microKeys.length
           ? {
               micronutrientsPer100g: offNutrition!.micronutrients,
