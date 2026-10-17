@@ -2005,7 +2005,7 @@
   },
   "/profile/weight-calibration": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/weight-calibration/page.tsx": "93c1d8d038811a80",
+    "src/app/profile/weight-calibration/page.tsx": "cf38199bd63b8a18",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
