@@ -51,6 +51,7 @@ function ProductRow({
   isFavorite,
   onToggleFavorite,
   onOpen,
+  onDelete,
 }: {
   product: Product;
   isLast: boolean;
@@ -58,17 +59,20 @@ function ProductRow({
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
   onOpen?: (id: string) => void;
+  // Kun på "Mest brugte" (ikke søgeresultater).
+  onDelete?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
   // Som "Dagens tilføjelser" på forsiden (bruger 2026-10-17): favorit kun ved
-  // swipe til højre, Fejl ved swipe til venstre.
+  // swipe til højre, Fejl (+ Slet på "Mest brugte") ved swipe til venstre.
   return (
     <div className={isLast ? "" : "border-b border-hf-tan-dark"}>
       <SwipeableRow
         onFavorite={() => onToggleFavorite(product.id, !isFavorite)}
         isFavorite={isFavorite}
         onReportError={() => router.push(`/product/${product.id}/report-error`)}
+        onDelete={onDelete ? () => onDelete(product.id) : undefined}
       >
         <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
           <FoodRow
@@ -147,6 +151,10 @@ function MadvarerContent() {
     return speechLangFor(currentMealLanguage(), regionRef.current);
   }
   const startMic = startSpeech;
+  // Safari på iPhone afviser mikrofonen, når den startes automatisk ved
+  // åbning (?mic=1) uden et tryk på siden. Den afvisning vises ikke som fejl —
+  // et tryk på knappen spørger om lov igen.
+  const [autoStarted, setAutoStarted] = useState(autoStartMic);
   useEffect(() => {
     if (autoStartMic) startMic(speechLang());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
@@ -245,6 +253,21 @@ function MadvarerContent() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId }),
     }).catch(() => {});
+  }
+
+  // Swipe → Slet på "Mest brugte": væk med det samme; kommer tilbage, når
+  // varen registreres igen (DELETE /api/products/most-used).
+  function removeFromMostUsed(productId: string) {
+    if (snapshot) {
+      const updated = {
+        ...snapshot,
+        products: snapshot.products.filter((p) => p.id !== productId),
+        favoriteIds: snapshot.favoriteIds.filter((id) => id !== productId),
+      };
+      setLoadedSnapshot(updated);
+      writeFoodsSnapshot(updated);
+    }
+    fetch(`/api/products/most-used?productId=${encodeURIComponent(productId)}`, { method: "DELETE" }).catch(() => {});
   }
 
   useEffect(() => {
@@ -392,13 +415,17 @@ function MadvarerContent() {
             listening={isListening}
             unsupported={speech.phase === "unsupported"}
             label={t(isListening ? "voice.stopMic" : "voice.startMic")}
-            onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
+            onClick={() => {
+              setAutoStarted(false);
+              if (isListening) speech.stop();
+              else startSpeech(speechLang());
+            }}
           />
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
           </p>
           <LiveWaveform active={isListening} />
-          {speech.error && (
+          {speech.error && !(autoStarted && speech.error === "denied") && (
             <p className="hf-type-small mt-2 max-w-[310px] text-center text-hf-red-dark">
               {t(
                 speech.error === "denied"
@@ -482,6 +509,7 @@ function MadvarerContent() {
                 isFavorite={favoriteIds.has(product.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={isSearching ? trackSearchClick : undefined}
+                onDelete={isSearching ? undefined : removeFromMostUsed}
               />
             ))}
           {ready && visibleProducts.length === 0 && !meal.items.some((item) => !item.saved) && !meal.interpreting && (

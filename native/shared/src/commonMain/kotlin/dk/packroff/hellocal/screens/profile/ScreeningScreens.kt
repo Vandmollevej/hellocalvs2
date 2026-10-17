@@ -312,8 +312,9 @@ fun ScreeningsScreen(args: RouteArgs) {
     HcScreen(title = t.t("screenings.title"), contentPadding = ProfilePagePadding) {
         ProfilePage {
             HcText(t.t("screenings.intro"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+            // "Opret ny screening" sits on the right (user 2026-10-17).
             Row(
-                Modifier.clickable { nav.push("/profile/screenings/new") },
+                Modifier.align(Alignment.End).clickable { nav.push("/profile/screenings/new") },
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

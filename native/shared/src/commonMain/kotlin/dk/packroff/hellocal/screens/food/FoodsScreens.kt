@@ -370,6 +370,19 @@ fun FoodsScreen(args: RouteArgs) {
         scope.launch { setFavorite(productId, next) }
     }
 
+    // Swipe → Slet on "Mest brugte": gone at once; returns when the product is registered again.
+    fun removeFromMostUsed(productId: String) {
+        snapshot?.let { s ->
+            val updated = s.copy(
+                products = s.products.filter { it.id != productId },
+                favoriteIds = s.favoriteIds.filter { it != productId },
+            )
+            loadedSnapshot = updated
+            FoodsSnapshotStore.write(updated)
+        }
+        scope.launch { runCatching { Api.delete("/api/products/most-used?productId=$productId") } }
+    }
+
     fun trackSearchClick(productId: String) {
         if (query.trim().length < SEARCH_MIN_LENGTH) return
         val hour = FoodTime.local(FoodTime.now()).hour
@@ -496,14 +509,14 @@ fun FoodsScreen(args: RouteArgs) {
                     visible.forEachIndexed { index, product ->
                         val isFavorite = product.id in favoriteIds
                         // Like "Dagens tilføjelser" on the front page (user 2026-10-17): Favorit only by
-                        // swiping right, Fejl by swiping left; chevron on the right.
+                        // swiping right, Fejl (+ Slet on "Mest brugte") by swiping left; chevron on the right.
                         Column(Modifier.fillMaxWidth()) {
                             FoodSwipeableRow(
                                 texts = swipeTexts,
                                 onFavorite = { toggleFavorite(product.id, !isFavorite) },
                                 isFavorite = isFavorite,
                                 onReportError = { nav.push("/product/${product.id}/report-error") },
-                                onDelete = null,
+                                onDelete = if (isSearching) null else ({ removeFromMostUsed(product.id) }),
                             ) {
                                 FoodRow(
                                     title = product.searchTitle ?: product.name,

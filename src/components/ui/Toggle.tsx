@@ -42,15 +42,24 @@ export function Toggle({
 
   if (!label) return switchEl;
 
+  // Uden beskrivelse er rækken en almindelig kontrol: standardhøjde (48px)
+  // som knapper og felter, ikke et højt kort (brugerens krav 2026-10-17).
+  if (!description) {
+    return (
+      <div className="hf-card hf-card--row hf-card--control">
+        <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{label}</span>
+        {switchEl}
+      </div>
+    );
+  }
+
   return (
     <div className="hf-card--row hf-card">
       <span className="flex-1">
         <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
-        {description && (
-          <span className="hf-type-caption mt-2 block border-t border-hf-tan-dark pt-2">
-            {description}
-          </span>
-        )}
+        <span className="hf-type-caption mt-2 block border-t border-hf-tan-dark pt-2">
+          {description}
+        </span>
       </span>
       <span className="pt-1">{switchEl}</span>
     </div>

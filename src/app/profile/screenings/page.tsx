@@ -83,7 +83,7 @@ function ScreeningsContent() {
 
         <Link
           href="/profile/screenings/new"
-          className="hf-type-body hf-type-strong flex items-center gap-2 self-start text-hf-black"
+          className="hf-type-body hf-type-strong flex items-center gap-2 self-end text-hf-black"
         >
           <IconPlus size={20} aria-hidden="true" />
           {t("screenings.createNew")}
