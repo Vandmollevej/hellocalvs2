@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { readStoredImageAsDataUrl } from "@/lib/qc-image-storage";
 import {
+  applyEanReserve,
   applyFrontTextFromServerOcr,
   applyServerNutritionOcr,
   clearPending,
@@ -70,6 +71,8 @@ export type QuickEnrichmentStoredInput = {
   // forsøgene af; runde 2 læste kun forsiden igen ved tomt navn. Varer under
   // REPAIR_ROUND genåbnes én gang til.
   repairRound?: number;
+  // Stregkode-reserven er prøvet (src/lib/ean-reserve-match.ts) — én gang pr. vare.
+  eanReserveAt?: string;
 };
 
 const REPAIR_ROUND = 3;
@@ -580,14 +583,76 @@ async function repairFromServerText(now: Date): Promise<{ named: number; nutriti
   return { named, nutrition, queued };
 }
 
+// Stregkode-reserven (brugerens valg 2026-10-17): varer, der stadig mangler
+// energi eller navn, når billederne er læst (jobbet er færdigt eller varen er
+// over 10 minutter gammel), prøves én gang mod stregkodeopslaget. Bruger ikke
+// OpenAI. Etikettens energital kommer fra telefonens og serverens tekstlæsning.
+const EAN_RESERVE_AFTER_MS = 10 * 60 * 1000;
+
+async function repairFromEanReserve(now: Date): Promise<{ tried: number; nutrition: number; named: number }> {
+  const since = new Date(now.getTime() - ADOPT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
+  const settled = new Date(now.getTime() - EAN_RESERVE_AFTER_MS);
+  const jobs = await prisma.quickEnrichmentJob.findMany({
+    where: {
+      OR: [{ finishedAt: { not: null } }, { createdAt: { lt: settled } }],
+      product: { createdAt: { gt: since }, pendingFields: { isEmpty: true }, OR: [{ name: "" }, { kcalPer100g: 0 }] },
+    },
+    select: { id: true, productId: true, input: true },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+  let tried = 0;
+  let nutrition = 0;
+  let named = 0;
+  for (const job of jobs) {
+    const stored = asStoredInput(job.input);
+    if (!stored || stored.eanReserveAt || !stored.barcode) continue;
+    const photos = await prisma.productBackPhoto.findMany({
+      where: { productId: job.productId },
+      select: { step: true, localResult: true },
+    });
+    const textOf = (step: string) =>
+      photos
+        .filter((photo) => photo.step === step)
+        .map((photo) => (photo.localResult as LocalResult | null)?.text)
+        .filter((text): text is string => typeof text === "string");
+    const result = await withDebugContext({ productId: job.productId, barcode: stored.barcode }, () =>
+      applyEanReserve({
+        productId: job.productId,
+        barcode: stored.barcode,
+        labelTexts: [stored.nutritionOcrText, stored.ingredientsOcrText, ...textOf("nutrition"), ...textOf("ingredients")],
+        frontTexts: [stored.frontOcrText, stored.fallbackName, ...textOf("front")],
+      }),
+    ).catch((error) => {
+      console.error("[quick-enrichment] stregkode-reserve fejlede", job.productId, error);
+      return null;
+    });
+    if (!result) continue;
+    tried += 1;
+    if (result.nutrition) nutrition += 1;
+    if (result.name) named += 1;
+    await prisma.quickEnrichmentJob.update({
+      where: { id: job.id },
+      data: { input: { ...stored, eanReserveAt: now.toISOString() } as unknown as Prisma.InputJsonValue },
+    });
+  }
+  return { tried, nutrition, named };
+}
+
 // Job "quick-enrichment-recovery" (src/lib/jobs/registry.ts).
 export async function recoverQuickEnrichments(now: Date = new Date()): Promise<string | null> {
   // Lokal genlæsning først — den kræver ikke OpenAI.
   const local = await repairFromServerText(now);
+  const reserve = await repairFromEanReserve(now);
   const localNote =
-    local.named || local.nutrition || local.queued
-      ? `Lokalt: navn ${local.named} · energi ${local.nutrition} · billeder sat i kø ${local.queued}`
-      : null;
+    [
+      local.named || local.nutrition || local.queued
+        ? `Lokalt: navn ${local.named} · energi ${local.nutrition} · billeder sat i kø ${local.queued}`
+        : "",
+      reserve.tried ? `Stregkode-reserve: ${reserve.tried} prøvet · energi ${reserve.nutrition} · navn ${reserve.named}` : "",
+    ]
+      .filter(Boolean)
+      .join(" · ") || null;
   // Uden OpenAI-kredit (eller med afvist/manglende nøgle) fejler hvert forsøg:
   // jobbene står stille i stedet for at brænde forsøgene af og blive opgivet.
   // De gemte fotos læses, så snart kreditten er tilbage (bruger 2026-10-16).

@@ -34,6 +34,10 @@ import { estimateAlcoholNutrition, recordAlcoholPercent } from "@/lib/alcohol-nu
 import { productTypeFromText, readFrontText } from "@/lib/front-text-name";
 import { energyReadOk } from "@/lib/energy-read";
 import { MACRO_SOURCE_KEYS } from "@/lib/nutrients";
+import { fetchOffProductRaw } from "@/lib/openFoodFacts";
+import { linkOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
+import { OFF_USE_NAME_MIN_CONFIDENCE, type OffNutrition } from "@/lib/off-record";
+import { judgeReserveNutrition, nameMatchesFront, type ReserveVerdict } from "@/lib/ean-reserve-match";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -233,6 +237,96 @@ export async function applyServerNutritionOcr(input: {
     data: { kcal: read.kcalPer100g, protein: read.proteinPer100g, carbs: read.carbsPer100g, fat: read.fatPer100g, confidence: input.confidence },
   });
   return true;
+}
+
+// Stregkode-reserven (brugerens valg 2026-10-17: "Ja, som reserve"): gav
+// billederne hverken energi eller navn, bruges stregkodeopslaget (Open Food
+// Facts — gemt i off_products ved scanningen, ellers hentet nu). Energien kun,
+// når den hænger sammen med makroerne OG passer med et energital på etiketten
+// (telefonens/serverens tekstlæsning); navnet kun, når det står på forsiden.
+// Kilden er producentens deklaration (LABEL), aldrig et skøn.
+export async function applyEanReserve(input: {
+  productId: string;
+  barcode: string;
+  labelTexts: (string | null | undefined)[];
+  frontTexts: (string | null | undefined)[];
+}): Promise<{ nutrition: boolean; name: boolean; verdict: ReserveVerdict | "no_record" | "not_needed" }> {
+  const product = await prisma.product.findUnique({
+    where: { id: input.productId },
+    select: { name: true, kcalPer100g: true, nutrientSources: true, nutritionExtra: true },
+  });
+  if (!product || !input.barcode) return { nutrition: false, name: false, verdict: "not_needed" };
+  const needNutrition = product.kcalPer100g === 0;
+  const needName = !product.name.trim() || isPlaceholderProductName(product.name);
+  if (!needNutrition && !needName) return { nutrition: false, name: false, verdict: "not_needed" };
+
+  let record: { name: string | null; splitConfidence: number; nutrition: OffNutrition | null } | null = await prisma.offProductRecord
+    .findUnique({ where: { barcode: input.barcode }, select: { name: true, splitConfidence: true, nutrition: true } })
+    .then((row) => (row ? { ...row, nutrition: row.nutrition as OffNutrition | null } : null));
+  if (!record) {
+    const raw = await fetchOffProductRaw(input.barcode).catch(() => null);
+    const saved = raw ? await saveOffRecordSafely({ barcode: input.barcode, raw, source: "SCAN" }) : null;
+    record = saved ? { name: saved.split.title || null, splitConfidence: saved.split.confidence, nutrition: saved.nutrition } : null;
+  }
+  if (!record) {
+    await debugLog({ category: "scan", event: "ean_reserve", level: "warn", message: "Stregkode-reserve: stregkoden findes ikke i Open Food Facts", productId: input.productId });
+    return { nutrition: false, name: false, verdict: "no_record" };
+  }
+
+  const n = record.nutrition;
+  const verdict = judgeReserveNutrition(n, input.labelTexts);
+  let nutrition = false;
+  if (needNutrition && verdict === "ok" && n) {
+    const sources = { ...((product.nutrientSources as Record<string, string> | null) ?? {}) };
+    for (const key of MACRO_SOURCE_KEYS) sources[key] = "LABEL";
+    const extra: Record<string, unknown> = { ...((product.nutritionExtra as Record<string, unknown> | null) ?? {}) };
+    if (typeof n.sugars === "number") extra.sugarPer100g = n.sugars;
+    if (typeof n.fiber === "number") extra.fiberPer100g = n.fiber;
+    if (typeof n.salt === "number") extra.saltPer100g = n.salt;
+    await prisma.product.update({
+      where: { id: input.productId },
+      data: {
+        kcalPer100g: n.kcal!,
+        proteinPer100g: n.protein!,
+        carbsPer100g: n.carbs!,
+        fatPer100g: n.fat!,
+        ...(typeof n.saturatedFat === "number" ? { saturatedFatPer100g: n.saturatedFat } : {}),
+        ...(Object.keys(extra).length ? { nutritionExtra: extra as Prisma.InputJsonValue } : {}),
+        nutrientSources: sources,
+      },
+    });
+    await setNutritionKnown(input.productId, true);
+    nutrition = true;
+  }
+
+  let name = false;
+  if (needName && record.name && record.splitConfidence >= OFF_USE_NAME_MIN_CONFIDENCE && nameMatchesFront(record.name, input.frontTexts)) {
+    const updated = await prisma.product.update({
+      where: { id: input.productId },
+      data: { name: record.name },
+      select: { id: true, name: true, createdAt: true },
+    });
+    await flagSimultaneousDuplicates(updated.id, updated.name, updated.createdAt);
+    name = true;
+  }
+
+  if (nutrition || name) {
+    await linkOffRecordToProduct(input.barcode, input.productId).catch(() => {});
+    await refreshRegistrationSnapshots(input.productId).catch(() => {});
+    await syncProductNutritionFeaturesSafely(input.productId);
+  }
+  await debugLog({
+    category: "scan",
+    event: "ean_reserve",
+    level: nutrition || name ? "info" : "warn",
+    message:
+      nutrition || name
+        ? `Stregkode-reserve (Open Food Facts) brugt: ${[nutrition ? `energi ${n!.kcal} kcal/100 (passer med etiketten)` : "", name ? `navn "${record.name}"` : ""].filter(Boolean).join(" · ")}`
+        : `Stregkode-reserve ikke brugt: ${verdict === "ok" ? "navnet står ikke på forsiden" : verdict}`,
+    productId: input.productId,
+    data: { verdict, needNutrition, needName, offName: record.name, offKcal: n?.kcal ?? null },
+  });
+  return { nutrition, name, verdict };
 }
 
 // Returnerer, om forsidefotoet blev genkendt som en vare (navn, logo eller

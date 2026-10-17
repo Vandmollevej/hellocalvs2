@@ -8,6 +8,11 @@
 - Puls er en blå kurve med en stiplet grå linje, hvor moderat intensitet begynder (64 % af maxpuls efter alder; 190 uden alder).
 - Alle linjer og pinde har samme tykkelse (2 px). Nye vidensartikler: `energifordeling-over-dagen` og `anbefalet-puls` med kilder. Web + native; native er ikke kompileret lokalt.
 
+## 2026-10-17: Stregkode-reserve
+
+- Varer, hvor billederne hverken gav energi eller navn, får dem nu fra stregkodeopslaget (Open Food Facts), men kun når tallene passer med etikettens energital og navnet står på forsiden. Se DECISIONS 2026-10-17.
+- Google Custom Search er blokeret for appens Google-nøgle (billed-robotten finder derfor 0 billeder). Skal tillades i Google Cloud → API-nøgler.
+
 ## 2026-10-17: Appens planlagte job kørte aldrig i produktion
 
 - Rodårsag: `instrumentation.ts` lå i projektroden, men appen bruger `src/app`, så Next leder kun i `src/`. Standalone-imaget fik ingen instrumentation-fil, og `startScheduler()` kørte aldrig — ingen af appens job (`quick-enrichment-recovery`, `maintenance`, `back-photo-scan`, `frida-estimates`, `search-index`, `product-translations`, `api-alerts` …) havde `lastStartedAt` i produktion. Kun Python-agenterne kørte. Derfor blev fx Änglamark-letmælken aldrig repareret.
