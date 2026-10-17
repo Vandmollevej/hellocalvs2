@@ -9,6 +9,8 @@ import { loadAmountSuggestionRobot } from "@/lib/robots";
 import { AmountSuggestionRobotPanel } from "@/components/admin/AmountSuggestionRobotPanel";
 import { PulseRobotPanel } from "@/components/admin/PulseRobotPanel";
 import { pulseRobotStats } from "@/lib/pulse-candidates";
+import { loadRobotQos } from "@/lib/robot-qos-config";
+import { RobotQosPanel } from "@/components/admin/RobotQosPanel";
 
 // Admin "Robotter" (docs/DECISIONS.md 2026-09-28): robot-containerne
 // (runtime "agent") med on/off, KØR og cron-job-plan. Samme scheduled_jobs-
@@ -27,6 +29,8 @@ export default async function AdminRobotsPage() {
   const rowByKey = new Map(rows.map((row) => [row.key, row]));
   const amountRobot = await loadAmountSuggestionRobot();
   const pulseStats = await pulseRobotStats().catch(() => null);
+  const qos = await loadRobotQos();
+  const waiting = qos.enabled ? rows.filter((row) => row.enabled && row.qosWaitingSince).length : 0;
 
   return (
     <div className="hf-admin-page">
@@ -37,6 +41,7 @@ export default async function AdminRobotsPage() {
           Ændringer slår igennem inden for et minut. Tider er dansk tid.
         </p>
       </div>
+      <RobotQosPanel initial={qos} waiting={waiting} />
       <RobotsBoard
         items={robots.map((job) => {
           const row = rowByKey.get(job.key);
@@ -53,6 +58,8 @@ export default async function AdminRobotsPage() {
               lastStatus: row?.lastStatus ?? null,
               lastMessage: row?.lastMessage ?? null,
               lastDurationMs: row?.lastDurationMs ?? null,
+              qosWaitingSince: qos.enabled ? (row?.qosWaitingSince?.toISOString() ?? null) : null,
+              qosWaitReason: qos.enabled ? (row?.qosWaitReason ?? null) : null,
             },
           };
         })}

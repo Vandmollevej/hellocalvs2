@@ -28,6 +28,7 @@ i app-processen).
 
 import datetime
 import logging
+import os
 import time
 import uuid
 from zoneinfo import ZoneInfo
@@ -72,6 +73,106 @@ def is_due(enabled, run_at_time, interval_minutes, run_requested_at, last_starte
     return last_started_at is None
 
 
+# Robot-QoS (docs/DECISIONS.md 2026-10-17, src/lib/robot-qos.ts — hold dem ens):
+# et forfaldent job starter først, når værtens CPU og RAM er under admins
+# grænser og klokken ikke er i en spærretid. "Kør nu" går altid udenom.
+# Indstillingen ligger i robot_configs (key "qos"); /proc viser hele
+# Synology'ens tal, også inde fra containeren.
+QOS_KEY = "qos"
+
+
+def _cpu_times():
+    try:
+        with open("/proc/stat", encoding="utf-8") as handle:
+            values = [int(v) for v in handle.readline().split()[1:]]
+    except (OSError, ValueError):
+        return None
+    if len(values) < 4:
+        return None
+    return values[3] + (values[4] if len(values) > 4 else 0), sum(values)
+
+
+def _cpu_percent(sample_seconds=1.0):
+    first = _cpu_times()
+    if first:
+        time.sleep(sample_seconds)
+        second = _cpu_times()
+        if second and second[1] > first[1]:
+            return (1 - (second[0] - first[0]) / (second[1] - first[1])) * 100
+    try:
+        return min(100.0, os.getloadavg()[0] / (os.cpu_count() or 1) * 100)
+    except OSError:
+        return None
+
+
+def _memory_percent():
+    try:
+        with open("/proc/meminfo", encoding="utf-8") as handle:
+            info = {line.split(":")[0]: int(line.split()[1]) for line in handle if line.split()[1:2]}
+        if info.get("MemTotal") and "MemAvailable" in info:
+            return (1 - info["MemAvailable"] / info["MemTotal"]) * 100
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+def _minutes(value):
+    try:
+        hour, minute = (int(part) for part in str(value).split(":"))
+    except ValueError:
+        return None
+    return hour * 60 + minute if 0 <= hour < 24 and 0 <= minute < 60 else None
+
+
+def qos_block_reason(settings, cpu, memory, now=None):
+    """Hvorfor en robot ikke må starte nu, eller None."""
+    local_now = _local(now or _utc_now())
+    minute = local_now.hour * 60 + local_now.minute
+    for window in settings.get("blockedWindows") or []:
+        start, end = _minutes(window.get("start")), _minutes(window.get("end"))
+        if start is None or end is None or start == end:
+            continue
+        inside = start <= minute < end if start < end else (minute >= start or minute < end)
+        if inside:
+            return "Spærretid %s–%s" % (window.get("start"), window.get("end"))
+    max_cpu = settings.get("maxCpuPercent")
+    if max_cpu is not None and cpu is not None and cpu > max_cpu:
+        return "CPU %d %% (grænse %d %%)" % (round(cpu), max_cpu)
+    max_memory = settings.get("maxMemoryPercent")
+    if max_memory is not None and memory is not None and memory > max_memory:
+        return "RAM %d %% (grænse %d %%)" % (round(memory), max_memory)
+    return None
+
+
+def _qos_wait(conn, key):
+    """Venter jobbet på QoS? Skriver i så fald grunden på jobrækken."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT enabled, settings FROM robot_configs WHERE key = %s", (QOS_KEY,))
+            row = cur.fetchone()
+        conn.rollback()
+        if not row or not row[0]:
+            return False
+        settings = row[1] if isinstance(row[1], dict) else {}
+        settings.setdefault("maxCpuPercent", 80)
+        settings.setdefault("maxMemoryPercent", 85)
+        reason = qos_block_reason(settings, _cpu_percent(), _memory_percent())
+        if not reason:
+            return False
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""UPDATE scheduled_jobs SET "qosWaitingSince" = COALESCE("qosWaitingSince", {UTC_NOW}),
+                       "qosWaitReason" = %s WHERE key = %s""",
+                (reason, key),
+            )
+        conn.commit()
+        return True
+    except Exception:  # noqa: BLE001 - QoS må aldrig stoppe et job (fx før migrationen)
+        conn.rollback()
+        log.exception("QoS-tjek fejlede for %s", key)
+        return False
+
+
 def _ensure_row(conn, key, interval_minutes, run_at_time):
     with conn.cursor() as cur:
         cur.execute(
@@ -94,9 +195,14 @@ def _claim(conn, key):
             (key,),
         )
         row = cur.fetchone()
-        if not row or not is_due(*row):
-            conn.rollback()
-            return False
+    if not row or not is_due(*row):
+        conn.rollback()
+        return False
+    conn.rollback()
+    manual = row[3] is not None and (row[4] is None or row[3] > row[4])
+    if not manual and _qos_wait(conn, key):
+        return False
+    with conn.cursor() as cur:
         cur.execute(
             f"""UPDATE scheduled_jobs SET "lastStartedAt" = {UTC_NOW}, "runRequestedAt" = NULL
                 WHERE key = %s AND "lastStartedAt" IS NOT DISTINCT FROM %s""",
@@ -104,6 +210,17 @@ def _claim(conn, key):
         )
         claimed = cur.rowcount == 1
     conn.commit()
+    if claimed:
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """UPDATE scheduled_jobs SET "qosWaitingSince" = NULL, "qosWaitReason" = NULL
+                       WHERE key = %s AND "qosWaitingSince" IS NOT NULL""",
+                    (key,),
+                )
+            conn.commit()
+        except Exception:  # noqa: BLE001 - fx før QoS-migrationen er kørt
+            conn.rollback()
     return claimed
 
 
