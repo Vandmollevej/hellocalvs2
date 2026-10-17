@@ -5794,3 +5794,4 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - `instrumentation.ts` lå i roden siden 2026-09-03; med `src/app` finder `next build` kun `src/instrumentation.ts`, så standalone-imaget aldrig startede `startScheduler()`. Flyttet til `src/`, vagt-test tilføjet.
 - Fordi scheduleren starter for første gang, eskalerer 48-timers-jobbet kun ventende varer/fejlrapporter oprettet for 48–72 timer siden (`ESCALATION_WINDOW_HOURS`), så første kørsel ikke sender én mail pr. gammel sag. Kø, abonnementer, lukkede konti og partnerrapporter var tjekket tomme/uden risiko før start.
+- Scan-appen (`HELLOCAL_APP_MODE=scan`) kører fra samme image og startede også scheduleren, men uden SMTP-, push- og Meilisearch-nøgler (søgeindekset svingede mellem "fejlede" og "MEILI_URL mangler"). Kun hoved-appen starter nu scheduleren.
