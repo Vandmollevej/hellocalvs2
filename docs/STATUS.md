@@ -16,6 +16,11 @@
 - Puls er en blå kurve med en stiplet grå linje, hvor moderat intensitet begynder (64 % af maxpuls efter alder; 190 uden alder).
 - Alle linjer og pinde har samme tykkelse (2 px). Nye vidensartikler: `energifordeling-over-dagen` og `anbefalet-puls` med kilder. Web + native; native er ikke kompileret lokalt.
 
+## 2026-10-17: Google-nøglen skjules i robotternes logs
+
+- image-agent skrev hele Google-nøglen i sin fejllog (requests' fejl indeholder adressen med `?key=`). Nu skjules `key=...` i alle log-linjer og i API-kaldslogningen; logo-agent har samme filter. Nøglen bør skiftes i Google Cloud, da den har stået i logs.
+- Nøglen afvises af Google med `API_KEY_SERVICE_BLOCKED` (API-begrænsningerne tillader ikke Custom Search/Vision). Billed-robotten har derfor aldrig fundet billeder. Rettes i Google Cloud → API-nøgler.
+
 ## 2026-10-17: Stregkode-reserve
 
 - Varer, hvor billederne hverken gav energi eller navn, får dem nu fra stregkodeopslaget (Open Food Facts), men kun når tallene passer med etikettens energital og navnet står på forsiden. Se DECISIONS 2026-10-17.

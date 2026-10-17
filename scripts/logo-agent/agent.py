@@ -48,6 +48,25 @@ from job_control import run_forever
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("logo-agent")
 
+# Uden Vision-nøglefil sendes Google-nøglen i adressen (?key=...), og requests
+# skriver hele adressen i fejlbeskeder. Alt, der ligner key=..., skjules i
+# loggen (samme filter som image-agent, fundet 2026-10-17).
+_KEY_PATTERN = re.compile(r"(key=)[^&\s'\"]+", re.IGNORECASE)
+
+
+class _RedactKeys(logging.Filter):
+    def filter(self, record):
+        record.msg = _KEY_PATTERN.sub(r"\1***", record.getMessage())
+        record.args = ()
+        if record.exc_info:
+            record.exc_text = _KEY_PATTERN.sub(r"\1***", logging.Formatter().formatException(record.exc_info))
+            record.exc_info = None
+        return True
+
+
+for _handler in logging.getLogger().handlers:
+    _handler.addFilter(_RedactKeys())
+
 DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 VISION_API_KEY = os.environ.get("GOOGLE_VISION_API_KEY") or os.environ.get("GOOGLE_API_KEY", "")
 # Servicekontoens nøglefil (JSON) — foretrækkes frem for en API-nøgle. Brugerens

@@ -13,6 +13,7 @@ Fritskrabning af logo + forside fra kamera-flowet ligger i cutout.py.
 import io
 import logging
 import os
+import re
 import threading
 
 from job_control import run_forever
@@ -27,6 +28,29 @@ from bria import record_api_call
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("image-agent")
+
+# Google-nøglen står i kaldets adresse (?key=...). requests skriver hele
+# adressen i sine fejlbeskeder, så nøglen endte i loggen (fundet 2026-10-17).
+# Alt, der ligner key=..., skjules, før det logges eller gemmes.
+_KEY_PATTERN = re.compile(r"(key=)[^&\s'\"]+", re.IGNORECASE)
+
+
+def redact(text):
+    return _KEY_PATTERN.sub(r"\1***", str(text))
+
+
+class _RedactKeys(logging.Filter):
+    def filter(self, record):
+        record.msg = redact(record.getMessage())
+        record.args = ()
+        if record.exc_info:
+            record.exc_text = redact(logging.Formatter().formatException(record.exc_info))
+            record.exc_info = None
+        return True
+
+
+for _handler in logging.getLogger().handlers:
+    _handler.addFilter(_RedactKeys())
 
 # Prisma's DATABASE_URL carries a `?schema=public` query param that
 # psycopg2/libpq doesn't recognize; Postgres already defaults to "public".
@@ -76,10 +100,21 @@ def search_image_candidates(query):
     }
     try:
         response = requests.get(SEARCH_URL, params=params, timeout=15)
-        response.raise_for_status()
     except Exception as exc:
-        record_api_call("google-search", False, str(exc))
-        raise
+        message = redact(exc)
+        record_api_call("google-search", False, message)
+        raise RuntimeError(f"Google-søgningen nåede ikke frem: {message}") from None
+    if not response.ok:
+        # Googles egen forklaring (fx API_KEY_SERVICE_BLOCKED) — aldrig adressen med nøglen.
+        try:
+            error = response.json().get("error", {})
+            reasons = [d.get("reason") for d in error.get("details", []) if d.get("reason")]
+            message = f"{response.status_code} {error.get('message', '')} {' '.join(reasons)}".strip()
+        except ValueError:
+            message = str(response.status_code)
+        message = redact(message)
+        record_api_call("google-search", False, message)
+        raise RuntimeError(f"Google-søgningen fejlede: {message}")
     record_api_call("google-search", True)
     items = response.json().get("items", [])
 
