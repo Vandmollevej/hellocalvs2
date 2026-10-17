@@ -1,3 +1,7 @@
+## 2026-10-17: Delte retter hænger ikke længere i pladsholdere
+
+- "Trender netop nu" kunne stå med grå pladsholdere for evigt, hvis en forespørgsel hang (fx mens serveren genstartes ved en deploy): `/api/shared-recipes`, `/api/profile` og `/api/subscription` hentes nu med tidsgrænse (15 s) og op til 4 forsøg (`src/lib/fetch-retry.ts`); ellers vises fejlteksten. Nyt indeks `registrations(productId, createdAt)` (migration `20261017210000_registrations_product_index`) — tabellen havde ingen indeks, og trender/alle retter tæller tilføjelser pr. ret. Kunne ikke genskabes mod produktion herfra (ingen adgang); lokalt med 3.000 retter og 1,5 mio. registreringer svarer endpointet på 0,2 s. Native har allerede 60 s tidsgrænse.
+
 ## 2026-10-17: Alle swipe-rækker ser ens ud
 
 - Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.
