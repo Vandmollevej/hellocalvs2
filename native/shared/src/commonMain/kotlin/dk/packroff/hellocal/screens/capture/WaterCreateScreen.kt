@@ -47,6 +47,7 @@ import dk.packroff.hellocal.ui.CaptureFormCard
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.CaptureSlider
+import dk.packroff.hellocal.ui.CaptureTapNumber
 import dk.packroff.hellocal.ui.CaptureSuccess
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcLoader
@@ -162,7 +163,19 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             CaptureFormCard {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                     HcText(t.t("waterLog.amountLabel"), HcTypeRoles.Small, Modifier.weight(1f), bold = true, color = HcColors.Black)
-                    HcText("$amountMl ml", HcTypeRoles.Title, color = HcColors.Black)
+                    CaptureTapNumber(
+                        value = amountMl.toDouble(),
+                        display = "$amountMl ml",
+                        unit = "ml",
+                        min = 0.0,
+                        max = 5000.0,
+                        role = HcTypeRoles.Title,
+                        onChange = {
+                            amountMl = it.toInt()
+                            selectedKey = null
+                            saved = false
+                        },
+                    )
                 }
                 CaptureSlider(
                     value = amountMl,

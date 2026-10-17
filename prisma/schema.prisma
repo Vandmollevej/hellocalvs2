@@ -2300,6 +2300,10 @@ model ScheduledJob {
   lastStatus      String?
   lastMessage     String?
   lastDurationMs  Int?
+  // Robot-QoS: jobbet er forfaldent, men venter på lavere CPU/RAM eller på at
+  // en spærretid slutter (src/lib/robot-qos.ts, scripts/*/job_control.py).
+  qosWaitingSince DateTime?
+  qosWaitReason   String?
   updatedAt       DateTime  @default(now()) @updatedAt
 
   @@map("scheduled_jobs")
@@ -5663,6 +5667,48 @@ model SpellingScan {
   scannedAt   DateTime @default(now())
 
   @@map("spelling_scans")
+}
+
+// Allergen-robotten (docs/DECISIONS.md 2026-10-17): ord i ingredienslister,
+// der er allergener, men som de faste stammer i src/lib/allergen-highlight.ts
+// ikke fanger. Fundet i Open Food Facts' allergen-/ingrediens-opslagsværk
+// (godkendes straks) eller skrevet med STORT på emballagen (admin afgør).
+// Godkendte ord vises med STORT og linkes som de faste allergener.
+model AllergenWord {
+  // Ordet med små bogstaver.
+  word             String             @id
+  // Nøgle fra src/lib/allergens.ts (fx "milk"); null = ikke afgjort.
+  allergenKey      String?
+  status           AllergenWordStatus
+  // "reference" (Open Food Facts) | "uppercase" (skrevet med STORT) | "admin"
+  source           String
+  language         String?
+  productCount     Int                @default(0)
+  exampleProductId String?
+  exampleContext   String?
+  firstSeenAt      DateTime           @default(now())
+  reviewedAt       DateTime?
+  reviewedById     String?
+
+  @@index([status])
+  @@index([firstSeenAt])
+  @@map("allergen_words")
+}
+
+enum AllergenWordStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Fingeraftryk af hver vares ingrediensliste ved allergen-robottens sidste
+// gennemsyn — kun nye og ændrede lister læses igen.
+model AllergenWordScan {
+  productId   String   @id
+  fingerprint String
+  scannedAt   DateTime @default(now())
+
+  @@map("allergen_word_scans")
 }
 
 // Oversættelse af en vares tekst til ét app-sprog (docs/DECISIONS.md
