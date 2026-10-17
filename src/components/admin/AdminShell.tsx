@@ -73,6 +73,7 @@ const NAV: NavEntry[] = [
     icon: "flow",
     links: [
       { href: "/admin/flows", key: "nav_flow_pages" },
+      { href: "/admin/guides", key: "nav_guides" },
       { href: "/admin/guide-builder", key: "nav_guide_builder" },
     ],
   },
@@ -108,9 +109,11 @@ const NAV: NavEntry[] = [
       { href: "/admin/api-keys", key: "nav_api_keys" },
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
       { href: "/admin/passkeys", key: "nav_passkeys" },
+      { href: "/admin/warning-emails", key: "nav_warning_emails" },
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
+      { href: "/admin/search-synonyms", key: "nav_search_synonyms" },
     ],
   },
   {
@@ -652,6 +655,7 @@ export function AdminShell({
   hasOpenUncertainties = false,
   canManageAdmins = false,
   newAdminSignups = 0,
+  warnings = [],
   children,
 }: {
   email: string;
@@ -659,6 +663,7 @@ export function AdminShell({
   hasOpenUncertainties?: boolean;
   canManageAdmins?: boolean;
   newAdminSignups?: number;
+  warnings?: { key: string; title: string; detail: string; href: string }[];
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -851,6 +856,17 @@ export function AdminShell({
         </header>
 
         <main className="admin-main min-w-0 flex-1">
+          {warnings.length > 0 && (
+            <div role="alert" className="border-b border-hf-red-dark bg-hf-red-muted px-4 py-3 sm:px-6 lg:px-8">
+              <div className="mx-auto flex max-w-7xl flex-col gap-1">
+                {warnings.map((w) => (
+                  <Link key={w.key} href={w.href} className="hf-type-body text-hf-black">
+                    <strong>⚠ {w.title}</strong> — {w.detail}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
