@@ -4,6 +4,7 @@ import { fetchOffProductRaw } from "@/lib/openFoodFacts";
 import { importOffProducts, resplitOffRecords, saveOffRecord } from "@/lib/off-store";
 import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { prisma } from "@/lib/prisma";
+import { queueExternalEnrichment } from "@/lib/external-enrichment";
 
 // Admin → Varedatabase → Open Food Facts (docs/DECISIONS.md 2026-10-11).
 //   { op: "import", products: [...] }   gem et udtræk (liste af OFF-vareobjekter), højst 150 ad gangen
@@ -42,6 +43,8 @@ export async function POST(req: Request) {
       if (block) return NextResponse.json({ ok: false, message: "Dyrefoder — gemmes ikke" }, { status: 422 });
       const linked = await prisma.barcode.findUnique({ where: { code: barcode }, select: { productId: true } });
       const saved = await saveOffRecord({ barcode, raw, source: "ADMIN", productId: linked?.productId ?? null });
+      // Varen med stregkoden får OFF flettet ind i baggrunden (bruger 2026-10-17).
+      if (linked) queueExternalEnrichment([linked.productId], "admin");
       return NextResponse.json({
         ok: true,
         barcode,

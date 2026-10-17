@@ -330,6 +330,21 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
 
+## Eksterne kilder flettes altid ind (user rule 2026-10-17)
+
+Så snart en vare scannes, oprettes eller fremsøges, flettes eksterne kilder
+(i dag Open Food Facts via stregkoden) automatisk ind i baggrunden —
+`src/lib/external-enrichment.ts`. Kaldes fra stregkodeopslaget, "opret
+straks" (efter fotoene er læst, med stregkode-reserven med det samme),
+manuel oprettelse, søgeresultater, varesiden og admins OFF-hentning; robotten
+`external-sources-sweep` tager resten. Kun huller fyldes: etikettens data
+overskrives aldrig, brandet sættes kun fra brand-listen (aldrig oprettet ud
+fra OFF), ingredienser kun på varens eget sprog, og øvrige næringstal kun når
+OFF's energi passer (±5 %) med varens. Energien selv følger stadig
+stregkode-reserven. Samme vare tjekkes højst hver 7. dag
+(`sourceCheckedAt`); OFF hentes igen efter 30 dage. Ny ekstern kilde → læg den
+ind i samme modul.
+
 ## Stregkode-reserve (user rule 2026-10-17)
 
 Giver billederne hverken energi eller navn, bruges stregkodeopslaget (Open Food Facts) som reserve — kun når energien passer med etikettens tal og navnet står på forsiden. Aldrig skøn. Se DECISIONS 2026-10-17.

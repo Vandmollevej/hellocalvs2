@@ -15,6 +15,7 @@ import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { getSessionUser } from "@/lib/session";
 import { isProductRecheckDue } from "@/lib/product-recheck";
 import { recordProductScanSafely } from "@/lib/user-scans";
+import { queueExternalEnrichment } from "@/lib/external-enrichment";
 
 // GET /api/products/lookup/:barcode
 //
@@ -101,6 +102,8 @@ export async function GET(
       // en ny vare, men kunden får varens tidligere info med det samme.
       const sessionUser = await getSessionUser();
       if (sessionUser) await recordProductScanSafely(sessionUser.id, existing.product.id);
+      // Eksterne kilder flettes ind i baggrunden ved hver scanning (bruger 2026-10-17).
+      queueExternalEnrichment([existing.product.id], "scan");
       const qualityCheck = sessionUser ? await isProductRecheckDue(existing.product.id).catch(() => false) : false;
       log("barcode_lookup", `Fundet i egen database: ${existing.product.name}${qualityCheck ? " — over to år gammel, kameraet tager nye fotos (2-års tjek)" : ""}`, {
         productId: existing.product.id,

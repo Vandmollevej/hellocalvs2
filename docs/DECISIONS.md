@@ -1,3 +1,13 @@
+## 2026-10-17: Eksterne kilder flettes automatisk ind ved scanning, oprettelse og søgning
+
+Brugeren: "Så snart en vare scannes, oprettes eller fremsøges skal eksterne
+kilder indpasses automatisk." Før blev Open Food Facts kun brugt, når
+stregkoden var ukendt, og som stregkode-reserve ≥ 10 min efter "opret
+straks". Nu samler `src/lib/external-enrichment.ts` indfletningen: én kø (to
+OFF-kald ad gangen), kun tomme felter fyldes, og næringstal kun ved samme
+energi. Se REGLER.md → Eksterne kilder. OFF-varer vises stadig aldrig i
+søgeresultater (2026-09-28) — det er vores egne varer, der beriges.
+
 ## 2026-10-17: Afskåret logo godtages, når bagsiden eller stregkoden bekræfter brandet
 
 Albi Apfelsaft fik intet brand: logoet var skåret af i fotoets top, og Albi

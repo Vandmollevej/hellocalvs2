@@ -17,6 +17,7 @@ const BY_KEY: Record<string, RobotCategory> = {
   "back-photo-scan": "Varer og næringsindhold",
   "product-recheck": "Varer og næringsindhold",
   "off-quality": "Varer og næringsindhold",
+  "external-sources-sweep": "Varer og næringsindhold",
   "frida-estimates": "Varer og næringsindhold",
   "alcohol-nutrition": "Varer og næringsindhold",
   "frida-import": "Varer og næringsindhold",

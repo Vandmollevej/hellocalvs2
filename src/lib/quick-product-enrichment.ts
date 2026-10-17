@@ -38,6 +38,7 @@ import { fetchOffProductRaw } from "@/lib/openFoodFacts";
 import { linkOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
 import { OFF_USE_NAME_MIN_CONFIDENCE, type OffNutrition } from "@/lib/off-record";
 import { judgeReserveNutrition, nameMatchesFront, type ReserveVerdict } from "@/lib/ean-reserve-match";
+import { enrichFromExternalSources } from "@/lib/external-enrichment";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -916,6 +917,21 @@ export async function enrichQuickProduct(
   // Dele, hvor OpenAI-kaldet fejlede teknisk: de prøves igen af
   // quick-enrichment-recovery med de gemte fotos (docs/DECISIONS.md 2026-10-16).
   const retry: QuickEnrichmentRetry = { front: front === null, label: label?.aiFailed === true };
+
+  // Eksterne kilder flettes ind, så snart fotoene er læst (bruger 2026-10-17):
+  // stregkode-reserven med det samme, når intet AI-kald skal prøves igen, og
+  // derefter Open Food Facts i de felter, fotoene ikke gav (kun huller fyldes).
+  if (!retry.front && !retry.label && input.barcode) {
+    await applyEanReserve({
+      productId: input.productId,
+      barcode: input.barcode,
+      labelTexts: [input.nutritionOcrText, input.ingredientsOcrText],
+      frontTexts: [input.frontOcrText, input.fallbackName],
+    }).catch((error) => console.error("EAN reserve failed", input.productId, error));
+  }
+  await enrichFromExternalSources(input.productId, { reason: "create", force: true }).catch((error) =>
+    console.error("External enrichment failed", input.productId, error),
+  );
 
   const product = await prisma.product
     .findUnique({
