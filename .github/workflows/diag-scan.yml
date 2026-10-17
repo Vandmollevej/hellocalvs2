@@ -16,6 +16,7 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
+          sleep 300
           P=cmvawb4ue000s01oeu5bem334
           echo "=== Scheduler lines in app log ==="
           $C logs --no-log-prefix --since 30m app 2>&1 | grep -i -E "scheduler|api-keys|jobs" | head -30 || true
