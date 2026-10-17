@@ -470,3 +470,5 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - **Sortering og visning = dropdown, aldrig knapper (Peter, 2026-10-17)**: Gælder overalt i admin og appen. Brug `<select class="hf-input hf-input--compact">` (admin: `LinkSelect` på serversider, `ListModeToggle` til Visning). Bulk-"Handlinger" står altid til højre. Admin-opgaver afsluttes med linket til den rettede side.
 
 - "Læs mere"/"Vis mere" er altid en lille tekstknap (`hf-btn-text`, 15 px, naturlig bredde) og står som sidste element i sin blok — aldrig tekst direkte under den.
+
+- **Designrettelser er globale (2026-10-17):** generelle design-/stilrettelser gælder altid globalt for browserversionen og hele admin (fra 1024 px) — aldrig pr. side. Mobilvisningen er undtaget. Kontroller er 40 px / 15 px fra 1024 px (globals.css, sidst i filen).

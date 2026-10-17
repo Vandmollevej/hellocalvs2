@@ -3559,3 +3559,30 @@ textarea.hf-input {
   .hf-native-choice,
   .hf-native-file { font: inherit; }
 }
+
+/* Browser-version og admin (fra 1024 px): kontroller er kompakte globalt —
+   knapper og felter 40 px / 15 px skrift. Mobilvisningen (under 1024 px)
+   beholder 48 px / 17 px. Brugerregel 2026-10-17: generelle designrettelser
+   gælder altid globalt, aldrig pr. side. Uden for @layer, så reglen vinder
+   over Tailwind-utilities (h-12 o.l.). */
+@media (min-width: 1024px) {
+  :root {
+    --hf-control-height: 40px;
+  }
+
+  .hf-btn-primary,
+  .hf-btn-secondary,
+  .hf-btn-danger,
+  .hf-btn-brand {
+    height: auto;
+    min-height: 40px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .hf-input,
+  .hf-field {
+    font-size: 15px;
+    line-height: 22px;
+  }
+}
