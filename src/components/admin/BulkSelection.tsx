@@ -342,6 +342,7 @@ export function BulkActionsBar({ onDone }: { onDone?: () => void } = {}) {
                 key={action}
                 type="button"
                 role="menuitem"
+                title={BULK_ACTION_HINTS[action]}
                 disabled={none}
                 onClick={() => void run(action)}
                 className={`hf-navrow flex-col items-start justify-center text-left disabled:opacity-50 ${
@@ -349,7 +350,6 @@ export function BulkActionsBar({ onDone }: { onDone?: () => void } = {}) {
                 }`}
               >
                 <span className="hf-type-body">{BULK_ACTION_LABELS[action]}</span>
-                <span className="hf-type-small text-text-muted">{BULK_ACTION_HINTS[action]}</span>
               </button>
             ))}
           </div>

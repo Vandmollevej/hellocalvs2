@@ -1438,6 +1438,8 @@ model Product {
   categoryId       String?
   imageUrl         String?
   pendingImageUrl  String?
+  // Admin afviste både det nuværende billede og forslaget: varen står under "Find nyt billede".
+  imageNeedsNew    Boolean                @default(false)
   // Open Food Facts-varer uden dansk tekst oversættes automatisk; originalen
   // gemmes, så admin kan se den ved siden af den danske (translationStatus
   // PENDING = afventer admins godkendelse, APPROVED = godkendt).
