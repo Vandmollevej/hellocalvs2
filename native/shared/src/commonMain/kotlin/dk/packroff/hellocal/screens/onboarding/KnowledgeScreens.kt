@@ -99,6 +99,7 @@ internal fun additiveRow(item: AdditiveInfo): OnbRow {
 internal val KNOWLEDGE_SECTIONS = listOf(
     "vitaminer" to "Vitaminer",
     "e-numre" to "E-numre",
+    "allergener" to "Allergener",
     "sundhedstips" to "Sundhedstips",
     "kalorieforbraending" to "Kalorieforbrænding",
     "who-og-kilder" to "WHO og officielle kilder",
@@ -106,7 +107,7 @@ internal val KNOWLEDGE_SECTIONS = listOf(
     "omregning" to "Omregning: væsker til gram",
 )
 
-private val SEARCHABLE_SECTIONS = listOf("vitaminer", "sundhedstips", "kalorieforbraending", "who-og-kilder", "mad-paa-latin")
+private val SEARCHABLE_SECTIONS = listOf("vitaminer", "allergener", "sundhedstips", "kalorieforbraending", "who-og-kilder", "mad-paa-latin")
 
 internal data class KnowledgeEntry(val section: String, val slug: String, val title: String, val subtitle: String)
 

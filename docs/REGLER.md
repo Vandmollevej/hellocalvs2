@@ -193,7 +193,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
-- **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
+- **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Knapperne bag en lukket række er skjulte, så de ikke skinner igennem kortets runde hjørner. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
 - **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
 - **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
@@ -291,6 +291,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - Alle aflæste ingredienslister går gennem `reviewIngredientsText` (`src/lib/ingredient-text-quality.ts`), før de gemmes — også nye veje. Dansk staves "soja", aldrig "soya". E-numre er E + tal (aldrig £/€). Næringstabellen hører aldrig med i listen. Typiske OCR-fejl rettes mod ordlisten `src/lib/ingredient-words.ts` (native-kopi i `FoodLogic.kt` — ret begge). Ord med STORE bogstaver er allergener og rettes til det nærmeste allergen. Ingredienslisten slutter, hvor næringstabellen begynder (også "Energi"/kJ/kcal uden overskrift).
 - Stavelogik findes ét sted: `src/lib/spelling-engine.ts` (robot, kontrol ved gem og visning). Ny ordbog/regel = grundlisten `src/lib/ingredient-words.ts`, katalogets ordforråd eller admins afgørelser på Stavekontrol — aldrig en særregel for ét ord i koden. Nattens robot (`spelling-check`) retter kun sikre fund og lægger resten på admin → Stavekontrol; hvad admin har afvist/fortrudt, rettes aldrig igen.
 - E-numre i ingredienslisten vises fede og klikbare, men aldrig understregede — web og native (bruger 2026-10-17).
+- Allergener i ingredienslisten står altid med STORT og fed og linker til allergenets side under Viden om mad → Allergener (`allergenHref`) — web og native (bruger 2026-10-17). Nye allergen-ord findes af nattens allergen-robot (Open Food Facts-opslag + ord skrevet med STORT) og afgøres på admin → Allergen-ord; læg aldrig enkeltord ind i koden.
 - Tvivl om en aflæsning skal altid nå admin: telefonens liste afvises (AI læser), og AI'ens sættes ned til højst 60 % sikkerhed → Usikkerheder → Indhold. Rettelser og tvivl logges (`ingredients_text_review`).
 
 ## Kropsmål: stemmeguiden (user rule 2026-10-14)
@@ -361,6 +362,10 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - Commit, push, flet PR og alt andet der skal til for at færdiggøre en opgave sker uden at spørge først (bruger 2026-10-09; AGENTS.md).
 - Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
+
+## Robot-QoS (user rule 2026-10-17)
+
+- Robotter starter kun, når serverens CPU/RAM er under grænsen på admin → Robotter → Belastningsstyring, og aldrig i en spærretid. Nye robotter får det automatisk: app-jobs med `robot: true` går gennem `src/lib/jobs/runner.ts`, Python-agenter gennem `job_control.py` — byg aldrig en robot udenom dem. Ændres reglerne, ændres `src/lib/robot-qos.ts` og alle `scripts/*/job_control.py` sammen. "KØR" går udenom.
 
 ## Crawlere og billeder
 
@@ -465,6 +470,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
 - Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
 - Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- **Tallet over en slider kan altid skrives (bruger 2026-10-17, gentaget flere gange):** overalt hvor der er en slider, skal værdien også kunne tastes manuelt. Tallet ser ud som almindelig tekst og ændrer ikke udseende, før man trykker på det; da får det hvid baggrund, og taltastaturet kommer frem. Brug `TapNumberInput` (web) / `CaptureTapNumber` (native) — eller et eksisterende felt ved siden af slideren. Ingen slider uden en indtastningsmulighed.
 - Mængdefeltet på produktsiden er selv slideren (bruger 2026-10-16): det store tal trækkes vandret (`DragNumberStrip`, web + native). Under trækket vises nabotallene mindre og mere utydelige i siderne i tal-hjulets stil, alle på det store tals grundlinje; enheden ("g") skjules under trækket og kommer igen, når nabotallene er faldet ud. Ingen separat slider under feltet.
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
 

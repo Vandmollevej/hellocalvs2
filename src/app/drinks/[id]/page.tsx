@@ -6,6 +6,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { IconGlassCocktail } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
+import { TapNumberInput } from "@/components/hf/TapNumberInput";
 import { Skeleton } from "@/components/hf/Skeleton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { drinkTotals, type DrinkDto } from "@/lib/drinks";
@@ -105,13 +106,20 @@ function DrinkContent() {
               <div key={ingredient.id} className="hf-card--form hf-card">
                 <div className="flex items-baseline justify-between">
                   <span className="hf-type-small hf-type-strong text-hf-black">{ingredient.name}</span>
-                  <span className="hf-type-title text-hf-black">
-                    {formatAmount(amounts[ingredient.id] ?? 0)} {ingredient.unit}
-                  </span>
+                  <TapNumberInput
+                    value={amounts[ingredient.id] ?? 0}
+                    display={`${formatAmount(amounts[ingredient.id] ?? 0)} ${ingredient.unit}`}
+                    unit={ingredient.unit}
+                    decimals={ingredient.step < 1 ? 2 : 0}
+                    min={0}
+                    aria-label={ingredient.name}
+                    onChange={(value) => setAmounts((current) => ({ ...current, [ingredient.id]: value }))}
+                    className="hf-type-title text-hf-black"
+                  />
                 </div>
                 <HfSlider
                   min={ingredient.minAmount}
-                  max={ingredient.maxAmount}
+                  max={Math.max(ingredient.maxAmount, amounts[ingredient.id] ?? 0)}
                   step={ingredient.step}
                   value={amounts[ingredient.id] ?? 0}
                   onChange={(value) => setAmounts((current) => ({ ...current, [ingredient.id]: value }))}
