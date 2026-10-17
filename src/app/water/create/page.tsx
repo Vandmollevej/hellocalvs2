@@ -6,6 +6,7 @@ import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
+import { TapNumberInput } from "@/components/hf/TapNumberInput";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
@@ -69,8 +70,6 @@ function groupByDate(entries: WaterEntry[]) {
 export default function WaterCreatePage() {
   const { t } = useTranslation();
   const [amountMl, setAmountMl] = useState(250);
-  // Rå tekst mens mængdefeltet redigeres, så et tomt felt ikke tvinges til 0.
-  const [amountDraft, setAmountDraft] = useState<string | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -170,7 +169,19 @@ export default function WaterCreatePage() {
             <span className="hf-type-small hf-type-strong hf-water-amount__label text-hf-black">
               {t("waterLog.amountLabel")}
             </span>
-            <span className="hf-type-title hf-water-amount__value text-hf-black">{amountMl} ml</span>
+            <TapNumberInput
+              value={amountMl}
+              unit="ml"
+              min={0}
+              max={5000}
+              aria-label={t("waterLog.amountLabel")}
+              onChange={(value) => {
+                setAmountMl(Math.round(value));
+                setSelectedKey(null);
+                setSaved(false);
+              }}
+              className="hf-type-title hf-water-amount__value text-hf-black"
+            />
           </div>
           <HfSlider
             largeOnWeb

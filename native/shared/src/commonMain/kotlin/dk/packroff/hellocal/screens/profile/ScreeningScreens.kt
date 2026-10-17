@@ -99,7 +99,22 @@ fun ScreeningInput(
                 }
             }
             "SLIDER" -> {
-                HcText(if (value == null) "–" else "$value$suffix", HcTypeRoles.PageTitle, Modifier.fillMaxWidth(), align = TextAlign.Center, color = HcColors.Black)
+                if (readOnly) {
+                    HcText(if (value == null) "–" else "$value$suffix", HcTypeRoles.PageTitle, Modifier.fillMaxWidth(), align = TextAlign.Center, color = HcColors.Black)
+                } else {
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        dk.packroff.hellocal.ui.CaptureTapNumber(
+                            value = value?.toDouble(),
+                            display = if (value == null) "–" else "$value$suffix",
+                            unit = suffix.trim().ifEmpty { null },
+                            min = range.min.toDouble(),
+                            max = range.max.toDouble(),
+                            role = HcTypeRoles.PageTitle,
+                            align = TextAlign.Center,
+                            onChange = { onChange(clamp(it.toInt())) },
+                        )
+                    }
+                }
                 CaptureSlider(value = current, min = range.min, max = range.max, step = range.step, onChange = { if (!readOnly) onChange(it) })
             }
             "INPUT" -> HcTextField(
