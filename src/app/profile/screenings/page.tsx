@@ -6,10 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ActionLink } from "@/components/hf/ActionButton";
-import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { AccordionCard } from "@/components/hf/AccordionCard";
 import { HfLoader } from "@/components/hf/HfLoader";
 import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
 import { ScreeningFillSheet } from "@/components/screenings/ScreeningFillSheet";
+import { ScreeningRow } from "@/components/screenings/ScreeningRow";
 import { ScreeningSwipeRow } from "@/components/screenings/ScreeningSwipeRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -59,6 +60,9 @@ function ScreeningsContent() {
     };
   }, []);
 
+  const statusText = (active: boolean) =>
+    active ? t("screenings.statusActive") : t("screenings.statusInactive");
+
   async function toggleActive(screening: ScreeningDto) {
     setScreenings((list) => list?.map((s) => (s.id === screening.id ? { ...s, active: !s.active } : s)) ?? null);
     await patchScreening(screening.id, { active: !screening.active });
@@ -96,11 +100,12 @@ function ScreeningsContent() {
           <AccordionCard>
             {/* Søvn er en fast række (kan ikke slettes): "Oplevelse af søvn" til/fra
                 (bruger 2026-10-16, flyttet fra Visning). Søvnmønsteret ligger på Profil. */}
-            <ChevronRow
+            <ScreeningRow
               href="/settings/display/sleep-quality"
-              icon={<StatusDot active={sleepActive} />}
+              sleep
               label={t("screenings.sleep")}
-              value={<StatusText active={sleepActive} />}
+              active={sleepActive}
+              statusText={statusText(sleepActive)}
               divider={screenings.length > 0}
             />
             {screenings.map((screening, index) => (
@@ -110,11 +115,11 @@ function ScreeningsContent() {
                 onToggleActive={() => toggleActive(screening)}
                 onDelete={() => setPendingDelete(screening)}
               >
-                <ChevronRow
+                <ScreeningRow
                   href={`/profile/screenings/${screening.id}`}
-                  icon={<StatusDot active={screening.active} />}
                   label={screening.name}
-                  value={<StatusText active={screening.active} />}
+                  active={screening.active}
+                  statusText={statusText(screening.active)}
                   divider={index < screenings.length - 1}
                 />
               </ScreeningSwipeRow>
@@ -145,19 +150,6 @@ function ScreeningsContent() {
         </BottomSheet>
       )}
     </HfScreen>
-  );
-}
-
-function StatusDot({ active }: { active: boolean }) {
-  return <span className={`hf-status-dot${active ? " is-active" : ""}`} aria-hidden="true" />;
-}
-
-function StatusText({ active }: { active: boolean }) {
-  const { t } = useTranslation();
-  return (
-    <span className={`hf-type-small ${active ? "text-hf-green-dark" : "text-text-secondary"}`}>
-      {active ? t("screenings.statusActive") : t("screenings.statusInactive")}
-    </span>
   );
 }
 

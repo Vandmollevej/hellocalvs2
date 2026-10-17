@@ -1577,10 +1577,12 @@
   },
   "/profile/screenings": {
     "src/app/layout.tsx": "ce9cce1fff73600a",
-    "src/app/profile/screenings/page.tsx": "87e3065f73c05008",
+    "src/app/profile/screenings/page.tsx": "a035ab0f8900cc1e",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
+    "src/components/DecimalText.tsx": "ae5809b34b60c7a0",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
+    "src/components/FoodRow.tsx": "17011506abef77b5",
     "src/components/FooterArc.tsx": "7e405515f5bd4257",
     "src/components/FooterArcEditor.tsx": "841e5d6137c3a24a",
     "src/components/HfScreen.tsx": "b16396e5807051df",
@@ -1605,6 +1607,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/screenings/ScreeningFillSheet.tsx": "45c3a932aa9c6e50",
     "src/components/screenings/ScreeningInput.tsx": "29370a080112152e",
+    "src/components/screenings/ScreeningRow.tsx": "085393b7085b2866",
     "src/components/screenings/ScreeningSwipeRow.tsx": "6c8df54d24f80a0a",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },

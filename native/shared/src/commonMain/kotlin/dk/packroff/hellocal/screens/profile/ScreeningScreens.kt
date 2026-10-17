@@ -40,7 +40,9 @@ import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureSlider
 import dk.packroff.hellocal.ui.HcAccordionCard
-import dk.packroff.hellocal.ui.HcChevronRow
+import dk.packroff.hellocal.ui.FoodDivider
+import dk.packroff.hellocal.ui.FoodRow
+import dk.packroff.hellocal.ui.HcChevron
 import dk.packroff.hellocal.ui.HcBottomSheet
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcButtonKind
@@ -243,14 +245,33 @@ private fun ScreeningStatusDot(active: Boolean) {
     Box(Modifier.size(10.dp).clip(CircleShape).background(if (active) HcColors.Brand else HcColors.Nav))
 }
 
+/**
+ * src/components/screenings/ScreeningRow.tsx — built like the food list rows
+ * (user 2026-10-17): px-4 frame with divider, the global FoodRow (44 px slot,
+ * title, caption) and the chevron on the right. Status is the caption.
+ */
 @Composable
-private fun ScreeningStatusText(active: Boolean) {
+private fun ScreeningListRow(label: String, active: Boolean, sleep: Boolean, divider: Boolean, onClick: () -> Unit) {
     val t = LocalTranslator.current
-    HcText(
-        if (active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
-        HcTypeRoles.Small,
-        color = if (active) HcColors.GreenDark else HcColors.TextSecondary,
-    )
+    Column(Modifier.fillMaxWidth().background(HcColors.Tan).clickable(onClick = onClick)) {
+        FoodRow(
+            title = label,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            thumbnail = { HcIcon(if (sleep) "Moon" else "ClipboardHeart", size = 24.dp, color = HcColors.Black, stroke = 1.6f) },
+            subtitle = {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    ScreeningStatusDot(active)
+                    HcText(
+                        if (active) t.t("screenings.statusActive") else t.t("screenings.statusInactive"),
+                        HcTypeRoles.Caption,
+                        color = if (active) HcColors.GreenDark else HcColors.TextSecondary,
+                    )
+                }
+            },
+            right = { HcChevron(color = HcColors.Black) },
+        )
+        if (divider) FoodDivider()
+    }
 }
 
 @Composable
@@ -292,12 +313,12 @@ fun ScreeningsScreen(args: RouteArgs) {
                     HcAccordionCard {
                         // Sleep is a fixed row (cannot be deleted): "Oplevelse af søvn" on/off,
                         // moved here from Visning (user 2026-10-16). The sleep pattern is on Profil.
-                        HcChevronRow(
+                        ScreeningListRow(
                             label = t.t("screenings.sleep"),
-                            onClick = { nav.push("/settings/display/sleep-quality") },
+                            active = sleepActive,
+                            sleep = true,
                             divider = list.isNotEmpty(),
-                            iconContent = { ScreeningStatusDot(sleepActive) },
-                            value = { ScreeningStatusText(sleepActive) },
+                            onClick = { nav.push("/settings/display/sleep-quality") },
                         )
                         list.forEachIndexed { index, screening ->
                             // The shared swipe row (ScreeningSwipeRow.tsx → SwipeableRow.tsx).
@@ -315,15 +336,13 @@ fun ScreeningsScreen(args: RouteArgs) {
                                 ),
                                 onDelete = { pendingDelete = screening },
                             ) {
-                                Box(Modifier.fillMaxWidth().background(HcColors.Tan)) {
-                                    HcChevronRow(
-                                        label = screening.name,
-                                        onClick = { nav.push("/profile/screenings/${screening.id}") },
-                                        divider = index < list.size - 1,
-                                        iconContent = { ScreeningStatusDot(screening.active) },
-                                        value = { ScreeningStatusText(screening.active) },
-                                    )
-                                }
+                                ScreeningListRow(
+                                    label = screening.name,
+                                    active = screening.active,
+                                    sleep = false,
+                                    divider = index < list.size - 1,
+                                    onClick = { nav.push("/profile/screenings/${screening.id}") },
+                                )
                             }
                         }
                     }
