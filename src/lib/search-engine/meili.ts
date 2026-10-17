@@ -53,6 +53,22 @@ export async function meiliRequest<T>(
 
 export type MeiliHit = { id: string; score: number };
 
+// Meilisearch tillader kun a-z, A-Z, 0-9, - og _ i dokument-id'er (højst 511
+// bytes). Nogle importerede varer har id'er med fx "%c3%b8" (ø), og ét ugyldigt
+// id fik hele indekseringen til at fejle. Sådanne id'er gemmes base64url-kodet
+// med præfikset "b64-" og afkodes igen i søgesvaret.
+const VALID_DOC_ID = /^[A-Za-z0-9_-]{1,511}$/;
+const ENCODED_PREFIX = "b64-";
+
+export function toDocId(productId: string): string {
+  if (VALID_DOC_ID.test(productId) && !productId.startsWith(ENCODED_PREFIX)) return productId;
+  return ENCODED_PREFIX + Buffer.from(productId, "utf8").toString("base64url");
+}
+
+export function fromDocId(docId: string): string {
+  return docId.startsWith(ENCODED_PREFIX) ? Buffer.from(docId.slice(ENCODED_PREFIX.length), "base64url").toString("utf8") : docId;
+}
+
 type SearchResponse = { hits: Array<{ id: string; _rankingScore?: number }>; estimatedTotalHits?: number };
 
 // Søger i vareindekset. matchingStrategy "all": alle ord skal findes (med
@@ -71,7 +87,7 @@ export async function searchProductIndex(
       body: { q: query, limit, matchingStrategy, attributesToRetrieve: ["id"], showRankingScore: true },
       timeoutMs: 1_500,
     });
-    return data.hits.map((hit) => ({ id: hit.id, score: hit._rankingScore ?? 0 }));
+    return data.hits.map((hit) => ({ id: fromDocId(hit.id), score: hit._rankingScore ?? 0 }));
   };
   try {
     const all = await run("all");

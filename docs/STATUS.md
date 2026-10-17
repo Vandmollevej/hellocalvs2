@@ -2,6 +2,8 @@
 
 - Rodårsag: `instrumentation.ts` lå i projektroden, men appen bruger `src/app`, så Next leder kun i `src/`. Standalone-imaget fik ingen instrumentation-fil, og `startScheduler()` kørte aldrig — ingen af appens job (`quick-enrichment-recovery`, `maintenance`, `back-photo-scan`, `frida-estimates`, `search-index`, `product-translations`, `api-alerts` …) havde `lastStartedAt` i produktion. Kun Python-agenterne kørte. Derfor blev fx Änglamark-letmælken aldrig repareret.
 - Rettet: flyttet til `src/instrumentation.ts`; vagt-test `src/lib/instrumentation-location.test.mjs`. Første kørsel: 48-timers-eskaleringen mailer kun sager i vinduet 48–72 t (ellers 53 mails om gamle ventende varer).
+- Bekræftet i produktion 05:47: alle app-job kører nu; letmælken blev læst færdig af recovery-jobbet (Änglamark — Letmælk Økologisk, 1,5 % fedt, 46 kcal/100). 2 eskaleringsmails sendt (vinduet virker).
+- Søgemotoren: ét vare-id med "%c3%b8" fik hele Meilisearch-indekseringen til at fejle; ugyldige id'er kodes nu (`toDocId`/`fromDocId` i `src/lib/search-engine/meili.ts`, test `src/lib/meili-doc-id.test.mjs`).
 - Også rettet fra et direkte push på master: manglende `}` i `prisma/schema.prisma` (buildet fejlede), genveje for `/admin/guides` og `/admin/warning-emails`, sidetræet og lint i advarselsmail-siden.
 
 ## 2026-10-16: Lokal genlæsning af gemte billeder

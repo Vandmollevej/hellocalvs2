@@ -2,7 +2,7 @@ import { MEAL_KIT_SOURCES } from "@/lib/meal-kit-providers";
 import { createHash } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
-import { meiliConfigured, meiliRequest, PRODUCT_INDEX } from "@/lib/search-engine/meili";
+import { meiliConfigured, meiliRequest, PRODUCT_INDEX, toDocId } from "@/lib/search-engine/meili";
 import { clearSearchCache } from "@/lib/search-engine/search-cache";
 import { wordSuffixes } from "@/lib/search-text-match";
 
@@ -67,7 +67,7 @@ async function searchableProducts(): Promise<IndexDocument[]> {
   });
   return rows.map((row) => {
     const doc = {
-      id: row.id,
+      id: toDocId(row.id),
       name: row.name,
       namePlural: row.namePlural,
       brand: row.brand?.name ?? null,
