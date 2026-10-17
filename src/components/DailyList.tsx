@@ -186,14 +186,13 @@ export function DailyList() {
       <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
       {/* Samme tan-kort som søgelisterne (src/app/search/page.tsx). */}
-      <ul className={entries.length > 0 ? "overflow-hidden rounded-[8px] bg-hf-tan" : ""}>
+      <ul className={entries.length > 0 ? "overflow-hidden rounded-card bg-hf-tan" : ""}>
         {entries.map((entry, i) => (
           <li
             key={entry.id}
             className={i < entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
           >
             <SwipeableRow
-              surfaceClassName="bg-hf-tan px-4"
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
               isFavorite={entry.productId ? favoriteIds.has(entry.productId) : false}
               onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}

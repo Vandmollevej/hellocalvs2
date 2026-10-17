@@ -113,6 +113,7 @@ internal fun DayDetails(
     measurements: List<CalendarMeasurement>,
     onDeleteMetrics: (List<String>) -> Unit,
     onDeleteRegistration: (String) -> Unit,
+    onDeleteWater: (String) -> Unit,
     goals: List<CalGoal>,
     weighIns: List<CalWeighIn>,
     loading: Boolean,
@@ -405,6 +406,7 @@ internal fun DayDetails(
                 measurements = measurements.filter { it.time.hour == hour },
                 onDeleteMetrics = onDeleteMetrics,
                 onDeleteRegistration = onDeleteRegistration,
+                onDeleteWater = onDeleteWater,
                 goals = if (hour == GOAL_HOUR) goals else emptyList(),
                 onClose = { openHour = null },
             )

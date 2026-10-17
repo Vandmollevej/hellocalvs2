@@ -34,6 +34,7 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
+import dk.packroff.hellocal.ui.CaptureSwipeableRow
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureBrandCard
 import dk.packroff.hellocal.ui.CaptureCenteredError
@@ -199,8 +200,20 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                     Column {
                         groupWaterByDate(entries).forEach { group ->
                             HcSectionTitle(group.label)
+                            // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                             group.entries.forEachIndexed { i, entry ->
                                 val local = CaptureDates.local(entry.loggedAt)
+                                CaptureSwipeableRow(onDelete = {
+                                    val before = entries
+                                    entries = entries.filter { it.id != entry.id }
+                                    scope.launch {
+                                        runCatching { Api.delete("/api/water-entries/${entry.id}") }
+                                            .onSuccess { NativeHooks.onRegistrationChanged() }
+                                            .onFailure { entries = before }
+                                    }
+                                }) {
+                                Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                                 CaptureFoodRow(
                                     title = "${entry.amountMl} ml",
                                     thumbnail = { WaterGlassIcon(22.dp) },
@@ -212,7 +225,10 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                         )
                                     },
                                 )
+                                }
+                                }
                                 if (i < group.entries.lastIndex) HcLine()
+                            }
                             }
                         }
                     }
