@@ -2864,6 +2864,8 @@
   "activity": {
     "title": "Aktivitet",
     "searchPlaceholder": "Søg efter aktivitet",
+    "favoritesTitle": "Mine favoritter",
+    "allTitle": "Alle aktiviteter",
     "addManual": "Tilføj \"{name}\" som aktivitet",
     "pending": "afventer godkendelse",
     "spikeTitle": "Du har {day} forbrændt {kcal} ekstra kalorier. Hvad foretog du dig?",

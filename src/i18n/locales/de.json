@@ -2864,6 +2864,8 @@
   "activity": {
     "title": "Aktivität",
     "searchPlaceholder": "Aktivität suchen",
+    "favoritesTitle": "Meine Favoriten",
+    "allTitle": "Alle Aktivitäten",
     "addManual": "\"{name}\" als Aktivität hinzufügen",
     "pending": "wartet auf Freigabe",
     "spikeTitle": "Du hast {day} {kcal} zusätzliche Kalorien verbrannt. Was hast du gemacht?",

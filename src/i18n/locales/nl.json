@@ -2864,6 +2864,8 @@
   "activity": {
     "title": "Activiteit",
     "searchPlaceholder": "Zoek een activiteit",
+    "favoritesTitle": "Mijn favorieten",
+    "allTitle": "Alle activiteiten",
     "addManual": "\"{name}\" toevoegen als activiteit",
     "pending": "wacht op goedkeuring",
     "spikeTitle": "Je hebt {day} {kcal} extra calorieën verbrand. Wat heb je gedaan?",

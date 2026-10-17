@@ -2864,6 +2864,8 @@
   "activity": {
     "title": "Activity",
     "searchPlaceholder": "Search activities",
+    "favoritesTitle": "My favourites",
+    "allTitle": "All activities",
     "addManual": "Add \"{name}\" as an activity",
     "pending": "awaiting approval",
     "spikeTitle": "You burned {kcal} extra calories {day}. What were you doing?",
