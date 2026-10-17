@@ -198,6 +198,16 @@ internal const val LATE_BEDTIME_CUTOFF_MINUTES = 4.0 * 60
 internal fun isDaytimeSleep(window: SleepWindow): Boolean =
     window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES
 
+/**
+ * src/lib/sleep-window.ts activityTrackStart — the activity track starts at the wake-up time
+ * after the night before (floored to a quarter hour) and runs to midnight; daytime sleep gives
+ * the whole day; a chosen start before wake-up pulls the track start back to it.
+ */
+internal fun activityTrackStart(window: SleepWindow?, startMinutes: Int): Int {
+    val wake = if (window != null && !isDaytimeSleep(window)) (window.wakeTime.toInt() / 15) * 15 else 0
+    return maxOf(0, minOf(wake, (startMinutes / 15) * 15))
+}
+
 /** Where the bedtime handle sits on the 00–24 timeline: after-midnight bedtimes pin to the bottom. */
 internal fun bedtimeDisplayMinutes(window: SleepWindow): Double =
     if (window.bedtime < LATE_BEDTIME_CUTOFF_MINUTES && !isDaytimeSleep(window)) 24.0 * 60 else window.bedtime

@@ -58,6 +58,16 @@ import dk.packroff.hellocal.ui.HcScreen
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileSleepRangeSlider
 import dk.packroff.hellocal.screens.food.GlyphButton
+import dk.packroff.hellocal.screens.calendar.SleepDefaults
+import dk.packroff.hellocal.screens.calendar.SleepScheduleEntry
+import dk.packroff.hellocal.screens.calendar.WorkShiftEntry
+import dk.packroff.hellocal.screens.calendar.activityTrackStart
+import dk.packroff.hellocal.screens.calendar.getSleepWindow
+import dk.packroff.hellocal.screens.calendar.parseProfile
+import dk.packroff.hellocal.screens.calendar.parseSchedules
+import dk.packroff.hellocal.screens.calendar.parseShifts
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -235,6 +245,25 @@ fun ActivityCreateScreen(args: RouteArgs) {
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var pickDate by remember { mutableStateOf(false) }
+    var sleepDefaults by remember { mutableStateOf<SleepDefaults?>(null) }
+    var weekdaySchedules by remember { mutableStateOf<Map<Int, SleepScheduleEntry>>(emptyMap()) }
+    var workShifts by remember { mutableStateOf<Map<LocalDate, WorkShiftEntry>>(emptyMap()) }
+    var sleepLoaded by remember { mutableStateOf(false) }
+
+    // Sleep from the calendar (wake-up after the night before), so the track only shows waking hours.
+    LaunchedEffect(Unit) {
+        runCatching {
+            coroutineScope {
+                val profile = async { Api.get("/api/profile") }
+                val schedule = async { Api.get("/api/sleep-schedule") }
+                val shifts = async { Api.get("/api/work-shifts") }
+                sleepDefaults = parseProfile(profile.await(), startedAt.date).first
+                weekdaySchedules = parseSchedules(schedule.await())
+                workShifts = parseShifts(shifts.await())
+                sleepLoaded = true
+            }
+        }
+    }
 
     val current = option
     val showsDistance = current?.key == "walking" || current?.key == "running"
@@ -259,6 +288,8 @@ fun ActivityCreateScreen(args: RouteArgs) {
     val lastMinute = 24 * 60 - 1
     // The track shows only the chosen day (00:00-23:59): the end never passes midnight.
     val endMinutes = minOf(startMinutes + totalMinutes, lastMinute)
+    val sleepWindow = if (sleepLoaded) getSleepWindow(startedAt.date, sleepDefaults, weekdaySchedules, workShifts) else null
+    val trackStart = activityTrackStart(sleepWindow, startMinutes)
 
     fun applyDuration(total: Int) {
         hours = (total / 60).toString()
@@ -334,6 +365,8 @@ fun ActivityCreateScreen(args: RouteArgs) {
                         onChangeWake = ::setEnd,
                         onChangeBedtime = ::setStart,
                         bedtimeFirst = true,
+                        trackStart = trackStart,
+                        trackEnd = lastMinute,
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
