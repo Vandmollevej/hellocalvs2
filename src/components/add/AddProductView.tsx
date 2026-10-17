@@ -1566,7 +1566,7 @@ export function AddProductView({
                             key={index}
                             type="button"
                             onClick={() => setOpenAdditive(part.code as string)}
-                            className="hf-type-strong text-hf-black underline underline-offset-2"
+                            className="hf-type-strong text-hf-black"
                           >
                             {part.text}
                           </button>

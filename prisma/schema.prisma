@@ -262,6 +262,7 @@ model User {
   sleepQualityPromptEnabled Boolean @default(true)
 
   registrations           Registration[]
+  productScans            ProductScan[]
   favorites               Favorite[]
   activityFavorites       ActivityFavorite[]
   dishes                  Dish[]
@@ -1692,6 +1693,7 @@ model Product {
   // Natlig gennemgang af eksisterende varer med stregkode- og ordspærringen (flag-only, ingen AI).
   petFoodTextCheckedAt DateTime?
   registrations      Registration[]
+  productScans       ProductScan[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
   ingredients        ProductIngredient[]
@@ -2722,6 +2724,23 @@ model DishIngredient {
 }
 
 // --- Registrations (snapshot principle) ---
+
+// "Dine indscanninger" (bruger 2026-10-17): en kendt vare, brugeren scanner,
+// skal også stå på listen, ikke kun varer brugeren selv har oprettet. Én række
+// pr. bruger og vare; scannedAt flyttes frem ved hver ny scanning
+// (src/lib/user-scans.ts).
+model ProductScan {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  scannedAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId, scannedAt])
+  @@map("product_scans")
+}
 
 model Registration {
   id        String   @id @default(cuid())
