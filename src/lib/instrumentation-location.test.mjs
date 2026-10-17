@@ -26,3 +26,9 @@ test("eskaleringen sender ikke én mail pr. gammel sag (vindue 48-72 t)", () => 
   const scheduler = readFileSync(at("./scheduler.ts"), "utf8");
   assert.equal((scheduler.match(/createdAt: \{ lt: cutoff, gte: windowStart \}/g) ?? []).length, 2);
 });
+
+test("scan-appen starter ikke scheduleren (den mangler hoved-appens nøgler)", () => {
+  const source = readFileSync(at("../instrumentation.ts"), "utf8");
+  const guard = source.indexOf('process.env.HELLOCAL_APP_MODE === "scan"');
+  assert.ok(guard > 0 && guard < source.indexOf("startScheduler()"));
+});
