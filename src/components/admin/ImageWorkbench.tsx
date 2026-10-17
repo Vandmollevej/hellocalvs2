@@ -39,6 +39,9 @@ type Props = {
   storageKey: string;
   // Fanen viser behandlede varer: ingen knapper på kortene, kun visning.
   readOnly?: boolean;
+  // Små værktøjsknapper under billederne (fx "For lyst"); onTool ændrer forslaget.
+  tools?: { key: string; label: string }[];
+  onTool?: (id: string, tool: string) => Promise<boolean>;
 };
 
 const SIZES = [
@@ -84,8 +87,9 @@ function Pic({ slide, bg, onOpen }: { slide: WorkbenchSlide; bg: CSSProperties; 
   );
 }
 
-export function ImageWorkbench({ items: initialItems, onDecide, acceptLabel = "Accepter", rejectLabel = "Afvis", keepLabel, emptyText, storageKey, readOnly = false }: Props) {
+export function ImageWorkbench({ items: initialItems, onDecide, acceptLabel = "Accepter", rejectLabel = "Afvis", keepLabel, emptyText, storageKey, readOnly = false, tools, onTool }: Props) {
   const [items, setItems] = useState(initialItems);
+  const [toolBusy, setToolBusy] = useState<string | null>(null);
   const [size, setSize] = useState<(typeof SIZES)[number]["value"]>("m");
   const [bgKey, setBgKey] = useState("checker");
   const [selectMode, setSelectMode] = useState(false);
@@ -152,6 +156,22 @@ export function ImageWorkbench({ items: initialItems, onDecide, acceptLabel = "A
       }
     },
     [altKeyFor, busy, items, onDecide],
+  );
+
+  const runTool = useCallback(
+    async (id: string, tool: string) => {
+      if (!onTool || toolBusy) return;
+      setToolBusy(id);
+      setError(null);
+      try {
+        if (!(await onTool(id, tool))) setError("Værktøjet kunne ikke bruges på dette billede.");
+      } catch {
+        setError("Værktøjet mislykkedes (serverfejl). Prøv igen.");
+      } finally {
+        setToolBusy(null);
+      }
+    },
+    [onTool, toolBusy],
   );
 
   const toggle = (index: number, event: MouseEvent) => {
@@ -305,6 +325,15 @@ export function ImageWorkbench({ items: initialItems, onDecide, acceptLabel = "A
                 <Pic slide={item.left} bg={bg} onOpen={selectionActive ? undefined : () => setLightbox(index)} />
                 <Pic slide={rightSlide(item)} bg={bg} onOpen={selectionActive ? undefined : () => setLightbox(index)} />
               </div>
+              {!readOnly && tools && onTool && item.right.src && (
+                <div className="flex flex-wrap justify-end gap-2" onClick={(event) => event.stopPropagation()}>
+                  {tools.map((tool) => (
+                    <button key={tool.key} type="button" className="hf-btn-secondary" disabled={busy || toolBusy !== null} onClick={() => runTool(item.id, tool.key)}>
+                      {toolBusy === item.id ? "…" : tool.label}
+                    </button>
+                  ))}
+                </div>
+              )}
               {item.alternatives && item.alternatives.length > 1 && (
                 <div className="hf-pick-strip" aria-label="Alternativer" onClick={(event) => event.stopPropagation()}>
                   {item.alternatives.map((alt, altIndex) => (
