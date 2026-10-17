@@ -1,3 +1,12 @@
+## 2026-10-17: Allergen-sider og allergen-robot
+
+Brugeren: "Alle varer i EU skal have allergener … stående med stort. Man skal kunne læse om alle allergener, og der skal linkes til samtlige allergener med stor tekst i ingrediensfelter. Tilføj en robot, som gennemgår nye hver nat og giver en rapport, når der er fundet nye ord — med mindre du allerede nu kan tilgå et opslagsværk online?"
+
+- Fremhævningen (`src/lib/allergen-highlight.ts`, native `FoodLogic.kt`) kender nu allergenet for hver stamme og linker til `/viden-om/allergener/<nøgle>` (nøgle = `ALLERGEN_CATALOG.key`). Artiklerne er almindelige vidensartikler (kategori `allergener`), så native får dem via `sync.mjs`.
+- Opslagsværk: ja — Open Food Facts' åbne taksonomier (`/data/taxonomies/allergens.json` og `ingredients.json`) dækker alle sprog og arver allergener fra forældre (mozzarella → ost → mælk). De hentes af robotten hver nat på serveren, ikke af telefonen. Ingredienser med flere allergener (fx pesto) springes over, da de ikke har én side at linke til.
+- Robotten (`allergen-words`, `src/lib/allergen-robot.ts`, ren logik i `allergen-word-finder.ts`) kombinerer opslagsværket (varens sprog, sikkert → godkendes straks) med producentens STORE bogstaver (usikkert → admin → Allergen-ord). Er det meste af listen skrevet med STORT, bruges STORT ikke. Godkendte ord ligger i `allergen_words` og hentes af web og app via `GET /api/allergens/words` (hele ord, før stammerne).
+- Rapport: kørslens besked, siden Allergen-ord og admin-advarslen "Allergen-robotten fandt N nye ord" (banner + advarselsmail), kun når der er nye ord det seneste døgn.
+
 ## 2026-10-17: Genåbning læser forsiden, når AI'en aldrig har læst den
 
 - `reopenBrokenProducts` tager nu også varer uden FRONT-analyse (AI'en har aldrig læst forsiden), selv om de har navn og energi fra den lokale tekstlæsning; ellers manglede brand og fritlægning (Änglamark-letmælken). Runde 3 (`repairRound`), én gang pr. vare.

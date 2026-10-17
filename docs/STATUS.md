@@ -1,3 +1,9 @@
+## 2026-10-17: Allergener linker til egne sider + natlig allergen-robot
+
+- Brugerens regel: alle allergener i EU-varer står med STORT, og hvert allergen-ord i ingredienslisten linker til en side om allergenet. Ny sektion "Allergener" under Viden om mad med de 14 EU-allergener (`src/lib/knowledge-allergens.ts`, kilder: EU 1169/2011, sundhed.dk, Your Europe); ordene i ingredienslisten linker til `/viden-om/allergener/<nøgle>`. Web + native.
+- Ny robot `allergen-words` (kl. 04:20): læser nye/ændrede ingredienslister og finder allergen-ord, fremhævningen ikke fanger. Opslagsværk: Open Food Facts' åbne allergen- og ingrediens-taksonomi (alle sprog, fx "kærnemælk", "mozzarella" → mælk) — godkendes straks. Ord, kun producenten har skrevet med STORT, venter på admin → Allergen-ord. Nye fund rapporteres som admin-advarsel (banner + advarselsmail) og i kørslens besked.
+- Migration `20261017210000_allergen_words` skal med deployet. Ikke prøvet mod rigtig database eller Open Food Facts herfra (sandkassen har ikke netadgang dertil); native ikke kompileret lokalt.
+
 ## 2026-10-17: Scannede kendte varer står på "Dine indscanninger"
 
 - En scanning af en vare, der allerede fandtes (fx Coca-Cola fra Open Food Facts), kom ikke på listen, fordi den kun viste egne oprettede varer. Nu gemmes hver scanning (`product_scans`), og listen viser begge dele. Web + native via samme API. Ikke prøvet mod rigtig database herfra; lint, test og build grønne. Tidligere scanninger af kendte varer kan ikke gendannes (de blev aldrig gemt).

@@ -85,6 +85,13 @@
       "note": "Admin er et skrivebordsværktøj og bliver på web."
     },
     {
+      "route": "/admin/allergen-words",
+      "web": "src/app/admin/allergen-words/page.tsx",
+      "status": "web-only",
+      "native": [],
+      "note": "Admin er et skrivebordsværktøj og bliver på web."
+    },
+    {
       "route": "/admin/analytics",
       "web": "src/app/admin/analytics/page.tsx",
       "status": "web-only",
