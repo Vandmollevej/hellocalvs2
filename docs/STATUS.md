@@ -1,6 +1,9 @@
 ## 2026-10-17: Screeninger bruger den fælles swipe-række
 
 - `ScreeningSwipeRow` er slettet; Screeninger bruger den globale `SwipeableRow` med en ny `actions`-prop (Aktivér/Deaktivér) + den fælles Slet. Felterne bag en lukket række skjules nu overalt (den røde kant i sidste rækkes hjørne er væk), og et træk åbner ikke længere linket under fingeren. Native: samme skjul i `FoodSwipeableRow`, `CaptureSwipeableRow` og `ProfileSwipeActions`; Slet hedder det samme som i de andre lister. Prøvet i browser (mobilbredde, touch-swipe); native ikke kompileret lokalt.
+## 2026-10-17: Scannede kendte varer står på "Dine indscanninger"
+
+- En scanning af en vare, der allerede fandtes (fx Coca-Cola fra Open Food Facts), kom ikke på listen, fordi den kun viste egne oprettede varer. Nu gemmes hver scanning (`product_scans`), og listen viser begge dele. Web + native via samme API. Ikke prøvet mod rigtig database herfra; lint, test og build grønne. Tidligere scanninger af kendte varer kan ikke gendannes (de blev aldrig gemt).
 
 ## 2026-10-17: Delte retter: "Alle retter" med endeløs scroll
 

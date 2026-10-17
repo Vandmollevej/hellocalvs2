@@ -5840,3 +5840,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - Under Produktbillede, EAN og Energi står altid en knap: "Tag nyt produktbillede", "Scan stregkoden" og "Tag billede af energiindholdet". Knappen vælger punktet og vedhæfter fotoet; et punkt med kun foto kan sendes.
 - EAN: på web tages et foto, som ZXing læser; koden skrives i feltet ("Rigtig EAN: …"). I appen bruges den levende scanner. Kan koden ikke læses, skriver brugeren den selv.
 - Rapporten sendes nu som sektioner + sectionPhotos (som /profile/report-bug): Produktbillede → IMAGE, Navn/Mærke → TITLE, EAN → OTHER, Energi/Makro → ENERGY, Indhold → INGREDIENTS. Kode: src/lib/registration-report-points.ts (buildReportSections).
+
+## 2026-10-17: "Dine indscanninger" viser også kendte varer, brugeren scanner
+
+- Listen viste kun varer, brugeren selv havde oprettet. En scannet kendt vare (fx en cola fra Open Food Facts) manglede. Stregkodeopslaget gemmer nu en `ProductScan` (én række pr. bruger og vare, `scannedAt` flyttes frem), og `/api/my-scans` samler oprettede og scannede varer efter seneste tidspunkt. Svarformatet er uændret, så native følger med. Kode: `src/lib/user-scans.ts`, migration `20261017200000_product_scans`.
