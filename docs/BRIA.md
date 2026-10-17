@@ -26,6 +26,10 @@ API-adressen og headeren (`api_token`, `sync: true`) er skrevet efter Bria's
 dokumentation fra hukommelsen og ikke prøvet mod den rigtige tjeneste. Knappen
 "Test" under API-nøgler og første kørsel afslører en afvigelse.
 
+## Sammenligningssiden (bruger 2026-10-16)
+
+`https://hellocal.io/product-images/compare/index.html`: 20 billeder to og to, normal fritlægning til venstre og Bria til højre, på rød baggrund. Kilde: mappen `data/product-images/Mangler/` (hvis den findes), ellers de seneste kamerabilleder. Jobbet kører af sig selv én gang efter deploy, hvis siden ikke findes; slet `data/product-images/compare/index.html` og genstart `image-agent` (eller tryk Kør nu under Robotter) for at lave den om.
+
 ## Credits og fremtidige billeder (bruger 2026-10-16)
 
 - **Intet billede koster to gange**: hvert Bria-svar gemmes i `data/product-images/bria-cache/<sha256 af billedet>.png`. Samme billede igen (fx en ny sammenligning) bruger cachen og tæller hverken credits eller API-forbrug.
