@@ -301,6 +301,8 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## Sikkerhed
 
+- Nøgler må aldrig stå i logs. Google-nøgler sendes i adressen (`?key=`), og `requests` skriver adressen i fejl — image-agent og logo-agent skjuler derfor alt `key=...` i loggen (2026-10-17).
+
 - Streng sikkerhed (vault) kun for admin; almindelige brugere får normalt login
   (email/adgangskode, Face ID, Google/Apple/Facebook).
 
