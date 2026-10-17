@@ -16,14 +16,8 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          sleep 300
           P=cmvawb4ue000s01oeu5bem334
-          echo "=== Scheduler lines in app log ==="
-          $C logs --no-log-prefix --since 30m app 2>&1 | grep -i -E "scheduler|api-keys|jobs" | head -30 || true
-          $C exec -T app sh -c 'ls -la .next/server/instrumentation.js' || true
-          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",160) msg FROM scheduled_jobs ORDER BY \"lastStartedAt\" DESC NULLS LAST"
-          q "SELECT id, left(name,40) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"pendingFields\" pf, \"imageUrl\", \"updatedAt\" FROM products WHERE id='$P'"
-          q "SELECT attempts, \"finishedAt\", left(\"lastError\",300) err FROM quick_enrichment_jobs WHERE \"productId\"='$P'"
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, level, left(message,300) msg FROM debug_logs WHERE \"productId\"='$P' AND \"createdAt\" > now() - interval '40 minutes' ORDER BY \"createdAt\" LIMIT 40"
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, left(message,250) msg FROM debug_logs WHERE category='ai' AND \"createdAt\" > now() - interval '40 minutes' ORDER BY \"createdAt\" DESC LIMIT 15"
-          q "SELECT count(*) AS escalations_sent FROM products WHERE \"escalationSentAt\" > now() - interval '40 minutes'"
+          q "SELECT left(name,50) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"pendingFields\" pf, \"imageUrl\", \"pendingImageUrl\" FROM products WHERE id='$P'"
+          q "SELECT status, left(\"resultUrl\",80) result, left(error,200) err, \"createdAt\" FROM image_cutout_jobs WHERE \"productId\"='$P' ORDER BY \"createdAt\""
+          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",200) msg FROM scheduled_jobs WHERE key IN ('search-index','image-cutout','quick-enrichment-recovery')"
+          $C logs --no-log-prefix --since 40m app 2>&1 | grep -i -E "fejlede|error" | head -20 || true
