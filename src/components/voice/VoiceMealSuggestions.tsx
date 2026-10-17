@@ -45,7 +45,7 @@ function VoiceItemRow({
         <span className="flex items-center gap-1.5">
           <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
           {item.estimated && (
-            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-cream px-1.5 py-0.5 uppercase text-hf-black opacity-70">
               {t("voice.aiEstimate")}
             </span>
           )}
@@ -120,7 +120,7 @@ export function VoiceMealSuggestions({
       {suggestedItems.length > 0 && (
         <section>
           <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.suggested")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ul className="max-h-[45vh] overflow-y-auto overflow-x-hidden rounded-card bg-hf-tan">
             {suggestedItems.map((item) => (
               <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                 <VoiceItemRow
@@ -145,7 +145,7 @@ export function VoiceMealSuggestions({
       {savedItems.length > 0 && (
         <section>
           <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
-          <ul className="max-h-[45vh] overflow-y-auto">
+          <ul className="max-h-[45vh] overflow-y-auto overflow-x-hidden rounded-card bg-hf-tan">
             {savedItems.map((item) => (
               <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
                 <VoiceItemRow
