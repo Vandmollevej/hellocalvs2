@@ -188,18 +188,25 @@ export function SwipeableRow({
     );
   }
 
+  const hidden = dragX === 0 && !isDragging ? " invisible" : "";
+
   return (
     <div className="relative overflow-hidden">
-      {left.length > 0 && <div className="absolute inset-y-0 left-0 flex">{left.map(actionButton)}</div>}
-      {right.length > 0 && <div className="absolute inset-y-0 right-0 flex">{right.map(actionButton)}</div>}
+      {/* Lukket række: knapperne bag skjules, så de ikke skinner igennem
+          kortets runde hjørner (rød kant nederst til højre på sidste række). */}
+      {left.length > 0 && <div className={`absolute inset-y-0 left-0 flex${hidden}`}>{left.map(actionButton)}</div>}
+      {right.length > 0 && <div className={`absolute inset-y-0 right-0 flex${hidden}`}>{right.map(actionButton)}</div>}
 
       <div
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
         onPointerCancel={handlePointerEnd}
-        onLostPointerCapture={() => {
-          if (start.current) handlePointerEnd();
+        onLostPointerCapture={(e) => {
+          // Kun når fladen selv mister fingeren. Et touch-tryk holder fingeren
+          // på barnet (fx linket); når vi tager den over, bobler barnets
+          // lostpointercapture herop og må ikke afbryde trækket.
+          if (e.target === e.currentTarget && start.current) handlePointerEnd();
         }}
         onClickCapture={(e) => {
           if (suppressClick.current) {
