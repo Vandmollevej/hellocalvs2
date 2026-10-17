@@ -26,6 +26,7 @@ import {
   type RecipeRowData as Row,
 } from "@/components/recipes/RecipeRow";
 import { recipeClickKey } from "@/lib/recipe-clicks";
+import { fetchJsonWithRetry } from "@/lib/fetch-retry";
 import { isMealKitKey, MEAL_KIT_PROVIDERS, parseRecipeProviders, type MealKitKey } from "@/lib/meal-kit-providers";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
@@ -222,8 +223,7 @@ function SharedTab({ t }: { t: Translate }) {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/api/profile")
-      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { recipeProviders?: unknown } }) : {}))
+    fetchJsonWithRetry<{ user?: { recipeProviders?: unknown } }>("/api/profile")
       .then((data) => setProviders(parseRecipeProviders(data.user?.recipeProviders)))
       .catch(() => setProviders([]));
     fetch("/api/recipe-favorites")
@@ -247,9 +247,10 @@ function SharedTab({ t }: { t: Translate }) {
         // Integrationsknapperne under søgefeltet: "Opskrifter" viser alle,
         // en enkelt integration viser kun dens retter.
         if (source !== "all") params.set("source", source);
-        const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
-        if (!res.ok) throw new Error("offline");
-        setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
+        const data = await fetchJsonWithRetry<{ recipes: SearchResult[] }>(`/api/shared-recipes?${params.toString()}`, {
+          signal: controller.signal,
+        });
+        setResults(data.recipes);
         setState("ready");
       } catch (error) {
         if ((error as Error).name !== "AbortError") setState("error");
@@ -286,9 +287,9 @@ function SharedTab({ t }: { t: Translate }) {
       params.set("offset", String(offset));
       params.set("limit", String(ALL_ROWS_PER_PAGE * gridColumns));
       try {
-        const res = await fetch(`/api/shared-recipes?${params.toString()}`);
-        if (!res.ok) throw new Error("offline");
-        const data = (await res.json()) as { recipes: SearchResult[]; hasMore?: boolean };
+        const data = await fetchJsonWithRetry<{ recipes: SearchResult[]; hasMore?: boolean }>(
+          `/api/shared-recipes?${params.toString()}`,
+        );
         if (allLatestKey.current !== key) return;
         setAllPage((current) => ({
           key,
