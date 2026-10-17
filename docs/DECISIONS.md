@@ -1,3 +1,12 @@
+## 2026-10-17: Afskåret logo godtages, når bagsiden eller stregkoden bekræfter brandet
+
+Albi Apfelsaft fik intet brand: logoet var skåret af i fotoets top, og Albi
+fandtes ikke i Brand-tabellen, så DAGO-reglen (2026-10-15) afviste det. Nu
+godtages et afskåret eller usikkert logo, når præcis samme navn står som helt
+ord i bagsidens tekst (producentadressen) eller er stregkodens Open Food
+Facts-brand (`brandNameConfirmed` i `src/lib/brand-match.ts`). DAGO står ingen
+andre steder og afvises stadig.
+
 ## 2026-10-17: Robot-QoS — robotter venter på lav belastning og respekterer spærretider
 
 Brugeren: "Kan man under robotter sætte en QOS? Suspend indtil ram/cpu belastning er under x igen før opgaven varetages? Og ikke må køre i spidsbelastningsperioder."

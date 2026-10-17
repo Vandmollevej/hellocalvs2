@@ -169,6 +169,9 @@ ikke her, er den ikke registreret og skal tilføjes.
   ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
   (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
   og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
+  Undtagelse (bruger 2026-10-17, Albi): et afskåret/usikkert logo godtages, når
+  præcis samme navn står som helt ord på bagsidens tekst eller er stregkodens
+  Open Food Facts-brand (`brandNameConfirmed`).
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
