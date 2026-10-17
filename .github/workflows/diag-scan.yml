@@ -16,7 +16,7 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          sleep 420
+          echo "reserve code deployed: $($C exec -T app sh -c 'grep -rl Stregkode-reserve .next/server 2>/dev/null | wc -l')"
           q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",250) msg FROM scheduled_jobs WHERE key IN ('quick-enrichment-recovery','search-index','maintenance')"
           q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, left(\"productId\",10) pid, level, left(message,250) msg FROM debug_logs WHERE event='ean_reserve' ORDER BY \"createdAt\" DESC LIMIT 20"
           $C logs --no-log-prefix --since 8m app 2>&1 | grep -i -E "fejlede|error" | head -15 || true
