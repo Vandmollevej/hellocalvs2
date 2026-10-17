@@ -207,7 +207,18 @@ export function UncertaintiesBoard({
   return (
     <BulkSelection kind="product" ids={rows.map((row) => row.id)} targets={rowTargets}>
     <div className="flex flex-col gap-4">
-      <ListModeToggle summary={summary} />
+      <ListModeToggle summary={summary}>
+        <label className="flex items-center gap-2">
+          Sortér
+          <select value={sort} onChange={(event) => void start(tab, event.target.value as UncertaintySort)} className="hf-input hf-input--compact">
+            {SORTS.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </ListModeToggle>
 
       <BulkActionsBar onDone={() => void start(tab, sort)} />
 
@@ -226,18 +237,6 @@ export function UncertaintiesBoard({
       </div>
 
       <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-muted">
-        Sortér:
-        {SORTS.map((s) => (
-          <button
-            key={s.key}
-            type="button"
-            onClick={() => s.key !== sort && void start(tab, s.key)}
-            aria-pressed={sort === s.key}
-            className="hf-choice"
-          >
-            {s.label}
-          </button>
-        ))}
         <span className="ml-auto">
           Mål: mindst {Math.round(target * 100)} % sikkerhed (vejledende) · under {Math.round(urgentBelow * 100)} % er
           rød · under {Math.round(hideBelow * 100)} % skjules i søgningen, til den er gennemgået

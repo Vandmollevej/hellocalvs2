@@ -53,22 +53,21 @@ const OPTIONS: { key: ListMode; label: string }[] = [
 ];
 
 // Valget øverst på listen. `summary` vises til højre (fx "Viser 40 af 812").
-export function ListModeToggle({ summary }: { summary?: string }) {
+export function ListModeToggle({ summary, children }: { summary?: string; children?: React.ReactNode }) {
   const [mode, setMode] = useListMode();
   return (
-    <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-muted">
-      Visning:
-      {OPTIONS.map((option) => (
-        <button
-          key={option.key}
-          type="button"
-          aria-pressed={mode === option.key}
-          onClick={() => setMode(option.key)}
-          className="hf-choice"
-        >
-          {option.label}
-        </button>
-      ))}
+    <div className="hf-type-small flex flex-wrap items-center gap-x-4 gap-y-2 text-text-muted">
+      <label className="flex items-center gap-2">
+        Visning
+        <select value={mode} onChange={(event) => setMode(event.target.value as ListMode)} className="hf-input hf-input--compact">
+          {OPTIONS.map((option) => (
+            <option key={option.key} value={option.key}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      {children}
       {summary && <span className="ml-auto">{summary}</span>}
     </div>
   );
