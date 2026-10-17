@@ -5887,3 +5887,12 @@ kommaer, indsætter mellemrum før parentes/E-nummer og efter komma/parentes og
 fjerner mellemrum før komma/punktum — både ved visning og når en liste gemmes.
 Decimaltal ("1,5 %") og E-nummer-varianter ("E160a(ii)") røres ikke.
 E-numre med bogstav (E150d, E160a …) er gyldige EU-koder og bevares.
+
+## 2026-10-17: Admin "Brugerscanninger"
+
+- Ny side under Varedatabase (`/admin/product-database/scans`): hver vare, en bruger har scannet — både kendte varer (`product_scans`, fx fra Open Food Facts) og varer brugeren selv har oprettet — med hvem, hvornår, kilde og status, nyeste først (300 rækker). Hver række åbner varen i admin, så den kan rettes. Kode: `src/lib/admin-user-scans.ts`. Kun scanninger efter deployet af #532 er med for kendte varer.
+
+## 2026-10-17: Alle Open Food Facts-billeder søges online og fritlægges (løbende)
+
+- Brugerens regel: varer fra Open Food Facts fritlægges på lige fod med egne fotos, men først søges et matchende billede via Google. Scannede OFF-varer fik det allerede ved oprettelsen (`createExternalImageCutoutJob`); importerede/ældre OFF-varer fik aldrig et job.
+- Ny robot `off-image-sweep` (app-job, hver time, `src/lib/off-image-sweep.ts`): OFF-varer med eksternt billede, uden afvist billede, uden ventende billede og uden PRODUCT_FRONT-job lægges i samme kø — `product-image-search` (Google Vision WEB_DETECTION) søger online, image-agent fritlægger, og resultatet går via Billedforslag/admin. Varer, brugerne har scannet (`product_scans`), tages først. Højst 50 pr. kørsel for at styre Google Vision-forbruget; intervallet kan ændres under Cron-jobs.

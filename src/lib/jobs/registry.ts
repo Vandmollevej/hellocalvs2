@@ -121,6 +121,18 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: "03:30",
   },
   {
+    // Bruger 2026-10-17: OFF-varer fritlægges på lige fod med egne fotos,
+    // efter en søgning online efter et matchende billede (src/lib/off-image-sweep.ts).
+    key: "off-image-sweep",
+    name: "Open Food Facts-billeder: søg online og fritlæg",
+    description:
+      "Lægger Open Food Facts-varer, hvis billede endnu ikke er behandlet, i samme kø som kameraets forsidefotos: først søges et matchende billede online (Google Vision), derefter fritlægges billedet. Varer, brugerne har scannet, tages først. Højst 50 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 60,
+    defaultRunAtTime: null,
+  },
+  {
     key: "energy-split-check",
     name: "Energifordeling: afvigelser",
     description:
