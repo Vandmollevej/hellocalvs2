@@ -1054,6 +1054,7 @@
     "stepNutrition": "Energy",
     "stepIngredients": "Contents",
     "stepDone": "{step}: captured and read",
+    "stepSkipped": "{step}: skipped",
     "bothFound": "Energy and contents found in the same photo",
     "chooseObject": "Tap the item that should be in focus",
     "useWholePhoto": "Use the whole photo",
@@ -2326,7 +2327,6 @@
     "showMore": "Show more",
     "showLess": "Show less",
     "extendedNutrition": "Nutrition facts",
-    "extendedNutritionDisclaimer": "Only shown when data is available for this product.",
     "fridaSource": "Source: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet, Danmarks Tekniske Universitet",
     "toxins": "Toxins",
     "toxinPregnancyBadge": "Pregnant/breastfeeding",
@@ -3796,7 +3796,7 @@
       "DAILY": "Every day",
       "WEEKLY": "Every week",
       "MONTHLY": "Every month",
-      "MANUAL": "Only when I choose"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Buttons",

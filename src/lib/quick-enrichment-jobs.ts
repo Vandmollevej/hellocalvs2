@@ -328,9 +328,11 @@ async function resumeStalledJobs(now: Date): Promise<{ resumed: number; givenUp:
     // ikke venter for evigt.
     const missing: PendingField[] = [];
     if (wantFront && !front) missing.push("name", "brand");
-    if (wantLabel && !nutrition) missing.push("nutrition", "ingredients");
+    // Energi-trinnet kan være sprunget over: indholdsfotoet alene kan læses.
+    const labelPhoto = Boolean(nutrition || ingredients);
+    if (wantLabel && !labelPhoto) missing.push("nutrition", "ingredients");
     if (missing.length) await clearPending(job.productId, missing);
-    const parts = { front: wantFront && Boolean(front), label: wantLabel && Boolean(nutrition) };
+    const parts = { front: wantFront && Boolean(front), label: wantLabel && labelPhoto };
 
     await withDebugContext({ ...debugContext, barcode: stored.barcode }, async () => {
       await debugLog({
