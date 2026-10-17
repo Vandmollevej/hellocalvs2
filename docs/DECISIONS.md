@@ -1,3 +1,6 @@
+## 2026-10-17: "Spring over" også på energi-trinnet + rød streg over sprungne trin
+Brugerens krav (Ramlösa/danskvand uden næringstabel): energi-trinnet i kameraflowet har samme "Spring over" som indholds-trinnet. Et sprunget trin får en rød streg på tværs af trin-knappen i stedet for flueben (web `CaptureSkippedOverlay`, native `SkippedStrike`). POST /api/products/quick kræver ikke længere energifoto: uden det læses ingen næring, og varen står med "næring ukendt" (`nutritionMissing`), så Frida/varetypen kan give skønnet. Ved "Scan varen igen" af energien kan trinnet ikke springes over.
+
 ## 2026-10-17: Robot-QoS — robotter venter på lav belastning og respekterer spærretider
 
 Brugeren: "Kan man under robotter sætte en QOS? Suspend indtil ram/cpu belastning er under x igen før opgaven varetages? Og ikke må køre i spidsbelastningsperioder."

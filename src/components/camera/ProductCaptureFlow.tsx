@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconBolt, IconBoltOff, IconFlame, IconList, IconPhoto } from "@tabler/icons-react";
 import { IconBarcodeCard } from "@/components/icons/BarcodeCard";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
-import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
+import { CaptureCheckOverlay, CaptureSkippedOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { HfLoader, PhotoWorkingOverlay } from "@/components/hf/HfLoader";
 import { detectObjects, pickObjectInFocus, type ObjectBox } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
@@ -83,8 +83,9 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // "trinnet er klaret" står, og trinnets knap viser "Behandles …", til
 // billedet er behandlet (energi/indhold: hele billedet uploadet til nattens
 // engangsanalyse). Står indholdet på
-// energibilledet, klares begge trin. Indholds-trinnet har "Spring over" til
-// højre for udløseren (varer uden indholdsfortegnelse). Når et trin er
+// energibilledet, klares begge trin. Energi- og indholds-trinnet har "Spring
+// over" til højre for udløseren (varer uden næringstabel/indholdsfortegnelse,
+// 2026-10-17); et sprunget trin får en rød streg på knappen. Når et trin er
 // klaret, blinker billedet hvidt, trinnet streges over med et stort flueben
 // (StepDoneOverlay), og knappen får flueben. Så snart alle er klaret, oprettes
 // varen (POST /api/products/quick), og skærmen går til /add/[id]; serveren
@@ -246,6 +247,8 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // Spejler `done`/`working` til stregkodefotoets baggrunds-OCR, som bliver
   // færdig på et vilkårligt tidspunkt senere i flowet.
   const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>(rescan ? { barcode: true } : {});
+  // Trin, brugeren sprang over (rød streg på knappen i stedet for flueben).
+  const [skipped, setSkipped] = useState<Partial<Record<CaptureStep, boolean>>>({});
   const workingRef = useRef(false);
   // Forsidens analyse (objekter, dubletopslag) og oprettelsen: knapperne låses.
   const [working, setWorking] = useState(false);
@@ -583,6 +586,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     const completed = { ...doneRef.current, ...Object.fromEntries(steps.map((item) => [item, true])) };
     doneRef.current = completed;
     setDone(completed);
+    setSkipped((current) => (steps.some((item) => current[item]) ? { ...current, ...Object.fromEntries(steps.map((item) => [item, false])) } : current));
     return completed;
   }
 
@@ -1385,28 +1389,53 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   }
 
   // "Spring over" nederst i kamerabilledet på indholds-trinnet (bruger
-  // 2026-10-14): varer uden indholdsfortegnelse (vand, sukker, frugt …) kan
-  // ellers aldrig komme videre, fordi billeder uden tekst ikke tæller. Trinnet
-  // markeres klaret uden foto; AI får ingen ingrediensliste at læse. Trinnet
-  // findes slet ikke, når listen allerede stod på energibilledet.
-  function skipIngredients() {
-    if (working || flash || stepDone || step !== "ingredients") return;
+  // 2026-10-14) og energi-trinnet (2026-10-17): varer uden indholdsfortegnelse
+  // eller næringstabel (vand, danskvand, sukker, frugt …) kan ellers aldrig
+  // komme videre, fordi billeder uden tekst ikke tæller. Trinnet markeres
+  // klaret uden foto og får en rød streg; AI får intet at læse for trinnet, og
+  // en vare uden energi står med "næring ukendt".
+  function skipStep(current: "nutrition" | "ingredients") {
+    if (working || flash || stepDone || step !== current) return;
     const data = dataRef.current;
-    scanLog(flowId, "ingredients_skipped", {
-      message: "Indhold sprunget over — brugeren trykkede Spring over (varen har ingen indholdsfortegnelse)",
-      barcode: data.barcode,
-      data: { step: stepRef.current },
-    });
-    data.ingredientsPhoto = undefined;
-    data.ingredientsOcrText = undefined;
-    data.ingredientsOcrConfidence = undefined;
-    data.localIngredientsText = undefined;
-    data.ingredientsOnNutritionPhoto = false;
-    // Et tidligere indholdsbillede, der stadig behandles, må ikke skrive bagefter.
-    shotRef.current.ingredients = (shotRef.current.ingredients ?? 0) + 1;
-    setProcessing((current) => ({ ...current, ingredients: false }));
+    if (current === "nutrition") {
+      scanLog(flowId, "nutrition_skipped", {
+        message: "Energi sprunget over — brugeren trykkede Spring over (varen har ingen næringstabel)",
+        barcode: data.barcode,
+        data: { step: stepRef.current },
+      });
+      // Et indhold, der kun stod på energibilledet, forsvinder med det.
+      if (data.ingredientsOnNutritionPhoto) {
+        data.ingredientsPhoto = undefined;
+        data.localIngredientsText = undefined;
+        data.ingredientsOnNutritionPhoto = false;
+        doneRef.current = { ...doneRef.current, ingredients: false };
+        setDone(doneRef.current);
+      }
+      data.nutritionPhoto = undefined;
+      data.nutritionOcrText = undefined;
+      data.nutritionOcrConfidence = undefined;
+      data.localNutrition = undefined;
+      data.nutritionAnalysisId = undefined;
+      setEnergyError(null);
+    } else {
+      scanLog(flowId, "ingredients_skipped", {
+        message: "Indhold sprunget over — brugeren trykkede Spring over (varen har ingen indholdsfortegnelse)",
+        barcode: data.barcode,
+        data: { step: stepRef.current },
+      });
+      data.ingredientsPhoto = undefined;
+      data.ingredientsOcrText = undefined;
+      data.ingredientsOcrConfidence = undefined;
+      data.localIngredientsText = undefined;
+      data.ingredientsOnNutritionPhoto = false;
+    }
+    // Et tidligere billede, der stadig behandles, må ikke skrive bagefter.
+    shotRef.current[current] = (shotRef.current[current] ?? 0) + 1;
+    setProcessing((existing) => ({ ...existing, [current]: false }));
     resetLiveScan();
-    goToNextStep(markDone("ingredients"));
+    const completed = markDone(current);
+    setSkipped((existing) => ({ ...existing, [current]: true }));
+    goToNextStep(completed);
   }
 
   // Et trin med flueben kan tages om ved at trykke på det (bruger
@@ -1435,6 +1464,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     dataRef.current = {};
     qualityCheckProductIdRef.current = null;
     doneRef.current = {};
+    setSkipped({});
     shotRef.current = {};
     pendingPhotosRef.current = [];
     setProcessing({});
@@ -1522,11 +1552,14 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
   const stepNumber = (item: CaptureStep) => visibleSteps.indexOf(item) + 1;
   const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
-  // "Spring over" kun på indholds-trinnet, og ikke ved en genscanning, der
-  // alene mangler indholdet (så ville der intet være at sende).
+  // "Spring over" på energi- og indholds-trinnet. Ikke ved en genscanning af
+  // energien (den er hele formålet), og ikke når genscanningen alene mangler
+  // indholdet (så ville der intet være at sende).
   // Udløseren nederst i kamerabilledet på de tre fototrin.
   const showShutter = step !== "barcode" && cameraStatus === "active" && !cameraMessage && !working && !flash && !stepDone && !createFailed;
-  const canSkipIngredients = showShutter && step === "ingredients" && !(rescan && rescan.steps.length === 1);
+  const skippableStep =
+    step === "nutrition" ? (rescan ? null : step) : step === "ingredients" && !(rescan && rescan.steps.length === 1) ? step : null;
+  const canSkip = showShutter && skippableStep !== null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -1613,10 +1646,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             >
               <span className="hf-shutter__inner" />
             </button>
-            {canSkipIngredients && (
+            {canSkip && skippableStep && (
               <button
                 type="button"
-                onClick={skipIngredients}
+                onClick={() => skipStep(skippableStep)}
                 className="hf-type-small hf-type-strong absolute right-0 flex h-11 items-center justify-center bg-hf-black/60 px-5 text-hf-white rounded-card"
               >
                 {t("cameraCreate.skipIngredients")}
@@ -1695,7 +1728,9 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             >
               <StepIcon size={20} stroke={1.8} />
               <span className="hf-type-micro">{stepLabels[item]}</span>
-              {done[item] && (
+              {skipped[item] ? (
+                <CaptureSkippedOverlay label={t("cameraCreate.stepSkipped", { step: stepLabels[item] })} />
+              ) : done[item] && (
                 <CaptureCheckOverlay label={t("cameraCreate.stepDone", { step: stepLabels[item] })} size={48} />
               )}
               {processing[item] && (

@@ -12,3 +12,23 @@ export function CaptureCheckOverlay({ label, size = 48 }: { label: string; size?
     </div>
   );
 }
+
+// Rød streg på tværs af en trin-knap, når trinnet er sprunget over (brugerens
+// krav 2026-10-17): varen har ingen næringstabel/indholdsfortegnelse.
+export function CaptureSkippedOverlay({ label }: { label: string }) {
+  return (
+    <div className="pointer-events-none absolute inset-0" role="img" aria-label={label}>
+      <svg className="h-full w-full stroke-hf-danger" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
+        <line
+          x1="6"
+          y1="94"
+          x2="94"
+          y2="6"
+          strokeWidth="4"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+  );
+}
