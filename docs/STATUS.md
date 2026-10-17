@@ -1,3 +1,7 @@
+## 2026-10-17: Delte retter: "Alle retter" med endeløs scroll
+
+- Trender og favoritter er valg under filtrenes Visning (til som standard), favoritter står på én linje, og under dem vises alle retter efter popularitet, tre rækker ad gangen med endeløs scroll. Web + native; ikke prøvet i browser eller kompileret native herfra (ingen lokal database, Android-plugin kan ikke hentes) — lint, typecheck, build og paritetsvagt er grønne.
+
 ## 2026-10-17: Trender netop nu er aldrig tom
 
 - Aktive næringsfiltre tømte rækken for retter uden kendt næring; nu frasorterer kun allergener og kostretning dér. Rækken rangeres efter klik, derefter kildens popularitet (HelloFresh/Valdemarsro, gemt af importrobotterne) eller et fiktivt dagstal. Server-ændring, så web og native følger med. Se DECISIONS 2026-10-17.

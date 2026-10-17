@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,12 +28,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.api.Api
@@ -161,12 +167,12 @@ private fun trackRecipeClick(scope: CoroutineScope, key: String?) {
 
 /** src/components/recipes/RecipeRow.tsx RecipeCard — image over name and subtitle, in the "Trender netop nu" slider. */
 @Composable
-private fun RecipeCard(row: RecipeRowData) {
+private fun RecipeCard(row: RecipeRowData, modifier: Modifier = Modifier.width(144.dp)) {
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
-    Column(Modifier.width(144.dp).clickable { trackRecipeClick(scope, row.clickKey); nav.push(row.href) }) {
-        Box(Modifier.size(144.dp).clip(shape).background(HcColors.Tan, shape), contentAlignment = Alignment.Center) {
+    Column(modifier.clickable { trackRecipeClick(scope, row.clickKey); nav.push(row.href) }) {
+        Box(Modifier.fillMaxWidth().aspectRatio(1f).clip(shape).background(HcColors.Tan, shape), contentAlignment = Alignment.Center) {
             if (row.imageUrl != null) HcRemoteImage(row.imageUrl, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
             else HcIcon("Soup", size = 32.dp, color = HcColors.Black, modifier = Modifier.alpha(0.5f))
         }
@@ -327,7 +333,28 @@ private data class SearchResult(
 )
 
 @Serializable
-private data class SearchResponse(val recipes: List<SearchResult> = emptyList())
+private data class SearchResponse(val recipes: List<SearchResult> = emptyList(), val hasMore: Boolean = false)
+
+/** "Alle retter" (user rule 2026-10-17): three grid rows per page, more on scroll. */
+private const val ALL_ROWS_PER_PAGE = 3
+
+/** Same breakpoints as columnsFor in src/app/profile/recipes/page.tsx (2 on phones). */
+private fun columnsFor(widthDp: Float) = when {
+    widthDp >= 720f -> 4
+    widthDp >= 480f -> 3
+    else -> 2
+}
+
+private class AllPage(val key: String, val recipes: List<SearchResult>, val hasMore: Boolean, val error: Boolean)
+
+/** Horizontal one-line slider of recipe cards (Trender netop nu, favourites). */
+@Composable
+private fun RecipeSlider(rows: List<RecipeRowData>) {
+    Row(
+        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) { rows.forEach { RecipeCard(it) } }
+}
 
 @Composable
 private fun SharedTab(t: Translator) {
@@ -342,6 +369,10 @@ private fun SharedTab(t: Translator) {
     var state by remember { mutableStateOf("loading") }
     var favorites by remember { mutableStateOf<List<FavoriteRecipe>?>(null) }
     val searching = query.isNotBlank()
+    var allPage by remember { mutableStateOf(AllPage("", emptyList(), hasMore = false, error = false)) }
+    var allLoading by remember { mutableStateOf(false) }
+    var gridColumns by remember { mutableStateOf(2) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         providers = parseRecipeProviders(loadProfileUser())
@@ -375,6 +406,46 @@ private fun SharedTab(t: Translator) {
         } catch (e: Exception) {
             state = "error"
         }
+    }
+
+    // "Alle retter": same parameters as Trender without trending; the key changes with filters/source.
+    val allKey: String = run {
+        val enabled = providers ?: return@run ""
+        val serious = isSerious ?: return@run ""
+        val params = (if (serious) filters.toParams() else listOf("sort" to "relevance")).toMutableList()
+        if (enabled.isNotEmpty() && serious) params += "providers" to enabled.joinToString(",")
+        if (source != "all") params += "source" to source
+        queryString(params)
+    }
+    val allCurrent = allKey.isNotEmpty() && allPage.key == allKey
+    val latestAllKey by rememberUpdatedState(allKey)
+
+    fun loadMoreAll(key: String, offset: Int) {
+        if (key.isEmpty() || allLoading) return
+        allLoading = true
+        scope.launch {
+            try {
+                val limit = ALL_ROWS_PER_PAGE * gridColumns
+                val page = ApiJson.decodeFromJsonElement(SearchResponse.serializer(), Api.get("/api/shared-recipes?$key&offset=$offset&limit=$limit"))
+                // A reply for old filters is dropped.
+                if (latestAllKey != key) return@launch
+                val current = allPage
+                allPage = AllPage(key, if (offset == 0 || current.key != key) page.recipes else current.recipes + page.recipes, page.hasMore, error = false)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (latestAllKey == key) allPage = AllPage(key, if (allPage.key == key) allPage.recipes else emptyList(), hasMore = false, error = true)
+            } finally {
+                allLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(allKey) {
+        if (allKey.isEmpty()) return@LaunchedEffect
+        delay(200)
+        allLoading = false
+        loadMoreAll(allKey, 0)
     }
 
     val sourceOptions = buildList {
@@ -464,31 +535,63 @@ private fun SharedTab(t: Translator) {
                 else -> RecipeRows(results.map(::rowFor))
             }
         } else {
-            HcSectionTitle(t.t("recipes.trendingTitle"))
-            when {
-                state == "loading" -> HcLoader()
-                state == "error" -> StatusText(t.t("recipes.loadError"))
-                results.isEmpty() -> StatusText(t.t("recipes.trendingEmpty"))
-                else -> Row(
-                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) { results.map(::rowFor).forEach { RecipeCard(it) } }
+            if (filters.showTrending) {
+                HcSectionTitle(t.t("recipes.trendingTitle"))
+                when {
+                    state == "loading" -> HcLoader()
+                    state == "error" -> StatusText(t.t("recipes.loadError"))
+                    results.isEmpty() -> StatusText(t.t("recipes.trendingEmpty"))
+                    else -> RecipeSlider(results.map(::rowFor))
+                }
             }
 
-            HcSectionTitle(t.t("recipes.favoritesTitle"))
-            val favs = favorites
+            // Favourites on one line like Trender (user rule 2026-10-17).
+            if (filters.showFavorites) {
+                HcSectionTitle(t.t("recipes.favoritesTitle"))
+                val favs = favorites
+                when {
+                    favs == null -> HcLoader()
+                    favs.isEmpty() -> StatusText(t.t("recipes.favoritesEmpty"))
+                    else -> RecipeSlider(favs.map { recipe ->
+                        RecipeRowData(
+                            key = recipe.id,
+                            href = recipeHref(recipe.id),
+                            name = recipe.name,
+                            imageUrl = recipe.images.firstOrNull(),
+                            subtitle = favoriteKcalText(t, recipe.kcal, recipe.per100g),
+                        )
+                    })
+                }
+            }
+
+            HcSectionTitle(t.t("recipes.allTitle"))
+            val allRecipes = if (allCurrent) allPage.recipes else emptyList()
             when {
-                favs == null -> HcLoader()
-                favs.isEmpty() -> StatusText(t.t("recipes.favoritesEmpty"))
-                else -> RecipeRows(favs.map { recipe ->
-                    RecipeRowData(
-                        key = recipe.id,
-                        href = recipeHref(recipe.id),
-                        name = recipe.name,
-                        imageUrl = recipe.images.firstOrNull(),
-                        subtitle = favoriteKcalText(t, recipe.kcal, recipe.per100g),
-                    )
-                })
+                !allCurrent -> HcLoader()
+                allPage.error && allRecipes.isEmpty() -> StatusText(t.t("recipes.loadError"))
+                allRecipes.isEmpty() -> StatusText(t.t("recipes.allEmpty"))
+                else -> BoxWithConstraints(Modifier.fillMaxWidth()) {
+                    val columns = columnsFor(maxWidth.value)
+                    LaunchedEffect(columns) { gridColumns = columns }
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        allRecipes.map(::rowFor).chunked(columns).forEach { line ->
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                line.forEach { RecipeCard(it, Modifier.weight(1f)) }
+                                repeat(columns - line.size) { Box(Modifier.weight(1f)) }
+                            }
+                        }
+                    }
+                }
+            }
+            if (allCurrent && allPage.hasMore) {
+                // Endless scroll: load the next three rows when this marker nears the bottom of the window.
+                val windowHeight = LocalWindowInfo.current.containerSize.height
+                Box(
+                    Modifier.fillMaxWidth().height(1.dp).onGloballyPositioned { coords ->
+                        if (coords.boundsInWindow().top < windowHeight * 1.5f) loadMoreAll(allKey, allPage.recipes.size)
+                    },
+                )
+                if (allLoading) HcLoader()
             }
         }
     }

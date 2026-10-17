@@ -74,6 +74,9 @@ internal data class RecipeFilters(
     val persons: Int = 0,
     val showKcal: Boolean = true,
     val showEnergySplit: Boolean = false,
+    /** Sections above "Alle retter" (user rule 2026-10-17): on by default. */
+    val showTrending: Boolean = true,
+    val showFavorites: Boolean = true,
 ) {
     /** Active filters (sorting does not count) — the dot on the filter icon. */
     val activeCount: Int get() = allergens.size + diets.size + nutrients.size + RecipeFilterLists.macroKeys.count { macros[it] != null }
@@ -87,6 +90,8 @@ internal data class RecipeFilters(
         add("persons" to persons.toString())
         add("kcal" to if (showKcal) "1" else "0")
         add("split" to if (showEnergySplit) "1" else "0")
+        add("trend" to if (showTrending) "1" else "0")
+        add("favs" to if (showFavorites) "1" else "0")
     }
 
     companion object {
@@ -106,6 +111,8 @@ internal data class RecipeFilters(
                 persons = min(6, max(0, (params["persons"]?.toDoubleOrNull() ?: 0.0).roundToInt())),
                 showKcal = params["kcal"] != "0",
                 showEnergySplit = params["split"] == "1",
+                showTrending = params["trend"] != "0",
+                showFavorites = params["favs"] != "0",
             )
         }
 
@@ -282,7 +289,9 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
         AccordionSection(t.t("recipeFilters.displayTitle"), icon = "Eye") {
             Column(Modifier.padding(horizontal = 16.dp)) {
                 FilterRow(t.t("recipeFilters.showKcal"), filters.showKcal, { update(filters.copy(showKcal = it)) })
-                FilterRow(t.t("recipeFilters.showEnergySplit"), filters.showEnergySplit, { update(filters.copy(showEnergySplit = it)) }, divider = false)
+                FilterRow(t.t("recipeFilters.showEnergySplit"), filters.showEnergySplit, { update(filters.copy(showEnergySplit = it)) })
+                FilterRow(t.t("recipeFilters.showTrending"), filters.showTrending, { update(filters.copy(showTrending = it)) })
+                FilterRow(t.t("recipeFilters.showFavorites"), filters.showFavorites, { update(filters.copy(showFavorites = it)) }, divider = false)
             }
         }
         AccordionSection(t.t("recipeFilters.sortTitle"), icon = "ArrowsSort") {
@@ -330,10 +339,20 @@ internal fun RecipeFiltersBody(onChange: ((RecipeFilters) -> Unit)? = null) {
                 }
             }
         }
-        // The display choices (persons, kcal, energy split) are kept.
+        // The display choices (persons, kcal, energy split, sections) are kept.
         HcButton(
             t.t("recipeFilters.reset"),
-            onClick = { update(RecipeFilters(persons = filters.persons, showKcal = filters.showKcal, showEnergySplit = filters.showEnergySplit)) },
+            onClick = {
+                update(
+                    RecipeFilters(
+                        persons = filters.persons,
+                        showKcal = filters.showKcal,
+                        showEnergySplit = filters.showEnergySplit,
+                        showTrending = filters.showTrending,
+                        showFavorites = filters.showFavorites,
+                    ),
+                )
+            },
             kind = HcButtonKind.Secondary,
         )
     }

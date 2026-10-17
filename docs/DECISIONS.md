@@ -5656,6 +5656,15 @@ Brugeren så en tom "Trender netop nu" (web og app). Årsag: 2026-10-11-reglen s
 - `/api/shared-recipes?trending=1` tager retter uden energi med som opfyldning (sidst, efter retter med kendt energi); almindelig søgning skjuler dem stadig.
 - "Aldrig 0 kcal" gælder uændret: klienterne viser ingen kcal-tekst, når tallet er 0.
 
+## 2026-10-17: Delte retter: Trender og favoritter i filtrene, favoritter på én linje, "Alle retter" med endeløs scroll
+
+Brugerens krav:
+- "Vis Trender netop nu" og "Vis favoritter" er to valg under filtrenes Visning, slået til som standard (`showTrending`/`showFavorites`, parametrene `trend`/`favs`; tæller ikke som aktive filtre, og "Nulstil" bevarer dem).
+- Favoritterne står på én linje (slider med kort) ligesom Trender — på mobil, i webben og i appen.
+- Under favoritterne: "Alle retter", et gitter (2 kolonner på telefon, 3-4 på bredere skærm) sorteret efter mest populære. Der hentes tre rækker ad gangen; flere hentes, når man scroller ned (endeløs scroll).
+- `/api/shared-recipes` uden `q` og uden `trending` er "Alle retter": `offset`/`limit` (højst 60) og `hasMore` i svaret; relevans betyder her popularitet. Popularitet = egne tilføjelser/bedømmelser × 100 + kildens tal (`recipeDetails.sourcePopularity`, læst alene med SQL) eller det fiktive dagstal, så siderne passer sammen hele dagen. Uden søgning rangeres op til 1.000 kandidater pr. kilde.
+- Native: `RecipesScreen.kt` (marker nederst henter næste side, når den nærmer sig skærmens bund) og `RecipeFilters.kt`.
+
 ## 2026-10-17: Trender netop nu nedarver kildens popularitet og tømmes ikke af filtre
 
 Brugeren så igen en tom "Trender netop nu" (Valdemarsro valgt, filtre aktive). Årsag: rækken brugte de samme filtre som søgningen, og retter uden kendt næring (de fleste Valdemarsro-retter) falder altid på makro-, keto-, sukker- og næringsfiltre, fordi energifordelingen er ukendt.

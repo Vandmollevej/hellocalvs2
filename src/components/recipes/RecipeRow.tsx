@@ -85,13 +85,14 @@ export function RecipeRow({ row, loadingTitleWidth }: { row: RecipeRowData | nul
   );
 }
 
-// Kort i slider-rækken under "Trender netop nu": billede over navn og undertekst.
-export function RecipeCard({ row }: { row: RecipeRowData }) {
+// Kort i slider-rækkerne (Trender netop nu, favoritter) og i gitteret "Alle
+// retter" (fluid: fylder sin gitterkolonne): billede over navn og undertekst.
+export function RecipeCard({ row, fluid = false }: { row: RecipeRowData; fluid?: boolean }) {
   return (
     <Link
       href={row.href}
       onClick={() => row.clickKey && trackRecipeClick(row.clickKey)}
-      className="block w-36 shrink-0 snap-start"
+      className={fluid ? "block min-w-0" : "block w-36 shrink-0 snap-start"}
     >
       <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-hf-tan text-hf-black rounded-card">
         {row.imageUrl ? (
@@ -107,10 +108,16 @@ export function RecipeCard({ row }: { row: RecipeRowData }) {
   );
 }
 
-export function RecipeCardSkeleton() {
+export function RecipeCardSkeleton({ fluid = false }: { fluid?: boolean }) {
   return (
-    <div className="w-36 shrink-0" aria-hidden>
-      <Skeleton type="tile" width={144} height={144} />
+    <div className={fluid ? "min-w-0" : "w-36 shrink-0"} aria-hidden>
+      {fluid ? (
+        <div className="aspect-square w-full">
+          <Skeleton type="tile" width="100%" height="100%" />
+        </div>
+      ) : (
+        <Skeleton type="tile" width={144} height={144} />
+      )}
       <div className="mt-2">
         <SkeletonTitleLines titleWidth={110} />
       </div>

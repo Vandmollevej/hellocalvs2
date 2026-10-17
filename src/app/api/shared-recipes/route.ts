@@ -161,6 +161,14 @@ export async function GET(req: Request) {
   const withIngredientData = needsIngredientData(filters);
   // trending=1: kun til "Trender netop nu" (ingen søgning), se nedenfor.
   const trending = params.get("trending") === "1" && !q;
+  // Uden søgning og uden trending: "Alle retter" under favoritterne, sorteret
+  // efter popularitet (nedarvet fra kilden) og hentet side for side (endeløs
+  // scroll, brugerens krav 2026-10-17). offset/limit vælger siden.
+  const browsing = !q && !trending;
+  const offset = Math.max(0, Math.floor(Number(params.get("offset")) || 0));
+  const limit = Math.min(60, Math.max(1, Math.floor(Number(params.get("limit")) || 60)));
+  // Uden søgning rangeres hele kataloget, så der hentes flere kandidater.
+  const candidateLimit = q ? 200 : 1000;
 
   try {
     const user = await getSessionUser();
@@ -180,7 +188,7 @@ export async function GET(req: Request) {
         ...(q ? { searchText: { contains: q } } : {}),
       },
       orderBy: { createdAt: "desc" },
-      take: 200,
+      take: candidateLimit,
     });
 
     const parsed = recipes.map((r) => ({ recipe: r, ingredients: parseIngredients(r.ingredients) ?? [] }));
@@ -272,7 +280,7 @@ export async function GET(req: Request) {
             : {}),
         },
         orderBy: { createdAt: "desc" },
-        take: 200,
+        take: candidateLimit,
         select: {
           ...PRODUCT_FACTS_SELECT,
           imageUrl: true,
@@ -282,8 +290,6 @@ export async function GET(req: Request) {
           carbsPer100g: true,
           fatPer100g: true,
           createdAt: true,
-          // Kun til "Trender netop nu": kildens popularitet (sourcePopularity).
-          recipeDetails: trending,
         },
       });
       let hfProducts = await findMealKits(false);
@@ -297,6 +303,15 @@ export async function GET(req: Request) {
           })
         : [];
       const usageById = new Map(usage.map((u) => [u.productId, u._count._all]));
+      // Kildens popularitet (recipeDetails.sourcePopularity) hentes alene, så
+      // hele opskriftsteksten ikke læses for hver ret.
+      const popularityById = new Map<string, number | null>();
+      if (!q && hfProducts.length) {
+        const rows = await prisma.$queryRaw<{ id: string; sp: unknown }[]>`
+          SELECT id, "recipeDetails"->'sourcePopularity' AS sp FROM products
+          WHERE id = ANY(${hfProducts.map((p) => p.id)}) AND "recipeDetails"->'sourcePopularity' IS NOT NULL`.catch(() => []);
+        for (const row of rows) popularityById.set(row.id, sourceScore(readSourcePopularity({ sourcePopularity: row.sp })));
+      }
       for (const p of hfProducts) {
         // Én servering af opskriften (100 g, når udbyderen ikke oplyser
         // portionsvægt, fx BetterFeast).
@@ -332,7 +347,7 @@ export async function GET(req: Request) {
           split: energyPercents(facts),
           warnings: result.warnings,
           popularity: usageById.get(p.id) ?? 0,
-          sourceScore: trending ? sourceScore(readSourcePopularity(p.recipeDetails)) : null,
+          sourceScore: popularityById.get(p.id) ?? null,
           relaxed: !result.pass,
           createdAt: p.createdAt.toISOString(),
           score: relevance(p.name, `${p.name} ${p.ingredientsText ?? ""}`.toLowerCase(), q),
@@ -402,16 +417,29 @@ export async function GET(req: Request) {
       items.splice(0, items.length, ...ranked.slice(0, TRENDING_LIMIT).map((entry) => entry.item));
     }
 
-    const sort = filters.sort;
+    // Popularitet nedarves fra kilden (brugerens regel 2026-10-17): egne
+    // tilføjelser/bedømmelser vejer tungest, derefter kildens tal, ellers et
+    // fiktivt tal (samme hele dagen, så siderne i endeløs scroll passer sammen).
+    if (!trending) {
+      const day = new Date().toISOString().slice(0, 10);
+      for (const item of items) {
+        const key = `${item.kind === "shared" ? "shared" : "hf"}:${item.id}`;
+        item.popularity = item.popularity * 100 + (item.sourceScore ?? fictiveScore(key, day));
+      }
+    }
+
+    const sort = browsing && filters.sort === "relevance" ? "popular" : filters.sort;
     if (!trending) items.sort((a, b) => {
-      if (sort === "popular") return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
+      if (sort === "popular")
+        return b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt) || a.id.localeCompare(b.id);
       if (sort === "date") return b.createdAt.localeCompare(a.createdAt);
       return b.score - a.score || b.popularity - a.popularity || b.createdAt.localeCompare(a.createdAt);
     });
 
     return NextResponse.json({
       portionKcal,
-      recipes: items.slice(0, 60).map((item) => ({
+      hasMore: browsing && items.length > offset + limit,
+      recipes: (browsing ? items.slice(offset, offset + limit) : items.slice(0, 60)).map((item) => ({
         kind: item.kind,
         id: item.id,
         name: item.name,

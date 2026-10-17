@@ -133,6 +133,16 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
             label={t("recipeFilters.showEnergySplit")}
             checked={filters.showEnergySplit}
             onChange={(showEnergySplit) => update({ ...filters, showEnergySplit })}
+          />
+          <Row
+            label={t("recipeFilters.showTrending")}
+            checked={filters.showTrending}
+            onChange={(showTrending) => update({ ...filters, showTrending })}
+          />
+          <Row
+            label={t("recipeFilters.showFavorites")}
+            checked={filters.showFavorites}
+            onChange={(showFavorites) => update({ ...filters, showFavorites })}
             divider={false}
           />
         </div>
@@ -227,13 +237,15 @@ export function RecipeFiltersBody({ onChange }: { onChange?: (filters: RecipeFil
 
       <button
         type="button"
-        // Visningsvalgene (personer, kalorier, energifordeling) bevares.
+        // Visningsvalgene (personer, kalorier, energifordeling, sektioner) bevares.
         onClick={() =>
           update({
             ...DEFAULT_RECIPE_FILTERS,
             persons: filters.persons,
             showKcal: filters.showKcal,
             showEnergySplit: filters.showEnergySplit,
+            showTrending: filters.showTrending,
+            showFavorites: filters.showFavorites,
           })
         }
         className="hf-control hf-btn-secondary w-full"
