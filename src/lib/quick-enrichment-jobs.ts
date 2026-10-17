@@ -67,11 +67,12 @@ export type QuickEnrichmentStoredInput = {
   // Engangsreparationen af varer, der blev færdige uden navn/energi.
   repairedAt?: string;
   // Reparationsrunde: runde 1 kørte, mens OpenAI-kreditten var tom, og brændte
-  // forsøgene af. Varer under REPAIR_ROUND genåbnes én gang til.
+  // forsøgene af; runde 2 læste kun forsiden igen ved tomt navn. Varer under
+  // REPAIR_ROUND genåbnes én gang til.
   repairRound?: number;
 };
 
-const REPAIR_ROUND = 2;
+const REPAIR_ROUND = 3;
 
 type RetryPart = "front" | "label";
 
@@ -442,7 +443,9 @@ async function retryMissingIngredients(now: Date): Promise<{ tried: number; foun
 // 5. Engangsreparation (docs/DECISIONS.md 2026-10-16): varer, hvis aflæsning
 // blev "færdig" uden navn eller uden energi, fordi OpenAI-kaldet fejlede, før
 // genforsøgene fandtes (fx Änglamark-letmælken). Jobbet åbnes igen med de
-// dele, der mangler, og genoptages straks.
+// dele, der mangler, og genoptages straks. Forsiden læses igen, når AI'en
+// aldrig har læst den (ingen FRONT-analyse) — også selv om den lokale
+// tekstlæsning har givet et navn: ellers mangler brand og fritlægning.
 async function reopenBrokenProducts(now: Date): Promise<number> {
   const since = new Date(now.getTime() - ADOPT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
   const jobs = await prisma.quickEnrichmentJob.findMany({
@@ -451,16 +454,22 @@ async function reopenBrokenProducts(now: Date): Promise<number> {
       product: {
         createdAt: { gt: since },
         pendingFields: { isEmpty: true },
-        OR: [{ name: "" }, { kcalPer100g: 0 }],
+        OR: [{ name: "" }, { kcalPer100g: 0 }, { aiAnalyses: { none: { kind: "FRONT" } } }],
       },
     },
     select: {
       id: true,
       input: true,
-      product: { select: { name: true, kcalPer100g: true } },
+      product: {
+        select: {
+          name: true,
+          kcalPer100g: true,
+          _count: { select: { aiAnalyses: { where: { kind: "FRONT" } } } },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
-    // Allerede reparerede springes over herunder; de er få (kun varer uden navn eller med 0 kcal).
+    // Allerede reparerede springes over herunder.
     take: 300,
   });
   let reopened = 0;
@@ -468,7 +477,8 @@ async function reopenBrokenProducts(now: Date): Promise<number> {
     const stored = asStoredInput(job.input);
     if (!stored || (stored.repairRound ?? (stored.repairedAt ? 1 : 0)) >= REPAIR_ROUND) continue;
     const parts: RetryPart[] = [];
-    if (stored.frontPhotoUrl && !job.product.name.trim()) parts.push("front");
+    const frontNeverRead = job.product._count.aiAnalyses === 0;
+    if (stored.frontPhotoUrl && (!job.product.name.trim() || frontNeverRead)) parts.push("front");
     if (stored.nutritionPhotoUrl && job.product.kcalPer100g === 0) parts.push("label");
     const input = { ...stored, repairedAt: now.toISOString(), repairRound: REPAIR_ROUND, retryParts: parts };
     await prisma.quickEnrichmentJob.update({

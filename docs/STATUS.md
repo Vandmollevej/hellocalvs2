@@ -1,3 +1,7 @@
+## 2026-10-17: Forsiden læses igen af AI, når den aldrig blev læst
+
+- Genåbningen læste kun forsiden igen, når varen helt manglede navn. Har den lokale tekstlæsning (eller den gamle reserve) givet et navn som "Letmælk", fik varen aldrig brand eller fritlægning. Nu genåbnes forsiden også, når der ingen FRONT-analyse findes (`repairRound` 3). Kreditten er bekræftet i orden (Uptime 17/10 06:01). Ikke prøvet mod rigtig database herfra.
+
 ## 2026-10-17: Forsidens grafer: Kalorier fordelt, pulskurve med zone-linje, ens stregtykkelse
 
 - "Kalorier" og "Kaloriestatus" er slået sammen til én graf, "Kalorier fordelt": eget indtag pr. time som blå pinde, anbefalet energifordeling over dagen som grå streg (morgenmad ~20 %, frokost ~25 %, aftensmad ~30 %, mellemmåltider ~25 %).
