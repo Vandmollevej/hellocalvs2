@@ -122,7 +122,17 @@ function ActivityCreateContent() {
   }
 
   return (
-    <HfScreen title={t("activity.title")} icon={<IconActivity size={20} stroke={2} />}>
+    <HfScreen
+      title={t("activity.title")}
+      icon={<IconActivity size={20} stroke={2} />}
+      footer={
+        option ? (
+          <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
+            {t("activity.save")}
+          </button>
+        ) : undefined
+      }
+    >
       <div className="hf-page">
         {!option ? (
           <ActivityPicker onPick={setOption} />
@@ -244,9 +254,6 @@ function ActivityCreateContent() {
               />
             </label>
             {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
-            <button type="button" className="hf-control hf-btn-primary w-full px-4" onClick={() => void save()} disabled={saving}>
-              {t("activity.save")}
-            </button>
           </div>
         )}
       </div>
