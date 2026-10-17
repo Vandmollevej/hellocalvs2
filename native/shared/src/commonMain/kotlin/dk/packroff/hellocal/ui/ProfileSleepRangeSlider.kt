@@ -76,7 +76,14 @@ fun ProfileSleepRangeSlider(
     onChangeWake: (Int) -> Unit,
     onChangeBedtime: (Int) -> Unit,
     bedtimeFirst: Boolean = false,
+    // Track ends in minutes after midnight (default the whole day). Activity: starts at wake-up — nobody trains asleep.
+    trackStart: Int = 0,
+    trackEnd: Int = MINUTES_PER_DAY,
 ) {
+    val start by rememberUpdatedState(trackStart)
+    val end by rememberUpdatedState(trackEnd)
+    fun spanOf() = (end - start).coerceAtLeast(1)
+    fun fraction(minutes: Int) = ((minutes - start).toFloat() / spanOf()).coerceIn(0f, 1f)
     var editing by remember { mutableStateOf<SleepHandle?>(null) }
     var editValue by remember { mutableStateOf("") }
     val wake by rememberUpdatedState(wakeMinutes)
@@ -146,7 +153,7 @@ fun ProfileSleepRangeSlider(
                 fun minutesAt(x: Float): Int {
                     val trackWidth = size.width.toFloat().coerceAtLeast(1f)
                     val ratio = (x / trackWidth).coerceIn(0f, 1f)
-                    return minOf(MINUTES_PER_DAY - 1, ((ratio * MINUTES_PER_DAY) / 15f).roundToInt() * 15)
+                    return minOf(end, MINUTES_PER_DAY - 1, start + ((ratio * spanOf()) / 15f).roundToInt() * 15)
                 }
                 fun update(handle: SleepHandle, x: Float) {
                     val value = minutesAt(x)
@@ -156,8 +163,8 @@ fun ProfileSleepRangeSlider(
                 detectDragGestures(
                     onDragStart = { start ->
                         val trackWidth = size.width.toFloat()
-                        val wakeX = wake / MINUTES_PER_DAY.toFloat() * trackWidth
-                        val bedX = bedtime / MINUTES_PER_DAY.toFloat() * trackWidth
+                        val wakeX = fraction(wake) * trackWidth
+                        val bedX = fraction(bedtime) * trackWidth
                         val grab = 24.dp.toPx()
                         val dWake = abs(start.x - wakeX)
                         val dBed = abs(start.x - bedX)
@@ -182,8 +189,8 @@ fun ProfileSleepRangeSlider(
                 val w = size.width
                 val cy = size.height / 2
                 val track = 4.dp.toPx()
-                val wakeX = wakeMinutes / MINUTES_PER_DAY.toFloat() * w
-                val bedX = bedtimeMinutes / MINUTES_PER_DAY.toFloat() * w
+                val wakeX = fraction(wakeMinutes) * w
+                val bedX = fraction(bedtimeMinutes) * w
                 drawLine(HcColors.TanDark, Offset(0f, cy), Offset(w, cy), strokeWidth = track, cap = StrokeCap.Round)
                 // Bedtime is in the evening and wake-up in the morning, so the sleep wraps over midnight (not for activities: one day, 00:00-23:59).
                 if (!bedtimeFirst && bedX > wakeX) {

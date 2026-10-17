@@ -12,6 +12,13 @@ import { intlLocale } from "@/i18n";
 import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
+import {
+  activityTrackStart,
+  getSleepWindow,
+  type SleepDefaults,
+  type SleepScheduleEntry,
+  type WorkShiftEntry,
+} from "@/lib/sleep-window";
 import { clockToMinutes, durationMinutes, setStartClock, splitDuration, stepDuration } from "@/lib/activity-duration";
 import { SESSION_DEFAULT_MINUTES } from "@/lib/training-session";
 import { TrainingSessionCard, type SessionEntry } from "@/components/activity/TrainingSessionCard";
@@ -48,6 +55,31 @@ function ActivityCreateContent() {
   const [nextEntryId, setNextEntryId] = useState(1);
   const [sessionKcal, setSessionKcal] = useState<number | null>(null);
   const sessionMinutes = session.reduce((sum, entry) => sum + entry.minutes, 0);
+  const [sleep, setSleep] = useState<{
+    defaults: SleepDefaults | null;
+    weekdays: Record<number, SleepScheduleEntry>;
+    shifts: Record<string, WorkShiftEntry>;
+  } | null>(null);
+
+  // Søvn fra kalenderen (stå-op-tid efter natten før), så banen kun viser de
+  // vågne timer. Uden søvndata viser banen hele døgnet.
+  useEffect(() => {
+    let cancelled = false;
+    const json = (url: string) => fetch(url).then((res) => (res.ok ? res.json() : null));
+    Promise.all([json("/api/profile"), json("/api/sleep-schedule"), json("/api/work-shifts")])
+      .then(([profile, schedule, shifts]) => {
+        if (cancelled) return;
+        const weekdays: Record<number, SleepScheduleEntry> = {};
+        for (const entry of (schedule?.schedules ?? []) as SleepScheduleEntry[]) weekdays[entry.weekday] = entry;
+        const byDate: Record<string, WorkShiftEntry> = {};
+        for (const shift of (shifts?.shifts ?? []) as WorkShiftEntry[]) byDate[String(shift.date).slice(0, 10)] = shift;
+        setSleep({ defaults: profile?.user ?? null, weekdays, shifts: byDate });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Anslåede kcal fra MET (docs/ACTIVITY-PAL.md F3): taletest + evt.
   // distance for gang/løb. Brugerens eget tal i kcal-feltet vinder.
@@ -132,6 +164,9 @@ function ActivityCreateContent() {
   const startMinutes = clockToMinutes(startedAt.split("T")[1] ?? "") ?? 0;
   // Banen viser kun den valgte dag (00:00-23:59): slutningen går aldrig over midnat.
   const endMinutes = Math.min(startMinutes + totalMinutes, LAST_MINUTE);
+  const [dayIso] = startedAt.split("T");
+  const sleepWindow = sleep ? getSleepWindow(new Date(`${dayIso}T12:00`), sleep.defaults, sleep.weekdays, sleep.shifts) : null;
+  const trackStart = activityTrackStart(sleepWindow, startMinutes);
 
   // Slut-håndtaget ændrer varigheden; start-håndtaget flytter starten, så
   // sluttidspunktet bliver stående (varigheden regnes om). Begge holdes inden
@@ -285,7 +320,7 @@ function ActivityCreateContent() {
         ) : (
           <div className="flex flex-col gap-4">
             <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
-              {option.label} · {t("activity.change")}
+              {option.label}
             </button>
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.startedAt")}</span>
@@ -296,6 +331,8 @@ function ActivityCreateContent() {
                 wakeMinutes={endMinutes}
                 onChangeBedtime={setStart}
                 onChangeWake={setEnd}
+                trackStart={trackStart}
+                trackEnd={LAST_MINUTE}
               />
             </div>
             <div className="flex flex-col gap-1">

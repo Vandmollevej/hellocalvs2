@@ -4,6 +4,9 @@
 - Gem ligger nu fast nederst over bundmenuen (også for en enkelt aktivitet).
 - `POST /api/activities` med `{ session: { startedAt, intensity, items } }` gemmer øvelserne efter hinanden med fælles `sessionId` (migration `20261018000000_activity_session`, `src/lib/training-session.ts`). Web + native; native ikke kompileret lokalt.
 
+## 2026-10-17: Sprogflaget som mærke på mikrofonen
+Madvarer: sprogflaget sidder på mikrofonens øverste venstre kant (spejl af favoritmærket på varesiden), ikke længere alene ude i venstre side. Web + native.
+
 ## 2026-10-17: Flere træningsformer under Tilføj → Aktivitet
 
 - 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
@@ -674,3 +677,7 @@ Last updated: 2026-10-14
 ## 2026-10-17: Admin: Fritlagte billeder (rembg-sammenligner)
 
 - Ny fane under Billedbehandling og delt arbejdsflade på Billedforslag (se DECISIONS 2026-10-17). Migration `20261017180000_image_review`. Typecheck og lint grønne; ikke prøvet mod rigtig database herfra.
+## 2026-10-17: Tilføj aktivitet — tidsbanen viser kun de vågne timer
+
+- Banen med start/slut på "Tilføj aktivitet" starter nu ved stå-op-tiden efter natten før (samme søvnvindue som kalenderen: dags-override → ugedag → standard) og går til midnat, da dagens sluttidspunkt ikke kendes endnu. Stå-op-tiden rettes i kalenderen ved at flytte søvnblokken. Dagsøvn (nattevagt) giver hele døgnet; en valgt start før stå-op trækker banen tilbage til starten.
+- Søvnlogikken er flyttet til `src/lib/sleep-window.ts` (bruges af kalenderen og aktivitetssiden). `SleepRangeSlider`/`ProfileSleepRangeSlider` har fået `trackStart`/`trackEnd`. Native porteret (`activityTrackStart` i `CalendarLogic.kt`). Kotlin ikke kompileret lokalt (Android-plugin kan ikke hentes) — CI bygger.
