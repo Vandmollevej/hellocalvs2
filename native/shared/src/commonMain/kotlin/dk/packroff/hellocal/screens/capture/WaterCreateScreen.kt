@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,14 +67,15 @@ private const val MIN_ML = 0
 private const val MAX_ML = 1000
 private const val STEP_ML = 25
 
-private class WaterContainer(val key: String, val ml: Int, val src: String, val boxHeight: Dp)
+private class WaterContainer(val key: String, val ml: Int, val src: String, val heightShare: Float)
 
 // Four presets that tap-select an ml amount; the slider stays freely adjustable.
+// Square tiles; image height is a share of the tile, so 75 cl sticks up above it.
 private val CONTAINERS = listOf(
-    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 68.dp),
-    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 58.dp),
-    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 48.dp),
-    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 38.dp),
+    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 1.18f),
+    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 0.76f),
+    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 0.60f),
+    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 0.47f),
 )
 
 /** The water glass icon (src/components/icons/WaterGlass.tsx — PNG used as a mask). */
@@ -126,26 +130,31 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
             CaptureBrandCard(t.t("waterLog.intro"))
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(Modifier.fillMaxWidth().padding(top = 24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 CONTAINERS.forEach { c ->
                     val selected = selectedKey == c.key
                     val shape = RoundedCornerShape(16.dp)
-                    Column(
-                        Modifier.weight(1f).aspectRatio(1f).clip(shape)
-                            .background(if (selected) HcColors.SelectedBg else HcColors.Tan, shape)
-                            .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
-                            .clickable {
-                                selectedKey = c.key
-                                amountMl = c.ml
-                                saved = false
-                            },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-                    ) {
-                        Box(Modifier.fillMaxWidth().height(72.dp), contentAlignment = Alignment.BottomCenter) {
-                            HcRemoteImage(c.src, Modifier.height(c.boxHeight))
-                        }
-                        HcText("${c.ml / 10}cl", HcTypeRoles.Micro, bold = true, color = HcColors.Black)
+                    BoxWithConstraints(Modifier.weight(1f).aspectRatio(1f)) {
+                        Box(
+                            Modifier.matchParentSize().clip(shape)
+                                .background(if (selected) HcColors.SelectedBg else HcColors.Tan, shape)
+                                .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
+                                .clickable {
+                                    selectedKey = c.key
+                                    amountMl = c.ml
+                                    saved = false
+                                },
+                        )
+                        HcRemoteImage(
+                            c.src,
+                            Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp)
+                                .wrapContentHeight(Alignment.Bottom, unbounded = true)
+                                .requiredHeight(maxHeight * c.heightShare),
+                        )
+                        HcText(
+                            "${c.ml / 10}cl", HcTypeRoles.Micro, bold = true, color = HcColors.Black,
+                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp),
+                        )
                     }
                 }
             }

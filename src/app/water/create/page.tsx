@@ -24,13 +24,14 @@ const STEP_ML = 25;
 // presets tap-select an ml amount onto the slider below; the slider stays
 // freely adjustable afterwards for a manual amount. The slider snaps to 25 ml;
 // the amount field can be typed into directly for any other exact amount. Presets are labelled in cl
-// but register the exact ml amount. Images are alpha-trimmed PNGs; bottles get
-// descending heights (75>50>33>25 cl) so the size difference is clearly visible.
+// but register the exact ml amount. Images are alpha-trimmed PNGs; the tiles stay
+// square and each image's height is a share of the tile height (75>50>33>25 cl),
+// so the 75 cl bottle sticks up above the top of its tile (user rule 2026-10-17).
 const CONTAINERS = [
-  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, boxHeight: 68 },
-  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, boxHeight: 58 },
-  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, boxHeight: 48 },
-  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, boxHeight: 38 },
+  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, heightPct: 118 },
+  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, heightPct: 76 },
+  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, heightPct: 60 },
+  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, heightPct: 47 },
 ] as const;
 
 function formatTime(value: string) {
@@ -145,32 +146,28 @@ export default function WaterCreatePage() {
           <p className="hf-type-small">{t("waterLog.intro")}</p>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
-          {CONTAINERS.map(({ key, ml, src, width, boxHeight }) => {
+        <div className="mt-6 grid grid-cols-4 gap-4">
+          {CONTAINERS.map(({ key, ml, src, width, heightPct }) => {
             const isSelected = selectedKey === key;
             return (
               <button
                 key={key}
                 type="button"
                 onClick={() => pickContainer(key, ml)}
-                className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl transition-colors ${
+                className={`relative aspect-square rounded-2xl transition-colors ${
                   isSelected ? "hf-selected" : "bg-hf-tan text-hf-black"
                 }`}
               >
-                <span className="flex h-[72px] w-full items-end justify-center">
-                  <Image
-                    src={src}
-                    alt=""
-                    aria-hidden="true"
-                    width={width}
-                    height={240}
-                    className="block w-auto max-w-full object-contain"
-                    style={{ height: boxHeight }}
-                  />
-                </span>
-                <span
-                  className="hf-type-micro hf-type-strong"
-                >
+                <Image
+                  src={src}
+                  alt=""
+                  aria-hidden="true"
+                  width={width}
+                  height={240}
+                  className="pointer-events-none absolute bottom-6 left-1/2 block w-auto max-w-none -translate-x-1/2 object-contain"
+                  style={{ height: `${heightPct}%` }}
+                />
+                <span className="hf-type-micro hf-type-strong absolute inset-x-0 bottom-1.5 text-center">
                   {ml / 10}cl
                 </span>
               </button>
