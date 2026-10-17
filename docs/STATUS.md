@@ -1,3 +1,6 @@
+## 2026-10-17: Robot-QoS på admin → Robotter
+
+- Ny boks "Belastningsstyring (QoS)": robotter starter først, når CPU/RAM er under grænsen, og aldrig i spærretider. Viser serverens belastning lige nu og hvor mange robotter der venter; hver robotrække viser grunden. Kræver migration `20261017220000_robot_qos` og genbyg af agent-containerne (ny `job_control.py`). Se DECISIONS 2026-10-17.
 ## 2026-10-17: Allergener linker til egne sider + natlig allergen-robot
 
 - Brugerens regel: alle allergener i EU-varer står med STORT, og hvert allergen-ord i ingredienslisten linker til en side om allergenet. Ny sektion "Allergener" under Viden om mad med de 14 EU-allergener (`src/lib/knowledge-allergens.ts`, kilder: EU 1169/2011, sundhed.dk, Your Europe); ordene i ingredienslisten linker til `/viden-om/allergener/<nøgle>`. Web + native.

@@ -363,6 +363,10 @@ Før noget AI-billedarbejde søges originalen online (Google Vision). Logoer: ku
 - Kan en ændring pushes sammen med en anden opgaves push/PR, så undlad egen push/PR (bruger 2026-10-09; AGENTS.md).
 - Efter rebase der rører `prisma/schema.prisma`: kør `prisma validate` + typecheck.
 
+## Robot-QoS (user rule 2026-10-17)
+
+- Robotter starter kun, når serverens CPU/RAM er under grænsen på admin → Robotter → Belastningsstyring, og aldrig i en spærretid. Nye robotter får det automatisk: app-jobs med `robot: true` går gennem `src/lib/jobs/runner.ts`, Python-agenter gennem `job_control.py` — byg aldrig en robot udenom dem. Ændres reglerne, ændres `src/lib/robot-qos.ts` og alle `scripts/*/job_control.py` sammen. "KØR" går udenom.
+
 ## Crawlere og billeder
 
 - Kun forsiden + login/juridiske sider er åbne for anonyme; alt andet kræver
