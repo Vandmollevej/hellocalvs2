@@ -182,10 +182,19 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           </button>
         </div>
       </section>
+      <details className="hf-surface p-4">
+        <summary className="hf-type-body hf-type-strong cursor-pointer text-text-primary">
+          Kontrol af robottens tal (valgfrit)
+        </summary>
+        <p className="hf-type-caption mt-2">
+          Robotten gætter, hvor mange gram en vare typisk er, ud fra hvad brugerne selv vælger. Her kan du kontrollere
+          gættene: skriv en vares id og se, hvad robotten ville foreslå, og se derunder de gæt, flest brugere står bag.
+          Du skal ikke bruge det til daglig drift.
+        </p>
+        <div className="mt-3 flex flex-col gap-4">
 
       <section className="hf-surface flex flex-col gap-3 p-4">
         <h2 className="text-text-primary hf-type-body hf-type-strong">Test et forslag</h2>
-        <p className="hf-type-caption">Kun til kontrol: skriv id på en vare, så viser robotten, hvor mange gram den ville foreslå som startværdi i mængde-slideren. Der ændres ingenting.</p>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex min-w-[200px] flex-1 flex-col gap-1 hf-type-body">
             <span className="text-text-secondary">Vare-id (produkt eller løs ingrediens)</span>
@@ -273,6 +282,8 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           </div>
         )}
       </section>
+        </div>
+      </details>
     </div>
   );
 }
