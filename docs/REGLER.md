@@ -422,6 +422,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 ## Aldrig 0 kcal på en ret (user rule 2026-10-11)
 
 - Undtagelse (2026-10-16): "Trender netop nu" tager retter uden energi med som opfyldning (uden kcal-tekst), så rækken aldrig er tom.
+- "Trender netop nu" er **aldrig** tom (user rule 2026-10-17): op til 10 retter; klik først, derefter et trender-tal nedarvet fra kilden (HelloFresh/Valdemarsro-bedømmelser og favoritter i `recipeDetails.sourcePopularity`, delte retters popularitet) eller et fiktivt tal (samme hele dagen), når kilden intet har. Næringsfiltre (makro, keto, lidt sukker, næringsstoffer) må ikke tømme rækken — kun allergener og kostretning frasorterer dér. `src/lib/trending-score.ts`.
 - En ret (Trender netop nu, søgning, favoritter, Mine retter, web og native) vises **aldrig** med "0 kcal". Er energien 0 eller ukendt, skjules retten på serveren (`/api/shared-recipes`: `nutritionMissing = false`, `kcalPer100g > 0`, delte retter `kcal > 0`), og klienterne viser ingen kcal-tekst i stedet for et nul.
 - Importrobotterne gemmer 0 kcal + `nutritionMissing = true`, når næringen er ukendt (Valdemarsro uden Frida-match, BetterFeast/RetNemt uden tal). 0 er en pladsholder, aldrig en værdi — tjek altid `nutritionMissing`, når en liste hentes direkte fra `products`.
 - Nye lister, der viser kcal for retter/varer, skal følge samme regel; et nul må aldrig stå uden, at nogen har reageret på det.

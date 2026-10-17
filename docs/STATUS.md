@@ -1,3 +1,7 @@
+## 2026-10-17: Trender netop nu er aldrig tom
+
+- Aktive næringsfiltre tømte rækken for retter uden kendt næring; nu frasorterer kun allergener og kostretning dér. Rækken rangeres efter klik, derefter kildens popularitet (HelloFresh/Valdemarsro, gemt af importrobotterne) eller et fiktivt dagstal. Server-ændring, så web og native følger med. Se DECISIONS 2026-10-17.
+
 ## 2026-10-17: Forsiden læses igen af AI, når den aldrig blev læst
 
 - Genåbningen læste kun forsiden igen, når varen helt manglede navn. Har den lokale tekstlæsning (eller den gamle reserve) givet et navn som "Letmælk", fik varen aldrig brand eller fritlægning. Nu genåbnes forsiden også, når der ingen FRONT-analyse findes (`repairRound` 3). Kreditten er bekræftet i orden (Uptime 17/10 06:01). Ikke prøvet mod rigtig database herfra.

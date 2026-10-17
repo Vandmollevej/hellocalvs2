@@ -5656,6 +5656,15 @@ Brugeren så en tom "Trender netop nu" (web og app). Årsag: 2026-10-11-reglen s
 - `/api/shared-recipes?trending=1` tager retter uden energi med som opfyldning (sidst, efter retter med kendt energi); almindelig søgning skjuler dem stadig.
 - "Aldrig 0 kcal" gælder uændret: klienterne viser ingen kcal-tekst, når tallet er 0.
 
+## 2026-10-17: Trender netop nu nedarver kildens popularitet og tømmes ikke af filtre
+
+Brugeren så igen en tom "Trender netop nu" (Valdemarsro valgt, filtre aktive). Årsag: rækken brugte de samme filtre som søgningen, og retter uden kendt næring (de fleste Valdemarsro-retter) falder altid på makro-, keto-, sukker- og næringsfiltre, fordi energifordelingen er ukendt.
+
+- Brugerens regel: nedarv populariteten fra kilderne, og brug et fiktivt trender-tal indtil videre, så der altid vises noget (stadig op til 10 retter, mindst tre når de findes).
+- `evaluateRecipe` returnerer nu en årsag (`allergen`, `diet`, `nutrition`). I Trender frasorterer kun allergener og kostretning; retter, der kun faldt på et næringsfilter, bruges som opfyldning (sidst).
+- Rækkefølge (`src/lib/trending-score.ts`): klik seneste 30 dage → strenge før opfyldning → kendt energi før ukendt → trender-tal. Trender-tallet er kildens popularitet (0-50: antal bedømmelser/favoritter logaritmisk, vægtet med bedømmelsen), delte retters `popularity`, ellers et fiktivt tal 0-19, der er ens hele dagen.
+- Importrobotterne gemmer kildens tal i `recipeDetails.sourcePopularity`: HelloFresh `averageRating`/`ratingsCount`/`favoritesCount`, Valdemarsro schema.org `aggregateRating` (hvis siden har den — ikke prøvet mod live-siden herfra). Ældre retter får tallet, når robotten henter dem igen; indtil da bruges det fiktive tal.
+
 ## 2026-10-14: Natlig database-backup med 30 dages rotation
 
 - Brugeren ønskede natlig backup med rullende 30 dage. Ny compose-tjeneste `db-backup` (postgres:17-alpine) tager `pg_dump -Fc` af `hellocal` og `umami` til `./backups` (på NAS: `/volume1/docker/App/hellocal-v2/backups`) ved opstart og hver nat kl. 01:00 UTC (02-03 dansk tid).
