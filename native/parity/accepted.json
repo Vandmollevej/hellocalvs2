@@ -69,7 +69,7 @@
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/activity/create": {
-    "src/app/activity/create/page.tsx": "05973e4c6ed4aee6",
+    "src/app/activity/create/page.tsx": "79db589cde4672c1",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
