@@ -11,7 +11,7 @@ import { useLiveSpeech } from "@/lib/use-live-speech";
 import { useMealInterpretation } from "@/components/voice/useMealInterpretation";
 import { VoiceMealSuggestions } from "@/components/voice/VoiceMealSuggestions";
 import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
-import { IconApple, IconCamera, IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconBarcode, IconChevronRight, IconSearch } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
@@ -441,10 +441,7 @@ function MadvarerContent() {
         </section>
 
         <div className="hf-search hf-search--grow">
-          {/* Kameraet i søgefeltet åbner billedfunktionen (afløser knappen "Scan nyt produkt" nederst). */}
-          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
-            <IconCamera size={22} stroke={1.8} />
-          </Link>
+          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
           <textarea
             ref={searchInputRef}
             rows={1}
@@ -463,7 +460,10 @@ function MadvarerContent() {
             enterKeyHint="search"
             placeholder={t("foods.searchPlaceholder")}
           />
-          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
+          {/* Luppen står forrest og stregkoden til højre (brugerregel); stregkoden åbner Tilføj-kameraet (afløser knappen "Scan nyt produkt" nederst). */}
+          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
+            <IconBarcode size={22} stroke={1.8} />
+          </Link>
         </div>
 
         <VoiceMealSuggestions

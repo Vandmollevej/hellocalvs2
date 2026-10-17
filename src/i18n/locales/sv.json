@@ -2865,6 +2865,8 @@
   "activity": {
     "title": "Aktivitet",
     "searchPlaceholder": "Sök aktivitet",
+    "favoritesTitle": "Mina favoriter",
+    "allTitle": "Alla aktiviteter",
     "addManual": "Lägg till \"{name}\" som aktivitet",
     "pending": "väntar på godkännande",
     "spikeTitle": "Du har {day} förbrukat {kcal} extra kalorier. Vad gjorde du?",

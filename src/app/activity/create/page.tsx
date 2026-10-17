@@ -8,6 +8,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { ActivityPicker } from "@/components/activity/ActivityPicker";
 import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { intlLocale } from "@/i18n";
 import { TRAINING_INTENSITIES, type TrainingIntensity } from "@/lib/pal-model";
 import type { ActivityEstimate } from "@/lib/activity-met";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
@@ -30,7 +31,7 @@ function defaultStart(date: string | null, time: string | null) {
 }
 
 function ActivityCreateContent() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const params = useSearchParams();
   const [option, setOption] = useState<ActivityOption | null>(null);
@@ -188,12 +189,26 @@ function ActivityCreateContent() {
             )}
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.startedAt")}</span>
-              <input
-                className={FIELD}
-                type="date"
-                value={startedAt.split("T")[0]}
-                onChange={(e) => e.target.value && setStartedAt(`${e.target.value}T${startedAt.split("T")[1] ?? "00:00"}`)}
-              />
+              {/* Datoen vises på appens sprog (browserens eget datofelt følger
+                  telefonens sprog og ser rodet ud); det usynlige felt ovenpå
+                  åbner stadig telefonens datovælger. */}
+              <label className={`${FIELD} hf-control relative flex items-center`}>
+                <span className="text-hf-black">{formatStartDate(startedAt.split("T")[0], intlLocale(locale))}</span>
+                <input
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  type="date"
+                  aria-label={t("activity.startedAt")}
+                  value={startedAt.split("T")[0]}
+                  onChange={(e) => e.target.value && setStartedAt(`${e.target.value}T${startedAt.split("T")[1] ?? "00:00"}`)}
+                  onClick={(e) => {
+                    try {
+                      e.currentTarget.showPicker?.();
+                    } catch {
+                      // Ældre browsere uden showPicker.
+                    }
+                  }}
+                />
+              </label>
               <SleepRangeSlider
                 bedtimeFirst
                 bedtimeMinutes={startMinutes}
@@ -320,6 +335,13 @@ const LAST_MINUTE = 24 * 60 - 1;
 
 function minutesToClock(value: number) {
   return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
+}
+
+// "17. okt. 2026" på appens sprog — samme som native (dayMonthShort med år).
+function formatStartDate(day: string, locale: string) {
+  const [y, m, d] = day.split("-").map(Number);
+  if (!y || !m || !d) return day;
+  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(y, m - 1, d));
 }
 
 const FIELD =

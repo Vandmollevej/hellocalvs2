@@ -7,6 +7,24 @@ Brugerens ønske: "Tilføj ny række øverst (overskrift) kaldet Træningspas �
 - **Sportstype:** maskiner og løsvægte gemmes som `strength`, CrossFit som `crossfit`; kcal anslås fra MET som før (sæt/vægt påvirker ikke kcal).
 - **Lagring:** `activities.exercises` (JSONB) = `[{ key, sets: [{ weightKg, reps }] }]`. Serveren smider ukendte øvelser og ugyldige sæt væk (vægt 0–300 kg i halve kg, 1–100 gentagelser). 0 kg = kropsvægt.
 - **UI:** gentagelser på plus/minus (start 10), vægt kun på slider (maks 200/250/150 kg for maskiner/løsvægte/CrossFit; start 20 kg, CrossFit 0). "Tilføj sæt" kopierer forrige sæt.
+## 2026-10-17: Eksterne kilder flettes automatisk ind ved scanning, oprettelse og søgning
+
+Brugeren: "Så snart en vare scannes, oprettes eller fremsøges skal eksterne
+kilder indpasses automatisk." Før blev Open Food Facts kun brugt, når
+stregkoden var ukendt, og som stregkode-reserve ≥ 10 min efter "opret
+straks". Nu samler `src/lib/external-enrichment.ts` indfletningen: én kø (to
+OFF-kald ad gangen), kun tomme felter fyldes, og næringstal kun ved samme
+energi. Se REGLER.md → Eksterne kilder. OFF-varer vises stadig aldrig i
+søgeresultater (2026-09-28) — det er vores egne varer, der beriges.
+
+## 2026-10-17: Afskåret logo godtages, når bagsiden eller stregkoden bekræfter brandet
+
+Albi Apfelsaft fik intet brand: logoet var skåret af i fotoets top, og Albi
+fandtes ikke i Brand-tabellen, så DAGO-reglen (2026-10-15) afviste det. Nu
+godtages et afskåret eller usikkert logo, når præcis samme navn står som helt
+ord i bagsidens tekst (producentadressen) eller er stregkodens Open Food
+Facts-brand (`brandNameConfirmed` i `src/lib/brand-match.ts`). DAGO står ingen
+andre steder og afvises stadig.
 
 ## 2026-10-17: "Spring over" også på energi-trinnet + rød streg over sprungne trin
 Brugerens krav (Ramlösa/danskvand uden næringstabel): energi-trinnet i kameraflowet har samme "Spring over" som indholds-trinnet. Et sprunget trin får en rød streg på tværs af trin-knappen i stedet for flueben (web `CaptureSkippedOverlay`, native `SkippedStrike`). POST /api/products/quick kræver ikke længere energifoto: uden det læses ingen næring, og varen står med "næring ukendt" (`nutritionMissing`), så Frida/varetypen kan give skønnet. Ved "Scan varen igen" af energien kan trinnet ikke springes over.

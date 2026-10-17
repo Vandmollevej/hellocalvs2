@@ -12,7 +12,7 @@ import { localIngredients, localNutrition } from "@/lib/local-label";
 import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 import { hasIngredientsHeading } from "@/lib/product-ocr";
 import { createBarcodeLogoCutoutJob, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
-import { matchBrand, newBrandAllowed } from "@/lib/brand-match";
+import { brandNameConfirmed, matchBrand, newBrandAllowed } from "@/lib/brand-match";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
@@ -38,6 +38,7 @@ import { fetchOffProductRaw } from "@/lib/openFoodFacts";
 import { linkOffRecordToProduct, saveOffRecordSafely } from "@/lib/off-store";
 import { OFF_USE_NAME_MIN_CONFIDENCE, type OffNutrition } from "@/lib/off-record";
 import { judgeReserveNutrition, nameMatchesFront, type ReserveVerdict } from "@/lib/ean-reserve-match";
+import { enrichFromExternalSources } from "@/lib/external-enrichment";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -330,6 +331,24 @@ export async function applyEanReserve(input: {
   return { nutrition, name, verdict };
 }
 
+// Et afskåret/usikkert logo godtages, når samme navn står på bagsiden
+// (telefonens tekstlæsning) eller er stregkodens Open Food Facts-brand
+// (brandNameConfirmed, bruger 2026-10-17: Albi).
+async function brandConfirmedElsewhere(aiBrand: string, input: QuickEnrichmentInput): Promise<boolean> {
+  if (brandNameConfirmed(aiBrand, [input.nutritionOcrText, input.ingredientsOcrText])) return true;
+  if (!input.barcode) return false;
+  const load = () =>
+    prisma.offProductRecord
+      .findUnique({ where: { barcode: input.barcode }, select: { rawBrands: true, brand: true } })
+      .catch(() => null);
+  let off = await load();
+  if (!off) {
+    const raw = await fetchOffProductRaw(input.barcode).catch(() => null);
+    if (raw && (await saveOffRecordSafely({ barcode: input.barcode, raw, source: "SCAN" }))) off = await load();
+  }
+  return off ? brandNameConfirmed(aiBrand, [off.brand, ...(off.rawBrands ?? "").split(",")]) : false;
+}
+
 // Returnerer, om forsidefotoet blev genkendt som en vare (navn, logo eller
 // vareboks) — null, hvis aflæsningen fejlede teknisk.
 export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean | null> {
@@ -354,14 +373,17 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
     // Et ukendt navn oprettes kun ud fra et sikkert, helt synligt logo
     // (newBrandAllowed, DAGO 2026-10-15); ellers får varen intet brand.
     const aiBrand = (result.brand ?? result.logoText ?? "").trim();
-    const newBrand = newBrandAllowed(result.logoConfidence, result.logoBox) ? aiBrand : "";
+    const newBrand =
+      aiBrand && (newBrandAllowed(result.logoConfidence, result.logoBox) || (await brandConfirmedElsewhere(aiBrand, input)))
+        ? aiBrand
+        : "";
     const brandName = (brandMatch?.name ?? textBrandMatch?.name ?? newBrand).trim();
     if (aiBrand && !brandName) {
       await debugLog({
         category: "scan",
         event: "brand_unknown_skipped",
         level: "warn",
-        message: `Ukendt brand "${aiBrand}" ikke oprettet — logoet var usikkert (${result.logoConfidence}) eller skåret af ved kanten`,
+        message: `Ukendt brand "${aiBrand}" ikke oprettet — logoet var usikkert (${result.logoConfidence}) eller skåret af ved kanten, og navnet stod hverken på bagsiden eller i Open Food Facts`,
         productId,
       });
     }
@@ -901,6 +923,21 @@ export async function enrichQuickProduct(
   // Dele, hvor OpenAI-kaldet fejlede teknisk: de prøves igen af
   // quick-enrichment-recovery med de gemte fotos (docs/DECISIONS.md 2026-10-16).
   const retry: QuickEnrichmentRetry = { front: front === null, label: label?.aiFailed === true };
+
+  // Eksterne kilder flettes ind, så snart fotoene er læst (bruger 2026-10-17):
+  // stregkode-reserven med det samme, når intet AI-kald skal prøves igen, og
+  // derefter Open Food Facts i de felter, fotoene ikke gav (kun huller fyldes).
+  if (!retry.front && !retry.label && input.barcode) {
+    await applyEanReserve({
+      productId: input.productId,
+      barcode: input.barcode,
+      labelTexts: [input.nutritionOcrText, input.ingredientsOcrText],
+      frontTexts: [input.frontOcrText, input.fallbackName],
+    }).catch((error) => console.error("EAN reserve failed", input.productId, error));
+  }
+  await enrichFromExternalSources(input.productId, { reason: "create", force: true }).catch((error) =>
+    console.error("External enrichment failed", input.productId, error),
+  );
 
   const product = await prisma.product
     .findUnique({

@@ -169,6 +169,9 @@ ikke her, er den ikke registreret og skal tilføjes.
   ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
   (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
   og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
+  Undtagelse (bruger 2026-10-17, Albi): et afskåret/usikkert logo godtages, når
+  præcis samme navn står som helt ord på bagsidens tekst eller er stregkodens
+  Open Food Facts-brand (`brandNameConfirmed`).
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
@@ -188,11 +191,13 @@ ikke her, er den ikke registreret og skal tilføjes.
   stadig i alle tekstfelter, ikke kun titlen.
 - **Madvarer (bruger 2026-10-16)**: favoritter står øverst i listen før de mest
   brugte; lydbølgen under mikrofonen må ikke fjernes; søgefeltet vokser i højden
-  med teksten; kameraet i søgefeltets venstre side åbner billedfunktionen (ingen
+  med teksten; luppen står FORREST (venstre) og et stregkodeikon (ikke kamera)
+  i søgefeltets HØJRE side (user rule 2026-10-17) åbner Tilføj-kameraet (ingen
   "Scan nyt produkt"-knap nederst). Web og native.
 
 ## UI
 
+- **Favoritter i egen blok øverst (user rule 2026-10-17)**: når en liste har favoritter (aktiviteter, retter), står de i deres egen blok "Mine favoritter" øverst og resten under "Alle …" — ikke blot sorteret først i samme liste. Under søgning vises én samlet liste. Aktivitetsvælgeren: web `ActivityPicker.tsx`, native `ActivityPicker` i `ActivityCreateScreen.kt`.
 - **Til/fra-række uden beskrivelse = standardhøjde (user rule 2026-10-17)**: en `Toggle` med kun `label` (fx "Aktiv" i screeningen) er aldrig højere end knapper og felter (`--hf-control-height`, 48 px; native `HcDimens.ControlHeight`), med tekst og knap centreret lodret (`hf-card--control`). Kun med `description` bliver den et højere kort.
 - **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Knapperne bag en lukket række er skjulte, så de ikke skinner igennem kortets runde hjørner. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
 - **Swipe-knapperne og forsidens række gælder alle lister (user rule 2026-10-17)**: alle steder, hvor varer listes eller tilføjelser vises (forsiden, Søg, Madvarer, Favoritter, Dine indscanninger, tale, chat, kalenderen), ser rækken ud som "Dagens tilføjelser": billede, evt. "Kl. 18.45" over navnet, navn, "kcal / 100 g" og pil til højre (web `ProductResultRow`/`FoodRow`; native `FoodProductResultRow`). Favorit fås **kun** ved swipe til højre — ingen hjerte-/bogmærkeknapper i lister. Swipe til venstre giver Fejl (vare: `/product/[id]/report-error`, registrering: `/registration/[id]/report-error`) og Slet, hvor listen kan slette (Favoritter: fjerner favoritten; Indscanninger: skjuler varen, til den scannes igen; Madvarer → Mest brugte: fjerner favoritten og skjuler varen, til den registreres igen — `DELETE /api/products/most-used`, tabellen `most_used_hides`; søgeresultater har ingen Slet). Er det ikke en vare (vand, vejning, måling, AI-skøn uden vare), er der hverken Favorit eller Fejl — kun Slet.
@@ -327,6 +332,21 @@ ikke her, er den ikke registreret og skal tilføjes.
   (`/admin/api-keys#<id>`), ikke kun til API-nøgle-siden.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
+
+## Eksterne kilder flettes altid ind (user rule 2026-10-17)
+
+Så snart en vare scannes, oprettes eller fremsøges, flettes eksterne kilder
+(i dag Open Food Facts via stregkoden) automatisk ind i baggrunden —
+`src/lib/external-enrichment.ts`. Kaldes fra stregkodeopslaget, "opret
+straks" (efter fotoene er læst, med stregkode-reserven med det samme),
+manuel oprettelse, søgeresultater, varesiden og admins OFF-hentning; robotten
+`external-sources-sweep` tager resten. Kun huller fyldes: etikettens data
+overskrives aldrig, brandet sættes kun fra brand-listen (aldrig oprettet ud
+fra OFF), ingredienser kun på varens eget sprog, og øvrige næringstal kun når
+OFF's energi passer (±5 %) med varens. Energien selv følger stadig
+stregkode-reserven. Samme vare tjekkes højst hver 7. dag
+(`sourceCheckedAt`); OFF hentes igen efter 30 dage. Ny ekstern kilde → læg den
+ind i samme modul.
 
 ## Stregkode-reserve (user rule 2026-10-17)
 
