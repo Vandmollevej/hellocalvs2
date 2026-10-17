@@ -15,19 +15,11 @@ function formatTime(iso: string | null) {
   return new Date(iso).toLocaleString("da-DK", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "short" });
 }
 
-const CONTEXT_LABEL = { EATEN: "Spist", RECIPE: "Opskrift" } as const;
-
-type TestResult = { grams: number; source: string; confidence: number } | null;
-
 export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggestionRobotView }) {
   const [robot, setRobot] = useState(initial);
   const [draft, setDraft] = useState<AmountSuggestionSettings>(initial.settings);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [testItemId, setTestItemId] = useState("");
-  const [testUserId, setTestUserId] = useState("");
-  const [testContext, setTestContext] = useState<"EATEN" | "RECIPE">("EATEN");
-  const [testResult, setTestResult] = useState<TestResult | "none" | null>(null);
 
   const running =
     robot.lastRunStatus === "RUNNING" ||
@@ -62,15 +54,6 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
     } finally {
       setBusy(false);
     }
-  }
-
-  async function runTest() {
-    if (!testItemId.trim()) return;
-    const params = new URLSearchParams({ itemId: testItemId.trim(), context: testContext });
-    if (testUserId.trim()) params.set("userId", testUserId.trim());
-    const res = await fetch(`${API}/test?${params}`);
-    const data = await res.json().catch(() => ({}));
-    setTestResult(data.suggestion ?? "none");
   }
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(robot.settings);
@@ -182,108 +165,6 @@ export function AmountSuggestionRobotPanel({ initial }: { initial: AmountSuggest
           </button>
         </div>
       </section>
-      <details className="hf-surface p-4">
-        <summary className="hf-type-body hf-type-strong cursor-pointer text-text-primary">
-          Kontrol af robottens tal (valgfrit)
-        </summary>
-        <p className="hf-type-caption mt-2">
-          Robotten gætter, hvor mange gram en vare typisk er, ud fra hvad brugerne selv vælger. Her kan du kontrollere
-          gættene: skriv en vares id og se, hvad robotten ville foreslå, og se derunder de gæt, flest brugere står bag.
-          Du skal ikke bruge det til daglig drift.
-        </p>
-        <div className="mt-3 flex flex-col gap-4">
-
-      <section className="hf-surface flex flex-col gap-3 p-4">
-        <h2 className="text-text-primary hf-type-body hf-type-strong">Test et forslag</h2>
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="flex min-w-[200px] flex-1 flex-col gap-1 hf-type-body">
-            <span className="text-text-secondary">Vare-id (produkt eller løs ingrediens)</span>
-            <input
-              value={testItemId}
-              onChange={(event) => setTestItemId(event.target.value)}
-              className="hf-input"
-            />
-          </label>
-          <label className="flex min-w-[160px] flex-col gap-1 hf-type-body">
-            <span className="text-text-secondary">Bruger-id (valgfrit)</span>
-            <input
-              value={testUserId}
-              onChange={(event) => setTestUserId(event.target.value)}
-              className="hf-input"
-            />
-          </label>
-          <label className="flex flex-col gap-1 hf-type-body">
-            <span className="text-text-secondary">Kontekst</span>
-            <select
-              value={testContext}
-              onChange={(event) => setTestContext(event.target.value as "EATEN" | "RECIPE")}
-              className="hf-input"
-            >
-              <option value="EATEN">Spist</option>
-              <option value="RECIPE">Opskrift</option>
-            </select>
-          </label>
-          <button
-            type="button"
-            onClick={runTest}
-            className="hf-btn-secondary hf-btn--compact hf-btn--inline"
-          >
-            Beregn
-          </button>
-        </div>
-        {testResult === "none" && (
-          <p className="hf-type-caption">
-            Intet forslag (ingen data, eller forslag er slået fra i app&apos;en) — slideren starter på standarden.
-          </p>
-        )}
-        {testResult && testResult !== "none" && (
-          <p className="text-text-primary hf-type-body">
-            {testResult.grams} g · kilde: {testResult.source} · sikkerhed {Math.round(testResult.confidence * 100)} %
-          </p>
-        )}
-      </section>
-
-      <section className="hf-surface flex flex-col gap-2 p-4">
-        <h2 className="text-text-primary hf-type-body hf-type-strong">
-          Forslag med flest brugere bag ({robot.suggestionCount} i alt)
-        </h2>
-        {robot.topSuggestions.length === 0 ? (
-          <p className="text-text-muted hf-type-small">Ingen forslag endnu — kræver mindst {robot.settings.minUsers} brugere pr. vare.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left hf-type-small">
-              <thead className="text-text-muted">
-                <tr>
-                  <th className="py-1 pr-3">Vare</th>
-                  <th className="py-1 pr-3">Kontekst</th>
-                  <th className="py-1 pr-3">Forslag</th>
-                  <th className="py-1 pr-3">Typisk spænd</th>
-                  <th className="py-1 pr-3">Sikkerhed</th>
-                  <th className="py-1 pr-3">Brugere / valg</th>
-                </tr>
-              </thead>
-              <tbody>
-                {robot.topSuggestions.map((row) => (
-                  <tr key={row.id} className="border-t border-border-strong">
-                    <td className="py-1 pr-3 text-text-primary">{row.name}</td>
-                    <td className="py-1 pr-3 text-text-secondary">{CONTEXT_LABEL[row.context]}</td>
-                    <td className="py-1 pr-3 text-text-primary">{Math.round(row.grams)} g</td>
-                    <td className="py-1 pr-3 text-text-secondary">
-                      {row.p25 != null && row.p75 != null ? `${Math.round(row.p25)}–${Math.round(row.p75)} g` : "–"}
-                    </td>
-                    <td className="py-1 pr-3 text-text-secondary">{Math.round(row.confidence * 100)} %</td>
-                    <td className="py-1 pr-3 text-text-secondary">
-                      {row.userCount} / {row.sampleCount}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-        </div>
-      </details>
     </div>
   );
 }
