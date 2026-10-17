@@ -1,3 +1,11 @@
+## 2026-10-17: Robot-QoS — robotter venter på lav belastning og respekterer spærretider
+
+Brugeren: "Kan man under robotter sætte en QOS? Suspend indtil ram/cpu belastning er under x igen før opgaven varetages? Og ikke må køre i spidsbelastningsperioder."
+- Én fælles indstilling øverst på admin → Robotter (robot_configs, key `qos`): til/fra, maks. CPU %, maks. RAM % og op til 6 spærretider (dansk tid, må gå hen over midnat). Slået fra som standard; forudfyldt 80 % CPU og 85 % RAM.
+- Et forfaldent robotjob claimes først, når værtens CPU (målt over 1 s i `/proc/stat`) og RAM (`MemAvailable`) er under grænsen og klokken ikke er i en spærretid; ellers springes det over og prøves igen ved næste tjek. Grunden og "venter siden" står på jobrækken (`qosWaitingSince`, `qosWaitReason`) og vises i robotrækken.
+- Gælder alle robotter: app-jobs med `robot: true` (`src/lib/jobs/runner.ts`) og alle Python-agenter (`scripts/*/job_control.py`, samme regler som `src/lib/robot-qos.ts`). Vedligehold, integrationer, betaling, mail osv. er ikke robotter og styres ikke.
+- "KØR" (kør nu) går altid udenom. Gaten er ved start: et job, der allerede kører, afbrydes ikke; "Løbende" robotter tjekker ved hver runde og pauser dermed mellem portionerne.
+
 ## 2026-10-17: Brand ved produktcirklen kun som logo
 
 Brugerens beslutning: brand og subbrand ved produktcirklen vises kun som logo; uden logo vises intet (web `AddProductView`, native `AddProductScreen`). Erstatter navnet i fed grøn tekst fra 2026-10-10/2026-10-15. Baggrund: Open Food Facts' brand-felt indeholder for mange varer producentens firmanavn ("Coca-Cola Europacific Partners Services Bulgaria EOOD"), og det kan ikke rettes med navnelister på millioner af varer. Brands uden logo samles i admin → Brands → "Uden logo" med link til brandets varer.

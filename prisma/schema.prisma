@@ -2300,6 +2300,10 @@ model ScheduledJob {
   lastStatus      String?
   lastMessage     String?
   lastDurationMs  Int?
+  // Robot-QoS: jobbet er forfaldent, men venter på lavere CPU/RAM eller på at
+  // en spærretid slutter (src/lib/robot-qos.ts, scripts/*/job_control.py).
+  qosWaitingSince DateTime?
+  qosWaitReason   String?
   updatedAt       DateTime  @default(now()) @updatedAt
 
   @@map("scheduled_jobs")
