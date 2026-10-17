@@ -15,9 +15,12 @@ jobs:
           set -uo pipefail
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
-          echo "=== All scheduled jobs ==="
-          q "SELECT key, enabled, \"intervalMinutes\" iv, \"runAtTime\" at, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, to_char(\"lastRunAt\",'MM-DD HH24:MI') ran, \"lastStatus\" st, left(\"lastMessage\",120) msg FROM scheduled_jobs ORDER BY \"lastStartedAt\" DESC NULLS LAST"
-          echo "=== App container logs (scheduler) ==="
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production logs --since 12h app 2>&1 | grep -i -E "scheduler|jobs\]|instrumentation|error" | tail -40 || true
-          echo "=== Containers ==="
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production ps --format "table {{.Service}}\t{{.Status}}" 2>&1 | head -30 || true
+          C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
+          echo "=== App startup log (first 60 lines) ==="
+          $C logs --no-log-prefix app 2>&1 | head -60 || true
+          echo "=== App log lines mentioning scheduler/jobs/api-keys/instrument ==="
+          $C logs --no-log-prefix app 2>&1 | grep -i -E "scheduler|\[jobs\]|api-keys|instrument|register|Prisma|ECONN" | head -40 || true
+          echo "=== App env (names only, NEXT/NODE) ==="
+          $C exec -T app sh -c 'env | grep -E "^(NEXT_|NODE_ENV|HOSTNAME|PORT)" | sed "s/=.*$/=<set>/"' || true
+          echo "=== instrumentation in image ==="
+          $C exec -T app sh -c 'ls -la .next/server/instrumentation* 2>&1 | head; ls .next/server | head -30' || true
