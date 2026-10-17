@@ -190,7 +190,11 @@ def bria_compare_loop():
         )
     conn.commit()
     conn.close()
-    run_forever(DATABASE_URL, "bria-compare", run_compare)
+    # Kører af sig selv én gang efter deploy, så længe sammenligningssiden ikke
+    # findes (så du ikke skal ind i admin). Gemte Bria-svar koster ikke credits igen.
+    from compare_engines import INDEX
+
+    run_forever(DATABASE_URL, "bria-compare", run_compare, run_on_start=not os.path.exists(INDEX))
 
 
 def main():

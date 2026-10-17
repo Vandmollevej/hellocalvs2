@@ -316,9 +316,9 @@ export const JOBS: JobDefinition[] = [
   {
     // Sammenligning af fritlægningsmotorer (docs/BRIA.md): kun "Kør nu".
     key: "bria-compare",
-    name: "Bria: sammenlign med rembg",
+    name: "Bria: sammenlign med normal fritlægning",
     description:
-      "Kører 20 danske Open Food Facts-varer, vi bruger (godkendte, med godkendt billede), gennem både rembg og Bria og lægger resultatet på /product-images/compare/index.html (original | rembg | Bria). Bruger ét Bria-opslag pr. billede, så kør den kun, når du vil sammenligne. Kræver Bria-nøglen under API-nøgler.",
+      "Fritlægger 20 billeder med både den normale fritlægning og Bria og viser dem to og to på rød baggrund på /product-images/compare/index.html. Billederne tages fra mappen Mangler i billedmappen, ellers de seneste kamerabilleder. Kører af sig selv én gang efter deploy; gemte Bria-svar koster ikke credits igen.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: null,
