@@ -206,12 +206,16 @@ fun MicronutrientInfoSheet(nutrientKey: String, onClose: () -> Unit) {
 
 /**
  * src/components/hf/IngredientsText.tsx + splitENumbers: allergens in bold
- * UPPERCASE, E-numbers as links (info sheet), "Mad på latin" words as quiet links.
+ * UPPERCASE linking to their page under Viden om mad → Allergener (incl. the
+ * allergen robot's approved words), E-numbers as links (info sheet),
+ * "Mad på latin" words as quiet links.
  */
 @Composable
 fun IngredientsTextView(text: String, onAdditive: (String) -> Unit) {
     val nav = LocalNavigator.current
-    val annotated = remember(text) {
+    var extraWords by remember { mutableStateOf(emptyMap<String, String>()) }
+    LaunchedEffect(Unit) { extraWords = AllergenWords.load() }
+    val annotated = remember(text, extraWords) {
         buildAnnotatedString {
             for (part in splitENumbers(displayIngredientsText(text))) {
                 val code = part.code
@@ -224,15 +228,25 @@ fun IngredientsTextView(text: String, onAdditive: (String) -> Unit) {
                     ) { append(part.text) }
                     continue
                 }
-                for (segment in segmentIngredients(part.text)) {
-                    for (termPart in splitFoodTerms(segment.text)) {
-                        val shown = if (segment.allergen) termPart.text.uppercase() else termPart.text
-                        val term = termPart.term
-                        val style = if (segment.allergen) SpanStyle(fontWeight = FontWeight.Bold) else SpanStyle()
-                        if (term != null) {
-                            withLink(LinkAnnotation.Clickable(tag = "t:$term", styles = TextLinkStyles(style)) { nav.push(foodTermHref(term)) }) { append(shown) }
+                for (segment in segmentIngredients(part.text, extraWords)) {
+                    val key = segment.allergenKey
+                    if (segment.allergen) {
+                        val bold = SpanStyle(fontWeight = FontWeight.Bold)
+                        if (key != null) {
+                            withLink(LinkAnnotation.Clickable(tag = "a:$key", styles = TextLinkStyles(bold)) { nav.push(allergenHref(key)) }) {
+                                append(segment.text.uppercase())
+                            }
                         } else {
-                            withStyle(style) { append(shown) }
+                            withStyle(bold) { append(segment.text.uppercase()) }
+                        }
+                        continue
+                    }
+                    for (termPart in splitFoodTerms(segment.text)) {
+                        val term = termPart.term
+                        if (term != null) {
+                            withLink(LinkAnnotation.Clickable(tag = "t:$term", styles = TextLinkStyles(SpanStyle())) { nav.push(foodTermHref(term)) }) { append(termPart.text) }
+                        } else {
+                            append(termPart.text)
                         }
                     }
                 }

@@ -1,6 +1,16 @@
 ## 2026-10-17: Robot-QoS på admin → Robotter
 
-- Ny boks "Belastningsstyring (QoS)": robotter starter først, når CPU/RAM er under grænsen, og aldrig i spærretider. Viser serverens belastning lige nu og hvor mange robotter der venter; hver robotrække viser grunden. Kræver migration `20261017210000_robot_qos` og genbyg af agent-containerne (ny `job_control.py`). Se DECISIONS 2026-10-17.
+- Ny boks "Belastningsstyring (QoS)": robotter starter først, når CPU/RAM er under grænsen, og aldrig i spærretider. Viser serverens belastning lige nu og hvor mange robotter der venter; hver robotrække viser grunden. Kræver migration `20261017220000_robot_qos` og genbyg af agent-containerne (ny `job_control.py`). Se DECISIONS 2026-10-17.
+## 2026-10-17: Allergener linker til egne sider + natlig allergen-robot
+
+- Brugerens regel: alle allergener i EU-varer står med STORT, og hvert allergen-ord i ingredienslisten linker til en side om allergenet. Ny sektion "Allergener" under Viden om mad med de 14 EU-allergener (`src/lib/knowledge-allergens.ts`, kilder: EU 1169/2011, sundhed.dk, Your Europe); ordene i ingredienslisten linker til `/viden-om/allergener/<nøgle>`. Web + native.
+- Ny robot `allergen-words` (kl. 04:20): læser nye/ændrede ingredienslister og finder allergen-ord, fremhævningen ikke fanger. Opslagsværk: Open Food Facts' åbne allergen- og ingrediens-taksonomi (alle sprog, fx "kærnemælk", "mozzarella" → mælk) — godkendes straks. Ord, kun producenten har skrevet med STORT, venter på admin → Allergen-ord. Nye fund rapporteres som admin-advarsel (banner + advarselsmail) og i kørslens besked.
+- Migration `20261017210000_allergen_words` skal med deployet. Ikke prøvet mod rigtig database eller Open Food Facts herfra (sandkassen har ikke netadgang dertil); native ikke kompileret lokalt.
+
+## 2026-10-17: Ingen rød kant i swipe-kortets hjørne
+
+- Knapperne bag en lukket swipe-række skjules nu (web `SwipeableRow`, native `FoodSwipeableRow`), så Slet ikke skinner rødt igennem kortets runde hjørne nederst til højre (set på Screeninger).
+- Swipe med fingeren blev afbrudt med det samme i den nye fælles `SwipeableRow` (#539): når rækken overtog fingeren fra linket, boblede linkets `lostpointercapture` op og lukkede trækket. Nu reagerer den kun på fladens egen. Prøvet i browser på mobilbredde med touch-swipe (før: ingen bevægelse, efter: Aktivér/Fjern vises).
 
 ## 2026-10-17: Alle swipe-rækker ser ens ud
 
@@ -71,10 +81,12 @@
 ## 2026-10-16: Scannede fotos læses igen, når OpenAI-kreditten er tilbage
 
 - Fotoene fra scanningen var gemt, men genlæsningen (`quick-enrichment-recovery`) brugte sine 3 forsøg og engangsreparationen, mens kreditten var tom, og opgav så varen (fx Änglamark-letmælken: intet navn, 0 kcal, råfoto). Nu står jobbet stille, så længe OpenAI melder tom kredit/afvist nøgle, og varer, hvis reparation blev brændt af, genåbnes én gang til (`repairRound` 2) og læses fra de gemte fotos, så snart kreditten er fyldt op. Ikke prøvet mod rigtig database herfra.
+
 ## 2026-10-16: Analyse → Søgning → Tale
 
 - Ny fane "Tale" på Admin → Analyse → Søgning: hver brug af mikrofonen på Madvarer som en tidslinje. Hvert trin (hver søgning, mens der tales) viser det hørte, det der blev søgt på (efter fyldord/stavning) og de 5 øverste varer med billede og begrundelse i point (tekstmatch + populær i landet, tidspunkt, stregkode fra landet osv., samme point som Søgealgoritmer). Øverst: sådan læses og påvirkes det (Synonymordbog, Søgealgoritmer, Stavekontrol). AI-forslagene for hele sætningen vises i samme tidslinje med AI'ens egen begrundelse pr. vare (`reason` i `/api/ai/interpret-meal`) og om varen blev fundet i databasen eller er et skøn. Anonymt, gemmes 30 dage.
 - Web + native sender `&voice=<session>` til `/api/products`, så længe søgefeltet står med det sagte. `src/lib/voice-search-log.ts`, `src/lib/search-explain.ts` (+ test), `VoiceSessions.tsx`. Visningen er prøvet med eksempeldata (skærmbillede); ikke prøvet mod rigtig database eller på telefon. Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Screeninger på det globale design
 
 - Profil → Screeninger bruger nu `AccordionCard`/`ChevronRow` (web) og `HcAccordionCard`/`HcChevronRow` (native) i stedet for hardcodede rækker; `ChevronRow` har fået `value` (status før pilen). `ActionButton`/`ActionLink` er altid 48 px (Screeningrapporter-knappen var klemt).
@@ -118,7 +130,9 @@
 ## 2026-10-16: Madvarer — favoritter øverst, lydbølgen tilbage, kamera i søgefeltet
 
 - Favoritter står øverst i listen (server + web + native), lydbølgen under mikrofonen er tilbage, søgefeltet vokser med teksten, og kameraet i søgefeltet afløser "Scan nyt produkt"-knappen.
+
 ## 2026-10-16: Forsidens grafer i infoboksens plads
+
 ## 2026-10-16: Google Health synkroniserer af sig selv + kun én synk-popup
 
 - Cloud-integrationer uden webhook (Google Health m.fl.) hentes nu ved hver åbning af appen (`api/integrations/app-open`, højst hvert 15. min.) og i eget baggrundsjob `integration-sync` (hvert 15. min., 2 min. tidsgrænse pr. integration). Før lå hentningen sidst i Vedligehold, hvor en fejl/et langt trin tidligere i kørslen kunne stoppe den i dagevis.
@@ -137,6 +151,7 @@
 ## 2026-10-16: Cirklen bagt ind i produktbilledet på hjemmesiden
 
 - Fritskrabede varebilleder på varesiden (kun web) leveres med cirklen bagt ind (`/product-circle`), så billedet ikke kan hentes uden cirklen. Cirklens proportioner er uændrede; billedet vokser i højde/bredde ved overlap. Native uændret. Ikke prøvet i browser/mod rigtig database her (kun renderingen testet med syntetiske billeder). Se DECISIONS 2026-10-16.
+
 ## 2026-10-16: Tale forstår hele sætninger
 
 - Madvarer: Tale-sidens funktion er tilbage uændret — det sagte tolkes af AI'en til forslag med mængde ("to skiver franskbrød med smør og marmelade" → tre forslag), Foreslået/Tilføjet, swipe, dagens liste huskes. Web + native. Native kompileres kun i CI; ikke prøvet på telefon. Se DECISIONS 2026-10-16.
