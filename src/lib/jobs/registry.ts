@@ -133,6 +133,19 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Bruger 2026-10-17: eksterne kilder flettes automatisk ind i alle varer
+    // (src/lib/external-enrichment.ts); robotten tager de varer, som endnu
+    // ikke er scannet, oprettet eller fremsøgt siden reglen kom.
+    key: "external-sources-sweep",
+    name: "Eksterne kilder: flet ind i varer",
+    description:
+      "Henter Open Food Facts for varer med stregkode, der aldrig er tjekket, og udfylder kun tomme felter (brand fra brand-listen, ingredienser på varens sprog, allergener, mængde, filtre, butikker, billede og — når energien passer — øvrige næringsstoffer). Etikettens data overskrives aldrig. Højst 60 varer pr. kørsel.",
+    runtime: "app",
+    robot: true,
+    defaultIntervalMinutes: 15,
+    defaultRunAtTime: null,
+  },
+  {
     key: "energy-split-check",
     name: "Energifordeling: afvigelser",
     description:

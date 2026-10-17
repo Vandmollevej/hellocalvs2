@@ -55,6 +55,7 @@ import dk.packroff.hellocal.ui.CaptureValueField
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
+import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileSleepRangeSlider
 import dk.packroff.hellocal.screens.food.GlyphButton
@@ -116,6 +117,12 @@ private val SPORT_ICONS = mapOf(
     "golf" to "Golf", "ski" to "Snowflake", "cross_country_ski" to "Snowflake", "snowboard" to "Snowboarding", "ice_skating" to "IceSkating",
     "snow_shoveling" to "Shovel", "inline_skating" to "Skateboarding", "skateboarding" to "Skateboarding", "horse_riding" to "Horse",
     "gardening" to "Plant", "woodcutting" to "Axe", "moving" to "Box", "housework" to "Home", "playing_kids" to "MoodKid", "other" to "Activity",
+    "squat" to "Barbell", "deadlift" to "Barbell", "bench_press" to "Barbell", "shoulder_press" to "Barbell", "lunges" to "Barbell",
+    "leg_training" to "Barbell", "upper_body" to "Barbell", "free_weights" to "Barbell", "machine_training" to "Barbell", "weightlifting" to "Barbell",
+    "powerlifting" to "Barbell", "bodybuilding" to "Barbell", "strongman" to "Barbell", "body_pump" to "Barbell", "pull_ups" to "Gymnastics",
+    "push_ups" to "Gymnastics", "core" to "Gymnastics", "trx" to "Gymnastics", "resistance_bands" to "Stretching", "battle_ropes" to "Heartbeat",
+    "air_bike" to "Bike", "ski_erg" to "Heartbeat", "gymnastics" to "Gymnastics", "parkour" to "Run", "barre" to "Music",
+    "tai_chi" to "Yoga", "stretching" to "Stretching", "rehab" to "Stretching",
 )
 
 internal fun sportIcon(key: String): String = SPORT_ICONS[key] ?: "Activity"
@@ -180,14 +187,20 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         HcSearchField(query, { query = it }, t.t("activity.searchPlaceholder"))
         val showAdd = trimmed.length >= 2 && !exact
-        if (matches.isNotEmpty() || showAdd) {
+        // Favourites in their own block on top, like "My favourites" under recipes
+        // (user 2026-10-17). While searching: one combined list.
+        val favoriteOptions = if (trimmed.isEmpty()) matches.filter { it.favorite } else emptyList()
+        val restOptions = if (trimmed.isEmpty()) matches.filter { !it.favorite } else matches
+
+        @Composable
+        fun OptionCard(list: List<ActivityOption>, withAdd: Boolean) {
             HcAccordionCard {
-                matches.forEachIndexed { index, option ->
+                list.forEachIndexed { index, option ->
                     HcChevronRow(
                         label = if (option.pending) "${option.label} (${t.t("activity.pending")})" else option.label,
                         onClick = if (disabled) null else ({ onPick(option) }),
                         icon = sportIcon(option.key),
-                        divider = index < matches.lastIndex || showAdd,
+                        divider = index < list.lastIndex || withAdd,
                         trailing = {
                             Box(
                                 Modifier.heightIn(min = HcDimens.ControlHeight).clickable { toggleFavorite(option) }.padding(start = 4.dp),
@@ -196,7 +209,7 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
                         },
                     )
                 }
-                if (showAdd) {
+                if (withAdd) {
                     HcChevronRow(
                         label = t.t("activity.addManual", "name" to trimmed),
                         onClick = if (disabled) null else ({ addManual() }),
@@ -204,6 +217,23 @@ internal fun ActivityPicker(onPick: (ActivityOption) -> Unit, busy: Boolean = fa
                         divider = false,
                     )
                 }
+            }
+        }
+
+        if (favoriteOptions.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                HcSectionTitle(t.t("activity.favoritesTitle"))
+                OptionCard(favoriteOptions, withAdd = false)
+            }
+        }
+        if (restOptions.isNotEmpty() || showAdd) {
+            if (favoriteOptions.isNotEmpty()) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HcSectionTitle(t.t("activity.allTitle"))
+                    OptionCard(restOptions, withAdd = showAdd)
+                }
+            } else {
+                OptionCard(restOptions, withAdd = showAdd)
             }
         }
     }

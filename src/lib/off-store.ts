@@ -108,6 +108,17 @@ export async function saveOffRecord(args: {
   return { id: record.id, storesTags: offStoreNames(raw), split, filters: built.filters, nutrition: built.nutrition };
 }
 
+// Den gemte post regnet om med de nuværende regler — uden at hente eller
+// gemme igen (fetchedAt røres ikke). Bruges af src/lib/external-enrichment.ts.
+export async function offRecordFromStored(barcode: string): Promise<SavedOffRecord | null> {
+  const row = await prisma.offProductRecord.findUnique({ where: { barcode }, select: { id: true, raw: true } });
+  if (!row) return null;
+  const raw = row.raw as OffRaw;
+  const split = splitOffProduct(offSplitInputFromRaw(raw), await loadOffVocab());
+  const built = buildOffRecordData({ barcode, raw, split });
+  return { id: row.id, storesTags: offStoreNames(raw), split, filters: built.filters, nutrition: built.nutrition };
+}
+
 // Fejl ved gemning må aldrig vælte et stregkodeopslag.
 export async function saveOffRecordSafely(args: Parameters<typeof saveOffRecord>[0]): Promise<SavedOffRecord | null> {
   try {
