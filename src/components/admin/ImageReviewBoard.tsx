@@ -212,7 +212,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           const shown = shownSlides(item);
           const lightboxIndex = () => items.findIndex((entry) => entry.id === item.id);
           return (
-            <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form">
+            <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form h-full">
               <div>
                 <p className="hf-type-strong text-hf-black">{item.title}</p>
                 {item.subtitle && <p className="hf-type-caption">{item.subtitle}</p>}
@@ -259,7 +259,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                   })}
                 </div>
               )}
-              <div className="flex gap-2">
+              <div className="mt-auto flex gap-2">
                 <button type="button" onClick={() => act(item, "reject")} disabled={busy} className="hf-btn-danger flex-1 hf-btn--large">
                   {rejectLabel}
                 </button>
@@ -273,15 +273,17 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
       </div>
 
       {pageCount > 1 && (
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-1.5" aria-label="Sider">
           <button type="button" onClick={() => setPage(Math.max(0, safePage - 1))} disabled={safePage === 0} className="hf-btn-text">
-            ‹ Forrige
+            ‹
           </button>
-          <span className="hf-type-caption">
-            {safePage + 1} / {pageCount}
-          </span>
+          {Array.from({ length: pageCount }, (_, n) => n).map((n) => (
+            <button key={n} type="button" onClick={() => setPage(n)} aria-current={n === safePage ? "page" : undefined} aria-pressed={n === safePage} className="hf-choice">
+              {n + 1}
+            </button>
+          ))}
           <button type="button" onClick={() => setPage(Math.min(pageCount - 1, safePage + 1))} disabled={safePage >= pageCount - 1} className="hf-btn-text">
-            Næste ›
+            ›
           </button>
         </div>
       )}

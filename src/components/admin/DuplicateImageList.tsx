@@ -105,7 +105,7 @@ export function DuplicateImageList({ groups }: { groups: ImageGroup[] }) {
         <ReviewSizePicker sizeIdx={sizeIdx} onChoose={choose} />
       </div>
       <BulkActionsBar />
-      <div className={`grid gap-4 ${perPage === 4 ? "md:grid-cols-2" : "grid-cols-1"}`}>
+      <div className={`grid gap-4 ${perPage >= 12 ? "md:grid-cols-2 2xl:grid-cols-4" : perPage === 2 ? "md:grid-cols-2" : "grid-cols-1"}`}>
         {visible.map(({ group, view }) => (
           <DuplicateImageGroup
             key={group.productId}
