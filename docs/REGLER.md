@@ -9,7 +9,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
-- Listen er den globale `AccordionCard` + `ChevronRow` (native `HcAccordionCard` + `HcChevronRow`) med status-prik (`.hf-status-dot`) og "Aktiv/Inaktiv" i `value` — ingen hjemmelavede rækker (bruger 2026-10-16).
+- Listen er `AccordionCard` med `ScreeningRow` (`src/components/screenings/ScreeningRow.tsx`; native `ScreeningListRow`): præcis som madvarelistens rækker — px-4-ramme med tan-dark streg, den globale `FoodRow` (64 px, 44 px ikonfelt med måne/clipboard-heart, navn, status-prik + "Aktiv/Inaktiv" som caption) og pil til højre (user rule 2026-10-17: "1:1 med madvare-blokkene", særligt højden). Afløser 48 px-`ChevronRow` herfra.
 
 ## Varens sprog og oversættelse (user rule 2026-10-15)
 
@@ -469,6 +469,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
 - Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
 - Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- **Tallet over en slider kan altid skrives (bruger 2026-10-17, gentaget flere gange):** overalt hvor der er en slider, skal værdien også kunne tastes manuelt. Tallet ser ud som almindelig tekst og ændrer ikke udseende, før man trykker på det; da får det hvid baggrund, og taltastaturet kommer frem. Brug `TapNumberInput` (web) / `CaptureTapNumber` (native) — eller et eksisterende felt ved siden af slideren. Ingen slider uden en indtastningsmulighed.
 - Mængdefeltet på produktsiden er selv slideren (bruger 2026-10-16): det store tal trækkes vandret (`DragNumberStrip`, web + native). Under trækket vises nabotallene mindre og mere utydelige i siderne i tal-hjulets stil, alle på det store tals grundlinje; enheden ("g") skjules under trækket og kommer igen, når nabotallene er faldet ud. Ingen separat slider under feltet.
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
 

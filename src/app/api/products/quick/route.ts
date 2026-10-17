@@ -14,6 +14,7 @@ import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { reviewIngredientsText } from "@/lib/ingredient-text-quality";
 import { loadSpellingDictionary } from "@/lib/spelling-dictionary";
 import { linkBackPhotos } from "@/lib/product-back-photos";
+import { recordProductScanSafely } from "@/lib/user-scans";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -153,6 +154,9 @@ export async function POST(req: Request) {
         productId: existing.productId,
         durationMs: Date.now() - startedAt,
       });
+      // Brugeren scannede varen — den skal stå i "Dine indscanninger".
+      const scanner = await getSessionUser();
+      if (scanner) await recordProductScanSafely(scanner.id, existing.productId);
       return NextResponse.json({ product: { id: existing.productId } });
     }
 
@@ -225,6 +229,9 @@ export async function POST(req: Request) {
       },
       select: { id: true },
     });
+    // En opfyldt OFF-vare har OFF's gamle createdAt; scanningen giver den
+    // dagens dato i "Dine indscanninger" (src/lib/user-scans.ts).
+    if (sessionUser) await recordProductScanSafely(sessionUser.id, product.id);
 
     // Stregkode-fotoet (POST /api/ai/save-barcode-photo) kobles til varen,
     // så kvalitetskontrol-agenten kan finde det.
