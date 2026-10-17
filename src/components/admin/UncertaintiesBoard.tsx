@@ -271,12 +271,30 @@ export function UncertaintiesBoard({
                 row.urgent ? "border-2 border-hf-red-dark" : "border-hf-tan-dark"
               }`}
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-hf-tan">
-                {row.thumbnailUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={imageThumb(row.thumbnailUrl, 128)} alt="" loading="lazy" className="h-full w-full object-contain" />
-                )}
-              </div>
+              {row.briaThumbnailUrl && row.thumbnailUrl ? (
+                // Normal og Bria to og to på rød baggrund, så kanterne er lette at se.
+                <div className="flex shrink-0 gap-1">
+                  {[
+                    { src: row.thumbnailUrl, label: "Normal" },
+                    { src: row.briaThumbnailUrl, label: "Bria" },
+                  ].map((image) => (
+                    <div key={image.label} className="flex flex-col items-center gap-0.5">
+                      <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md bg-hf-red-dark">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={image.src} alt={image.label} loading="lazy" className="h-full w-full object-contain" />
+                      </div>
+                      <span className="hf-type-micro text-text-muted">{image.label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-hf-tan">
+                  {row.thumbnailUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={imageThumb(row.thumbnailUrl, 128)} alt="" loading="lazy" className="h-full w-full object-contain" />
+                  )}
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <p className="hf-type-body hf-type-strong truncate text-hf-black">{row.productName}</p>
                 <p className="hf-type-small text-text-muted">

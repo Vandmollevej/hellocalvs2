@@ -316,9 +316,9 @@ export const JOBS: JobDefinition[] = [
   {
     // Sammenligning af fritlægningsmotorer (docs/BRIA.md): kun "Kør nu".
     key: "bria-compare",
-    name: "Bria: sammenlign med normal fritlægning",
+    name: "Bria: _bria-udgaver af de 20 seneste kamerabilleder",
     description:
-      "Fritlægger 20 billeder med både den normale fritlægning og Bria og viser dem to og to på rød baggrund på /product-images/compare/index.html. Billederne tages fra mappen Mangler i billedmappen, ellers de seneste kamerabilleder. Kører af sig selv én gang efter deploy; gemte Bria-svar koster ikke credits igen.",
+      "Lægger en Bria-udgave (_bria) ved siden af den normale fritlægning af de 20 seneste kamerabilleder. Usikkerheder viser dem to og to på rød baggrund. Kører af sig selv én gang efter deploy; gemte Bria-svar koster ikke credits igen.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: null,

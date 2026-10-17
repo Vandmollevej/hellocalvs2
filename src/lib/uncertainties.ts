@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { readRegions, type AnalysisRegions } from "@/lib/ai-regions";
 import { cached, invalidateCache } from "@/lib/ttl-cache";
 import { UNCERTAINTY_TARGET, URGENT_BELOW } from "@/lib/uncertainty-thresholds";
+import { briaVariantUrl } from "@/lib/bria-variant";
 
 // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24/25) — erstatter
 // "Advarsler". To datakilder:
@@ -89,6 +90,8 @@ export type UncertaintyRow = {
   productName: string;
   brandName: string | null;
   thumbnailUrl: string | null;
+  // Bria-udgaven ({job}_bria.png) af produktbilledet, hvis den findes — vises ved siden af det normale.
+  briaThumbnailUrl: string | null;
   photoUrl: string | null;
   // Billeder-fanen: forsidefotoet, som photoUrl er sammenlignet med.
   comparePhotoUrl: string | null;
@@ -112,6 +115,7 @@ export type UncertaintySummary = Pick<
   | "productName"
   | "brandName"
   | "thumbnailUrl"
+  | "briaThumbnailUrl"
   | "photoTypeLabel"
   | "productCreatedAt"
   | "uncertaintyPercent"
@@ -184,6 +188,7 @@ function summaryFor(
     productName: product.name,
     brandName: product.brand?.name ?? null,
     thumbnailUrl: product.imageUrl,
+    briaThumbnailUrl: briaVariantUrl(product.imageUrl),
     photoTypeLabel: base.photoTypeLabel,
     productCreatedAt: product.createdAt.toISOString(),
     uncertaintyPercent: Math.round((1 - confidence) * 100),
@@ -319,6 +324,7 @@ export async function getUncertaintyDetail(
       productName: check.product.name,
       brandName: check.product.brand?.name ?? null,
       thumbnailUrl: check.product.imageUrl,
+      briaThumbnailUrl: briaVariantUrl(check.product.imageUrl),
       photoUrl: check.analysis.imageUrl,
       comparePhotoUrl: check.product.imageUrl,
       photoTypeLabel: PHOTO_TYPE_LABEL[check.photoType],
@@ -381,6 +387,7 @@ export async function getUncertaintyDetail(
     productName: product.name,
     brandName: product.brand?.name ?? null,
     thumbnailUrl: product.imageUrl,
+    briaThumbnailUrl: briaVariantUrl(product.imageUrl),
     // Forsideanalysen har intet eget foto — forsidefotoet er produktets billede.
     photoUrl: analysis.kind === "FRONT" ? product.imageUrl : analysis.imageUrl,
     comparePhotoUrl: null,

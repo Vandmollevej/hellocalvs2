@@ -26,9 +26,9 @@ API-adressen og headeren (`api_token`, `sync: true`) er skrevet efter Bria's
 dokumentation fra hukommelsen og ikke prøvet mod den rigtige tjeneste. Knappen
 "Test" under API-nøgler og første kørsel afslører en afvigelse.
 
-## Sammenligningssiden (bruger 2026-10-16)
+## Sammenligning under Usikkerheder (bruger 2026-10-17)
 
-`https://hellocal.io/product-images/compare/index.html`: 20 billeder to og to, normal fritlægning til venstre og Bria til højre, på rød baggrund. Kilde: mappen `data/product-images/Mangler/` (hvis den findes), ellers de seneste kamerabilleder. Jobbet kører af sig selv én gang efter deploy, hvis siden ikke findes; slet `data/product-images/compare/index.html` og genstart `image-agent` (eller tryk Kør nu under Robotter) for at lave den om.
+Ingen egen side: billeder under `/product-images` kræver login og kan ikke åbnes som selvstændig side (adgangsmuren), så en sammenligningsside dér giver "Forbidden". I stedet lægger billedrobotten en Bria-udgave `{job}_bria.png` ved siden af den normale fritlægning `{job}.png`, og admin → Usikkerheder viser hver vare med to billeder på rød baggrund (Normal og Bria), når `_bria`-filen findes. Jobbet `bria-compare` laver `_bria`-udgaver af de 20 seneste kamerabilleder og kører af sig selv én gang efter deploy, så længe der er færre end 20; gemte Bria-svar koster ikke credits igen.
 
 ## Credits og fremtidige billeder (bruger 2026-10-16)
 
