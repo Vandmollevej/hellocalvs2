@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.border
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -384,13 +386,25 @@ fun FoodsScreen(args: RouteArgs) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth()) {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        Modifier.size(96.dp).clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        if (micListening) PingRing()
-                        Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
-                            Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                    Box(Modifier.size(96.dp)) {
+                        Box(
+                            Modifier.fillMaxSize().clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            if (micListening) PingRing()
+                            Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
+                                Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                            }
+                        }
+                        // The language flag is a badge on the microphone's upper-left edge — the mirror of the
+                        // favourite mark on the product circle's upper-right edge (user 2026-10-17).
+                        Box(Modifier.align(Alignment.TopStart).offset(x = (-2).dp, y = (-2).dp)) {
+                            MealLanguagePicker(lang.language, lang.region) { code ->
+                                if (code != lang.language) {
+                                    lang.set(code)
+                                    if (micListening) startMic()
+                                }
+                            }
                         }
                     }
                     HcText(
@@ -407,15 +421,6 @@ fun FoodsScreen(args: RouteArgs) {
                     if (micListening) LiveWaveform()
                     micError?.let {
                         HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
-                    }
-                }
-                // The language flag sits left of the microphone, mirroring the favourite mark on the right.
-                Box(Modifier.align(Alignment.TopStart).padding(top = 26.dp)) {
-                    MealLanguagePicker(lang.language, lang.region) { code ->
-                        if (code != lang.language) {
-                            lang.set(code)
-                            if (micListening) startMic()
-                        }
                     }
                 }
             }

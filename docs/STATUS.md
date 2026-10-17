@@ -1,3 +1,7 @@
+## 2026-10-17: "Spring over" på energi-trinnet og sprogflaget på mikrofonen
+- Scan: energi-trinnet har nu "Spring over" som indholds-trinnet. `/api/products/quick` kræver ikke længere et energibillede; berigelsen læser da kun indholdet, og næringen står som ukendt. Genoptagelses-jobbet bruger indholdsfotoet, hvis energifotoet mangler. Web + native.
+- Madvarer: sprogflaget sidder som mærke på mikrofonens øverste venstre kant (spejl af favoritmærket på varesiden), ikke længere alene ude i venstre side. Web + native (native kompileres kun i CI).
+
 ## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
 
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.

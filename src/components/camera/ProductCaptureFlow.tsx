@@ -1409,6 +1409,33 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
     goToNextStep(markDone("ingredients"));
   }
 
+  // "Spring over" også på energi-trinnet (bruger 2026-10-17): varer uden
+  // næringstabel (danskvand, vand …) kunne ellers aldrig komme videre, fordi
+  // energien skal være læst. Trinnet markeres klaret uden foto; varen står
+  // med "næring ukendt", og indholds-trinnet vises stadig. Ikke ved en
+  // genscanning — den skal have det trin, den beder om.
+  function skipNutrition() {
+    if (working || flash || stepDone || step !== "nutrition" || rescan) return;
+    const data = dataRef.current;
+    scanLog(flowId, "nutrition_skipped", {
+      message: "Energi sprunget over — brugeren trykkede Spring over (varen har ingen næringstabel)",
+      barcode: data.barcode,
+      data: { step: stepRef.current },
+    });
+    data.nutritionPhoto = undefined;
+    data.nutritionOcrText = undefined;
+    data.nutritionOcrConfidence = undefined;
+    data.localNutrition = undefined;
+    data.nutritionAnalysisId = undefined;
+    data.ingredientsOnNutritionPhoto = false;
+    // Et tidligere energibillede, der stadig behandles, må ikke skrive bagefter.
+    shotRef.current.nutrition = (shotRef.current.nutrition ?? 0) + 1;
+    setProcessing((current) => ({ ...current, nutrition: false }));
+    setEnergyError(null);
+    resetLiveScan();
+    goToNextStep(markDone("nutrition"));
+  }
+
   // Et trin med flueben kan tages om ved at trykke på det (bruger
   // 2026-10-14). Stregkoden starter forfra: en ny stregkode er en anden vare,
   // så fotos og aflæsninger nulstilles.
@@ -1522,11 +1549,12 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
   // Trinnets nummer i overskriften følger de viste trin (1–4; ved genscanning færre).
   const stepNumber = (item: CaptureStep) => visibleSteps.indexOf(item) + 1;
   const guideStep: Exclude<CaptureStep, "barcode"> = step === "barcode" ? "front" : step;
-  // "Spring over" kun på indholds-trinnet, og ikke ved en genscanning, der
-  // alene mangler indholdet (så ville der intet være at sende).
+  // "Spring over" på energi- og indholds-trinnet; ikke ved en genscanning af
+  // energien, eller én der alene mangler indholdet (så var der intet at sende).
   // Udløseren nederst i kamerabilledet på de tre fototrin.
   const showShutter = step !== "barcode" && cameraStatus === "active" && !cameraMessage && !working && !flash && !stepDone && !createFailed;
   const canSkipIngredients = showShutter && step === "ingredients" && !(rescan && rescan.steps.length === 1);
+  const canSkipNutrition = showShutter && step === "nutrition" && !rescan;
 
   return (
     <div className="flex flex-col gap-4">
@@ -1613,10 +1641,10 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
             >
               <span className="hf-shutter__inner" />
             </button>
-            {canSkipIngredients && (
+            {(canSkipIngredients || canSkipNutrition) && (
               <button
                 type="button"
-                onClick={skipIngredients}
+                onClick={canSkipNutrition ? skipNutrition : skipIngredients}
                 className="hf-type-small hf-type-strong absolute right-0 flex h-11 items-center justify-center bg-hf-black/60 px-5 text-hf-white rounded-card"
               >
                 {t("cameraCreate.skipIngredients")}

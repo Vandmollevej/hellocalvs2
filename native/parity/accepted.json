@@ -327,7 +327,7 @@
     "src/components/camera/IngredientsRetakeFlow.tsx": "f127419703370cf7",
     "src/components/camera/LabelFillOverlay.tsx": "12b9f5a4cc2b4268",
     "src/components/camera/ObjectPickerOverlay.tsx": "b61a78af2889cb7b",
-    "src/components/camera/ProductCaptureFlow.tsx": "309c25f9bffc1f06",
+    "src/components/camera/ProductCaptureFlow.tsx": "aa07eb9580da188a",
     "src/components/camera/ProductOutlineOverlay.tsx": "f83893ae6f78c81e",
     "src/components/camera/ScanHeading.tsx": "c59f5b70a0fd1670",
     "src/components/camera/StepDoneOverlay.tsx": "88c1e68e7bf2f3b3",
@@ -384,7 +384,7 @@
     "src/components/icons/Favorite.tsx": "70f85dd37d71acbf",
     "src/components/icons/PhotoFrame.tsx": "20ffbe92a0057321",
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
-    "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
+    "src/components/voice/MealLanguagePicker.tsx": "af8a7a6db2190abf",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
@@ -628,7 +628,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "8526189e56196504",
+    "src/app/foods/page.tsx": "73f8a173b5444fe0",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -660,7 +660,7 @@
     "src/components/icons/WaistMeasure.tsx": "47f849581ff0f288",
     "src/components/voice/LiveMicButton.tsx": "72519c97aad11fa3",
     "src/components/voice/LiveWaveform.tsx": "678c614b78ab7284",
-    "src/components/voice/MealLanguagePicker.tsx": "c38ca64aa75df2cd",
+    "src/components/voice/MealLanguagePicker.tsx": "af8a7a6db2190abf",
     "src/components/voice/VoiceMealSuggestions.tsx": "dd3d184b762f679d",
     "src/components/voice/useMealInputLanguage.ts": "0437ef7ad7045447",
     "src/components/voice/useMealInterpretation.ts": "d7a28a9232426beb",

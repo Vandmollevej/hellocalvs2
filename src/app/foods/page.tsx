@@ -374,26 +374,28 @@ function MadvarerContent() {
     >
       <div className="hf-page">
         <section className="relative flex flex-col items-center" aria-live="polite">
-          {/* Sprogflaget står til venstre for mikrofonen, ud for listens
-              venstre kant — spejlet af favoritmærket til højre (brugerens
-              ønske 2026-10-16: ikke oppe i headeren, væk fra mikrofonen). */}
-          <div className="absolute left-0 top-[26px]">
-            <MealLanguagePicker
-              language={language}
-              region={region}
-              onChange={(code) => {
-                if (code === language) return;
-                setLanguage(code);
-                if (isListening) startSpeech(speechLangFor(code, region));
-              }}
+          {/* Sprogflaget er et mærke på mikrofonens øverste venstre kant —
+              spejlet af favoritmærket på varecirklens øverste højre kant
+              (brugerens ønske 2026-10-17). */}
+          <div className="relative">
+            <LiveMicButton
+              listening={isListening}
+              unsupported={speech.phase === "unsupported"}
+              label={t(isListening ? "voice.stopMic" : "voice.startMic")}
+              onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
             />
+            <div className="absolute right-[calc(100%-42px)] top-[-2px] z-10">
+              <MealLanguagePicker
+                language={language}
+                region={region}
+                onChange={(code) => {
+                  if (code === language) return;
+                  setLanguage(code);
+                  if (isListening) startSpeech(speechLangFor(code, region));
+                }}
+              />
+            </div>
           </div>
-          <LiveMicButton
-            listening={isListening}
-            unsupported={speech.phase === "unsupported"}
-            label={t(isListening ? "voice.stopMic" : "voice.startMic")}
-            onClick={() => (isListening ? speech.stop() : startSpeech(speechLang()))}
-          />
           <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening ? t("voice.listeningStatus") : speech.phase === "unsupported" ? t("voice.unsupported") : t("voice.tapToTalk")}
           </p>

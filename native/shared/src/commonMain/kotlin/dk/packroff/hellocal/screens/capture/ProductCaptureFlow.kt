@@ -402,6 +402,19 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         goToNextStep(done + CaptureStep.Ingredients)
     }
 
+    // "Skip" on the energy step too (user 2026-10-17, web: skipNutrition):
+    // products without a nutrition table (sparkling water …) could otherwise
+    // never get past step 3. The server gets no energy photo and marks the
+    // nutrition unknown; the ingredients step still follows.
+    fun skipNutrition() {
+        if (working || stepDone != null || step != CaptureStep.Nutrition) return
+        photos = photos - CaptureStep.Nutrition
+        nutritionAnalysisId = null
+        energyError = null
+        done = done + CaptureStep.Nutrition
+        goToNextStep(done)
+    }
+
     // A step with a check mark can be redone by tapping it (user 2026-10-14).
     // The barcode starts over: a new barcode is another product.
     fun selectStep(next: CaptureStep) {
@@ -474,8 +487,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 ShutterRow(
                     shutterLabel = t.t("cameraCreate.shutter"),
                     onShutter = { capture() },
-                    skipLabel = t.t("cameraCreate.skipIngredients").takeIf { step == CaptureStep.Ingredients },
-                    onSkip = { skipIngredients() },
+                    skipLabel = t.t("cameraCreate.skipIngredients").takeIf { step == CaptureStep.Ingredients || step == CaptureStep.Nutrition },
+                    onSkip = { if (step == CaptureStep.Nutrition) skipNutrition() else skipIngredients() },
                 )
             }
             if (submitting) {

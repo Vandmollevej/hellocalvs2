@@ -1,3 +1,6 @@
+## 2026-10-17: Energi-trinnet kan springes over
+- Brugerens ønske: varer uden næringstabel (danskvand) kunne ikke oprettes, fordi energien skulle læses. Energi-trinnet får samme "Spring over" som indholds-trinnet; varen oprettes uden energifoto og markeres "næring ukendt" (ingen gæt på 0). Ikke ved genscanning, hvor serveren kræver det bedte trin.
+
 ## 2026-10-17: Robot-QoS — robotter venter på lav belastning og respekterer spærretider
 
 Brugeren: "Kan man under robotter sætte en QOS? Suspend indtil ram/cpu belastning er under x igen før opgaven varetages? Og ikke må køre i spidsbelastningsperioder."

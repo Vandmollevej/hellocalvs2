@@ -56,6 +56,7 @@ export type QuickEnrichmentInput = {
   // Telefonens land/sprog og appens sprog, fastfrosset ved scanningen.
   signals?: unknown;
   frontPhoto: string;
+  // Tom, når brugeren sprang energi-trinnet over (vand o.l. uden næringstabel).
   nutritionPhoto: string;
   // Udeladt, når ingredienslisten stod på næringsfotoet.
   ingredientsPhoto?: string;
@@ -690,7 +691,10 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const labelErrors: string[] = [];
 
   try {
-    if (!haveNutrition && !input.ingredientsPhoto) {
+    if (!input.nutritionPhoto && !input.ingredientsPhoto) {
+      // Energi og indhold begge sprunget over: intet at læse.
+      labelPath = "skipped";
+    } else if (!haveNutrition && !input.ingredientsPhoto) {
       labelPath = "openai-combined";
       const both = await analyzeLabelPhoto({
         ...base,
@@ -703,10 +707,13 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       if (both.ingredients.result.ingredientsText || !localI) ingredients = both.ingredients;
     } else {
       const wantIngredients =
-        !localI && (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
-      labelPath = `nutrition:${prereadN ? "flow" : localN ? "local" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
+        Boolean(ingredientsPhoto) &&
+        !localI &&
+        (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
+      const skippedNutrition = !haveNutrition && !input.nutritionPhoto;
+      labelPath = `nutrition:${prereadN ? "flow" : localN ? "local" : skippedNutrition ? "skipped" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
       const [nutritionRead, ingredientsRead] = await Promise.all([
-        haveNutrition
+        haveNutrition || skippedNutrition
           ? Promise.resolve(prereadN)
           : analyzeNutritionPhoto({
               ...base,
@@ -742,7 +749,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
   const ingredientsFromAi = Boolean(ingredients);
 
   try {
-    if (!nutrition && localN) {
+    if (!nutrition && localN && input.nutritionPhoto) {
       const { analysisId } = await recordLocalAnalysis({
         ...base,
         kind: "NUTRITION",
@@ -752,7 +759,7 @@ export async function enrichLabel(input: QuickEnrichmentInput): Promise<LabelRea
       });
       nutrition = { analysisId, result: localN };
     }
-    if (!ingredients && localI) {
+    if (!ingredients && localI && ingredientsPhoto) {
       const { analysisId } = await recordLocalAnalysis({
         ...base,
         kind: "INGREDIENTS",

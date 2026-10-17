@@ -45,7 +45,9 @@ export async function POST(req: Request) {
   // Telefonens tekstlæsning af forsiden: reserve til navn/brand, hvis AI'en
   // ikke kan læse forsiden (docs/DECISIONS.md 2026-10-16).
   const frontOcrText = typeof body?.frontOcrText === "string" ? body.frontOcrText.slice(0, 4000) : "";
-  const nutritionPhoto = body?.nutritionPhoto;
+  // Mangler, når brugeren sprang energi-trinnet over (vand o.l. uden
+  // næringstabel, brugerens ønske 2026-10-17): næringen står da som ukendt.
+  const nutritionPhoto: string = isPhoto(body?.nutritionPhoto) ? body.nutritionPhoto : "";
   // Energien læst af AI under flowet (POST /api/products/read-energy) — bruges
   // direkte, i stedet for at læse fotoet igen (docs/DECISIONS.md 2026-10-16).
   const nutritionAnalysisId = typeof body?.nutritionAnalysisId === "string" ? body.nutritionAnalysisId : null;
@@ -82,17 +84,17 @@ export async function POST(req: Request) {
         }
       : null;
 
-  if (!barcode || !isPhoto(frontPhoto) || !isPhoto(nutritionPhoto)) {
+  if (!barcode || !isPhoto(frontPhoto)) {
     void debugLog({
       category: "scan",
       event: "product_create",
       level: "error",
-      message: "Afvist: stregkode, forside eller energi-foto mangler",
+      message: "Afvist: stregkode eller forside mangler",
       flowId,
       barcode: barcode || null,
-      data: { hasBarcode: Boolean(barcode), hasFront: isPhoto(frontPhoto), hasNutrition: isPhoto(nutritionPhoto) },
+      data: { hasBarcode: Boolean(barcode), hasFront: isPhoto(frontPhoto) },
     });
-    return NextResponse.json({ message: "Stregkode, forside og energi er påkrævet" }, { status: 400 });
+    return NextResponse.json({ message: "Stregkode og forside er påkrævet" }, { status: 400 });
   }
 
   // Dyrefoder-spærring (stregkode, src/lib/pet-food-blacklist.ts). Ordmønstrene
@@ -190,7 +192,7 @@ export async function POST(req: Request) {
           return null;
         })
         .then((url) => url ?? undefined),
-      saveDataUrlImage(nutritionPhoto).catch(() => null),
+      nutritionPhoto ? saveDataUrlImage(nutritionPhoto).catch(() => null) : Promise.resolve(null),
       ingredientsPhoto ? saveDataUrlImage(ingredientsPhoto).catch(() => null) : Promise.resolve(null),
     ]);
     // Ved opfyldning beholdes OFF-navnet, hvis AI'en ikke kan læse forsiden.
@@ -255,6 +257,7 @@ export async function POST(req: Request) {
         localNutrition,
         localIngredientsLength: localIngredients.length,
         separateIngredientsPhoto: Boolean(ingredientsPhoto),
+        nutritionSkipped: !nutritionPhoto,
         nutritionOcrConfidence,
         ingredientsOcrConfidence,
         barcodeAnalysisLinked: Boolean(barcodeAnalysisId),
