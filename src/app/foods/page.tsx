@@ -51,6 +51,7 @@ function ProductRow({
   isFavorite,
   onToggleFavorite,
   onOpen,
+  onDelete,
 }: {
   product: Product;
   isLast: boolean;
@@ -58,17 +59,20 @@ function ProductRow({
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
   onOpen?: (id: string) => void;
+  // Kun på "Mest brugte" (ikke søgeresultater).
+  onDelete?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
   // Som "Dagens tilføjelser" på forsiden (bruger 2026-10-17): favorit kun ved
-  // swipe til højre, Fejl ved swipe til venstre.
+  // swipe til højre, Fejl (+ Slet på "Mest brugte") ved swipe til venstre.
   return (
     <div className={isLast ? "" : "border-b border-hf-tan-dark"}>
       <SwipeableRow
         onFavorite={() => onToggleFavorite(product.id, !isFavorite)}
         isFavorite={isFavorite}
         onReportError={() => router.push(`/product/${product.id}/report-error`)}
+        onDelete={onDelete ? () => onDelete(product.id) : undefined}
       >
         <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
           <FoodRow
@@ -249,6 +253,21 @@ function MadvarerContent() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId }),
     }).catch(() => {});
+  }
+
+  // Swipe → Slet på "Mest brugte": væk med det samme; kommer tilbage, når
+  // varen registreres igen (DELETE /api/products/most-used).
+  function removeFromMostUsed(productId: string) {
+    if (snapshot) {
+      const updated = {
+        ...snapshot,
+        products: snapshot.products.filter((p) => p.id !== productId),
+        favoriteIds: snapshot.favoriteIds.filter((id) => id !== productId),
+      };
+      setLoadedSnapshot(updated);
+      writeFoodsSnapshot(updated);
+    }
+    fetch(`/api/products/most-used?productId=${encodeURIComponent(productId)}`, { method: "DELETE" }).catch(() => {});
   }
 
   useEffect(() => {
@@ -490,6 +509,7 @@ function MadvarerContent() {
                 isFavorite={favoriteIds.has(product.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={isSearching ? trackSearchClick : undefined}
+                onDelete={isSearching ? undefined : removeFromMostUsed}
               />
             ))}
           {ready && visibleProducts.length === 0 && !meal.items.some((item) => !item.saved) && !meal.interpreting && (
