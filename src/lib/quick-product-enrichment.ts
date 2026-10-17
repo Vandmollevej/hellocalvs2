@@ -25,6 +25,7 @@ import { petFoodBlockReason } from "@/lib/pet-food-blacklist";
 import { recordPetFoodAttempt } from "@/lib/pet-food-strikes";
 import { rejectProduct } from "@/lib/product-approval";
 import { addCertificationFilters } from "@/lib/product-certification-filters";
+import { applySheetRulesToScannedProduct } from "@/lib/scan-sheet-rules";
 import { cleanLanguageSignals } from "@/lib/barcode-context";
 import { refreshProductLanguage } from "@/lib/product-translations";
 import { brandProductName, isPlaceholderProductName } from "@/lib/product-placeholder-name";
@@ -433,6 +434,18 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
       console.error("Could not save certifications", productId, error);
       return [];
     });
+    // Arkenes `_is_`-regler (økologisk, vegansk, glutenfri, fedt-% …) læst ud
+    // af forsidens tekst, som når varen kommer fra arkene (bruger 2026-10-17).
+    const sheetFilters = await applySheetRulesToScannedProduct(productId, {
+      productName: rawName || productName,
+      variant,
+      brand: brand?.name,
+      packageSizeText,
+      claims: result.claims ?? [],
+    }).catch((error) => {
+      console.error("Could not apply sheet rules", productId, error);
+      return [] as string[];
+    });
     await linkCutoutJobsToProduct({
       frontAnalysisId: analysisId,
       productId,
@@ -458,6 +471,7 @@ export async function enrichFront(input: QuickEnrichmentInput): Promise<boolean 
         packageSizeText: result.packageSizeText ?? null,
         certificationsRead: result.certifications ?? [],
         certificationsSaved: certifications,
+        sheetFiltersSaved: sheetFilters,
       },
     });
   } catch (error) {
