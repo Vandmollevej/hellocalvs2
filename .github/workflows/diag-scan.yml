@@ -16,30 +16,7 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          set +x
-          GK=$(grep -E '^GOOGLE_API_KEY=' .env.production | head -1 | cut -d= -f2- | tr -d '"' )
-          GC=$(grep -E '^GOOGLE_CSE_ID=' .env.production | head -1 | cut -d= -f2- | tr -d '"' )
-          echo "key set: $([ -n "$GK" ] && echo yes || echo no), cse set: $([ -n "$GC" ] && echo yes || echo no)"
-          echo "=== CSE web search for EAN ==="
-          curl -s -m 20 "https://www.googleapis.com/customsearch/v1?key=$GK&cx=$GC&q=5701975300939&num=10&gl=dk&hl=da" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("error:", d.get("error",{}).get("message")); print("total:", d.get("searchInformation",{}).get("totalResults")); [print(i.get("link"), "|", i.get("title")) for i in d.get("items",[])]'
-          echo "=== CSE web search EAN + naering ==="
-          curl -s -m 20 "https://www.googleapis.com/customsearch/v1?key=$GK&cx=$GC&q=5701975300939%20n%C3%A6ringsindhold&num=10&gl=dk" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("error:", d.get("error",{}).get("message")); [print(i.get("link"), "|", i.get("title")) for i in d.get("items",[])]'
-          echo "=== fetch coop page ==="
-          curl -s -m 20 -A "Mozilla/5.0" "https://mad.coop.dk/mejeri/maelk-og-floede/letmaelk/anglamark-thise-oekologisk-letmaelk-p-5701975300939" -o /tmp/coop.html -w "%{http_code} %{size_download}\n"
-          python3 - <<'PY'
-          import re
-          h=open('/tmp/coop.html',encoding='utf-8',errors='ignore').read()
-          print('ld+json blocks:', len(re.findall(r'application/ld\+json', h)))
-          for k in ['kcal','Energi','Fedt','Kulhydrat','Protein','5701975300939']:
-              i=h.find(k); print(k, i, re.sub(r'\s+',' ', h[max(0,i-120):i+160]) if i>=0 else '')
-          PY
-          echo "=== fetch thise page ==="
-          curl -s -m 20 -A "Mozilla/5.0" "https://thise.dk/produkter/maelk/anglamark-letmaelk-1-5-1l" -o /tmp/thise.html -w "%{http_code} %{size_download}\n"
-          python3 - <<'PY'
-          import re
-          h=open('/tmp/thise.html',encoding='utf-8',errors='ignore').read()
-          t=re.sub(r'<[^>]+>',' ',h); t=re.sub(r'\s+',' ',t)
-          i=t.find('kcal'); print(t[max(0,i-300):i+400] if i>=0 else 'no kcal')
-          PY
-          echo "=== OFF ==="
-          curl -s -m 20 "https://world.openfoodfacts.org/api/v2/product/5701975300939.json?fields=product_name,nutriments" | head -c 400; echo
+          sleep 420
+          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",250) msg FROM scheduled_jobs WHERE key IN ('quick-enrichment-recovery','search-index','maintenance')"
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, left(\"productId\",10) pid, level, left(message,250) msg FROM debug_logs WHERE event='ean_reserve' ORDER BY \"createdAt\" DESC LIMIT 20"
+          $C logs --no-log-prefix --since 8m app 2>&1 | grep -i -E "fejlede|error" | head -15 || true
