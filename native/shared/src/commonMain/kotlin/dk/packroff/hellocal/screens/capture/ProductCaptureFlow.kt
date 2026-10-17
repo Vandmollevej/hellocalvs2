@@ -1,5 +1,6 @@
 package dk.packroff.hellocal.screens.capture
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -108,6 +111,8 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(CaptureStep.Barcode) }
     var done by remember { mutableStateOf(setOf<CaptureStep>()) }
+    // Steps the user skipped (red line across the button instead of a check, user 2026-10-17).
+    var skipped by remember { mutableStateOf(setOf<CaptureStep>()) }
     // The step(s) just completed (StepDoneOverlay) and the most recently
     // completed one (the small struck-through line above the heading).
     var stepDone by remember { mutableStateOf<List<CaptureStep>?>(null) }
@@ -383,6 +388,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 }
                 val completed = done + current
                 done = completed
+                skipped = skipped - current
                 showDoneThenContinue(listOf(current), completed)
             } catch (e: CapturePermissionDenied) {
                 status = CameraStatus.Denied
@@ -392,14 +398,21 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
         }
     }
 
-    // "Skip" at the bottom of the viewfinder on the ingredients step (user
-    // 2026-10-14, web: skipIngredients): products without an ingredients list
-    // (water, sugar, fruit …) could otherwise never get past step 4. The step
-    // is marked done without a photo; the server gets no ingredients photo.
-    fun skipIngredients() {
-        if (working || stepDone != null || step != CaptureStep.Ingredients) return
-        photos = photos - CaptureStep.Ingredients
-        goToNextStep(done + CaptureStep.Ingredients)
+    // "Skip" at the bottom of the viewfinder on the energy and ingredients
+    // steps (user 2026-10-14 / 2026-10-17, web: skipStep): products without a
+    // nutrition table or ingredients list (water, sparkling water, sugar …)
+    // could otherwise never get past them. The step is marked done without a
+    // photo and gets a red line; the server gets no photo for it.
+    fun skipStep(current: CaptureStep) {
+        if (working || stepDone != null || step != current) return
+        if (current != CaptureStep.Nutrition && current != CaptureStep.Ingredients) return
+        photos = photos - current
+        if (current == CaptureStep.Nutrition) {
+            nutritionAnalysisId = null
+            energyError = null
+        }
+        skipped = skipped + current
+        goToNextStep(done + current)
     }
 
     // A step with a check mark can be redone by tapping it (user 2026-10-14).
@@ -417,6 +430,7 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
             nutritionAnalysisId = null
             energyError = null
             done = emptySet()
+            skipped = emptySet()
             createFailed = false
             lookupError = false
             lookupBlockedMessage = null
@@ -474,8 +488,9 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                 ShutterRow(
                     shutterLabel = t.t("cameraCreate.shutter"),
                     onShutter = { capture() },
-                    skipLabel = t.t("cameraCreate.skipIngredients").takeIf { step == CaptureStep.Ingredients },
-                    onSkip = { skipIngredients() },
+                    skipLabel = t.t("cameraCreate.skipIngredients")
+                        .takeIf { step == CaptureStep.Nutrition || step == CaptureStep.Ingredients },
+                    onSkip = { skipStep(step) },
                 )
             }
             if (submitting) {
@@ -505,7 +520,11 @@ internal fun ProductCaptureFlow(returnSuffix: String) {
                         HcIcon(item.icon, size = 20.dp, stroke = 1.8f, color = HcColors.Black)
                         HcText(stepLabels.getValue(item), HcTypeRoles.Micro, color = HcColors.Black, maxLines = 1)
                     }
-                    if (item in done) CheckBadge(48.dp)
+                    if (item in skipped) {
+                        SkippedStrike(t.t("cameraCreate.stepSkipped", mapOf("step" to stepLabels.getValue(item))))
+                    } else if (item in done) {
+                        CheckBadge(48.dp)
+                    }
                     if (item in uploading) {
                         Box(Modifier.matchParentSize().padding(6.dp), contentAlignment = Alignment.TopEnd) {
                             HcLoader(Modifier.size(16.dp))
@@ -659,5 +678,20 @@ internal fun IngredientsRetakeFlow(productId: String) {
             leading = { HcIcon("Camera", size = 19.dp, color = HcColors.White) },
         )
         HcButton(t.t("cameraCreate.retakeBack"), onClick = { nav.replace(productHref) }, kind = dk.packroff.hellocal.ui.HcButtonKind.Secondary)
+    }
+}
+
+/** Red line across a skipped step button (web: CaptureSkippedOverlay). */
+@Composable
+private fun BoxScope.SkippedStrike(label: String) {
+    Canvas(Modifier.matchParentSize().semantics { contentDescription = label }) {
+        val inset = 6.dp.toPx()
+        drawLine(
+            color = HcColors.Danger,
+            start = Offset(inset, size.height - inset),
+            end = Offset(size.width - inset, inset),
+            strokeWidth = 4.dp.toPx(),
+            cap = StrokeCap.Round,
+        )
     }
 }

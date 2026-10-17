@@ -1054,6 +1054,7 @@
     "stepNutrition": "Energie",
     "stepIngredients": "Inhoud",
     "stepDone": "{step}: gemaakt en gelezen",
+    "stepSkipped": "{step}: overgeslagen",
     "bothFound": "Energie en inhoud gevonden op dezelfde foto",
     "chooseObject": "Tik op het product dat in beeld moet zijn",
     "useWholePhoto": "Hele foto gebruiken",

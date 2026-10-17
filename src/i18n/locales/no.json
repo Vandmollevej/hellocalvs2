@@ -1054,6 +1054,7 @@
     "stepNutrition": "Energi",
     "stepIngredients": "Innhold",
     "stepDone": "{step}: tatt og lest",
+    "stepSkipped": "{step}: hoppet over",
     "bothFound": "Energi og innhold funnet på samme bilde",
     "chooseObject": "Trykk på varen som skal være i fokus",
     "useWholePhoto": "Bruk hele bildet",
