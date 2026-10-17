@@ -16,8 +16,9 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          P=cmvawb4ue000s01oeu5bem334
-          q "SELECT left(name,50) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"pendingFields\" pf, \"imageUrl\", \"pendingImageUrl\" FROM products WHERE id='$P'"
-          q "SELECT status, left(\"resultUrl\",80) result, left(error,200) err, \"createdAt\" FROM image_cutout_jobs WHERE \"productId\"='$P' ORDER BY \"createdAt\""
-          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",200) msg FROM scheduled_jobs WHERE key IN ('search-index','image-cutout','quick-enrichment-recovery')"
-          $C logs --no-log-prefix --since 40m app 2>&1 | grep -i -E "fejlede|error" | head -20 || true
+          sleep 420
+          q "SELECT key, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, \"lastStatus\" st, left(\"lastMessage\",200) msg FROM scheduled_jobs WHERE key IN ('search-index','maintenance','quick-enrichment-recovery','api-alerts')"
+          echo "=== app log (new container) ==="
+          $C logs --no-log-prefix --since 8m app 2>&1 | grep -i -E "fejlede|error|meili" | head -20 || true
+          echo "=== scan-app log ==="
+          $C logs --no-log-prefix --since 8m scan-app 2>&1 | grep -i -E "scheduler|jobs|fejlede" | head -10 || true
