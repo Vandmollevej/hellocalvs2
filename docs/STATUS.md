@@ -1,3 +1,7 @@
+## 2026-10-17: Flere træningsformer under Tilføj → Aktivitet
+
+- 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
+
 ## 2026-10-17: Aktivitetsfavoritter i egen blok
 
 Aktivitetsvælgeren (/activity/create) viser favoritter i blokken "Mine favoritter" over "Alle aktiviteter", som under retter. Under søgning én liste. Web og native.

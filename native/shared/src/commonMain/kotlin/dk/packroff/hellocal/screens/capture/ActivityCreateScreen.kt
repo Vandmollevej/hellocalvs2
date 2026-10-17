@@ -107,6 +107,12 @@ private val SPORT_ICONS = mapOf(
     "golf" to "Golf", "ski" to "Snowflake", "cross_country_ski" to "Snowflake", "snowboard" to "Snowboarding", "ice_skating" to "IceSkating",
     "snow_shoveling" to "Shovel", "inline_skating" to "Skateboarding", "skateboarding" to "Skateboarding", "horse_riding" to "Horse",
     "gardening" to "Plant", "woodcutting" to "Axe", "moving" to "Box", "housework" to "Home", "playing_kids" to "MoodKid", "other" to "Activity",
+    "squat" to "Barbell", "deadlift" to "Barbell", "bench_press" to "Barbell", "shoulder_press" to "Barbell", "lunges" to "Barbell",
+    "leg_training" to "Barbell", "upper_body" to "Barbell", "free_weights" to "Barbell", "machine_training" to "Barbell", "weightlifting" to "Barbell",
+    "powerlifting" to "Barbell", "bodybuilding" to "Barbell", "strongman" to "Barbell", "body_pump" to "Barbell", "pull_ups" to "Gymnastics",
+    "push_ups" to "Gymnastics", "core" to "Gymnastics", "trx" to "Gymnastics", "resistance_bands" to "Stretching", "battle_ropes" to "Heartbeat",
+    "air_bike" to "Bike", "ski_erg" to "Heartbeat", "gymnastics" to "Gymnastics", "parkour" to "Run", "barre" to "Music",
+    "tai_chi" to "Yoga", "stretching" to "Stretching", "rehab" to "Stretching",
 )
 
 internal fun sportIcon(key: String): String = SPORT_ICONS[key] ?: "Activity"
