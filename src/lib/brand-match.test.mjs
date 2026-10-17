@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { matchBrand, matchBrandInTexts, newBrandAllowed } from "./brand-match.ts";
+import { brandNameConfirmed, matchBrand, matchBrandInTexts, newBrandAllowed } from "./brand-match.ts";
 
 const brands = [
   { id: "1", name: "ØGO" },
@@ -32,4 +32,12 @@ test("an unknown brand needs a sure, fully visible logo", () => {
   assert.equal(newBrandAllowed(0.9, { x: 0.3, y: 0.3, width: 0.4, height: 0.2 }), true);
   assert.equal(newBrandAllowed(0.9, null), true);
   assert.equal(newBrandAllowed(undefined), false);
+});
+
+test("a cut-off logo counts when the back label or barcode names the same brand", () => {
+  assert.equal(brandNameConfirmed("albi", ["Hersteller: albi GmbH & Co. KG, D-88486 Kirchberg"]), true);
+  assert.equal(brandNameConfirmed("Albi", ["Albi"]), true);
+  assert.equal(brandNameConfirmed("DAGO", ["Økologisk basismelblanding, Netto ØGO"]), false);
+  assert.equal(brandNameConfirmed("albi", ["Albani Pilsner"]), false);
+  assert.equal(brandNameConfirmed("Dr. Oetker", ["Dr. Oetker GmbH, Bielefeld"]), true);
 });

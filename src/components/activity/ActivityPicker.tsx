@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
@@ -72,31 +72,62 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
     }
   }
 
-  const rows = [
-    ...matches.map((option) => {
-      const Icon = getSportMeta(option.key).icon;
-      return {
-        key: option.key,
-        icon: <Icon size={20} />,
-        label: option.pending ? `${option.label} (${t("activity.pending")})` : option.label,
-        onClick: () => onPick(option),
-        favorite: option.favorite === true,
-        onToggleFavorite: () => void toggleFavorite(option),
-      };
-    }),
-    ...(trimmed.length >= 2 && !exact
-      ? [
-          {
-            key: "__add",
-            icon: <IconPlus size={20} />,
-            label: t("activity.addManual", { name: trimmed }),
-            onClick: () => void addManual(),
-            favorite: undefined as boolean | undefined,
-            onToggleFavorite: undefined as (() => void) | undefined,
-          },
-        ]
-      : []),
-  ];
+  type Row = {
+    key: string;
+    icon: ReactNode;
+    label: string;
+    onClick: () => void;
+    favorite?: boolean;
+    onToggleFavorite?: () => void;
+  };
+  const toRow = (option: ActivityOption): Row => {
+    const Icon = getSportMeta(option.key).icon;
+    return {
+      key: option.key,
+      icon: <Icon size={20} />,
+      label: option.pending ? `${option.label} (${t("activity.pending")})` : option.label,
+      onClick: () => onPick(option),
+      favorite: option.favorite === true,
+      onToggleFavorite: () => void toggleFavorite(option),
+    };
+  };
+  const addRow: Row[] =
+    trimmed.length >= 2 && !exact
+      ? [{ key: "__add", icon: <IconPlus size={20} />, label: t("activity.addManual", { name: trimmed }), onClick: () => void addManual() }]
+      : [];
+
+  // Favoritter i egen blok øverst, som "Mine favoritter" under retter
+  // (brugerens krav 2026-10-17). Under søgning: én samlet liste.
+  const favoriteRows = trimmed ? [] : matches.filter((option) => option.favorite).map(toRow);
+  const restRows = [...(trimmed ? matches : matches.filter((option) => !option.favorite)).map(toRow), ...addRow];
+
+  function renderCard(rows: Row[]) {
+    return (
+      <AccordionCard>
+        {rows.map((row, index) => (
+          <ChevronRow
+            key={row.key}
+            icon={row.icon}
+            label={row.label}
+            onClick={busy || adding ? undefined : row.onClick}
+            divider={index < rows.length - 1}
+            trailing={
+              row.onToggleFavorite ? (
+                <button
+                  type="button"
+                  onClick={row.onToggleFavorite}
+                  aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
+                  className="flex h-12 items-center pl-1 pr-4 text-hf-green"
+                >
+                  {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
+                </button>
+              ) : undefined
+            }
+          />
+        ))}
+      </AccordionCard>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4" aria-busy={busy || adding}>
@@ -110,31 +141,21 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
           aria-label={t("activity.searchPlaceholder")}
         />
       </div>
-      {rows.length > 0 && (
-        <AccordionCard>
-          {rows.map((row, index) => (
-            <ChevronRow
-              key={row.key}
-              icon={row.icon}
-              label={row.label}
-              onClick={busy || adding ? undefined : row.onClick}
-              divider={index < rows.length - 1}
-              trailing={
-                row.onToggleFavorite ? (
-                  <button
-                    type="button"
-                    onClick={row.onToggleFavorite}
-                    aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
-                    className="flex h-12 items-center pl-1 pr-4 text-hf-green"
-                  >
-                    {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
-                  </button>
-                ) : undefined
-              }
-            />
-          ))}
-        </AccordionCard>
+      {favoriteRows.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="hf-type-section-title">{t("activity.favoritesTitle")}</h2>
+          {renderCard(favoriteRows)}
+        </section>
       )}
+      {restRows.length > 0 &&
+        (favoriteRows.length > 0 ? (
+          <section className="flex flex-col gap-2">
+            <h2 className="hf-type-section-title">{t("activity.allTitle")}</h2>
+            {renderCard(restRows)}
+          </section>
+        ) : (
+          renderCard(restRows)
+        ))}
     </div>
   );
 }

@@ -31,6 +31,7 @@ import { searchResultTitle } from "@/lib/search-result-title";
 import { parseSpokenFoodQuery } from "@/lib/spoken-food-query";
 import { logVoiceSearch } from "@/lib/voice-search-log";
 import { rankingPoints, type ReasonPoints } from "@/lib/search-explain";
+import { queueExternalEnrichment, queueStaleExternalEnrichment } from "@/lib/external-enrichment";
 
 // GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
@@ -144,6 +145,9 @@ export async function GET(req: Request) {
         })),
       });
     }
+
+    // Fremsøgte varer får eksterne kilder flettet ind i baggrunden (bruger 2026-10-17).
+    queueStaleExternalEnrichment(products.map((product) => product.id), "search");
 
     return NextResponse.json({
       products,
@@ -863,6 +867,9 @@ export async function POST(req: Request) {
     // nu tilknyttede næringsanalyse og ingredienslisten (docs/DECISIONS.md
     // 2026-09-23).
     await syncProductNutritionFeaturesSafely(product.id);
+
+    // Ny vare: eksterne kilder (stregkoden) flettes ind i baggrunden (bruger 2026-10-17).
+    queueExternalEnrichment([product.id], "create");
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {

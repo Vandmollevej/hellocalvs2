@@ -114,3 +114,23 @@ export function logoTouchesEdge(box: LogoBox): boolean {
 export function newBrandAllowed(confidence: number | null | undefined, logoBox?: LogoBox): boolean {
   return (confidence ?? 0) >= NEW_BRAND_MIN_CONFIDENCE && !logoTouchesEdge(logoBox);
 }
+
+// Et afskåret eller usikkert logo godtages alligevel, når præcis samme navn
+// står som helt ord i en uafhængig kilde: bagsidens tekst (producentens
+// adresse, fx "albi GmbH & Co. KG") eller stregkodens Open Food Facts-brand
+// (bruger 2026-10-17: Albi Apfelsaft fik intet brand, fordi logoet var skåret
+// af i toppen). DAGO (læst ØGO) står ingen andre steder og afvises stadig.
+export function brandNameConfirmed(name: string, texts: (string | null | undefined)[]): boolean {
+  const wanted = normalizeBrandName(name);
+  if (wanted.length < 3) return false;
+  const wordCount = name.trim().split(/\s+/).length;
+  for (const text of texts) {
+    const words = (text ?? "").split(/[^\p{L}\p{N}&'’.-]+/u).filter(Boolean);
+    for (let index = 0; index < words.length; index++) {
+      for (let size = 1; size <= Math.max(1, wordCount) + 1 && index + size <= words.length; size++) {
+        if (normalizeBrandName(words.slice(index, index + size).join(" ")) === wanted) return true;
+      }
+    }
+  }
+  return false;
+}
