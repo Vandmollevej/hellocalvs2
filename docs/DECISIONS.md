@@ -1,3 +1,7 @@
+## 2026-10-17: Genåbning læser forsiden, når AI'en aldrig har læst den
+
+- `reopenBrokenProducts` tager nu også varer uden FRONT-analyse (AI'en har aldrig læst forsiden), selv om de har navn og energi fra den lokale tekstlæsning; ellers manglede brand og fritlægning (Änglamark-letmælken). Runde 3 (`repairRound`), én gang pr. vare.
+
 ## 2026-10-16: Lokal genlæsning af gemte billeder — uden OpenAI
 
 Brugeren: "Hvorfor kan du ikke behandle billederne på dette igen? Har vi slet ingen kørsler som gennemgår sådanne fejl?" Der var kørsler (`quick-enrichment-recovery` hvert 2. min., genåbning af tomme varer, pause mens kreditten er tom), men alle læste billederne med OpenAI. Serverens lokale tekstlæser (`back_local.py`, tesseract i fuld opløsning hvert 5. min.) læste allerede energi-/indholdsbillederne, men teksten blev kun brugt til mærkninger og stavning. Nu kører `repairFromServerText` først i genoptagelsen (før OpenAI-pausen): komplet næringstabel i den lokale tekst → varens energi (som en lokal aflæsning, kilde LABEL); forsidens lokale tekst → navn/brand (`front-text-name.ts`). `back_local.py` læser også forsiden. Varer fra før originalarkivet får deres gemte fotos (forside/energi/indhold fra jobbet) lagt i arkivet, så den lokale læser tager dem. Hvert billede prøves én gang (`localTried`).

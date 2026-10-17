@@ -44,4 +44,6 @@ test("gemte scan-fotos opgives ikke, mens OpenAI-kreditten er tom", () => {
   const first = recovery.indexOf("await reopenBrokenProducts(now)");
   assert.ok(gate > 0 && gate < first, "genoptagelsen skal vente på kredit, før den bruger forsøg");
   assert.match(recovery, /repairRound/);
+  // Forsiden læses igen, når AI'en aldrig har læst den, selv med et lokalt navn.
+  assert.match(recovery, /aiAnalyses: \{ none: \{ kind: "FRONT" \} \}/);
 });

@@ -1,3 +1,7 @@
+## 2026-10-17: Forsiden læses igen af AI, når den aldrig blev læst
+
+- Genåbningen læste kun forsiden igen, når varen helt manglede navn. Har den lokale tekstlæsning (eller den gamle reserve) givet et navn som "Letmælk", fik varen aldrig brand eller fritlægning. Nu genåbnes forsiden også, når der ingen FRONT-analyse findes (`repairRound` 3). Kreditten er bekræftet i orden (Uptime 17/10 06:01). Ikke prøvet mod rigtig database herfra.
+
 ## 2026-10-17: Appens planlagte job kørte aldrig i produktion
 
 - Rodårsag: `instrumentation.ts` lå i projektroden, men appen bruger `src/app`, så Next leder kun i `src/`. Standalone-imaget fik ingen instrumentation-fil, og `startScheduler()` kørte aldrig — ingen af appens job (`quick-enrichment-recovery`, `maintenance`, `back-photo-scan`, `frida-estimates`, `search-index`, `product-translations`, `api-alerts` …) havde `lastStartedAt` i produktion. Kun Python-agenterne kørte. Derfor blev fx Änglamark-letmælken aldrig repareret.
