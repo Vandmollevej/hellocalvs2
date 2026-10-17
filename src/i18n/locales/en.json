@@ -292,7 +292,7 @@
       "title": "Support",
       "intro": "Because we take your privacy seriously, Hello Cal Support does not have access to your personal data or account by default. You decide which data Support may temporarily view.",
       "description": "Below you can choose which data we may view and specify the period during which it may be accessed.",
-      "period": "Access period",
+      "period": "Allow access during the period",
       "from": "From",
       "until": "To",
       "dataTitle": "Data Support may view",
