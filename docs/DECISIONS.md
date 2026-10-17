@@ -5840,3 +5840,15 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - Under Produktbillede, EAN og Energi står altid en knap: "Tag nyt produktbillede", "Scan stregkoden" og "Tag billede af energiindholdet". Knappen vælger punktet og vedhæfter fotoet; et punkt med kun foto kan sendes.
 - EAN: på web tages et foto, som ZXing læser; koden skrives i feltet ("Rigtig EAN: …"). I appen bruges den levende scanner. Kan koden ikke læses, skriver brugeren den selv.
 - Rapporten sendes nu som sektioner + sectionPhotos (som /profile/report-bug): Produktbillede → IMAGE, Navn/Mærke → TITLE, EAN → OTHER, Energi/Makro → ENERGY, Indhold → INGREDIENTS. Kode: src/lib/registration-report-points.ts (buildReportSections).
+
+## 2026-10-17 — Tegnsætning i ingredienslister rettes automatisk
+
+Brugerens cola-liste viste "karamelE150d", "(E338), , naturlige" og
+"aromaer(inkl.". Årsager: (1) produktsiden splittede E-numrene ud først og
+rensede hvert stykke for sig, så mellemrummet før E-nummeret blev trimmet væk;
+nu renses hele listen før splittet (som appen allerede gjorde). (2) Ingen kontrol
+af tegnsætning. `normalizeIngredientPunctuation` (web og app) fjerner dobbelte
+kommaer, indsætter mellemrum før parentes/E-nummer og efter komma/parentes og
+fjerner mellemrum før komma/punktum — både ved visning og når en liste gemmes.
+Decimaltal ("1,5 %") og E-nummer-varianter ("E160a(ii)") røres ikke.
+E-numre med bogstav (E150d, E160a …) er gyldige EU-koder og bevares.
