@@ -15,9 +15,9 @@ jobs:
           set -uo pipefail
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
-          echo "=== Recovery job state ==="
-          q "SELECT key, enabled, \"intervalMinutes\", \"lastStartedAt\", \"lastRunAt\", \"lastStatus\", left(\"lastMessage\",400) msg FROM scheduled_jobs WHERE key IN ('quick-enrichment-recovery','back-photo-local','back-photo-scan')"
-          echo "=== Recovery job runs ==="
-          q "SELECT \"jobKey\", to_char(\"startedAt\",'MM-DD HH24:MI') s, to_char(\"finishedAt\",'MM-DD HH24:MI') f, status, \"runCount\", left(message,400) msg FROM scheduled_job_runs WHERE \"jobKey\" IN ('quick-enrichment-recovery','back-photo-local') AND \"finishedAt\" > now() - interval '14 hours' ORDER BY \"finishedAt\" DESC LIMIT 12"
-          echo "=== Errors last 12h ==="
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, category, event, left(message,300) msg FROM debug_logs WHERE level='error' AND \"createdAt\" > now() - interval '12 hours' ORDER BY \"createdAt\" DESC LIMIT 15"
+          echo "=== All scheduled jobs ==="
+          q "SELECT key, enabled, \"intervalMinutes\" iv, \"runAtTime\" at, to_char(\"lastStartedAt\",'MM-DD HH24:MI') started, to_char(\"lastRunAt\",'MM-DD HH24:MI') ran, \"lastStatus\" st, left(\"lastMessage\",120) msg FROM scheduled_jobs ORDER BY \"lastStartedAt\" DESC NULLS LAST"
+          echo "=== App container logs (scheduler) ==="
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production logs --since 12h app 2>&1 | grep -i -E "scheduler|jobs\]|instrumentation|error" | tail -40 || true
+          echo "=== Containers ==="
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production ps --format "table {{.Service}}\t{{.Status}}" 2>&1 | head -30 || true
