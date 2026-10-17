@@ -354,6 +354,8 @@ model User {
   // administrator (oprettet via /admin/setup) er altid FULL.
   adminAccessLevel    AdminAccessLevel @default(FULL)
   adminDisabledAt     DateTime?
+  // Personlig indstilling: modtag advarselsmail, når admin-advarsler opstår (src/lib/admin-warnings.ts).
+  adminWarningEmails  Boolean          @default(true)
   // Sessioner udstedt før dette tidspunkt afvises (niveau-/IP-/enhedsændringer, deaktivering).
   adminSessionsValidFrom DateTime?
   // Kommasepareret liste af tilladte IP-adresser/IPv4-CIDR. Null = ingen begrænsning.
@@ -5705,4 +5707,11 @@ model ApiAlertSettings {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@map("api_alert_settings")
+// Hvornår hver admin-advarsel sidst blev mailet (src/lib/admin-warnings.ts),
+// så samme advarsel kun sendes igen efter 24 timer.
+model AdminWarningMail {
+  key          String   @id
+  lastMailedAt DateTime
+
+  @@map("admin_warning_mails")
 }

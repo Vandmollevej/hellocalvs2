@@ -27,6 +27,7 @@ const DICTIONARY = {
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_activities: { DA: "Aktiviteter", EN: "Activities" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
+  nav_warning_emails: { DA: "Mine advarselsmails", EN: "My warning emails" },
   nav_admin_users: { DA: "Admin-brugere", EN: "Admin users" },
   nav_scan_invites: { DA: "Scan-invites", EN: "Scan invites" },
   nav_rejection_reasons: { DA: "Afvisningsårsager", EN: "Rejection reasons" },

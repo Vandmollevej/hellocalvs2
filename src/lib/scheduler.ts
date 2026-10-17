@@ -25,6 +25,7 @@ import { runApiAlerts } from "@/lib/api-alerts";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 import { runStripeTick } from "@/lib/payments/stripe-subscription";
+import { mailAdminWarnings } from "@/lib/admin-warnings";
 import { alertOverdueSupportRequests } from "@/lib/support-inbox";
 import { syncAllIntegrations } from "@/lib/integrations/handlers";
 import { sendDueReports } from "@/lib/partner-reports";
@@ -109,6 +110,8 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await grantEligibleReferralRewards(now);
   // Support-indbakke: advar admin om beskeder uden svar i 24 timer (docs/DECISIONS.md 2026-09-26).
   await alertOverdueSupportRequests(now).catch((error) => console.error("[scheduler] support-advarsel fejlede", error));
+  // Admin-advarsler (OpenAI, integrationer, fejlende kørsler) som mail til admins, der har det slået til.
+  await mailAdminWarnings(now).catch((error) => console.error("[scheduler] advarselsmail fejlede", error));
   await flushQueuedEmails();
   await flushQueuedPush();
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu

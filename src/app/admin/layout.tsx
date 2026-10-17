@@ -3,6 +3,7 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { hasOpenUncertainties } from "@/lib/uncertainties";
 import { prisma } from "@/lib/prisma";
+import { getAdminWarnings } from "@/lib/admin-warnings";
 
 export const metadata: Metadata = {
   title: "HELLO CAL — Admin",
@@ -18,6 +19,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const newAdminSignups = canManageAdmins
     ? await prisma.adminInvite.count({ where: { acceptedAt: { not: null }, acceptSeenAt: null } }).catch(() => 0)
     : 0;
+
+  const warnings = admin ? await getAdminWarnings().catch(() => []) : [];
 
   if (!admin) {
     // Login/opsætning/bekræftelse: ingen skal, kun formularen.
@@ -35,6 +38,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       hasOpenUncertainties={uncertaintiesDot}
       canManageAdmins={canManageAdmins}
       newAdminSignups={newAdminSignups}
+      warnings={warnings}
     >
       {children}
     </AdminShell>

@@ -93,6 +93,7 @@ export const NAV: NavEntry[] = [
     icon: "flow",
     links: [
       { href: "/admin/flows", key: "nav_flow_pages" },
+      { href: "/admin/guides", key: "nav_guides" },
       { href: "/admin/guide-builder", key: "nav_guide_builder" },
     ],
   },
@@ -146,6 +147,7 @@ export const NAV: NavEntry[] = [
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
       { href: "/admin/pet-food-filter", key: "nav_pet_food_filter" },
       { href: "/admin/passkeys", key: "nav_passkeys" },
+      { href: "/admin/warning-emails", key: "nav_warning_emails" },
       { href: "/admin/support/templates", key: "nav_standard_mails" },
       { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
@@ -725,6 +727,7 @@ export function AdminShell({
   hasOpenUncertainties = false,
   canManageAdmins = false,
   newAdminSignups = 0,
+  warnings = [],
   children,
 }: {
   email: string;
@@ -732,6 +735,7 @@ export function AdminShell({
   hasOpenUncertainties?: boolean;
   canManageAdmins?: boolean;
   newAdminSignups?: number;
+  warnings?: { key: string; title: string; detail: string; href: string }[];
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -945,6 +949,17 @@ export function AdminShell({
         </header>
 
         <main className="hf-shell__main admin-main" {...automationProps("hc-main")}>
+          {warnings.length > 0 && (
+            <div role="alert" className="border-b border-hf-red-dark bg-hf-red-muted px-4 py-3">
+              <div className="flex flex-col gap-1">
+                {warnings.map((w) => (
+                  <Link key={w.key} href={w.href} className="hf-type-body text-hf-black">
+                    <strong>⚠ {w.title}</strong> — {w.detail}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="hf-shell__content">{children}</div>
         </main>
       </div>
