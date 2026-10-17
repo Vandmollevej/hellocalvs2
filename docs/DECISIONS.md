@@ -1,3 +1,12 @@
+## 2026-10-17: Allergen-sider og allergen-robot
+
+Brugeren: "Alle varer i EU skal have allergener … stående med stort. Man skal kunne læse om alle allergener, og der skal linkes til samtlige allergener med stor tekst i ingrediensfelter. Tilføj en robot, som gennemgår nye hver nat og giver en rapport, når der er fundet nye ord — med mindre du allerede nu kan tilgå et opslagsværk online?"
+
+- Fremhævningen (`src/lib/allergen-highlight.ts`, native `FoodLogic.kt`) kender nu allergenet for hver stamme og linker til `/viden-om/allergener/<nøgle>` (nøgle = `ALLERGEN_CATALOG.key`). Artiklerne er almindelige vidensartikler (kategori `allergener`), så native får dem via `sync.mjs`.
+- Opslagsværk: ja — Open Food Facts' åbne taksonomier (`/data/taxonomies/allergens.json` og `ingredients.json`) dækker alle sprog og arver allergener fra forældre (mozzarella → ost → mælk). De hentes af robotten hver nat på serveren, ikke af telefonen. Ingredienser med flere allergener (fx pesto) springes over, da de ikke har én side at linke til.
+- Robotten (`allergen-words`, `src/lib/allergen-robot.ts`, ren logik i `allergen-word-finder.ts`) kombinerer opslagsværket (varens sprog, sikkert → godkendes straks) med producentens STORE bogstaver (usikkert → admin → Allergen-ord). Er det meste af listen skrevet med STORT, bruges STORT ikke. Godkendte ord ligger i `allergen_words` og hentes af web og app via `GET /api/allergens/words` (hele ord, før stammerne).
+- Rapport: kørslens besked, siden Allergen-ord og admin-advarslen "Allergen-robotten fandt N nye ord" (banner + advarselsmail), kun når der er nye ord det seneste døgn.
+
 ## 2026-10-17: Brand ved produktcirklen kun som logo
 
 Brugerens beslutning: brand og subbrand ved produktcirklen vises kun som logo; uden logo vises intet (web `AddProductView`, native `AddProductScreen`). Erstatter navnet i fed grøn tekst fra 2026-10-10/2026-10-15. Baggrund: Open Food Facts' brand-felt indeholder for mange varer producentens firmanavn ("Coca-Cola Europacific Partners Services Bulgaria EOOD"), og det kan ikke rettes med navnelister på millioner af varer. Brands uden logo samles i admin → Brands → "Uden logo" med link til brandets varer.
@@ -17,11 +26,13 @@ Brugeren: "Jeg skal have original af det hele" — ellers kan de planlagte jobs 
 ## 2026-10-16: Genlæsning af scannede varer venter på OpenAI-kredit
 
 - Brugeren: "Havde du ikke originalbillederne gemt?" Jo — fotos og OCR ligger i `quick_enrichment_jobs`, men med tom kredit blev de 3 forsøg og engangsreparationen brugt op på fejlende kald, og varen blev opgivet. `recoverQuickEnrichments` tjekker nu `probeKeyStatus` (cachet 60 s) og springer hele kørslen over ved `quota`/`invalid`/`missing`. Reparationen har fået runder (`repairRound`); runde 2 genåbner varer, der blev "repareret" uden kredit. Vagt i `scan-energy-guard.test.mjs`.
+
 ## 2026-10-16: Mikrofonens søgninger vises i Analyse → Søgning → Tale
 
 - Brugeren vil kunne se, hvordan talen blev forstået, og hvorfor forslagene blev, som de blev, for at kunne forbedre dem. Mikrofonen på Madvarer er telefonens talegenkendelse + almindelig søgning, løbende mens der tales; brugeren afviste en OpenAI-tolkning som for tung og langsom.
 - AI-tolkningen af hele sætningen (PR #502) skriver i samme session: hver vare med mængde, databasematch eller skøn, og en kort begrundelse på dansk, som AI'en nu altid leverer (`reason` i svar-skemaet; sendes ikke videre til appen).
 - For søgelisten er "rationalet" søgningens egen rangering: pointene pr. signal (tekstmatch × 100 + signal × vægt fra Søgealgoritmer) gemmes for de 5 øverste varer i hvert trin. Én række pr. mikrofon-session (`debug_logs`, kategori `voice`), anonymt, 30 dage, uafhængigt af Log-kontakten. Visningen ligger under Analyse → Søgning (brugerens valg), ikke i Log. Skriver brugeren selv, logges intet.
+
 ## 2026-10-16: Rodårsagen var tom OpenAI-kredit — energi-trinnet kræver nu en aflæsning, ingen skøn
 
 Produktionens log (læst med brugerens tilladelse): alle AI-aflæsninger siden mindst 15/10 08:56 fejlede med 429 `insufficient_quota` ("You have no credits remaining") — letmælken, Verpoorten m.fl. Kreditten skal fyldes op på platform.openai.com → Billing (admin → OpenAI-forbrug viser status).
@@ -74,6 +85,7 @@ Brugerens krav: favoritter vises øverst; lydbølgen fra Tale-siden må ikke fje
 
 - Ikoner (inkl. tilføjmenuen `/icons/add/*`), flag, integrations-/betalings-/certificeringslogoer, Hello Cal-logo og favicons får `public, max-age=31536000, immutable` (`next.config.ts`). Navnene er ikke hashede: skifter et ikon indhold, skal det have nyt filnavn.
 - Uændret: adgangsmur-billeder (`/product-images`, `/hellofresh-images`, `/brand-logos`, `/icons/animals`, `/icons/body-measurements`) bliver ved 1 time, fordi admin kan erstatte dem under samme sti.
+
 ## 2026-10-16: Lidl/Aldi-varer berigelse kører lokalt på brugerens pc
 
 - Brugerens krav: Google Vision kun for varer, der giver 0 resultater ved tekstopslag; start med alle hentede Lidl- og Aldi-varer på dansk og tysk; flere detaljer end vi har samles i et ark (vores titel + nye fakta ved siden af); scriptet kører lokalt om natten, trækkes ned af pc'en selv, og står under Robotter på serveren men slået fra.
@@ -5786,6 +5798,7 @@ Brugerens krav (valgt i spørgsmålsboks): til/fra for det daglige søvnspørgsm
 ## 2026-10-16: Cirklen bagt ind i fritskrabede varebilleder (kun hjemmesiden)
 
 - Alle billeder på en hjemmeside kan hentes, så varesidens fritskrabede billede hentes nu som ét billede med cirklen bagt ind (`/product-circle?src=…`, `src/lib/product-circle-layout.ts` + `product-circle-composite.ts`, sharp, WebP, cachet). Cirklen er altid 540 px i billedet (vist som 180 px) og bliver aldrig mindre: stående vare = 110 % af cirklen med bunden i cirklens bund; liggende = fra venstre kant, 10 % ud over højre; lærredet vokser, så varen aldrig beskæres. Fejler hentningen, vises den gamle CSS-cirkel + billede. Native er uændret (bruger-regel 2026-10-16: kun hjemmesiden).
+
 ## 2026-10-16 — Screening af ufuldstændige produktbilleder (Lidl/Aldi, da/de, OFF)
 
 Lokalt natjob på pc'en (`scripts/image-screen`, `run-night.ps1`), kun læsning: finder billeder, hvor produktet er A) skåret af i kanten, B) har hænder/fingre ind over, C) er åbent/halvt fyldt (CLIP zero-shot). Skriver `out/ufuldstaendige-billeder.csv` med delscorer til manuel gennemgang og genoptages via `checkpoint.json`. Ændrer aldrig varer eller billeder. Tærsklerne er første bud og justeres ud fra CSV'en.
@@ -5808,6 +5821,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-16: Tale-sidens funktion uændret på Madvarer
 
 - Brugerens krav (gentaget): funktionen skal være præcis som på den gamle Tale-side. Det sagte tolkes af AI'en (`/api/ai/interpret-meal`) til varer med mængde ("to skiver franskbrød med smør og marmelade" → tre forslag), løbende mens man taler (700 ms efter sidste ord) og en sidste gang, når mikrofonen stopper. "Foreslået" med Tilføj pr. række og "Tilføj alle forslag"; "Tilføjet" åbner registreringen; swipe giver favorit/fejlmelding/slet (gemt vare slettes efter bekræftelse). Forslag fra tidligere optagelser bliver stående, og dagens tilføjede varer huskes (`hf-voice-added-items`). Intet gemmes uden tryk (docs/AI.md). Søgningen kører fortsat løbende på varen. Web: `useMealInterpretation` + `VoiceMealSuggestions`; native: `FoodsScreens.kt` (genbruger `VoiceItemRow`). Lære: en flytning af en funktion må aldrig ændre dens opførsel uden at spørge brugeren først.
+
 ## 2026-10-16 — Bria ved siden af rembg, med cache og kreditloft
 - Bria RMBG er valgfri fritlægningsmotor (`CUTOUT_ENGINE`, nøgle i admin → API-nøgler). rembg er stadig standard og det, der godkendes uden valg.
 - Bria-svar caches på disken efter billedets hash og tælles mod `BRIA_MAX_CREDITS`, så credits ikke spildes. Nye PRODUCT_FRONT-fritlægninger får en `_bria.png`-udgave, som admin kan sammenligne og vælge under Billedforslag. Detaljer: `docs/BRIA.md`.
@@ -5827,6 +5841,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-17: Kendte API-fejl forklares på admin → API-forbrug
 
 - Brugerens ønske: en advarselstype på API-oversigten i stedet for rå fejltekst. `src/lib/api-error-explain.ts` oversætter udbyderens fejl (Google: API_KEY_SERVICE_BLOCKED, SERVICE_DISABLED, ugyldig nøgle, fakturering, kvote; generelt 401) til overskrift, handling og link til hvor det rettes; kortet viser det som en gul advarselsboks. Nøgler skjules altid i viste og gemte fejl (`redactSecrets`).
+
 ## 2026-10-17: Billedbehandling → Fritlagte billeder + fælles arbejdsflade
 
 - Ny side `/admin/images/rembg` (fane "Fritlagte billeder"): rembg-filer uploades (filnavn = EAN, filer eller hel mappe), matches på stregkode og sammenlignes med varens nuværende billede. Faner: Afventer, Eksisterende, Afvist, Accepteret, Ikke matchet, Log. Tabeller `image_reviews` og `image_review_logs` (ingen FK til Product).
@@ -5839,6 +5854,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 
 - Admin → Billedbehandling → Billedforslag: Afvis på ét forslag sender originalfotoet (ImageCutoutJob.sourceUrl) til OpenAI images/edits (model OPENAI_IMAGE_EDIT_MODEL, standard gpt-image-1) med en prompt, der forbyder at opfinde, tegne om eller ændre noget. Resultatet gemmes som cutouts/openai-*.png og står som nyt forslag. Kun ét forsøg pr. vare: er forslaget allerede fra OpenAI, eller fejler kaldet, afvises det som før (Find nyt billede). Gruppe-afvisning kalder ikke OpenAI. Koden: src/lib/openai-cutout.ts + reject-ruten (retryOpenAi). Prisen tælles i OpenAI's omkostnings-API (admin → API-forbrug).
 - Værktøjsknapper under forslaget: "For lyst" (lysstyrke -12 %), "For mørkt" (+14 %) og "Kant ind (1 px)" (æder alfakanten én pixel, fjerner hvide rester). Rute: /api/admin/products/[id]/image/adjust (sharp); gemmer cutouts/adj-*.png som nyt forslag, originalen røres ikke. Kan gentages.
+
 ## 2026-10-17 - "Har du fundet en fejl?" fra en registrering: kamera direkte under punkterne
 
 - Under Produktbillede, EAN og Energi står altid en knap: "Tag nyt produktbillede", "Scan stregkoden" og "Tag billede af energiindholdet". Knappen vælger punktet og vedhæfter fotoet; et punkt med kun foto kan sendes.
@@ -5852,6 +5868,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 ## 2026-10-17: "Dine indscanninger" viser også kendte varer, brugeren scanner
 
 - Listen viste kun varer, brugeren selv havde oprettet. En scannet kendt vare (fx en cola fra Open Food Facts) manglede. Stregkodeopslaget gemmer nu en `ProductScan` (én række pr. bruger og vare, `scannedAt` flyttes frem), og `/api/my-scans` samler oprettede og scannede varer efter seneste tidspunkt. Svarformatet er uændret, så native følger med. Kode: `src/lib/user-scans.ts`, migration `20261017200000_product_scans`.
+
 ## 2026-10-17 — Tegnsætning i ingredienslister rettes automatisk
 
 Brugerens cola-liste viste "karamelE150d", "(E338), , naturlige" og

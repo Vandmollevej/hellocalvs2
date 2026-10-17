@@ -598,24 +598,53 @@ private val ALLERGEN_LABELS = mapOf(
 
 fun labelForAllergen(key: String): String = ALLERGEN_LABELS[key] ?: key
 
-private val ALLERGEN_STEMS = listOf(
-    "gluten", "rugmel", "rugkern", "rugbrød", "rugflager", "bygmel", "byggryn", "bygmalt", "hvede", "wheat", "rug", "rye", "byg", "barley", "havre", "oat", "spelt", "kamut", "durum", "semulje",
-    "skaldyr", "krebsdyr", "rejer", "reje", "krabbe", "hummer", "shrimp", "crab", "lobster",
-    "bløddyr", "muslinger", "musling", "østers", "blæksprutte", "mollus",
-    "æg", "egg", "fisk", "fish", "torsk", "laks", "tun", "sild", "ansjos",
-    "mælk", "milk", "fløde", "smør", "ost", "valle", "laktose", "kasein", "yoghurt", "skyr", "cream", "butter", "cheese", "whey", "lactose", "casein",
-    "jordnød", "peanut", "nød", "nødde", "nut", "mandel", "mandler", "almond", "hasselnød", "hazelnut", "valnød", "walnut",
-    "cashew", "pekan", "pecan", "pistacie", "pistachio", "paranød", "macadamia",
-    "soja", "soya", "soy", "selleri", "celery", "sennep", "mustard", "sesam", "sesame", "lupin",
-    "sulfit", "sulphit", "sulfite", "svovldioxid", "sulphur dioxide", "sulfur dioxide",
-).sortedByDescending { it.length }
+private val STEMS_BY_ALLERGEN = mapOf(
+    "gluten" to listOf("gluten", "rugmel", "rugkern", "rugbrød", "rugflager", "bygmel", "byggryn", "bygmalt", "hvede", "wheat", "rug", "rye", "byg", "barley", "havre", "oat", "spelt", "kamut", "durum", "semulje"),
+    "crustaceans" to listOf("skaldyr", "krebsdyr", "rejer", "reje", "krabbe", "hummer", "shrimp", "crab", "lobster"),
+    "molluscs" to listOf("bløddyr", "muslinger", "musling", "østers", "blæksprutte", "mollus"),
+    "eggs" to listOf("æg", "egg"),
+    "fish" to listOf("fisk", "fish", "torsk", "laks", "tun", "sild", "ansjos"),
+    "milk" to listOf("mælk", "milk", "fløde", "smør", "ost", "valle", "laktose", "kasein", "yoghurt", "skyr", "cream", "butter", "cheese", "whey", "lactose", "casein"),
+    "peanuts" to listOf("jordnød", "peanut"),
+    "nuts" to listOf("nød", "nødde", "nut", "mandel", "mandler", "almond", "hasselnød", "hazelnut", "valnød", "walnut", "cashew", "pekan", "pecan", "pistacie", "pistachio", "paranød", "macadamia"),
+    "soybeans" to listOf("soja", "soya", "soy"),
+    "celery" to listOf("selleri", "celery"),
+    "mustard" to listOf("sennep", "mustard"),
+    "sesame-seeds" to listOf("sesam", "sesame"),
+    "lupin" to listOf("lupin"),
+    "sulphur-dioxide-and-sulphites" to listOf("sulfit", "sulphit", "sulfite", "svovldioxid", "sulphur dioxide", "sulfur dioxide"),
+)
+
+private val STEM_TO_KEY: Map<String, String> = STEMS_BY_ALLERGEN.flatMap { (key, stems) -> stems.map { it to key } }.toMap()
+private val ALLERGEN_STEMS = STEM_TO_KEY.keys.sortedByDescending { it.length }
+
+/** The allergen's page under "Viden om mad" → Allergener (src/lib/allergen-highlight.ts allergenHref). */
+fun allergenHref(key: String) = "/viden-om/allergener/$key"
+
+/** Copy of src/lib/allergen-words-client.ts: the allergen robot's approved words (GET /api/allergens/words), fetched once. */
+object AllergenWords {
+    private var cache: Map<String, String>? = null
+    private val mutex = Mutex()
+
+    suspend fun load(): Map<String, String> = mutex.withLock {
+        cache?.let { return it }
+        val rows = runCatching { Api.get("/api/allergens/words").arr("words") }.getOrNull() ?: return emptyMap()
+        val map = rows.mapNotNull { row ->
+            val word = row.str("word")?.lowercase() ?: return@mapNotNull null
+            val key = row.str("allergen") ?: return@mapNotNull null
+            word to key
+        }.toMap()
+        cache = map
+        map
+    }
+}
 
 private val EXACT_ONLY = setOf("rug", "byg", "ost", "tun", "nut", "oat", "egg", "æg", "nød", "rye", "soy")
 private const val ALLERGEN_LETTERS = "abcdefghijklmnopqrstuvwxyzæøåäöüé"
 
 private fun isAllergenLetter(c: Char) = c.lowercaseChar() in ALLERGEN_LETTERS
 
-data class IngredientSegment(val text: String, val allergen: Boolean)
+data class IngredientSegment(val text: String, val allergen: Boolean, val allergenKey: String? = null)
 
 // src/lib/ingredient-text-quality.ts displayIngredientsText: older lists are
 // shown with the same safe fixes — E-number read as £/€, Danish "soja", typical
@@ -786,9 +815,14 @@ fun displayIngredientsText(text: String): String {
     return out.ifEmpty { text }
 }
 
-/** Splits an ingredient list into plain and allergen parts (EU 1169/2011 art. 21). */
-fun segmentIngredients(text: String): List<IngredientSegment> {
+/**
+ * Splits an ingredient list into plain and allergen parts (EU 1169/2011 art. 21);
+ * each allergen part carries its key so it can link to its page. [extra] = the
+ * allergen robot's approved whole words (word → key), checked before the stems.
+ */
+fun segmentIngredients(text: String, extra: Map<String, String> = emptyMap()): List<IngredientSegment> {
     val segments = mutableListOf<IngredientSegment>()
+    val extraWords = extra.keys.sortedByDescending { it.length }
     var last = 0
     var i = 0
     while (i < text.length) {
@@ -797,7 +831,16 @@ fun segmentIngredients(text: String): List<IngredientSegment> {
             continue
         }
         var matchEnd = -1
-        for (stem in ALLERGEN_STEMS) {
+        var matchKey: String? = null
+        for (word in extraWords) {
+            val end = i + word.length
+            if (text.regionMatches(i, word, 0, word.length, ignoreCase = true) && (end >= text.length || !isAllergenLetter(text[end]))) {
+                matchEnd = end
+                matchKey = extra[word]
+                break
+            }
+        }
+        if (matchEnd < 0) for (stem in ALLERGEN_STEMS) {
             if (!text.regionMatches(i, stem, 0, stem.length, ignoreCase = true)) continue
             var end = i + stem.length
             if (stem in EXACT_ONLY) {
@@ -814,11 +857,12 @@ fun segmentIngredients(text: String): List<IngredientSegment> {
                 while (end < text.length && isAllergenLetter(text[end])) end++
             }
             matchEnd = end
+            matchKey = STEM_TO_KEY[stem]
             break
         }
         if (matchEnd > i) {
             if (i > last) segments += IngredientSegment(text.substring(last, i), false)
-            segments += IngredientSegment(text.substring(i, matchEnd), true)
+            segments += IngredientSegment(text.substring(i, matchEnd), true, matchKey)
             last = matchEnd
             i = matchEnd
         } else {
