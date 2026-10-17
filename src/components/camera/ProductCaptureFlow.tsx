@@ -34,6 +34,7 @@ import {
   submitProductQualityCheck,
   createQuickProduct,
   findCreatedProduct,
+  recordProductScan,
   readEnergyPhoto,
   readFrontPhoto,
   readLabelPhoto,
@@ -1118,6 +1119,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         durationMs: Date.now() - flowStartedAtRef.current,
         data: { outcome: "duplicate", source: "preRead" },
       });
+      recordProductScan(fresh.duplicateId);
       leaveTo(`/add/${fresh.duplicateId}${returnSuffix}`);
       return;
     }
@@ -1166,6 +1168,7 @@ export function ProductCaptureFlow({ returnSuffix, rescan }: { returnSuffix: str
         durationMs: Date.now() - flowStartedAtRef.current,
         data: { outcome: "duplicate", source: "shutter" },
       });
+      recordProductScan(early.duplicateId);
       leaveTo(`/add/${early.duplicateId}${returnSuffix}`);
       return;
     }
