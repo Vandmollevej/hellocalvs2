@@ -2925,7 +2925,6 @@
     "saveError": "Die Aktivität konnte nicht gespeichert werden.",
     "training": {
       "title": "Trainingseinheit",
-      "allActivities": "Alle Aktivitäten",
       "category": {
         "machines": "Krafttraining an Geräten",
         "free_weights": "Freie Gewichte",

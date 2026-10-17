@@ -2925,7 +2925,6 @@
     "saveError": "The activity could not be saved.",
     "training": {
       "title": "Workout",
-      "allActivities": "All activities",
       "category": {
         "machines": "Strength training on machines",
         "free_weights": "Free weights",

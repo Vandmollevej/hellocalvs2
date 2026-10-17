@@ -2925,7 +2925,6 @@
     "saveError": "Aktiviteten kunne ikke lagres.",
     "training": {
       "title": "Treningsøkt",
-      "allActivities": "Alle aktiviteter",
       "category": {
         "machines": "Styrketrening i maskiner",
         "free_weights": "Frivekter",

@@ -2925,7 +2925,6 @@
     "saveError": "Impossible d'enregistrer l'activité.",
     "training": {
       "title": "Séance d'entraînement",
-      "allActivities": "Toutes les activités",
       "category": {
         "machines": "Musculation sur machines",
         "free_weights": "Poids libres",

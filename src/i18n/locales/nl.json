@@ -2925,7 +2925,6 @@
     "saveError": "De activiteit kon niet worden opgeslagen.",
     "training": {
       "title": "Training",
-      "allActivities": "Alle activiteiten",
       "category": {
         "machines": "Krachttraining op machines",
         "free_weights": "Vrije gewichten",

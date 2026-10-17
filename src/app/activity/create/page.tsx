@@ -156,10 +156,7 @@ function ActivityCreateContent() {
         {!option ? (
           <div className="flex flex-col gap-6">
             <TrainingCategoryRows onPick={setSheetCategory} />
-            <section className="flex flex-col gap-2">
-              <h2 className="hf-type-section-title">{t("activity.training.allActivities")}</h2>
-              <ActivityPicker onPick={setOption} />
-            </section>
+            <ActivityPicker onPick={setOption} />
           </div>
         ) : (
           <div className="flex flex-col gap-4">

@@ -57,7 +57,6 @@ import dk.packroff.hellocal.ui.HcButtonKind
 import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcError
 import dk.packroff.hellocal.ui.HcScreen
-import dk.packroff.hellocal.ui.HcSectionTitle
 import dk.packroff.hellocal.ui.HcText
 import dk.packroff.hellocal.ui.ProfileSleepRangeSlider
 import dk.packroff.hellocal.screens.food.GlyphButton
@@ -370,10 +369,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
         if (current == null) {
             Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                 TrainingCategoryRows(onPick = { sheetCategory = it })
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    HcSectionTitle(t.t("activity.training.allActivities"))
-                    ActivityPicker(onPick = { option = it })
-                }
+                ActivityPicker(onPick = { option = it })
             }
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {

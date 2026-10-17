@@ -2925,7 +2925,6 @@
     "saveError": "Aktiviteten kunde inte sparas.",
     "training": {
       "title": "Träningspass",
-      "allActivities": "Alla aktiviteter",
       "category": {
         "machines": "Styrketräning i maskiner",
         "free_weights": "Fria vikter",

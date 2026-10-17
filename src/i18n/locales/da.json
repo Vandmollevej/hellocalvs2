@@ -2925,7 +2925,6 @@
     "saveError": "Aktiviteten kunne ikke gemmes.",
     "training": {
       "title": "Træningspas",
-      "allActivities": "Alle aktiviteter",
       "category": {
         "machines": "Styrketræning på maskiner",
         "free_weights": "Løsvægte",
