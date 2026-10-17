@@ -16,11 +16,12 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          echo "=== App startup log (first 60 lines) ==="
-          $C logs --no-log-prefix app 2>&1 | head -60 || true
-          echo "=== App log lines mentioning scheduler/jobs/api-keys/instrument ==="
-          $C logs --no-log-prefix app 2>&1 | grep -i -E "scheduler|\[jobs\]|api-keys|instrument|register|Prisma|ECONN" | head -40 || true
-          echo "=== App env (names only, NEXT/NODE) ==="
-          $C exec -T app sh -c 'env | grep -E "^(NEXT_|NODE_ENV|HOSTNAME|PORT)" | sed "s/=.*$/=<set>/"' || true
-          echo "=== instrumentation in image ==="
-          $C exec -T app sh -c 'ls -la .next/server/instrumentation* 2>&1 | head; ls .next/server | head -30' || true
+          echo "=== Backlog before first scheduler start ==="
+          q "SELECT channel, event, count(*), min(\"createdAt\"), max(\"createdAt\") FROM outbound_messages WHERE status='QUEUED' GROUP BY 1,2 ORDER BY 3 DESC"
+          q "SELECT provider, status, count(*) FROM subscriptions GROUP BY 1,2"
+          q "SELECT count(*) AS closed_over_90d FROM users WHERE \"closedAt\" < now() - interval '90 days' AND \"forgottenAt\" IS NULL"
+          q "SELECT count(*) AS closed_any FROM users WHERE \"closedAt\" IS NOT NULL"
+          q "SELECT enabled, count(*), min(\"nextRunAt\") FROM partner_report_schedules GROUP BY 1"
+          q "SELECT count(*) AS pending_products_48h FROM products WHERE status='PENDING' AND \"privateOwnerId\" IS NULL AND \"createdAt\" < now() - interval '48 hours' AND \"escalationSentAt\" IS NULL"
+          q "SELECT count(*) AS pending_bugs_48h FROM bug_reports WHERE status='PENDING' AND \"createdAt\" < now() - interval '48 hours' AND \"escalationSentAt\" IS NULL"
+          q "SELECT \"key\", enabled, \"lastStartedAt\" FROM scheduled_jobs ORDER BY 1"
