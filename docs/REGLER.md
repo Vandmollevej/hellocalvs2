@@ -9,7 +9,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
-- Listen er den globale `AccordionCard` + `ChevronRow` (native `HcAccordionCard` + `HcChevronRow`) med status-prik (`.hf-status-dot`) og "Aktiv/Inaktiv" i `value` — ingen hjemmelavede rækker (bruger 2026-10-16).
+- Listen er `AccordionCard` med `ScreeningRow` (`src/components/screenings/ScreeningRow.tsx`; native `ScreeningListRow`): præcis som madvarelistens rækker — px-4-ramme med tan-dark streg, den globale `FoodRow` (64 px, 44 px ikonfelt med måne/clipboard-heart, navn, status-prik + "Aktiv/Inaktiv" som caption) og pil til højre (user rule 2026-10-17: "1:1 med madvare-blokkene", særligt højden). Afløser 48 px-`ChevronRow` herfra.
 
 ## Varens sprog og oversættelse (user rule 2026-10-15)
 
