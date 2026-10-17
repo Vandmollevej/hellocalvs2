@@ -1,3 +1,7 @@
+## 2026-10-17: Slet på Madvarer → Mest brugte
+
+Swipe til venstre på "Mest brugte" giver nu både Fejl og Slet (web + native). Slet fjerner favoritten og skjuler varen (`most_used_hides`, migration 20261017235000), indtil den registreres igen. Søgeresultater har kun Fejl. Native er ikke kompileret i cloud-sessionen; CI tjekker.
+
 ## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
 
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
