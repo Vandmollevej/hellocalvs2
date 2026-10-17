@@ -1,16 +1,26 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconCirclePlus, IconPlus, IconSearch } from "@tabler/icons-react";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
-import { IconFavorite, IconFavoriteFilled } from "@/components/icons/Favorite";
+import { SwipeableRow } from "@/components/SwipeableRow";
 import { getSportMeta } from "@/lib/sport-icons";
 import type { ActivityOption } from "@/lib/activity-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Søgefelt blandt aktiviteter + "Tilføj … som aktivitet" (docs/DECISIONS.md
 // 2026-09-29). Bruges af /activity/create og pulsudsvings-spørgsmålet.
-export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOption) => void; busy?: boolean }) {
+// onAdd: hver række får et ⊕ yderst til højre, der lægger aktiviteten i
+// træningspasset ("Tilføjet") i stedet for at åbne den alene.
+export function ActivityPicker({
+  onPick,
+  onAdd,
+  busy,
+}: {
+  onPick: (option: ActivityOption) => void;
+  onAdd?: (option: ActivityOption) => void;
+  busy?: boolean;
+}) {
   const { t } = useTranslation();
   const [options, setOptions] = useState<ActivityOption[]>([]);
   const [query, setQuery] = useState("");
@@ -79,6 +89,7 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
     onClick: () => void;
     favorite?: boolean;
     onToggleFavorite?: () => void;
+    onAdd?: () => void;
   };
   const toRow = (option: ActivityOption): Row => {
     const Icon = getSportMeta(option.key).icon;
@@ -89,6 +100,7 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
       onClick: () => onPick(option),
       favorite: option.favorite === true,
       onToggleFavorite: () => void toggleFavorite(option),
+      onAdd: onAdd ? () => onAdd(option) : undefined,
     };
   };
   const addRow: Row[] =
@@ -101,30 +113,40 @@ export function ActivityPicker({ onPick, busy }: { onPick: (option: ActivityOpti
   const favoriteRows = trimmed ? [] : matches.filter((option) => option.favorite).map(toRow);
   const restRows = [...(trimmed ? matches : matches.filter((option) => !option.favorite)).map(toRow), ...addRow];
 
+  // Favorit sættes med swipe til højre som på madvarer (bruger 2026-10-17);
+  // ⊕ yderst til højre lægger sporten i "Tilføjet" (træningspas).
   function renderCard(rows: Row[]) {
     return (
       <AccordionCard>
-        {rows.map((row, index) => (
-          <ChevronRow
-            key={row.key}
-            icon={row.icon}
-            label={row.label}
-            onClick={busy || adding ? undefined : row.onClick}
-            divider={index < rows.length - 1}
-            trailing={
-              row.onToggleFavorite ? (
-                <button
-                  type="button"
-                  onClick={row.onToggleFavorite}
-                  aria-label={t(row.favorite ? "search.removeFavorite" : "search.addFavorite")}
-                  className="flex h-12 items-center pl-1 pr-4 text-hf-green"
-                >
-                  {row.favorite ? <IconFavoriteFilled size={20} /> : <IconFavorite size={20} />}
-                </button>
-              ) : undefined
-            }
-          />
-        ))}
+        {rows.map((row, index) => {
+          const content = (
+            <ChevronRow
+              icon={row.icon}
+              label={row.label}
+              onClick={busy || adding ? undefined : row.onClick}
+              divider={index < rows.length - 1}
+              trailing={
+                row.onAdd ? (
+                  <button
+                    type="button"
+                    onClick={busy || adding ? undefined : row.onAdd}
+                    aria-label={t("activity.session.add", { name: row.label })}
+                    className="flex h-12 items-center pl-1 pr-4 text-hf-green"
+                  >
+                    <IconCirclePlus size={24} />
+                  </button>
+                ) : undefined
+              }
+            />
+          );
+          return row.onToggleFavorite ? (
+            <SwipeableRow key={row.key} surfaceClassName="bg-hf-tan" onFavorite={row.onToggleFavorite} isFavorite={row.favorite}>
+              {content}
+            </SwipeableRow>
+          ) : (
+            <div key={row.key}>{content}</div>
+          );
+        })}
       </AccordionCard>
     );
   }
