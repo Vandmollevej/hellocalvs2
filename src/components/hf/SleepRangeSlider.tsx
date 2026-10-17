@@ -33,6 +33,8 @@ export function SleepRangeSlider({
   onChangeWake,
   onChangeBedtime,
   bedtimeFirst = false,
+  trackStart = 0,
+  trackEnd = MINUTES_PER_DAY,
 }: {
   wakeMinutes: number;
   bedtimeMinutes: number;
@@ -41,14 +43,20 @@ export function SleepRangeSlider({
   // Aktivitet: banen er ét døgn fra 00:00 (venstre) til 23:59 (højre); start (= "bedtime")
   // står til venstre og slut (= "wake") til højre, og markeringen ligger mellem dem uden at pakke over midnat.
   bedtimeFirst?: boolean;
+  // Banens yderpunkter i minutter efter midnat (standard hele døgnet).
+  // Aktivitet: banen starter ved stå-op-tiden — man træner ikke, mens man sover.
+  trackStart?: number;
+  trackEnd?: number;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef<Handle | null>(null);
   const [editing, setEditing] = useState<Handle | null>(null);
   const [editValue, setEditValue] = useState("");
 
-  const wakePct = (wakeMinutes / MINUTES_PER_DAY) * 100;
-  const bedtimePct = (bedtimeMinutes / MINUTES_PER_DAY) * 100;
+  const span = Math.max(1, trackEnd - trackStart);
+  const toPct = (minutes: number) => Math.min(100, Math.max(0, ((minutes - trackStart) / span) * 100));
+  const wakePct = toPct(wakeMinutes);
+  const bedtimePct = toPct(bedtimeMinutes);
 
   function minutesFromClientX(clientX: number) {
     const track = trackRef.current;
@@ -57,7 +65,8 @@ export function SleepRangeSlider({
     const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
     // Snapper til nærmeste kvarter — et minuts præcision er unødvendigt fint
     // for et fingertryk på en bane, der spænder alle 24 timer.
-    return Math.min(MINUTES_PER_DAY - 1, Math.round((ratio * MINUTES_PER_DAY) / 15) * 15);
+    const value = trackStart + Math.round((ratio * span) / 15) * 15;
+    return Math.min(trackEnd, MINUTES_PER_DAY - 1, value);
   }
 
   const lastHapticRef = useRef<Record<Handle, number | null>>({ wake: null, bedtime: null });

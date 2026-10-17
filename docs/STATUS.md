@@ -671,3 +671,7 @@ Last updated: 2026-10-14
 ## 2026-10-17: Admin: Fritlagte billeder (rembg-sammenligner)
 
 - Ny fane under Billedbehandling og delt arbejdsflade på Billedforslag (se DECISIONS 2026-10-17). Migration `20261017180000_image_review`. Typecheck og lint grønne; ikke prøvet mod rigtig database herfra.
+## 2026-10-17: Tilføj aktivitet — tidsbanen viser kun de vågne timer
+
+- Banen med start/slut på "Tilføj aktivitet" starter nu ved stå-op-tiden efter natten før (samme søvnvindue som kalenderen: dags-override → ugedag → standard) og går til midnat, da dagens sluttidspunkt ikke kendes endnu. Stå-op-tiden rettes i kalenderen ved at flytte søvnblokken. Dagsøvn (nattevagt) giver hele døgnet; en valgt start før stå-op trækker banen tilbage til starten.
+- Søvnlogikken er flyttet til `src/lib/sleep-window.ts` (bruges af kalenderen og aktivitetssiden). `SleepRangeSlider`/`ProfileSleepRangeSlider` har fået `trackStart`/`trackEnd`. Native porteret (`activityTrackStart` i `CalendarLogic.kt`). Kotlin ikke kompileret lokalt (Android-plugin kan ikke hentes) — CI bygger.
