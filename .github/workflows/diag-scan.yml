@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: Read recent quick-created products and their logs (read-only)
         run: |
-          set -uo pipefail
+          set -u
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
-          envval() { grep -E "^$1=" .env.production | tail -1 | cut -d= -f2- | tr -d '"' ; }
+          envval() { grep -E "^$1=" .env.production | tail -1 | cut -d= -f2- | tr -d '"' || true; }
           GK=$(envval GOOGLE_API_KEY); GC=$(envval GOOGLE_CSE_ID); GP=$(envval GOOGLE_PLACES_API_KEY); GV=$(envval GOOGLE_VISION_API_KEY)
           echo "names of GOOGLE* vars in .env.production:"; grep -oE '^GOOGLE[A-Z_]*' .env.production | sort -u
           echo "GOOGLE_API_KEY set=$([ -n "$GK" ] && echo yes || echo no) len=${#GK}; same as PLACES=$([ -n "$GK" ] && [ "$GK" = "$GP" ] && echo yes || echo no); same as VISION=$([ -n "$GK" ] && [ "$GK" = "$GV" ] && echo yes || echo no)"
