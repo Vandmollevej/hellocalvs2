@@ -352,6 +352,13 @@ fun CalendarScreen(args: RouteArgs) {
                             runCatching { Api.delete("/api/health-metrics", mapOf("ids" to ids)) }.onFailure { metrics = before }
                         }
                     },
+                    onDeleteWater = { id ->
+                        val before = waterEntries
+                        waterEntries = waterEntries.filter { it.id != id }
+                        scope.launch {
+                            runCatching { Api.delete("/api/water-entries/$id") }.onFailure { waterEntries = before }
+                        }
+                    },
                     onDeleteRegistration = { id ->
                         val before = registrations
                         registrations = registrations.filter { it.id != id }

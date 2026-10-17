@@ -5840,3 +5840,7 @@ Brugeren så Google Health stå usynkroniseret i 3+ dage, mens Withings (webhook
 - Under Produktbillede, EAN og Energi står altid en knap: "Tag nyt produktbillede", "Scan stregkoden" og "Tag billede af energiindholdet". Knappen vælger punktet og vedhæfter fotoet; et punkt med kun foto kan sendes.
 - EAN: på web tages et foto, som ZXing læser; koden skrives i feltet ("Rigtig EAN: …"). I appen bruges den levende scanner. Kan koden ikke læses, skriver brugeren den selv.
 - Rapporten sendes nu som sektioner + sectionPhotos (som /profile/report-bug): Produktbillede → IMAGE, Navn/Mærke → TITLE, EAN → OTHER, Energi/Makro → ENERGY, Indhold → INGREDIENTS. Kode: src/lib/registration-report-points.ts (buildReportSections).
+
+## 2026-10-17 - Én swipe-række overalt
+
+- Brugeren påpegede, at swipe-bokse så forskellige ud (screeninger havde egne knapper, kalender/vand/tale/chat lå ikke i kort). Beslutning: `SwipeableRow` er den eneste swipe-komponent; andre knapper gives som `rightActions`/`leftActions`. Standardflade er `bg-hf-tan px-4` i et `rounded-card bg-hf-tan`-kort. Swipe låses først, når bevægelsen er mest vandret, og `pointercancel` snapper rækken helt åben/lukket (før kunne den hænge halvvejs med en rød kant synlig). Se `docs/REGLER.md` → UI.

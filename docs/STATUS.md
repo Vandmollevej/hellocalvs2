@@ -1,3 +1,7 @@
+## 2026-10-17: Alle swipe-rækker ser ens ud
+
+- Én fælles `SwipeableRow` (web) og `FoodSwipeableRow` (native): ikon over tekst på alle knapper, skraldespand på Fjern, og rækken kan ikke længere hænge halvt åben, når man scroller (afbrudt berøring snapper nu helt åben/lukket, og lodret scroll låser swipe). Screeninger, kalenderens indtastninger, Tilføj vand, tale og chat bruger nu samme tan-kort som "Dagens tilføjelser"; vand kan swipes væk både på vandsiden og i kalenderen. Native ikke kompileret lokalt.
+
 ## 2026-10-17: Delte retter: "Alle retter" med endeløs scroll
 
 - Trender og favoritter er valg under filtrenes Visning (til som standard), favoritter står på én linje, og under dem vises alle retter efter popularitet, tre rækker ad gangen med endeløs scroll. Web + native; ikke prøvet i browser eller kompileret native herfra (ingen lokal database, Android-plugin kan ikke hentes) — lint, typecheck, build og paritetsvagt er grønne.
