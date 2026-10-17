@@ -263,6 +263,7 @@ model User {
 
   registrations           Registration[]
   productScans            ProductScan[]
+  mostUsedHides           MostUsedHide[]
   favorites               Favorite[]
   activityFavorites       ActivityFavorite[]
   dishes                  Dish[]
@@ -1694,6 +1695,7 @@ model Product {
   petFoodTextCheckedAt DateTime?
   registrations      Registration[]
   productScans       ProductScan[]
+  mostUsedHides      MostUsedHide[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
   ingredients        ProductIngredient[]
@@ -2746,6 +2748,19 @@ model ProductScan {
   @@unique([userId, productId])
   @@index([userId, scannedAt])
   @@map("product_scans")
+}
+
+// "Slet" på Madvarer → Mest brugte (bruger 2026-10-17): varen skjules fra
+// listen, indtil den registreres igen (en registrering efter hiddenAt).
+model MostUsedHide {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  hiddenAt  DateTime @default(now())
+
+  @@id([userId, productId])
+  @@map("most_used_hides")
 }
 
 model Registration {

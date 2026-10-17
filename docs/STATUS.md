@@ -2,6 +2,10 @@
 
 - 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
 
+## 2026-10-17: Slet på Madvarer → Mest brugte
+
+Swipe til venstre på "Mest brugte" giver nu både Fejl og Slet (web + native). Slet fjerner favoritten og skjuler varen (`most_used_hides`, migration 20261017235000), indtil den registreres igen. Søgeresultater har kun Fejl. Native er ikke kompileret i cloud-sessionen; CI tjekker.
+
 ## 2026-10-17: Spring energi over i kameraflowet
 "Spring over" på energi-trinnet (varer uden næringstabel, fx danskvand); sprungne trin får en rød streg over knappen (web + native). Serveren opretter varen uden energifoto med "næring ukendt".
 
