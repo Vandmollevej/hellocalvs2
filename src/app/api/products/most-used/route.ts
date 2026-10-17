@@ -27,11 +27,21 @@ export async function GET() {
         ...(cutoff ? { createdAt: { gte: cutoff } } : {}),
       },
       _count: { productId: true },
+      _max: { createdAt: true },
       orderBy: { _count: { productId: "desc" } },
       // Lidt ekstra, da udgåede/skjulte varer sorteres fra nedenfor.
       take: MOST_USED_LIMIT * 2,
     });
-    const usedIds = counts.map((row) => row.productId).filter((id): id is string => Boolean(id));
+    // Swipe → Slet: skjult, indtil varen registreres igen (MostUsedHide).
+    const hides = await prisma.mostUsedHide.findMany({ where: { userId: user.id } });
+    const hiddenAt = new Map(hides.map((row) => [row.productId, row.hiddenAt]));
+    const usedIds = counts
+      .filter((row) => {
+        const since = row.productId ? hiddenAt.get(row.productId) : undefined;
+        return !since || (row._max.createdAt ?? new Date(0)) > since;
+      })
+      .map((row) => row.productId)
+      .filter((id): id is string => Boolean(id));
     // Favoritter (bogmærker) står øverst, nyeste først (brugerens krav
     // 2026-10-16); derefter de mest brugte, der ikke allerede er favoritter.
     const favorites = await prisma.favorite.findMany({
@@ -89,5 +99,30 @@ export async function GET() {
   } catch (error) {
     console.error("Most used products failed", error);
     return NextResponse.json({ products: [], message: "Database ikke tilgængelig" }, { status: 503 });
+  }
+}
+
+// DELETE /api/products/most-used?productId=… — swipe → Slet: fjerner varen fra
+// "Mest brugte" (og fra favoritterne, der står øverst på samme liste). Den
+// kommer tilbage, når den registreres igen.
+export async function DELETE(request: Request) {
+  try {
+    const user = await getProfileUser("registrations", "DELETED");
+    if (!user) return unauthorized();
+    const productId = new URL(request.url).searchParams.get("productId");
+    if (!productId) return NextResponse.json({ error: "productId mangler" }, { status: 400 });
+    const hiddenAt = new Date();
+    await prisma.$transaction([
+      prisma.mostUsedHide.upsert({
+        where: { userId_productId: { userId: user.id, productId } },
+        update: { hiddenAt },
+        create: { userId: user.id, productId, hiddenAt },
+      }),
+      prisma.favorite.deleteMany({ where: { userId: user.id, productId } }),
+    ]);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("DELETE /api/products/most-used failed", error);
+    return NextResponse.json({ error: "Kunne ikke fjerne varen" }, { status: 500 });
   }
 }

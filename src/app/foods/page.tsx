@@ -11,7 +11,7 @@ import { useLiveSpeech } from "@/lib/use-live-speech";
 import { useMealInterpretation } from "@/components/voice/useMealInterpretation";
 import { VoiceMealSuggestions } from "@/components/voice/VoiceMealSuggestions";
 import { defaultMealInputLanguage, readStoredMealInputLanguage, speechLangFor, type MealInputLanguageCode } from "@/lib/meal-input-language";
-import { IconApple, IconCamera, IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconBarcode, IconChevronRight, IconSearch } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
@@ -51,6 +51,7 @@ function ProductRow({
   isFavorite,
   onToggleFavorite,
   onOpen,
+  onDelete,
 }: {
   product: Product;
   isLast: boolean;
@@ -58,17 +59,20 @@ function ProductRow({
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
   onOpen?: (id: string) => void;
+  // Kun på "Mest brugte" (ikke søgeresultater).
+  onDelete?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
   // Som "Dagens tilføjelser" på forsiden (bruger 2026-10-17): favorit kun ved
-  // swipe til højre, Fejl ved swipe til venstre.
+  // swipe til højre, Fejl (+ Slet på "Mest brugte") ved swipe til venstre.
   return (
     <div className={isLast ? "" : "border-b border-hf-tan-dark"}>
       <SwipeableRow
         onFavorite={() => onToggleFavorite(product.id, !isFavorite)}
         isFavorite={isFavorite}
         onReportError={() => router.push(`/product/${product.id}/report-error`)}
+        onDelete={onDelete ? () => onDelete(product.id) : undefined}
       >
         <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
           <FoodRow
@@ -251,6 +255,21 @@ function MadvarerContent() {
     }).catch(() => {});
   }
 
+  // Swipe → Slet på "Mest brugte": væk med det samme; kommer tilbage, når
+  // varen registreres igen (DELETE /api/products/most-used).
+  function removeFromMostUsed(productId: string) {
+    if (snapshot) {
+      const updated = {
+        ...snapshot,
+        products: snapshot.products.filter((p) => p.id !== productId),
+        favoriteIds: snapshot.favoriteIds.filter((id) => id !== productId),
+      };
+      setLoadedSnapshot(updated);
+      writeFoodsSnapshot(updated);
+    }
+    fetch(`/api/products/most-used?productId=${encodeURIComponent(productId)}`, { method: "DELETE" }).catch(() => {});
+  }
+
   useEffect(() => {
     if (!autoStartMic) searchInputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- kun ved åbning
@@ -422,10 +441,7 @@ function MadvarerContent() {
         </section>
 
         <div className="hf-search hf-search--grow">
-          {/* Kameraet i søgefeltet åbner billedfunktionen (afløser knappen "Scan nyt produkt" nederst). */}
-          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
-            <IconCamera size={22} stroke={1.8} />
-          </Link>
+          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
           <textarea
             ref={searchInputRef}
             rows={1}
@@ -444,7 +460,10 @@ function MadvarerContent() {
             enterKeyHint="search"
             placeholder={t("foods.searchPlaceholder")}
           />
-          <IconSearch size={16} color="var(--hf-black)" className="shrink-0" />
+          {/* Luppen står forrest og stregkoden til højre (brugerregel); stregkoden åbner Tilføj-kameraet (afløser knappen "Scan nyt produkt" nederst). */}
+          <Link href="/camera?mode=product" aria-label={t("foods.scanNewProduct")} className="shrink-0 text-hf-green">
+            <IconBarcode size={22} stroke={1.8} />
+          </Link>
         </div>
 
         <VoiceMealSuggestions
@@ -490,6 +509,7 @@ function MadvarerContent() {
                 isFavorite={favoriteIds.has(product.id)}
                 onToggleFavorite={toggleFavorite}
                 onOpen={isSearching ? trackSearchClick : undefined}
+                onDelete={isSearching ? undefined : removeFromMostUsed}
               />
             ))}
           {ready && visibleProducts.length === 0 && !meal.items.some((item) => !item.saved) && !meal.interpreting && (
