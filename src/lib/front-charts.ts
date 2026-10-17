@@ -57,15 +57,38 @@ export function sumBuckets(entries: { at: Date; kcal: number }[], startHour: num
 }
 
 /**
- * Anbefalet energifordeling over dagen: morgenmad, frokost, aftensmad og små
- * mellemmåltider som glatte toppe. Returnerer andel (summer til 1) pr. tidsrum.
+ * Anbefalet energifordeling over dagen (Den danske Institutionskost / Kost og
+ * Ernæringsforbundet, se vidensartiklen "energifordeling-over-dagen"): morgenmad
+ * ca. 20 %, frokost ca. 25 %, aftensmad ca. 30 % og mellemmåltider tilsammen
+ * ca. 25 %, som glatte toppe. Returnerer andel (summer til 1) pr. tidsrum.
  */
-const MEALS = [
-  { hour: 7.75, share: 0.25, spread: 0.9 },
-  { hour: 12.5, share: 0.3, spread: 1.0 },
-  { hour: 18.25, share: 0.35, spread: 1.1 },
-  { hour: 15.5, share: 0.1, spread: 0.8 },
+export const MEAL_SHARES = [
+  { hour: 7.5, share: 0.2, spread: 0.9 },
+  { hour: 10, share: 0.1, spread: 0.7 },
+  { hour: 12.5, share: 0.25, spread: 1.0 },
+  { hour: 15.5, share: 0.15, spread: 0.8 },
+  { hour: 18.5, share: 0.3, spread: 1.1 },
 ];
+const MEALS = MEAL_SHARES;
+
+/**
+ * Moderat intensitet begynder ved ca. 64 % af maksimal puls (CDC; Sundhedsstyrelsen
+ * anbefaler mindst 30 min. moderat aktivitet om dagen). Maxpuls efter Tanaka
+ * (208 − 0,7 × alder), 190 når alderen er ukendt.
+ */
+export function moderatePulseBpm(age: number | null | undefined) {
+  const max = age && age > 0 ? 208 - 0.7 * age : 190;
+  return Math.round(max * 0.64);
+}
+
+/** Hele år fra en fødselsdato (ÅÅÅÅ-MM-DD), eller null. */
+export function ageFrom(birthDate: string | null | undefined, now = new Date()) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(birthDate ?? "");
+  if (!m) return null;
+  let age = now.getFullYear() - Number(m[1]);
+  if (now.getMonth() + 1 < Number(m[2]) || (now.getMonth() + 1 === Number(m[2]) && now.getDate() < Number(m[3]))) age -= 1;
+  return age > 0 && age < 120 ? age : null;
+}
 export function recommendedShares(startHour: number, endHour: number, bucketMinutes = 15) {
   const count = Math.max(1, Math.round(((endHour - startHour) * 60) / bucketMinutes));
   const raw = new Array<number>(count).fill(0);

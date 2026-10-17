@@ -1,3 +1,9 @@
+## 2026-10-17: Forsidens grafer: Kalorier fordelt, pulskurve med zone-linje, ens stregtykkelse
+
+- "Kalorier" og "Kaloriestatus" er slået sammen til én graf, "Kalorier fordelt": eget indtag pr. time som blå pinde, anbefalet energifordeling over dagen som grå streg (morgenmad ~20 %, frokost ~25 %, aftensmad ~30 %, mellemmåltider ~25 %).
+- Puls er en blå kurve med en stiplet grå linje, hvor moderat intensitet begynder (64 % af maxpuls efter alder; 190 uden alder).
+- Alle linjer og pinde har samme tykkelse (2 px). Nye vidensartikler: `energifordeling-over-dagen` og `anbefalet-puls` med kilder. Web + native; native er ikke kompileret lokalt.
+
 ## 2026-10-17: Appens planlagte job kørte aldrig i produktion
 
 - Rodårsag: `instrumentation.ts` lå i projektroden, men appen bruger `src/app`, så Next leder kun i `src/`. Standalone-imaget fik ingen instrumentation-fil, og `startScheduler()` kørte aldrig — ingen af appens job (`quick-enrichment-recovery`, `maintenance`, `back-photo-scan`, `frida-estimates`, `search-index`, `product-translations`, `api-alerts` …) havde `lastStartedAt` i produktion. Kun Python-agenterne kørte. Derfor blev fx Änglamark-letmælken aldrig repareret.

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  awakeHours, stickBuckets, recommendedShares, aheadOfPlan, splitSurplus, walkOptions,
+  awakeHours, moderatePulseBpm, ageFrom, stickBuckets, recommendedShares, aheadOfPlan, splitSurplus, walkOptions,
   daysPerBar, groupDays, recommendedRange, cumulative,
 } from "./front-charts.ts";
 
@@ -62,4 +62,16 @@ test("anbefalet maks er aldrig under gulvet", () => {
   assert.deepEqual(recommendedRange(1000, 1500), { min: 1500, max: 1500 });
   assert.deepEqual(recommendedRange(2000, 1500), { min: 1700, max: 2000 });
   assert.deepEqual(cumulative([1, 2, 3]), [1, 3, 6]);
+});
+
+test("moderat puls er 64 % af maxpuls (Tanaka), 190 uden alder", () => {
+  assert.equal(moderatePulseBpm(null), Math.round(190 * 0.64));
+  assert.equal(moderatePulseBpm(40), Math.round((208 - 28) * 0.64));
+});
+
+test("alder fra fødselsdato", () => {
+  const now = new Date(2026, 9, 17);
+  assert.equal(ageFrom("1980-10-17", now), 46);
+  assert.equal(ageFrom("1980-10-18", now), 45);
+  assert.equal(ageFrom(null, now), null);
 });
