@@ -47,15 +47,23 @@ export default async function AdminImagesPage() {
         items={products.map((product) => {
           const candidates = product.imageSearches[0]?.candidates ?? [];
           const briaUrl = briaVariantUrl(product.pendingImageUrl);
-          const alternatives = [
-            ...(product.pendingImageUrl ? [{ key: "pending", src: product.pendingImageUrl, label: "Forslag (udklip)" }] : []),
-            ...(briaUrl ? [{ key: "pending-bria", src: briaUrl, label: "Forslag (Bria)" }] : []),
+          // Kvalitet 0-100: fundne billeder = match (70 %) + opløsning (30 %); udklip og Bria
+          // kan ikke måles og får et fast skøn. Sorteret så det bedste står først.
+          const scored = [
+            ...(product.pendingImageUrl ? [{ key: "pending", src: product.pendingImageUrl, name: "Forslag (udklip)", quality: 75 }] : []),
+            ...(briaUrl ? [{ key: "pending-bria", src: briaUrl, name: "Forslag (Bria)", quality: 85 }] : []),
             ...candidates.map((candidate) => ({
               key: candidate.id,
               src: candidate.imageUrl,
-              label: `Fundet online · ${pct(candidate.confidence)} · ${candidate.width}×${candidate.height}${host(candidate.pageUrl ?? candidate.sourceUrl) ? ` · ${host(candidate.pageUrl ?? candidate.sourceUrl)}` : ""}`,
+              name: `Fundet online · ${pct(candidate.confidence ?? 0)} · ${candidate.width}×${candidate.height}${host(candidate.pageUrl ?? candidate.sourceUrl) ? ` · ${host(candidate.pageUrl ?? candidate.sourceUrl)}` : ""}`,
+              quality: Math.round(100 * (0.7 * (candidate.confidence ?? 0) + 0.3 * Math.min(((candidate.width ?? 0) * (candidate.height ?? 0)) / 640000, 1))),
             })),
-          ];
+          ].sort((x, y) => y.quality - x.quality);
+          const alternatives = scored.map((alt, i) => ({
+            key: alt.key,
+            src: alt.src,
+            label: `${i === 0 ? "Bedste · " : ""}Kvalitet ${alt.quality} % · ${alt.name}`,
+          }));
           return {
             id: product.id,
             title: product.name,

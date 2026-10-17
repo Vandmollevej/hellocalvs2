@@ -85,13 +85,6 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
     setPicked((current) => ({ ...current, [item.id]: (pickedIndex(item) + delta + count) % count }));
   };
 
-  // Lightbox-billeder: original + alle alternativer (eller slides) for hver vare.
-  const flat = items.flatMap((item) =>
-    (item.alternatives?.length ? [item.slides[0], ...item.alternatives] : item.slides).flatMap((slide) =>
-      slide.src ? [{ item, slide }] : [],
-    ),
-  );
-
   const chooseSize = (idx: number) => {
     // Bliv ved samme vare, når størrelsen skifter.
     const firstIndex = safePage * perPage;
@@ -119,18 +112,18 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
   const step = useCallback(
     (delta: number) => {
-      setLightbox((current) => (current === null || flat.length === 0 ? current : (current + delta + flat.length) % flat.length));
+      setLightbox((current) => (current === null || items.length === 0 ? current : (current + delta + items.length) % items.length));
     },
-    [flat.length],
+    [items.length],
   );
 
   // Hold lightboxen inden for listen, når et billede forsvinder efter Afvis/Godkend.
   useEffect(() => {
     if (lightbox === null) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- klem indekset ind i listen
-    if (flat.length === 0) setLightbox(null);
-    else if (lightbox >= flat.length) setLightbox(flat.length - 1);
-  }, [flat.length, lightbox]);
+    if (items.length === 0) setLightbox(null);
+    else if (lightbox >= items.length) setLightbox(items.length - 1);
+  }, [items.length, lightbox]);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -145,25 +138,16 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
 
   if (items.length === 0) return <p className="hf-type-body text-text-secondary">{emptyText}</p>;
 
-  const current = lightbox !== null ? flat[lightbox] : null;
-  // Tal i bunden: højst 9 ad gangen omkring det aktuelle billede.
-  // Lightboxen viser altid nuværende billede og forslaget side om side; "godkend" gælder
-  // præcis det forslag, der står til højre.
-  const lightboxItem = current?.item;
-  const lightboxAlt = current && lightboxItem?.alternatives?.length
-    ? current.slide === lightboxItem.slides[0]
-      ? lightboxItem.alternatives[pickedIndex(lightboxItem)]
-      : current.slide
-    : null;
-  const lightboxSlides: ReviewSlide[] = !lightboxItem
-    ? []
-    : lightboxAlt
-      ? [lightboxItem.slides[0], lightboxAlt]
-      : lightboxItem.slides.filter((slide) => slide.src);
+  const current = lightbox !== null ? items[lightbox] ?? null : null;
+  // Lightboxen viser ét sæt ad gangen: nuværende billede og det valgte forslag
+  // side om side; pilene bladrer til næste vare. "Godkend" gælder det viste forslag.
+  const lightboxSlides: ReviewSlide[] = current ? shownSlides(current).filter((slide) => slide.src) : [];
+  const lightboxAlternatives = current?.alternatives ?? [];
+  // Tal i bunden: højst 9 varer ad gangen omkring den aktuelle.
   const numbers: number[] = [];
   if (lightbox !== null) {
-    const start = Math.max(0, Math.min(lightbox - 4, flat.length - 9));
-    for (let i = start; i < Math.min(flat.length, start + 9); i++) numbers.push(i);
+    const start = Math.max(0, Math.min(lightbox - 4, items.length - 9));
+    for (let i = start; i < Math.min(items.length, start + 9); i++) numbers.push(i);
   }
 
   const board = (
@@ -185,8 +169,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           const index = pickedIndex(item);
           const stripStart = Math.max(0, Math.min(index - Math.floor(STRIP / 2), alternatives.length - STRIP));
           const shown = shownSlides(item);
-          const lightboxIndex = (slide: ReviewSlide) =>
-            flat.findIndex((entry) => entry.item.id === item.id && entry.slide.src === slide.src);
+          const lightboxIndex = () => items.findIndex((entry) => entry.id === item.id);
           return (
             <BulkRow as="div" key={item.id} id={item.id} ignoreInteractive className="hf-panel hf-panel--form">
               <div>
@@ -197,7 +180,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                 {shown.map((slide, slideIdx) => (
                   <div key={slideIdx} className="flex flex-col items-center gap-1">
                     <div className="relative w-full">
-                      <Pic slide={slide} onClick={() => setLightbox(lightboxIndex(slide))} />
+                      <Pic slide={slide} onClick={() => setLightbox(lightboxIndex())} />
                       {alternatives.length > 1 && slideIdx === 1 && (
                         <>
                           <button type="button" onClick={() => movePick(item, -1)} aria-label="Forrige alternativ" className="hf-pick-arrow hf-btn-icon is-prev">
@@ -266,10 +249,9 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
         <div className="fixed inset-0 z-50 flex flex-col bg-hf-black/85" role="dialog" aria-modal="true" aria-label="Billede i stor størrelse">
           <div className="flex items-start justify-between gap-4 p-4 text-hf-white">
             <div className="min-w-0">
-              <p className="hf-type-strong truncate">{current.item.title}</p>
+              <p className="hf-type-strong truncate">{current.title}</p>
               <p className="hf-type-small opacity-80">
-                {current.slide.label}
-                {current.item.subtitle ? ` · ${current.item.subtitle}` : ""}
+                {current.subtitle ?? ""}
               </p>
             </div>
             <button type="button" onClick={() => setLightbox(null)} className="hf-btn-icon" aria-label="Luk">
@@ -278,7 +260,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           </div>
 
           <div className="relative flex min-h-0 flex-1 items-center justify-center gap-4 px-14">
-            {flat.length > 1 && (
+            {items.length > 1 && (
               <button type="button" onClick={() => step(-1)} aria-label="Forrige billede" className="hf-pick-arrow hf-btn-icon is-prev opacity-100">
                 ‹
               </button>
@@ -290,7 +272,7 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                 <span className="hf-type-small text-hf-white">{slide.label}</span>
               </div>
             ))}
-            {flat.length > 1 && (
+            {items.length > 1 && (
               <button type="button" onClick={() => step(1)} aria-label="Næste billede" className="hf-pick-arrow hf-btn-icon is-next opacity-100">
                 ›
               </button>
@@ -298,6 +280,25 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
           </div>
 
           <div className="flex flex-col gap-3 p-4">
+            {lightboxAlternatives.length > 1 && (
+              <div className="flex flex-wrap items-center justify-center gap-2" aria-label="Alternativer">
+                {lightboxAlternatives.map((alt, altIndex) => (
+                  <button
+                    key={alt.key ?? altIndex}
+                    type="button"
+                    onClick={() => setPicked((currentPicked) => ({ ...currentPicked, [current.id]: altIndex }))}
+                    aria-label={`Vis alternativ ${altIndex + 1}: ${alt.label}`}
+                    aria-pressed={altIndex === pickedIndex(current)}
+                    className={`hf-pick-thumb ${altIndex === pickedIndex(current) ? "is-selected" : ""}`}
+                  >
+                    {alt.src && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={alt.src} alt="" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="flex flex-wrap items-center justify-center gap-1.5">
               {numbers[0] > 0 && <span className="hf-type-small text-hf-white/70">…</span>}
               {numbers.map((n) => (
@@ -312,16 +313,16 @@ export function ImageReviewBoard({ items: initialItems, approveLabel, rejectLabe
                   {n + 1}
                 </button>
               ))}
-              {numbers.length > 0 && numbers[numbers.length - 1] < flat.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
+              {numbers.length > 0 && numbers[numbers.length - 1] < items.length - 1 && <span className="hf-type-small text-hf-white/70">…</span>}
             </div>
             <div className="mx-auto flex w-full max-w-xl gap-2">
-              <button type="button" onClick={() => act(current.item, "reject")} disabled={busy} // eslint-disable-next-line no-restricted-syntax -- ligger på det mørke fuldskærmsoverlay; .hf-btn-danger er gennemsigtig og ville være ulæselig
+              <button type="button" onClick={() => act(current, "reject")} disabled={busy} // eslint-disable-next-line no-restricted-syntax -- ligger på det mørke fuldskærmsoverlay; .hf-btn-danger er gennemsigtig og ville være ulæselig
           className="hf-btn-danger flex-1 bg-hf-white hf-btn--large">
                 {rejectLabel}
               </button>
               <button
                 type="button"
-                onClick={() => act(current.item, "approve", lightboxAlt?.key ?? pickedKey(current.item))}
+                onClick={() => act(current, "approve", pickedKey(current))}
                 disabled={busy}
                 className="hf-btn-primary flex-1 hf-btn--large"
               >
