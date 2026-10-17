@@ -129,7 +129,7 @@ function ActivityCreateContent() {
         ) : (
           <div className="flex flex-col gap-4">
             <button type="button" className="hf-btn-text self-start text-hf-black" onClick={() => setOption(null)}>
-              {option.label} · {t("activity.change")}
+              {option.label}
             </button>
             <div className="flex flex-col gap-2">
               <span className="hf-type-caption">{t("activity.startedAt")}</span>

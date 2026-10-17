@@ -318,7 +318,7 @@ fun ActivityCreateScreen(args: RouteArgs) {
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 HcText(
-                    "${current.label} · ${t.t("activity.change")}",
+                    current.label,
                     HcTypeRoles.Body,
                     Modifier.clickable { option = null },
                     bold = true,
