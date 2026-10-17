@@ -5931,3 +5931,7 @@ Brugeren: "Man kan kun tilføje favorit ved at swipe til højre. Og man kan alti
 
 - Brugerens regel: varer fra Open Food Facts fritlægges på lige fod med egne fotos, men først søges et matchende billede via Google. Scannede OFF-varer fik det allerede ved oprettelsen (`createExternalImageCutoutJob`); importerede/ældre OFF-varer fik aldrig et job.
 - Ny robot `off-image-sweep` (app-job, hver time, `src/lib/off-image-sweep.ts`): OFF-varer med eksternt billede, uden afvist billede, uden ventende billede og uden PRODUCT_FRONT-job lægges i samme kø — `product-image-search` (Google Vision WEB_DETECTION) søger online, image-agent fritlægger, og resultatet går via Billedforslag/admin. Varer, brugerne har scannet (`product_scans`), tages først. Højst 50 pr. kørsel for at styre Google Vision-forbruget; intervallet kan ændres under Cron-jobs.
+
+## 2026-10-17: Træningspas = flere aktiviteter med fælles sessionId
+
+Brugerens ønske: flere øvelser under samme træning. Et træningspas er ikke en ny tabel, men almindelige `activities`-rækker med samme `sessionId`, lagt efter hinanden fra passets start. Kalender, statistik og kalorie-bank virker derfor uændret pr. øvelse. Kcal anslås altid fra MET pr. øvelse (vægt kræves). Gem-knappen på Tilføj → Aktivitet står fast nederst (HfScreen footer / HcScreen bottom).

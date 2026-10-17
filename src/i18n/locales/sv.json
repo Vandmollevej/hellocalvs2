@@ -2906,7 +2906,6 @@
     },
     "today": "i dag",
     "skip": "Hoppa över",
-    "change": "ändra",
     "startedAt": "Starttid",
     "duration": "Varaktighet",
     "hours": "timmar",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Ta bort övning",
       "fewerReps": "Färre repetitioner",
       "moreReps": "Fler repetitioner"
+    },
+    "session": {
+      "title": "Träningspass",
+      "add": "Lägg till {name} i träningspasset",
+      "remove": "Ta bort {name}",
+      "save": "Spara träningspass",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca {kcal} kcal",
+      "startTime": "Klockslag",
+      "invalid": "Lägg till minst en övning.",
+      "saveError": "Kunde inte spara träningspasset. Har du angett din vikt i profilen?",
+      "added": "Tillagt"
     }
   },
   "addButton": {

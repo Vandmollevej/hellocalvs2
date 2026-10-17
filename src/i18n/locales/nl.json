@@ -2906,7 +2906,6 @@
     },
     "today": "vandaag",
     "skip": "Overslaan",
-    "change": "wijzigen",
     "startedAt": "Starttijd",
     "duration": "Duur",
     "hours": "uur",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Oefening verwijderen",
       "fewerReps": "Minder herhalingen",
       "moreReps": "Meer herhalingen"
+    },
+    "session": {
+      "title": "Training",
+      "add": "{name} aan de training toevoegen",
+      "remove": "{name} verwijderen",
+      "save": "Training opslaan",
+      "total": "Totaal {minutes} min",
+      "totalKcal": "Totaal {minutes} min · ca. {kcal} kcal",
+      "startTime": "Tijdstip",
+      "invalid": "Voeg minstens één oefening toe.",
+      "saveError": "De training kon niet worden opgeslagen. Heb je je gewicht in je profiel ingevuld?",
+      "added": "Toegevoegd"
     }
   },
   "addButton": {

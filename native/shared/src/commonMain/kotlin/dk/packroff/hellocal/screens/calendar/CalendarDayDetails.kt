@@ -64,6 +64,7 @@ import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperImage
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlin.math.abs
@@ -294,7 +295,8 @@ internal fun DayDetails(
                         )
                     }
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(bottom = LocalBottomArcInset.current),
             ) {
                 when {
                     loading -> HcLoader()

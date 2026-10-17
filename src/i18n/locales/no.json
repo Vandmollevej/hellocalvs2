@@ -2906,7 +2906,6 @@
     },
     "today": "i dag",
     "skip": "Hopp over",
-    "change": "bytt",
     "startedAt": "Starttidspunkt",
     "duration": "Varighet",
     "hours": "timer",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Fjern øvelse",
       "fewerReps": "Færre repetisjoner",
       "moreReps": "Flere repetisjoner"
+    },
+    "session": {
+      "title": "Treningsøkt",
+      "add": "Legg til {name} i treningsøkten",
+      "remove": "Fjern {name}",
+      "save": "Lagre treningsøkt",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca. {kcal} kcal",
+      "startTime": "Klokkeslett",
+      "invalid": "Legg til minst én øvelse.",
+      "saveError": "Kunne ikke lagre treningsøkten. Har du oppgitt vekten din i profilen?",
+      "added": "Lagt til"
     }
   },
   "addButton": {

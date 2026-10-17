@@ -2906,7 +2906,6 @@
     },
     "today": "i dag",
     "skip": "Spring over",
-    "change": "skift",
     "startedAt": "Starttidspunkt",
     "duration": "Varighed",
     "hours": "timer",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Fjern øvelse",
       "fewerReps": "Færre gentagelser",
       "moreReps": "Flere gentagelser"
+    },
+    "session": {
+      "title": "Træningspas",
+      "add": "Tilføj {name} til træningspasset",
+      "remove": "Fjern {name}",
+      "save": "Gem træningspas",
+      "total": "I alt {minutes} min",
+      "totalKcal": "I alt {minutes} min · ca. {kcal} kcal",
+      "startTime": "Klokkeslæt",
+      "invalid": "Tilføj mindst én øvelse.",
+      "saveError": "Kunne ikke gemme træningspasset. Har du angivet din vægt på profilen?",
+      "added": "Tilføjet"
     }
   },
   "addButton": {

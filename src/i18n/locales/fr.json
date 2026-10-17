@@ -2906,7 +2906,6 @@
     },
     "today": "aujourd'hui",
     "skip": "Passer",
-    "change": "changer",
     "startedAt": "Heure de début",
     "duration": "Durée",
     "hours": "heures",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Supprimer l'exercice",
       "fewerReps": "Moins de répétitions",
       "moreReps": "Plus de répétitions"
+    },
+    "session": {
+      "title": "Séance d'entraînement",
+      "add": "Ajouter {name} à la séance",
+      "remove": "Retirer {name}",
+      "save": "Enregistrer la séance",
+      "total": "Total {minutes} min",
+      "totalKcal": "Total {minutes} min · env. {kcal} kcal",
+      "startTime": "Heure",
+      "invalid": "Ajoutez au moins un exercice.",
+      "saveError": "Impossible d'enregistrer la séance. Avez-vous indiqué votre poids dans le profil ?",
+      "added": "Ajouté"
     }
   },
   "addButton": {

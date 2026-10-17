@@ -1043,8 +1043,12 @@ model Activity {
   // 2026-10-17 Træningspas: [{ key, sets: [{ weightKg, reps }] }], key fra
   // src/lib/training-exercises.ts. Kun manuelle aktiviteter.
   exercises       Json?
+  // 2026-10-17: træningspas — øvelser gemt sammen deler samme id
+  // (src/lib/training-session.ts). Null = enkeltstående aktivitet.
+  sessionId       String?
   createdAt       DateTime       @default(now())
 
+  @@index([sessionId])
   @@map("activities")
 }
 

@@ -2906,7 +2906,6 @@
     },
     "today": "today",
     "skip": "Skip",
-    "change": "change",
     "startedAt": "Start time",
     "duration": "Duration",
     "hours": "hours",
@@ -2943,6 +2942,18 @@
       "removeExercise": "Remove exercise",
       "fewerReps": "Fewer reps",
       "moreReps": "More reps"
+    },
+    "session": {
+      "title": "Workout",
+      "add": "Add {name} to the workout",
+      "remove": "Remove {name}",
+      "save": "Save workout",
+      "total": "Total {minutes} min",
+      "totalKcal": "Total {minutes} min · approx. {kcal} kcal",
+      "startTime": "Time",
+      "invalid": "Add at least one exercise.",
+      "saveError": "Could not save the workout. Have you entered your weight in your profile?",
+      "added": "Added"
     }
   },
   "addButton": {

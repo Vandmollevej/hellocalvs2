@@ -71,6 +71,16 @@ import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 import { GoalStatusSummary } from "@/components/calendar/GoalStatusSummary";
 import {
+  getSleepWindow,
+  isDaytimeSleep,
+  LATE_BEDTIME_CUTOFF_MINUTES,
+  timeToMinutes,
+  type SleepDefaults,
+  type SleepScheduleEntry,
+  type SleepWindow,
+  type WorkShiftEntry,
+} from "@/lib/sleep-window";
+import {
   formatMeasurementValue,
   formatWeightKg,
   integrationIconForSource,
@@ -140,24 +150,6 @@ function formatClock(value: string) {
   return new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 }
 
-type SleepDefaults = {
-  defaultBedtime: string | null;
-  defaultWakeTime: string | null;
-};
-
-type SleepScheduleEntry = {
-  weekday: number;
-  bedtime: string;
-  wakeTime: string;
-};
-
-type WorkShiftEntry = {
-  date: string;
-  bedtime: string | null;
-  wakeTime: string | null;
-};
-
-type SleepWindow = { bedtime: number; wakeTime: number };
 
 // Målsætninger i kalenderen: en målsætning har kun en dato (ingen tid), så i
 // dagvisningen ligger den på kl. 12 — samme middagstid som goalDisplayDate.
@@ -325,55 +317,12 @@ function loadStoredHourHeight(web = false): number {
   return Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, parsed));
 }
 
-function timeToMinutes(time: string | null | undefined) {
-  if (!time) return null;
-  const [hours, minutes] = time.split(":").map(Number);
-  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
-  return hours * 60 + minutes;
-}
-
 function minutesToTime(minutes: number) {
   const snapped = Math.round(minutes / 15) * 15;
   const wrapped = ((snapped % 1440) + 1440) % 1440;
   const hours = Math.floor(wrapped / 60);
   const mins = wrapped % 60;
   return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
-}
-
-// Fejlretninger/FEJLLISTE.md #25: hvis kun ét af de to tidspunkter er sat
-// nogen steder i kæden (dags-override → ugedag → generel standard), udregnes
-// det andet som 7,5 times søvn derfra i stedet for at falde tilbage til to
-// UAFHÆNGIGE faste tidspunkter (som ellers kunne give en søvnperiode på fx
-// 3 eller 12 timer, hvis kun ét felt var sat). Kun når INGEN af dem er sat
-// noget sted, bruges et fast standardvindue (23:00-06:30, 7,5 timer).
-const FALLBACK_SLEEP_MINUTES = 7.5 * 60;
-
-function getSleepWindow(
-  date: Date,
-  defaults: SleepDefaults | null,
-  weekdaySchedules: Record<number, SleepScheduleEntry>,
-  workShifts: Record<string, WorkShiftEntry>,
-): SleepWindow {
-  const weekday = (date.getDay() + 6) % 7;
-  const override = workShifts[isoDate(date)];
-  const perDay = weekdaySchedules[weekday];
-  const bedtime = timeToMinutes(override?.bedtime || perDay?.bedtime || defaults?.defaultBedtime);
-  const wakeTime = timeToMinutes(override?.wakeTime || perDay?.wakeTime || defaults?.defaultWakeTime);
-
-  if (bedtime !== null && wakeTime !== null) return { bedtime, wakeTime };
-  if (bedtime !== null) return { bedtime, wakeTime: (bedtime + FALLBACK_SLEEP_MINUTES) % 1440 };
-  if (wakeTime !== null) return { bedtime: (wakeTime - FALLBACK_SLEEP_MINUTES + 1440) % 1440, wakeTime };
-  return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
-}
-
-// En sengetid lige efter midnat (00:00-03:59) før stå-op-tiden er stadig en
-// NAT-søvn — ikke dagsøvn efter en nattevagt. Den hører til aftenen, så
-// sengetids-håndtaget står altid nederst (ved 24:00) på dagens tidslinje, og
-// der tegnes ikke ét samlet dagsøvn-felt fra 00:00.
-const LATE_BEDTIME_CUTOFF_MINUTES = 4 * 60;
-
-function isDaytimeSleep(window: SleepWindow) {
-  return window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES;
 }
 
 /** Where the bedtime handle sits on the 00-24 timeline: after-midnight bedtimes pin to the bottom. */
@@ -2411,7 +2360,7 @@ function DayDetails({
         </div>
       )}
       <div
-        className="flex-1 overflow-y-auto p-4 touch-pan-y"
+        className="hf-screen-scroll--arc flex-1 overflow-y-auto p-4 touch-pan-y"
         onPointerDown={(event) => {
           pointerStart.current = event.clientX;
         }}
@@ -3041,7 +2990,7 @@ function HourEntriesOverlay({
           })}
         </h2>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="hf-screen-scroll--arc flex-1 overflow-y-auto p-4">
         {goals.map((goal) => (
           <GoalAccordion key={goal.id} goal={goal} />
         ))}
