@@ -188,7 +188,8 @@ ikke her, er den ikke registreret og skal tilføjes.
   stadig i alle tekstfelter, ikke kun titlen.
 - **Madvarer (bruger 2026-10-16)**: favoritter står øverst i listen før de mest
   brugte; lydbølgen under mikrofonen må ikke fjernes; søgefeltet vokser i højden
-  med teksten; kameraet i søgefeltets venstre side åbner billedfunktionen (ingen
+  med teksten; luppen står FORREST (venstre) og et stregkodeikon (ikke kamera)
+  i søgefeltets HØJRE side (user rule 2026-10-17) åbner Tilføj-kameraet (ingen
   "Scan nyt produkt"-knap nederst). Web og native.
 
 ## UI

@@ -571,7 +571,7 @@ fun FoodsScreen(args: RouteArgs) {
     }
 }
 
-/** The Madvarer search field (.hf-search--grow): camera on the left opens the photo function, and it grows in height when the text does not fit one line. */
+/** The Madvarer search field (.hf-search--grow): magnifier first, barcode icon on the right opens the photo function, and it grows in height when the text does not fit one line. */
 @Composable
 private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, cameraLabel: String, onCamera: () -> Unit) {
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
@@ -582,7 +582,7 @@ private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Un
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(Modifier.clickable(onClick = onCamera)) { HcIcon("Camera", size = 22.dp, stroke = 1.8f, color = HcColors.Green, contentDescription = cameraLabel) }
+        HcIcon("Search", size = 16.dp, color = HcColors.Black)
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
@@ -599,7 +599,7 @@ private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Un
                 }
             },
         )
-        HcIcon("Search", size = 16.dp, color = HcColors.Black)
+        Box(Modifier.clickable(onClick = onCamera)) { HcIcon("Barcode", size = 22.dp, stroke = 1.8f, color = HcColors.Green, contentDescription = cameraLabel) }
     }
 }
 
