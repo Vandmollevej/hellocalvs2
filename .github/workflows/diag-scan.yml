@@ -16,6 +16,7 @@ jobs:
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
           C="docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production"
+          sleep 240
           echo "image-agent started: $($C ps --format '{{.CreatedAt}}' image-agent 2>/dev/null | head -1)"
           echo "lines with hidden key (since 20m): $($C logs --no-log-prefix --since 20m image-agent 2>&1 | grep -c 'key=\*\*\*' || true)"
           echo "lines with visible key (since 20m): $($C logs --no-log-prefix --since 20m image-agent 2>&1 | grep -c 'key=AIza' || true)"
