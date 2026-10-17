@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Fråga om nattens sömn",
-    "toggleDescription": "Första gången du öppnar appen varje dag får du frågan att betygsätta nattens sömn från 1 till 5. Betyget visas på dagen i kalendern och i statistiken."
+    "toggleDescription": "Du ombeds betygsätta nattens sömn från 1 till 5 första gången du öppnar appen. Välj nedan hur ofta du vill bli tillfrågad.",
+    "calendarDesc": "Betyget visas på dagen i kalendern.",
+    "todayTitle": "I dag"
   },
   "sleepQuality": {
     "question": "Hur har du upplevt din sömnkvalitet?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Energi",
     "stepIngredients": "Innehåll",
     "stepDone": "{step}: tagen och avläst",
+    "stepSkipped": "{step}: överhoppad",
     "bothFound": "Energi och innehåll hittades på samma bild",
     "chooseObject": "Tryck på den vara som ska vara i fokus",
     "useWholePhoto": "Använd hela bilden",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Aktivitet",
     "searchPlaceholder": "Sök aktivitet",
+    "favoritesTitle": "Mina favoriter",
+    "allTitle": "Alla aktiviteter",
     "addManual": "Lägg till \"{name}\" som aktivitet",
     "pending": "väntar på godkännande",
     "spikeTitle": "Du har {day} förbrukat {kcal} extra kalorier. Vad gjorde du?",
@@ -2903,7 +2908,6 @@
     },
     "today": "i dag",
     "skip": "Hoppa över",
-    "change": "ändra",
     "startedAt": "Starttid",
     "duration": "Varaktighet",
     "hours": "timmar",
@@ -2919,7 +2923,40 @@
     "kcal": "Förbrända kalorier",
     "save": "Spara aktivitet",
     "invalid": "Ange en varaktighet över 0 — och kalorier, om de inte kan uppskattas.",
-    "saveError": "Aktiviteten kunde inte sparas."
+    "saveError": "Aktiviteten kunde inte sparas.",
+    "training": {
+      "title": "Träningspass",
+      "category": {
+        "machines": "Styrketräning i maskiner",
+        "free_weights": "Fria vikter",
+        "crossfit": "CrossFit"
+      },
+      "search": "Sök övning på danska eller engelska",
+      "noResults": "Inga övningar hittades",
+      "exercises": "Övningar",
+      "set": "Set {n}",
+      "reps": "repetitioner",
+      "weight": "Vikt",
+      "bodyweight": "Kroppsvikt",
+      "addSet": "Lägg till set",
+      "addExercise": "Lägg till övning",
+      "removeSet": "Ta bort set",
+      "removeExercise": "Ta bort övning",
+      "fewerReps": "Färre repetitioner",
+      "moreReps": "Fler repetitioner"
+    },
+    "session": {
+      "title": "Träningspass",
+      "add": "Lägg till {name} i träningspasset",
+      "remove": "Ta bort {name}",
+      "save": "Spara träningspass",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca {kcal} kcal",
+      "startTime": "Klockslag",
+      "invalid": "Lägg till minst en övning.",
+      "saveError": "Kunde inte spara träningspasset. Har du angett din vikt i profilen?",
+      "added": "Tillagt"
+    }
   },
   "addButton": {
     "screenings": "Screeningar",
@@ -3795,7 +3832,7 @@
       "DAILY": "Varje dag",
       "WEEKLY": "Varje vecka",
       "MONTHLY": "Varje månad",
-      "MANUAL": "Bara när jag vill"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knappar",

@@ -1,3 +1,33 @@
+## 2026-10-17: Søvn under Screeninger kan redigeres
+Søvn-siden er ikke længere kun en kontakt: til/fra øverst, frekvens (dag/uge/måned/ad hoc), "Vis i kalenderen" og dagens 1–5-vurdering (web + native, migration `20261018000200_sleep_quality_settings`). Native ikke kompileret lokalt; CI tjekker.
+
+## 2026-10-17: Træningspas på Tilføj aktivitet
+
+Ny sektion "Træningspas" øverst på Tilføj aktivitet (over søgefeltet og "Mine favoritter"; web + native) med Styrketræning på maskiner, Løsvægte og CrossFit. Hver åbner et bundark med øvelserne (110 i alt, billede + navn) og søgefelt, der finder på både dansk og engelsk. Valgte øvelser vises med billedet som på en produktside og én bar pr. sæt: gentagelser på plus/minus, vægt på slider, "Tilføj sæt" nedenunder. Gemmes på aktiviteten (`activities.exercises`, migration `20261018000100_activity_exercises`); kcal regnes som før. Billederne er fra Free Exercise DB (public domain) i `public/training/`. Prøvet i browser (mobilbredde) uden database; native ikke kompileret lokalt. Øvelserne vises endnu ikke igen i kalenderen.
+## 2026-10-17: Træningspas under Tilføj → Aktivitet
+
+- Hver aktivitetsrække har et ⊕ yderst til højre (bogmærket er væk; favorit sættes med swipe til højre som på madvarer). ⊕ lægger sporten i "Tilføjet" øverst (15 min, ±5 min pr. del, kan fjernes) med fælles starttidspunkt og taletest; samlet tid og anslået kcal vises, og Gem gemmer det hele som ét træningspas. Tryk på selve rækken registrerer stadig én aktivitet.
+- Gem ligger nu fast nederst over bundmenuen (også for en enkelt aktivitet).
+- `POST /api/activities` med `{ session: { startedAt, intensity, items } }` gemmer øvelserne efter hinanden med fælles `sessionId` (migration `20261018000000_activity_session`, `src/lib/training-session.ts`). Web + native; native ikke kompileret lokalt.
+
+## 2026-10-17: Sprogflaget som mærke på mikrofonen
+Madvarer: sprogflaget sidder på mikrofonens øverste venstre kant (spejl af favoritmærket på varesiden), ikke længere alene ude i venstre side. Web + native.
+
+## 2026-10-17: Flere træningsformer under Tilføj → Aktivitet
+
+- 28 nye aktiviteter i kataloget (`src/lib/activity-met.ts`), gruppen "Styrke, vægte og øvrig træning": squat, dødløft, bænkpres, skulderpres, udfald, bentræning, overkropstræning, frie vægte/håndvægte, maskintræning, olympisk vægtløftning, styrkeløft, bodybuilding, strongman, pump/vægthold, pull-ups/dips, armbøjninger, mave og ryg (core), TRX, elastiktræning, battle ropes, air bike, SkiErg, gymnastik, parkour, barre, tai chi/qigong, udstrækning/mobilitet og genoptræning — med MET-tal (Compendium) og søgeord. Ikoner på web + de tre native-kopier (opret, kalender, statistik). Native ikke kompileret lokalt.
+
+## 2026-10-17: Aktivitetsfavoritter i egen blok
+
+Aktivitetsvælgeren (/activity/create) viser favoritter i blokken "Mine favoritter" over "Alle aktiviteter", som under retter. Under søgning én liste. Web og native.
+
+## 2026-10-17: Slet på Madvarer → Mest brugte
+
+Swipe til venstre på "Mest brugte" giver nu både Fejl og Slet (web + native). Slet fjerner favoritten og skjuler varen (`most_used_hides`, migration 20261017235000), indtil den registreres igen. Søgeresultater har kun Fejl. Native er ikke kompileret i cloud-sessionen; CI tjekker.
+
+## 2026-10-17: Spring energi over i kameraflowet
+"Spring over" på energi-trinnet (varer uden næringstabel, fx danskvand); sprungne trin får en rød streg over knappen (web + native). Serveren opretter varen uden energifoto med "næring ukendt".
+
 ## 2026-10-17: Alle lister som forsiden — favorit kun ved swipe
 
 - Dine indscanninger, Favoritter, Søg, Madvarer, tale, chat, vand og kalenderen bruger nu forsidens række ("Kl. 18.45" over navnet hvor der er et tidspunkt, kcal / 100 g, pil). Hjerte-knapperne i listerne er væk: favorit kun ved swipe til højre; swipe til venstre = Fejl + Slet. Ikke-varer (vand, vejninger, målinger, skøn uden vare) har kun Slet.
@@ -653,3 +683,7 @@ Last updated: 2026-10-14
 ## 2026-10-17: Admin: Fritlagte billeder (rembg-sammenligner)
 
 - Ny fane under Billedbehandling og delt arbejdsflade på Billedforslag (se DECISIONS 2026-10-17). Migration `20261017180000_image_review`. Typecheck og lint grønne; ikke prøvet mod rigtig database herfra.
+## 2026-10-17: Tilføj aktivitet — tidsbanen viser kun de vågne timer
+
+- Banen med start/slut på "Tilføj aktivitet" starter nu ved stå-op-tiden efter natten før (samme søvnvindue som kalenderen: dags-override → ugedag → standard) og går til midnat, da dagens sluttidspunkt ikke kendes endnu. Stå-op-tiden rettes i kalenderen ved at flytte søvnblokken. Dagsøvn (nattevagt) giver hele døgnet; en valgt start før stå-op trækker banen tilbage til starten.
+- Søvnlogikken er flyttet til `src/lib/sleep-window.ts` (bruges af kalenderen og aktivitetssiden). `SleepRangeSlider`/`ProfileSleepRangeSlider` har fået `trackStart`/`trackEnd`. Native porteret (`activityTrackStart` i `CalendarLogic.kt`). Kotlin ikke kompileret lokalt (Android-plugin kan ikke hentes) — CI bygger.

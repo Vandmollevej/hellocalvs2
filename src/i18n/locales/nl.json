@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Vraag naar de slaap van afgelopen nacht",
-    "toggleDescription": "De eerste keer dat je de app elke dag opent, word je gevraagd de slaap van afgelopen nacht te beoordelen van 1 tot 5. De beoordeling wordt getoond bij de dag in de agenda en in de statistieken."
+    "toggleDescription": "Je wordt gevraagd je nachtrust te beoordelen van 1 tot 5 de eerste keer dat je de app opent. Kies hieronder hoe vaak je dat gevraagd wilt worden.",
+    "calendarDesc": "De beoordeling wordt op de dag in de kalender getoond.",
+    "todayTitle": "Vandaag"
   },
   "sleepQuality": {
     "question": "Hoe heb je je slaapkwaliteit ervaren?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Energie",
     "stepIngredients": "Inhoud",
     "stepDone": "{step}: gemaakt en gelezen",
+    "stepSkipped": "{step}: overgeslagen",
     "bothFound": "Energie en inhoud gevonden op dezelfde foto",
     "chooseObject": "Tik op het product dat in beeld moet zijn",
     "useWholePhoto": "Hele foto gebruiken",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Activiteit",
     "searchPlaceholder": "Zoek een activiteit",
+    "favoritesTitle": "Mijn favorieten",
+    "allTitle": "Alle activiteiten",
     "addManual": "\"{name}\" toevoegen als activiteit",
     "pending": "wacht op goedkeuring",
     "spikeTitle": "Je hebt {day} {kcal} extra calorieën verbrand. Wat heb je gedaan?",
@@ -2903,7 +2908,6 @@
     },
     "today": "vandaag",
     "skip": "Overslaan",
-    "change": "wijzigen",
     "startedAt": "Starttijd",
     "duration": "Duur",
     "hours": "uur",
@@ -2919,7 +2923,40 @@
     "kcal": "Verbrande calorieën",
     "save": "Activiteit opslaan",
     "invalid": "Geef een duur boven 0 op — en calorieën, als ze niet kunnen worden geschat.",
-    "saveError": "De activiteit kon niet worden opgeslagen."
+    "saveError": "De activiteit kon niet worden opgeslagen.",
+    "training": {
+      "title": "Training",
+      "category": {
+        "machines": "Krachttraining op machines",
+        "free_weights": "Vrije gewichten",
+        "crossfit": "CrossFit"
+      },
+      "search": "Zoek oefening in het Deens of Engels",
+      "noResults": "Geen oefeningen gevonden",
+      "exercises": "Oefeningen",
+      "set": "Set {n}",
+      "reps": "herh.",
+      "weight": "Gewicht",
+      "bodyweight": "Lichaamsgewicht",
+      "addSet": "Set toevoegen",
+      "addExercise": "Oefening toevoegen",
+      "removeSet": "Set verwijderen",
+      "removeExercise": "Oefening verwijderen",
+      "fewerReps": "Minder herhalingen",
+      "moreReps": "Meer herhalingen"
+    },
+    "session": {
+      "title": "Training",
+      "add": "{name} aan de training toevoegen",
+      "remove": "{name} verwijderen",
+      "save": "Training opslaan",
+      "total": "Totaal {minutes} min",
+      "totalKcal": "Totaal {minutes} min · ca. {kcal} kcal",
+      "startTime": "Tijdstip",
+      "invalid": "Voeg minstens één oefening toe.",
+      "saveError": "De training kon niet worden opgeslagen. Heb je je gewicht in je profiel ingevuld?",
+      "added": "Toegevoegd"
+    }
   },
   "addButton": {
     "screenings": "Screenings",
@@ -3795,7 +3832,7 @@
       "DAILY": "Elke dag",
       "WEEKLY": "Elke week",
       "MONTHLY": "Elke maand",
-      "MANUAL": "Alleen als ik het wil"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knoppen",

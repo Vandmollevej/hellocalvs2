@@ -9,6 +9,7 @@ import {
   readLastSleepPromptDate,
   saveLastSleepPromptDate,
   saveSleepQuality,
+  sleepPromptWindowDays,
 } from "@/lib/sleep-quality";
 
 // "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-26): the first time the app
@@ -32,7 +33,11 @@ const SKIP_PREFIXES = [
   "/admin",
 ];
 
-type ProfileFlags = { sleepQualityPromptEnabled?: boolean; healthDataConsentAt?: string | null };
+type ProfileFlags = {
+  sleepQualityPromptEnabled?: boolean;
+  sleepQualityFrequency?: string;
+  healthDataConsentAt?: string | null;
+};
 
 export function SleepQualityGate() {
   const pathname = usePathname() ?? "/";
@@ -48,7 +53,12 @@ export function SleepQualityGate() {
       .then(async (data) => {
         const user = data?.user;
         if (!user || !user.healthDataConsentAt || user.sleepQualityPromptEnabled === false) return;
-        const entries = await fetchSleepQuality(today);
+        // Frekvens: spørg kun, når der ikke er en vurdering inden for perioden.
+        const windowDays = sleepPromptWindowDays(user.sleepQualityFrequency);
+        if (windowDays === null) return;
+        const from = new Date();
+        from.setDate(from.getDate() - (windowDays - 1));
+        const entries = await fetchSleepQuality(localDateKey(from), today);
         if (cancelled || readLastSleepPromptDate() === today) return;
         // Remember the day as soon as the overlay is shown, so a reload or
         // another page never asks twice.

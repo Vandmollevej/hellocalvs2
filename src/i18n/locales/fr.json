@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Demander pour le sommeil de la nuit",
-    "toggleDescription": "La première fois que tu ouvres l'appli chaque jour, on te demande d'évaluer ton sommeil de la nuit de 1 à 5. L'évaluation s'affiche sur le jour dans le calendrier et dans les statistiques."
+    "toggleDescription": "On te demande de noter ta nuit de 1 à 5 la première fois que tu ouvres l'appli. Choisis ci-dessous à quelle fréquence tu veux qu'on te le demande.",
+    "calendarDesc": "La note s'affiche sur le jour dans le calendrier.",
+    "todayTitle": "Aujourd'hui"
   },
   "sleepQuality": {
     "question": "Comment as-tu trouvé la qualité de ton sommeil ?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Énergie",
     "stepIngredients": "Contenu",
     "stepDone": "{step} : pris et lu",
+    "stepSkipped": "{step} : ignoré",
     "bothFound": "Énergie et contenu trouvés sur la même image",
     "chooseObject": "Appuie sur le produit à mettre au point",
     "useWholePhoto": "Utiliser toute la photo",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Activité",
     "searchPlaceholder": "Rechercher une activité",
+    "favoritesTitle": "Mes favoris",
+    "allTitle": "Toutes les activités",
     "addManual": "Ajouter « {name} » comme activité",
     "pending": "en attente de validation",
     "spikeTitle": "Tu as brûlé {kcal} calories en plus {day}. Qu'as-tu fait ?",
@@ -2903,7 +2908,6 @@
     },
     "today": "aujourd'hui",
     "skip": "Passer",
-    "change": "changer",
     "startedAt": "Heure de début",
     "duration": "Durée",
     "hours": "heures",
@@ -2919,7 +2923,40 @@
     "kcal": "Calories brûlées",
     "save": "Enregistrer l'activité",
     "invalid": "Indique une durée supérieure à 0 — et les calories si elles ne peuvent pas être estimées.",
-    "saveError": "Impossible d'enregistrer l'activité."
+    "saveError": "Impossible d'enregistrer l'activité.",
+    "training": {
+      "title": "Séance d'entraînement",
+      "category": {
+        "machines": "Musculation sur machines",
+        "free_weights": "Poids libres",
+        "crossfit": "CrossFit"
+      },
+      "search": "Chercher un exercice en danois ou en anglais",
+      "noResults": "Aucun exercice trouvé",
+      "exercises": "Exercices",
+      "set": "Série {n}",
+      "reps": "rép.",
+      "weight": "Poids",
+      "bodyweight": "Poids du corps",
+      "addSet": "Ajouter une série",
+      "addExercise": "Ajouter un exercice",
+      "removeSet": "Supprimer la série",
+      "removeExercise": "Supprimer l'exercice",
+      "fewerReps": "Moins de répétitions",
+      "moreReps": "Plus de répétitions"
+    },
+    "session": {
+      "title": "Séance d'entraînement",
+      "add": "Ajouter {name} à la séance",
+      "remove": "Retirer {name}",
+      "save": "Enregistrer la séance",
+      "total": "Total {minutes} min",
+      "totalKcal": "Total {minutes} min · env. {kcal} kcal",
+      "startTime": "Heure",
+      "invalid": "Ajoutez au moins un exercice.",
+      "saveError": "Impossible d'enregistrer la séance. Avez-vous indiqué votre poids dans le profil ?",
+      "added": "Ajouté"
+    }
   },
   "addButton": {
     "screenings": "Dépistages",
@@ -3795,7 +3832,7 @@
       "DAILY": "Chaque jour",
       "WEEKLY": "Chaque semaine",
       "MONTHLY": "Chaque mois",
-      "MANUAL": "Seulement quand je veux"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Boutons",

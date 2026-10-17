@@ -12,6 +12,7 @@ import { scanProductLabels } from "@/lib/product-label-scan";
 import { scanProductsForPetFood } from "@/lib/pet-food-scan";
 import { analyzeDeclinedExternalImages } from "@/lib/external-image-ai";
 import { queueOffImageCutouts } from "@/lib/off-image-sweep";
+import { sweepExternalSources } from "@/lib/external-enrichment";
 import { recoverQuickEnrichments } from "@/lib/quick-enrichment-jobs";
 import { checkEnergySplits } from "@/lib/energy-split-check";
 import { checkFrontImages } from "@/lib/front-image-check";
@@ -165,6 +166,7 @@ export function startScheduler() {
       personas: runPersonaJob,
       "external-image-ai": analyzeDeclinedExternalImages,
       "off-image-sweep": queueOffImageCutouts,
+      "external-sources-sweep": sweepExternalSources,
       "quick-enrichment-recovery": () => recoverQuickEnrichments(),
       "energy-split-check": checkEnergySplits,
       "front-image-check": checkFrontImages,

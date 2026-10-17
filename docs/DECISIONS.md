@@ -1,3 +1,34 @@
+## 2026-10-17: Træningspas — øvelser med sæt på en aktivitet
+
+Brugerens ønske: "Tilføj ny række øverst (overskrift) kaldet Træningspas … styrketræning på maskiner, løsvægte og crossfit … popup med alle øvelser med illustrationer og søgefelt … søge på både dansk og engelsk … en bar per sæt … sæt på plus/minus, vægt på slider-bar."
+
+- **Katalog:** `src/lib/training-exercises.ts` er eneste kilde (110 øvelser, dansk + engelsk navn, kategori `machines` / `free_weights` / `crossfit`). Native henter det via `GET /api/training-exercises`. Søgningen matcher alle ord i dansk eller engelsk navn uanset appens sprog; navnet vises på dansk for `da`, ellers engelsk.
+- **Billeder:** Free Exercise DB (github.com/yuhonas/free-exercise-db, Unlicense/public domain), startpositionen beskåret til kvadrat 384 px WebP i `public/training/<key>.webp`. Stien er åben uden login (`PUBLIC_STATIC_PREFIXES`), så `/_next/image` kan hente dem.
+- **Sportstype:** maskiner og løsvægte gemmes som `strength`, CrossFit som `crossfit`; kcal anslås fra MET som før (sæt/vægt påvirker ikke kcal).
+- **Lagring:** `activities.exercises` (JSONB) = `[{ key, sets: [{ weightKg, reps }] }]`. Serveren smider ukendte øvelser og ugyldige sæt væk (vægt 0–300 kg i halve kg, 1–100 gentagelser). 0 kg = kropsvægt.
+- **UI:** gentagelser på plus/minus (start 10), vægt kun på slider (maks 200/250/150 kg for maskiner/løsvægte/CrossFit; start 20 kg, CrossFit 0). "Tilføj sæt" kopierer forrige sæt.
+## 2026-10-17: Eksterne kilder flettes automatisk ind ved scanning, oprettelse og søgning
+
+Brugeren: "Så snart en vare scannes, oprettes eller fremsøges skal eksterne
+kilder indpasses automatisk." Før blev Open Food Facts kun brugt, når
+stregkoden var ukendt, og som stregkode-reserve ≥ 10 min efter "opret
+straks". Nu samler `src/lib/external-enrichment.ts` indfletningen: én kø (to
+OFF-kald ad gangen), kun tomme felter fyldes, og næringstal kun ved samme
+energi. Se REGLER.md → Eksterne kilder. OFF-varer vises stadig aldrig i
+søgeresultater (2026-09-28) — det er vores egne varer, der beriges.
+
+## 2026-10-17: Afskåret logo godtages, når bagsiden eller stregkoden bekræfter brandet
+
+Albi Apfelsaft fik intet brand: logoet var skåret af i fotoets top, og Albi
+fandtes ikke i Brand-tabellen, så DAGO-reglen (2026-10-15) afviste det. Nu
+godtages et afskåret eller usikkert logo, når præcis samme navn står som helt
+ord i bagsidens tekst (producentadressen) eller er stregkodens Open Food
+Facts-brand (`brandNameConfirmed` i `src/lib/brand-match.ts`). DAGO står ingen
+andre steder og afvises stadig.
+
+## 2026-10-17: "Spring over" også på energi-trinnet + rød streg over sprungne trin
+Brugerens krav (Ramlösa/danskvand uden næringstabel): energi-trinnet i kameraflowet har samme "Spring over" som indholds-trinnet. Et sprunget trin får en rød streg på tværs af trin-knappen i stedet for flueben (web `CaptureSkippedOverlay`, native `SkippedStrike`). POST /api/products/quick kræver ikke længere energifoto: uden det læses ingen næring, og varen står med "næring ukendt" (`nutritionMissing`), så Frida/varetypen kan give skønnet. Ved "Scan varen igen" af energien kan trinnet ikke springes over.
+
 ## 2026-10-17: Robot-QoS — robotter venter på lav belastning og respekterer spærretider
 
 Brugeren: "Kan man under robotter sætte en QOS? Suspend indtil ram/cpu belastning er under x igen før opgaven varetages? Og ikke må køre i spidsbelastningsperioder."
@@ -5900,3 +5931,11 @@ Brugeren: "Man kan kun tilføje favorit ved at swipe til højre. Og man kan alti
 
 - Brugerens regel: varer fra Open Food Facts fritlægges på lige fod med egne fotos, men først søges et matchende billede via Google. Scannede OFF-varer fik det allerede ved oprettelsen (`createExternalImageCutoutJob`); importerede/ældre OFF-varer fik aldrig et job.
 - Ny robot `off-image-sweep` (app-job, hver time, `src/lib/off-image-sweep.ts`): OFF-varer med eksternt billede, uden afvist billede, uden ventende billede og uden PRODUCT_FRONT-job lægges i samme kø — `product-image-search` (Google Vision WEB_DETECTION) søger online, image-agent fritlægger, og resultatet går via Billedforslag/admin. Varer, brugerne har scannet (`product_scans`), tages først. Højst 50 pr. kørsel for at styre Google Vision-forbruget; intervallet kan ændres under Cron-jobs.
+
+## 2026-10-17: Træningspas = flere aktiviteter med fælles sessionId
+
+Brugerens ønske: flere øvelser under samme træning. Et træningspas er ikke en ny tabel, men almindelige `activities`-rækker med samme `sessionId`, lagt efter hinanden fra passets start. Kalender, statistik og kalorie-bank virker derfor uændret pr. øvelse. Kcal anslås altid fra MET pr. øvelse (vægt kræves). Gem-knappen på Tilføj → Aktivitet står fast nederst (HfScreen footer / HcScreen bottom).
+
+## 2026-10-17: Søvn-siden under Screeninger kan redigeres
+
+Brugeren: "Når jeg klikker ind på søvn skal jeg jo kunne redigere frekvens mv. Tænd sluk skulle jo bare være øverst." Søvn-siden (`/settings/display/sleep-quality`) har nu til/fra øverst, derefter "Hvor ofte skal du spørges?" (Hver dag/uge/måned/Ad hoc, som screeninger), "Vis i kalenderen" og "I dag" med 1–5, hvor dagens vurdering kan sættes eller rettes. Gemmes på `User.sleepQualityFrequency` (standard DAILY) og `User.sleepQualityShowInCalendar` (standard til), migration `20261018000200_sleep_quality_settings`. Spørgsmålet stilles kun, når der ikke er en vurdering inden for perioden (1/7/30 dage, `sleepPromptWindowDays`); Ad hoc spørger aldrig. Web + native.

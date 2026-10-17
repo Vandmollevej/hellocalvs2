@@ -13,6 +13,7 @@ import type { Locale } from "@/i18n";
 import type { Prisma } from "@prisma/client";
 import { normalizeDisplayPrefs } from "@/lib/circle-badges";
 import { parseRecipeProviders } from "@/lib/meal-kit-providers";
+import { isSleepQualityFrequency } from "@/lib/sleep-quality";
 import { MAX_BREASTFEEDING_WEEKS, MAX_PREGNANCY_WEEK, MIN_PREGNANCY_WEEK, isPregnancyStatus } from "@/lib/pregnancy";
 
 export async function GET() {
@@ -64,6 +65,8 @@ export async function PATCH(req: Request) {
     pregnancyWeek,
     breastfeedingWeeks,
     sleepQualityPromptEnabled,
+    sleepQualityFrequency,
+    sleepQualityShowInCalendar,
     averageCycleLengthDays,
     averagePeriodLengthDays,
     defaultBedtime,
@@ -109,6 +112,8 @@ export async function PATCH(req: Request) {
     pregnancyWeek?: unknown;
     breastfeedingWeeks?: unknown;
     sleepQualityPromptEnabled?: boolean;
+    sleepQualityFrequency?: unknown;
+    sleepQualityShowInCalendar?: boolean;
     averageCycleLengthDays?: number;
     averagePeriodLengthDays?: number;
     defaultBedtime?: string | null;
@@ -228,6 +233,8 @@ export async function PATCH(req: Request) {
         pregnancyStatusUpdatedAt:
           pregnancyStatus !== undefined || pregnancyWeek !== undefined || breastfeedingWeeks !== undefined ? new Date() : undefined,
         sleepQualityPromptEnabled,
+        sleepQualityFrequency: isSleepQualityFrequency(sleepQualityFrequency) ? sleepQualityFrequency : undefined,
+        sleepQualityShowInCalendar: typeof sleepQualityShowInCalendar === "boolean" ? sleepQualityShowInCalendar : undefined,
         averageCycleLengthDays,
         averagePeriodLengthDays,
         defaultBedtime,

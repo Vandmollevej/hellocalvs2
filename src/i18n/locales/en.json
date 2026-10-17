@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Ask about last night's sleep",
-    "toggleDescription": "The first time you open the app each day, you are asked to rate last night's sleep from 1 to 5. The rating is shown on the day in the calendar and in the statistics."
+    "toggleDescription": "You are asked to rate last night's sleep from 1 to 5 the first time you open the app. Choose below how often you want to be asked.",
+    "calendarDesc": "The rating is shown on the day in the calendar.",
+    "todayTitle": "Today"
   },
   "sleepQuality": {
     "question": "How do you feel your night was?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Energy",
     "stepIngredients": "Contents",
     "stepDone": "{step}: captured and read",
+    "stepSkipped": "{step}: skipped",
     "bothFound": "Energy and contents found in the same photo",
     "chooseObject": "Tap the item that should be in focus",
     "useWholePhoto": "Use the whole photo",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Activity",
     "searchPlaceholder": "Search activities",
+    "favoritesTitle": "My favourites",
+    "allTitle": "All activities",
     "addManual": "Add \"{name}\" as an activity",
     "pending": "awaiting approval",
     "spikeTitle": "You burned {kcal} extra calories {day}. What were you doing?",
@@ -2903,7 +2908,6 @@
     },
     "today": "today",
     "skip": "Skip",
-    "change": "change",
     "startedAt": "Start time",
     "duration": "Duration",
     "hours": "hours",
@@ -2919,7 +2923,40 @@
     "kcal": "Calories burned",
     "save": "Save activity",
     "invalid": "Enter a duration above 0 — and calories if they can't be estimated.",
-    "saveError": "The activity could not be saved."
+    "saveError": "The activity could not be saved.",
+    "training": {
+      "title": "Workout",
+      "category": {
+        "machines": "Strength training on machines",
+        "free_weights": "Free weights",
+        "crossfit": "CrossFit"
+      },
+      "search": "Search exercise in Danish or English",
+      "noResults": "No exercises found",
+      "exercises": "Exercises",
+      "set": "Set {n}",
+      "reps": "reps",
+      "weight": "Weight",
+      "bodyweight": "Bodyweight",
+      "addSet": "Add set",
+      "addExercise": "Add exercise",
+      "removeSet": "Remove set",
+      "removeExercise": "Remove exercise",
+      "fewerReps": "Fewer reps",
+      "moreReps": "More reps"
+    },
+    "session": {
+      "title": "Workout",
+      "add": "Add {name} to the workout",
+      "remove": "Remove {name}",
+      "save": "Save workout",
+      "total": "Total {minutes} min",
+      "totalKcal": "Total {minutes} min · approx. {kcal} kcal",
+      "startTime": "Time",
+      "invalid": "Add at least one exercise.",
+      "saveError": "Could not save the workout. Have you entered your weight in your profile?",
+      "added": "Added"
+    }
   },
   "addButton": {
     "screenings": "Screenings",
@@ -3795,7 +3832,7 @@
       "DAILY": "Every day",
       "WEEKLY": "Every week",
       "MONTHLY": "Every month",
-      "MANUAL": "Only when I choose"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Buttons",

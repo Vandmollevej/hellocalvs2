@@ -260,9 +260,14 @@ model User {
   // Visning. Slået til som standard — dagens første app-åbning viser et
   // overlay, hvor nattens søvn vurderes 1–5 (SleepQualityEntry).
   sleepQualityPromptEnabled Boolean @default(true)
+  // Frekvens (DAILY/WEEKLY/MONTHLY/MANUAL, som screeninger) og "Vis i kalenderen"
+  // for søvnspørgsmålet (Profil → Screeninger → Søvn, bruger 2026-10-17).
+  sleepQualityFrequency      String  @default("DAILY")
+  sleepQualityShowInCalendar Boolean @default(true)
 
   registrations           Registration[]
   productScans            ProductScan[]
+  mostUsedHides           MostUsedHide[]
   favorites               Favorite[]
   activityFavorites       ActivityFavorite[]
   dishes                  Dish[]
@@ -1039,8 +1044,15 @@ model Activity {
   distanceKm      Float?
   perceivedEffort TrainingIntensity?
   energySource    ActivityEnergySource @default(USER)
+  // 2026-10-17 Træningspas: [{ key, sets: [{ weightKg, reps }] }], key fra
+  // src/lib/training-exercises.ts. Kun manuelle aktiviteter.
+  exercises       Json?
+  // 2026-10-17: træningspas — øvelser gemt sammen deler samme id
+  // (src/lib/training-session.ts). Null = enkeltstående aktivitet.
+  sessionId       String?
   createdAt       DateTime       @default(now())
 
+  @@index([sessionId])
   @@map("activities")
 }
 
@@ -1694,6 +1706,7 @@ model Product {
   petFoodTextCheckedAt DateTime?
   registrations      Registration[]
   productScans       ProductScan[]
+  mostUsedHides      MostUsedHide[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
   ingredients        ProductIngredient[]
@@ -2746,6 +2759,19 @@ model ProductScan {
   @@unique([userId, productId])
   @@index([userId, scannedAt])
   @@map("product_scans")
+}
+
+// "Slet" på Madvarer → Mest brugte (bruger 2026-10-17): varen skjules fra
+// listen, indtil den registreres igen (en registrering efter hiddenAt).
+model MostUsedHide {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  hiddenAt  DateTime @default(now())
+
+  @@id([userId, productId])
+  @@map("most_used_hides")
 }
 
 model Registration {

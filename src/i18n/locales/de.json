@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Nach dem Schlaf der Nacht fragen",
-    "toggleDescription": "Wenn du die App jeden Tag zum ersten Mal öffnest, wirst du gebeten, den Schlaf der letzten Nacht von 1 bis 5 zu bewerten. Die Bewertung wird am Tag im Kalender und in der Statistik angezeigt."
+    "toggleDescription": "Beim ersten Öffnen der App wirst du gebeten, deinen Schlaf der letzten Nacht von 1 bis 5 zu bewerten. Wähle unten, wie oft du gefragt werden möchtest.",
+    "calendarDesc": "Die Bewertung wird am Tag im Kalender angezeigt.",
+    "todayTitle": "Heute"
   },
   "sleepQuality": {
     "question": "Wie hast du deine Schlafqualität empfunden?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Energie",
     "stepIngredients": "Inhalt",
     "stepDone": "{step}: aufgenommen und gelesen",
+    "stepSkipped": "{step}: übersprungen",
     "bothFound": "Energie und Inhalt auf demselben Foto gefunden",
     "chooseObject": "Tippe auf den Artikel, der im Fokus sein soll",
     "useWholePhoto": "Ganzes Foto verwenden",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Aktivität",
     "searchPlaceholder": "Aktivität suchen",
+    "favoritesTitle": "Meine Favoriten",
+    "allTitle": "Alle Aktivitäten",
     "addManual": "\"{name}\" als Aktivität hinzufügen",
     "pending": "wartet auf Freigabe",
     "spikeTitle": "Du hast {day} {kcal} zusätzliche Kalorien verbrannt. Was hast du gemacht?",
@@ -2903,7 +2908,6 @@
     },
     "today": "heute",
     "skip": "Überspringen",
-    "change": "ändern",
     "startedAt": "Startzeit",
     "duration": "Dauer",
     "hours": "Stunden",
@@ -2919,7 +2923,40 @@
     "kcal": "Verbrannte Kalorien",
     "save": "Aktivität speichern",
     "invalid": "Gib eine Dauer über 0 an — und Kalorien, falls sie nicht geschätzt werden können.",
-    "saveError": "Die Aktivität konnte nicht gespeichert werden."
+    "saveError": "Die Aktivität konnte nicht gespeichert werden.",
+    "training": {
+      "title": "Trainingseinheit",
+      "category": {
+        "machines": "Krafttraining an Geräten",
+        "free_weights": "Freie Gewichte",
+        "crossfit": "CrossFit"
+      },
+      "search": "Übung auf Dänisch oder Englisch suchen",
+      "noResults": "Keine Übungen gefunden",
+      "exercises": "Übungen",
+      "set": "Satz {n}",
+      "reps": "Wdh.",
+      "weight": "Gewicht",
+      "bodyweight": "Körpergewicht",
+      "addSet": "Satz hinzufügen",
+      "addExercise": "Übung hinzufügen",
+      "removeSet": "Satz entfernen",
+      "removeExercise": "Übung entfernen",
+      "fewerReps": "Weniger Wiederholungen",
+      "moreReps": "Mehr Wiederholungen"
+    },
+    "session": {
+      "title": "Trainingseinheit",
+      "add": "{name} zur Trainingseinheit hinzufügen",
+      "remove": "{name} entfernen",
+      "save": "Trainingseinheit speichern",
+      "total": "Insgesamt {minutes} Min.",
+      "totalKcal": "Insgesamt {minutes} Min. · ca. {kcal} kcal",
+      "startTime": "Uhrzeit",
+      "invalid": "Füge mindestens eine Übung hinzu.",
+      "saveError": "Die Trainingseinheit konnte nicht gespeichert werden. Hast du dein Gewicht im Profil angegeben?",
+      "added": "Hinzugefügt"
+    }
   },
   "addButton": {
     "screenings": "Screenings",
@@ -3795,7 +3832,7 @@
       "DAILY": "Jeden Tag",
       "WEEKLY": "Jede Woche",
       "MONTHLY": "Jeden Monat",
-      "MANUAL": "Nur wenn ich will"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Schaltflächen",

@@ -16,6 +16,7 @@ import { languageName, refreshProductLanguage, translationFor } from "@/lib/prod
 import { brandProductName, displayProductName } from "@/lib/product-placeholder-name";
 import { nameBrandOnlyProduct, RETRY_ASKED_BEFORE } from "@/lib/product-placeholder-repair";
 import { applyProductTexts, productTextsFor, translationPlacement, type ProductTranslationInfo } from "@/lib/product-text-swap";
+import { queueStaleExternalEnrichment } from "@/lib/external-enrichment";
 
 export async function GET(
   _req: Request,
@@ -76,6 +77,8 @@ export async function GET(
     if (product?.nutritionMissing && (await applyFridaEstimateTo(product.id).catch(() => false))) {
       product = await load();
     }
+    // Varesiden åbnet: eksterne kilder flettes ind i baggrunden (bruger 2026-10-17).
+    if (product && !product.privateOwnerId) queueStaleExternalEnrichment([product.id], "page");
     // En privat ingrediens vises kun for ejeren.
     if (product && product.privateOwnerId) {
       const user = await getSessionUser();

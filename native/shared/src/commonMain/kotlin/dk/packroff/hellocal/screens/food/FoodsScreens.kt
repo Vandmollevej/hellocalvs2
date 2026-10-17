@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -370,6 +372,19 @@ fun FoodsScreen(args: RouteArgs) {
         scope.launch { setFavorite(productId, next) }
     }
 
+    // Swipe → Slet on "Mest brugte": gone at once; returns when the product is registered again.
+    fun removeFromMostUsed(productId: String) {
+        snapshot?.let { s ->
+            val updated = s.copy(
+                products = s.products.filter { it.id != productId },
+                favoriteIds = s.favoriteIds.filter { it != productId },
+            )
+            loadedSnapshot = updated
+            FoodsSnapshotStore.write(updated)
+        }
+        scope.launch { runCatching { Api.delete("/api/products/most-used?productId=$productId") } }
+    }
+
     fun trackSearchClick(productId: String) {
         if (query.trim().length < SEARCH_MIN_LENGTH) return
         val hour = FoodTime.local(FoodTime.now()).hour
@@ -384,13 +399,25 @@ fun FoodsScreen(args: RouteArgs) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Box(Modifier.fillMaxWidth()) {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        Modifier.size(96.dp).clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        if (micListening) PingRing()
-                        Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
-                            Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                    Box(Modifier.size(96.dp)) {
+                        Box(
+                            Modifier.fillMaxSize().clickable(enabled = !micUnsupported) { if (micListening) stopMic() else startMic() },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            if (micListening) PingRing()
+                            Box(Modifier.size(80.dp).clip(CircleShape).background(if (micUnsupported) HcColors.Gray else HcColors.Green), contentAlignment = Alignment.Center) {
+                                Image(standMicrophone, null, Modifier.size(56.dp), colorFilter = ColorFilter.tint(HcColors.White))
+                            }
+                        }
+                        // The language flag is a badge on the microphone's upper-left edge — the mirror of the
+                        // favourite mark on the product circle's upper-right edge (user 2026-10-17).
+                        Box(Modifier.align(Alignment.TopStart).offset(x = (-2).dp, y = (-2).dp)) {
+                            MealLanguagePicker(lang.language, lang.region) { code ->
+                                if (code != lang.language) {
+                                    lang.set(code)
+                                    if (micListening) startMic()
+                                }
+                            }
                         }
                     }
                     HcText(
@@ -407,15 +434,6 @@ fun FoodsScreen(args: RouteArgs) {
                     if (micListening) LiveWaveform()
                     micError?.let {
                         HcText(it, HcTypeRoles.Small, Modifier.padding(top = 8.dp), color = HcColors.RedDark, align = TextAlign.Center)
-                    }
-                }
-                // The language flag sits left of the microphone, mirroring the favourite mark on the right.
-                Box(Modifier.align(Alignment.TopStart).padding(top = 26.dp)) {
-                    MealLanguagePicker(lang.language, lang.region) { code ->
-                        if (code != lang.language) {
-                            lang.set(code)
-                            if (micListening) startMic()
-                        }
                     }
                 }
             }
@@ -496,14 +514,14 @@ fun FoodsScreen(args: RouteArgs) {
                     visible.forEachIndexed { index, product ->
                         val isFavorite = product.id in favoriteIds
                         // Like "Dagens tilføjelser" on the front page (user 2026-10-17): Favorit only by
-                        // swiping right, Fejl by swiping left; chevron on the right.
+                        // swiping right, Fejl (+ Slet on "Mest brugte") by swiping left; chevron on the right.
                         Column(Modifier.fillMaxWidth()) {
                             FoodSwipeableRow(
                                 texts = swipeTexts,
                                 onFavorite = { toggleFavorite(product.id, !isFavorite) },
                                 isFavorite = isFavorite,
                                 onReportError = { nav.push("/product/${product.id}/report-error") },
-                                onDelete = null,
+                                onDelete = if (isSearching) null else ({ removeFromMostUsed(product.id) }),
                             ) {
                                 FoodRow(
                                     title = product.searchTitle ?: product.name,
@@ -558,7 +576,7 @@ fun FoodsScreen(args: RouteArgs) {
     }
 }
 
-/** The Madvarer search field (.hf-search--grow): camera on the left opens the photo function, and it grows in height when the text does not fit one line. */
+/** The Madvarer search field (.hf-search--grow): magnifier first, barcode icon on the right opens the photo function, and it grows in height when the text does not fit one line. */
 @Composable
 private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Unit, placeholder: String, cameraLabel: String, onCamera: () -> Unit) {
     val shape = RoundedCornerShape(HcDimens.RadiusCard)
@@ -569,7 +587,7 @@ private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Un
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(Modifier.clickable(onClick = onCamera)) { HcIcon("Camera", size = 22.dp, stroke = 1.8f, color = HcColors.Green, contentDescription = cameraLabel) }
+        HcIcon("Search", size = 16.dp, color = HcColors.Black)
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
@@ -586,7 +604,7 @@ private fun FoodsGrowingSearchField(value: String, onValueChange: (String) -> Un
                 }
             },
         )
-        HcIcon("Search", size = 16.dp, color = HcColors.Black)
+        Box(Modifier.clickable(onClick = onCamera)) { HcIcon("Barcode", size = 22.dp, stroke = 1.8f, color = HcColors.Green, contentDescription = cameraLabel) }
     }
 }
 

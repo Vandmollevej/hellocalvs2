@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dk.packroff.hellocal.api.Api
+import dk.packroff.hellocal.screens.settings.settingsBool
+import dk.packroff.hellocal.screens.settings.settingsLoadProfile
 import dk.packroff.hellocal.i18n.LocalTranslator
 import dk.packroff.hellocal.nav.LocalNavigator
 import dk.packroff.hellocal.platform.NativeHooks
@@ -64,6 +66,7 @@ import dk.packroff.hellocal.ui.CalendarPartyPopperIcon
 import dk.packroff.hellocal.ui.CalendarPartyPopperImage
 import dk.packroff.hellocal.ui.HcLoader
 import dk.packroff.hellocal.ui.HcText
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import dk.packroff.hellocal.ui.localizedDecimals
 import dk.packroff.hellocal.ui.icons.HcIcon
 import kotlin.math.abs
@@ -153,7 +156,9 @@ internal fun DayDetails(
     // Oplevelse af søvn: the day's 1–5 rating as a black bar at the top.
     LaunchedEffect(date) {
         val key = date.toString()
-        sleepRating = runCatching { Api.get("/api/sleep-quality?from=$key&to=$key") }.getOrNull()
+        // "Vis i kalenderen" (User.sleepQualityShowInCalendar) can hide the bar.
+        val hidden = runCatching { settingsLoadProfile().settingsBool("sleepQualityShowInCalendar") }.getOrNull() == false
+        sleepRating = if (hidden) null else runCatching { Api.get("/api/sleep-quality?from=$key&to=$key") }.getOrNull()
             ?.asObj()?.objects("entries")?.firstOrNull()?.dbl("rating")?.toInt()
     }
 
@@ -294,7 +299,8 @@ internal fun DayDetails(
                         )
                     }
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(bottom = LocalBottomArcInset.current),
             ) {
                 when {
                     loading -> HcLoader()

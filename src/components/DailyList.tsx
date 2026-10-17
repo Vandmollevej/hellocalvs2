@@ -184,7 +184,7 @@ export function DailyList() {
   return (
     <div className="relative flex h-full min-h-0 flex-col">
       <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
+      <div className="hf-screen-scroll--arc min-h-0 flex-1 overflow-y-auto px-4">
       {/* Samme tan-kort som søgelisterne (src/app/search/page.tsx). */}
       <ul className={entries.length > 0 ? "overflow-hidden rounded-card bg-hf-tan" : ""}>
         {entries.map((entry, i) => (

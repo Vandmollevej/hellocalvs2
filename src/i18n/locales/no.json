@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Spør om nattens søvn",
-    "toggleDescription": "Første gang du åpner appen hver dag, blir du bedt om å vurdere nattens søvn fra 1 til 5. Vurderingen vises på dagen i kalenderen og i statistikken."
+    "toggleDescription": "Du blir bedt om å vurdere nattens søvn fra 1 til 5 første gang du åpner appen. Velg nedenfor hvor ofte du vil bli spurt.",
+    "calendarDesc": "Vurderingen vises på dagen i kalenderen.",
+    "todayTitle": "I dag"
   },
   "sleepQuality": {
     "question": "Hvordan opplevde du søvnkvaliteten din?",
@@ -1054,6 +1056,7 @@
     "stepNutrition": "Energi",
     "stepIngredients": "Innhold",
     "stepDone": "{step}: tatt og lest",
+    "stepSkipped": "{step}: hoppet over",
     "bothFound": "Energi og innhold funnet på samme bilde",
     "chooseObject": "Trykk på varen som skal være i fokus",
     "useWholePhoto": "Bruk hele bildet",
@@ -2864,6 +2867,8 @@
   "activity": {
     "title": "Aktivitet",
     "searchPlaceholder": "Søk etter aktivitet",
+    "favoritesTitle": "Mine favoritter",
+    "allTitle": "Alle aktiviteter",
     "addManual": "Legg til \"{name}\" som aktivitet",
     "pending": "venter på godkjenning",
     "spikeTitle": "Du har {day} forbrent {kcal} ekstra kalorier. Hva holdt du på med?",
@@ -2903,7 +2908,6 @@
     },
     "today": "i dag",
     "skip": "Hopp over",
-    "change": "bytt",
     "startedAt": "Starttidspunkt",
     "duration": "Varighet",
     "hours": "timer",
@@ -2919,7 +2923,40 @@
     "kcal": "Forbrente kalorier",
     "save": "Lagre aktivitet",
     "invalid": "Oppgi varighet over 0 — og kalorier hvis de ikke kan anslås.",
-    "saveError": "Aktiviteten kunne ikke lagres."
+    "saveError": "Aktiviteten kunne ikke lagres.",
+    "training": {
+      "title": "Treningsøkt",
+      "category": {
+        "machines": "Styrketrening i maskiner",
+        "free_weights": "Frivekter",
+        "crossfit": "CrossFit"
+      },
+      "search": "Søk øvelse på dansk eller engelsk",
+      "noResults": "Ingen øvelser funnet",
+      "exercises": "Øvelser",
+      "set": "Sett {n}",
+      "reps": "repetisjoner",
+      "weight": "Vekt",
+      "bodyweight": "Kroppsvekt",
+      "addSet": "Legg til sett",
+      "addExercise": "Legg til øvelse",
+      "removeSet": "Fjern sett",
+      "removeExercise": "Fjern øvelse",
+      "fewerReps": "Færre repetisjoner",
+      "moreReps": "Flere repetisjoner"
+    },
+    "session": {
+      "title": "Treningsøkt",
+      "add": "Legg til {name} i treningsøkten",
+      "remove": "Fjern {name}",
+      "save": "Lagre treningsøkt",
+      "total": "Totalt {minutes} min",
+      "totalKcal": "Totalt {minutes} min · ca. {kcal} kcal",
+      "startTime": "Klokkeslett",
+      "invalid": "Legg til minst én øvelse.",
+      "saveError": "Kunne ikke lagre treningsøkten. Har du oppgitt vekten din i profilen?",
+      "added": "Lagt til"
+    }
   },
   "addButton": {
     "screenings": "Screeninger",
@@ -3795,7 +3832,7 @@
       "DAILY": "Hver dag",
       "WEEKLY": "Hver uke",
       "MONTHLY": "Hver måned",
-      "MANUAL": "Bare når jeg vil"
+      "MANUAL": "Ad hoc"
     },
     "input": {
       "BUTTONS": "Knapper",

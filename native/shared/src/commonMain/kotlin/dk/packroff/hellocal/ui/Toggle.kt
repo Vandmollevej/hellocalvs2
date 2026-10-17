@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import dk.packroff.hellocal.theme.HcColors
+import dk.packroff.hellocal.theme.HcDimens
 import dk.packroff.hellocal.theme.HcTypeRoles
 
 /** src/components/ui/Toggle.tsx — the only on/off control (never checkboxes, DECISIONS 2026-09-02). */
@@ -54,6 +56,19 @@ fun HcToggle(
     }
     if (label == null) {
         switch()
+        return
+    }
+    // Uden beskrivelse: standard kontrolhøjde (48 dp), som knapper og felter.
+    if (description == null) {
+        val shape = RoundedCornerShape(HcDimens.RadiusCard)
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = HcDimens.ControlHeight).clip(shape).background(HcColors.Card, shape)
+                .padding(horizontal = HcDimens.SpaceBlock, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HcText(label, HcTypeRoles.Body, Modifier.weight(1f), bold = true, color = HcColors.Black)
+            switch()
+        }
         return
     }
     HcCard {

@@ -198,6 +198,16 @@ internal const val LATE_BEDTIME_CUTOFF_MINUTES = 4.0 * 60
 internal fun isDaytimeSleep(window: SleepWindow): Boolean =
     window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES
 
+/**
+ * src/lib/sleep-window.ts activityTrackStart — the activity track starts at the wake-up time
+ * after the night before (floored to a quarter hour) and runs to midnight; daytime sleep gives
+ * the whole day; a chosen start before wake-up pulls the track start back to it.
+ */
+internal fun activityTrackStart(window: SleepWindow?, startMinutes: Int): Int {
+    val wake = if (window != null && !isDaytimeSleep(window)) (window.wakeTime.toInt() / 15) * 15 else 0
+    return maxOf(0, minOf(wake, (startMinutes / 15) * 15))
+}
+
 /** Where the bedtime handle sits on the 00–24 timeline: after-midnight bedtimes pin to the bottom. */
 internal fun bedtimeDisplayMinutes(window: SleepWindow): Double =
     if (window.bedtime < LATE_BEDTIME_CUTOFF_MINUTES && !isDaytimeSleep(window)) 24.0 * 60 else window.bedtime
@@ -590,6 +600,12 @@ private val SPORT_ICONS = mapOf(
     "inline_skating" to "Skateboarding", "skateboarding" to "Skateboarding", "horse_riding" to "Horse",
     "gardening" to "Plant", "woodcutting" to "Axe", "moving" to "Box", "housework" to "Home",
     "playing_kids" to "MoodKid", "other" to "Activity",
+    "squat" to "Barbell", "deadlift" to "Barbell", "bench_press" to "Barbell", "shoulder_press" to "Barbell", "lunges" to "Barbell",
+    "leg_training" to "Barbell", "upper_body" to "Barbell", "free_weights" to "Barbell", "machine_training" to "Barbell", "weightlifting" to "Barbell",
+    "powerlifting" to "Barbell", "bodybuilding" to "Barbell", "strongman" to "Barbell", "body_pump" to "Barbell", "pull_ups" to "Gymnastics",
+    "push_ups" to "Gymnastics", "core" to "Gymnastics", "trx" to "Gymnastics", "resistance_bands" to "Stretching", "battle_ropes" to "Heartbeat",
+    "air_bike" to "Bike", "ski_erg" to "Heartbeat", "gymnastics" to "Gymnastics", "parkour" to "Run", "barre" to "Music",
+    "tai_chi" to "Yoga", "stretching" to "Stretching", "rehab" to "Stretching",
 )
 
 internal fun sportIcon(sportType: String): String = SPORT_ICONS[sportType] ?: "Activity"

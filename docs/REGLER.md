@@ -169,6 +169,9 @@ ikke her, er den ikke registreret og skal tilføjes.
   ≥ 0,85) og helt synligt logo — ikke afskåret ved billedkanten
   (`newBrandAllowed` i `src/lib/brand-match.ts`). Ellers får varen intet brand,
   og loggen viser `brand_unknown_skipped`. Gælder al ny brandoprettelse fra AI.
+  Undtagelse (bruger 2026-10-17, Albi): et afskåret/usikkert logo godtages, når
+  præcis samme navn står som helt ord på bagsidens tekst eller er stregkodens
+  Open Food Facts-brand (`brandNameConfirmed`).
 - **Brand og subbrand er søgbare (bruger 2026-10-10)**, også når varesiden kun
   viser dem som logo: søgningen kigger i titel (ental og flertal), brand,
   subbrand, varetype, variant, smag, søgeord, synonymer og sukkerpåstande, uden
@@ -188,13 +191,17 @@ ikke her, er den ikke registreret og skal tilføjes.
   stadig i alle tekstfelter, ikke kun titlen.
 - **Madvarer (bruger 2026-10-16)**: favoritter står øverst i listen før de mest
   brugte; lydbølgen under mikrofonen må ikke fjernes; søgefeltet vokser i højden
-  med teksten; kameraet i søgefeltets venstre side åbner billedfunktionen (ingen
+  med teksten; luppen står FORREST (venstre) og et stregkodeikon (ikke kamera)
+  i søgefeltets HØJRE side (user rule 2026-10-17) åbner Tilføj-kameraet (ingen
   "Scan nyt produkt"-knap nederst). Web og native.
 
 ## UI
 
+- **Aldrig "· skift" efter et valgt punkt (user rule 2026-10-17)**: et valgt punkt (fx aktivitetstypen) vises kun med sit navn, understreget og trykbart for at vælge om. Tilføj aldrig "skift"/"· skift" eller lignende tekst bag det — hverken på web eller native.
+- **Favoritter i egen blok øverst (user rule 2026-10-17)**: når en liste har favoritter (aktiviteter, retter), står de i deres egen blok "Mine favoritter" øverst og resten under "Alle …" — ikke blot sorteret først i samme liste. Under søgning vises én samlet liste. Aktivitetsvælgeren: web `ActivityPicker.tsx`, native `ActivityPicker` i `ActivityCreateScreen.kt`.
+- **Til/fra-række uden beskrivelse = standardhøjde (user rule 2026-10-17)**: en `Toggle` med kun `label` (fx "Aktiv" i screeningen) er aldrig højere end knapper og felter (`--hf-control-height`, 48 px; native `HcDimens.ControlHeight`), med tekst og knap centreret lodret (`hf-card--control`). Kun med `description` bliver den et højere kort.
 - **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Knapperne bag en lukket række er skjulte, så de ikke skinner igennem kortets runde hjørner. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
-- **Swipe-knapperne og forsidens række gælder alle lister (user rule 2026-10-17)**: alle steder, hvor varer listes eller tilføjelser vises (forsiden, Søg, Madvarer, Favoritter, Dine indscanninger, tale, chat, kalenderen), ser rækken ud som "Dagens tilføjelser": billede, evt. "Kl. 18.45" over navnet, navn, "kcal / 100 g" og pil til højre (web `ProductResultRow`/`FoodRow`; native `FoodProductResultRow`). Favorit fås **kun** ved swipe til højre — ingen hjerte-/bogmærkeknapper i lister. Swipe til venstre giver Fejl (vare: `/product/[id]/report-error`, registrering: `/registration/[id]/report-error`) og Slet, hvor listen kan slette (Favoritter: fjerner favoritten; Indscanninger: skjuler varen, til den scannes igen). Er det ikke en vare (vand, vejning, måling, AI-skøn uden vare), er der hverken Favorit eller Fejl — kun Slet.
+- **Swipe-knapperne og forsidens række gælder alle lister (user rule 2026-10-17)**: alle steder, hvor varer listes eller tilføjelser vises (forsiden, Søg, Madvarer, Favoritter, Dine indscanninger, tale, chat, kalenderen), ser rækken ud som "Dagens tilføjelser": billede, evt. "Kl. 18.45" over navnet, navn, "kcal / 100 g" og pil til højre (web `ProductResultRow`/`FoodRow`; native `FoodProductResultRow`). Favorit fås **kun** ved swipe til højre — ingen hjerte-/bogmærkeknapper i lister. Swipe til venstre giver Fejl (vare: `/product/[id]/report-error`, registrering: `/registration/[id]/report-error`) og Slet, hvor listen kan slette (Favoritter: fjerner favoritten; Indscanninger: skjuler varen, til den scannes igen; Madvarer → Mest brugte: fjerner favoritten og skjuler varen, til den registreres igen — `DELETE /api/products/most-used`, tabellen `most_used_hides`; søgeresultater har ingen Slet). Er det ikke en vare (vand, vejning, måling, AI-skøn uden vare), er der hverken Favorit eller Fejl — kun Slet.
 - **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
 - **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
@@ -239,7 +246,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Synkroniseringssiden (forbundet integration, bruger 2026-10-11)**: `src/app/settings/integrations/[app]/ConnectedView.tsx` (web + native). Rækkefølge: hvid knap **Rediger visning** allerøverst (bundark med til/fra pr. datatype, gemmes straks, loggen følger valgene) → "Sidst synkroniseret" + **Aktiveret** med grøn cirkel til højre → **I dag**-log → **Historik**-dropdown (I går / Sidste uge / Sidste måned / Sidste år / Altid, historikken slutter ved midnat i dag) → sort **Deaktiver** fast nederst. Loggen: `GET /api/integrations/<app>/log?range=…`. Kun OAuth-integrationer, der er forbundet og ikke mangler adgang; de øvrige har stadig godkendelsesarket.
 - Ikonerne i bundcirklen (FooterArc/tilføj-hjulet) er altid ensartede sorte stregikoner — aldrig farvede 3D-billeder (bruger 2026-10-10; Aktivitet bruger `IconActivity`). Gælder web og native.
 - Faste bundknapper (Tilføj/Gem i `HfScreen`-footeren) skal ligge over bundcirklen (FooterArc, 40 px over menuen), aldrig bag den (bruger 2026-10-09).
-- **ALLE knapper ligger over halvcirklen, aldrig under/bag den (bruger 2026-10-17, gentaget med eftertryk)**: en sides send-/gem-knap lægges i `HfScreen`s `footer` (native: `HcScreen(bottom = …)`), ikke nederst i indholdet. Rammen sørger selv for afstanden: web-footeren har 40 px ekstra bund, indhold uden footer får 40 px luft (`.hf-screen-scroll--arc`), og native får `LocalBottomArcInset` (40 dp) fra `AppFrame` — læg aldrig egen 40 px-afstand oveni. Userbacks "Feedback"-knap står på Userbacks egen plads og må aldrig flyttes op, så den dækker Tilføj/Gem eller andre knapper (bruger 2026-10-17: "det har jeg aldrig spurgt om") — flyt den kun, hvis brugeren beder om det.
+- **ALLE knapper ligger over halvcirklen, aldrig under/bag den (bruger 2026-10-17, gentaget med eftertryk)**: en sides send-/gem-knap lægges i `HfScreen`s `footer` (native: `HcScreen(bottom = …)`), ikke nederst i indholdet. Rammen sørger selv for afstanden — det er en klasse-regel, ikke noget den enkelte side skal huske: web-footeren har 40 px ekstra bund, og ALLE rulleflader over bundmenuen (HfScreen uden footer, AppScreen, forsidens DailyList, kalenderen) har klassen `.hf-screen-scroll--arc`, et usynligt afstandsstykke på cirklen + 16 px efter indholdet, så alt kan rulles fri af halvcirklen — også når siden ellers ikke kunne rulle (`src/lib/arc-clearance.test.mjs` fejler, hvis en ny skærm med `<BottomNav />` mangler den), og native får `LocalBottomArcInset` (40 dp) fra `AppFrame` — læg aldrig egen 40 px-afstand oveni. Userbacks "Feedback"-knap står på Userbacks egen plads og må aldrig flyttes op, så den dækker Tilføj/Gem eller andre knapper (bruger 2026-10-17: "det har jeg aldrig spurgt om") — flyt den kun, hvis brugeren beder om det.
 
 - Ingen ikke-bestilte tekster: ingen disclaimers, forklaringer eller
   "erstatter ikke læge"-noter på sider, medmindre brugeren har bedt om dem
@@ -279,6 +286,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 - **Bagsiden gemmes ubeskåret** (user rule 2026-10-15): energi/indhold uploader hele kamerabilledet (op til 4096 px) til `POST /api/products/back-photos`; serveren beskærer eller skalerer det aldrig. Nattens robot `back-photo-scan` analyserer hvert billede præcis ÉN gang (mærkninger der ikke står på forsiden, finlæsning, udvidet stavekontrol som forslag) — det indgår aldrig i senere kørsler (`ProductBackPhoto.analyzedAt`). Web + native.
 - **Behandling skal kunne ses** (user rule 2026-10-15: "der står ikke nogen steder at billedet behandles"): et billede, der stadig behandles, giver en load-cirkel på trinnets knap og linjen "Behandler billeder: …" under kameraet; `PhotoWorkingOverlay` skriver altid sin tekst synligt.
 - "Spring over" til højre for udløseren på indholds-trinnet (varer uden indholdsfortegnelse): trinnet klares uden foto, varen oprettes uden ingrediensliste (`skipIngredients`, log `ingredients_skipped`). Vises ikke, når listen allerede stod på energibilledet (trinnet springes da over af sig selv). Web + native.
+- Sprogflaget på Madvarer er et mærke på mikrofonens øverste venstre kant — spejlet af favoritmærket på varecirklens øverste højre kant. Web + native.
 - Søgefeltet er lille med resten af billedet mørkt (stregkode 56 % × 2,2:1; energi/indhold 68 % kvadrat; 55 % mørkt). Kun forsiden har hele rammen. Fotoet tages af hele søgerens kvadrat, men det VISES ikke for brugeren.
 - **Forsidefotoet beskæres ALDRIG efter AI'ens objektboks** (user rule 2026-10-15: "halveret … Det må ikke ske"). Objektgenkendelsen bruges kun til at afvise billeder uden vare og til loggen; varens billede er altid hele rammen, brugeren sigtede med. Vagt: `src/lib/front-photo-never-cropped.test.mjs`. Serveren melder desuden et forsidefoto, der er smallere end 0,45 (kort/lang side) eller under 240 px, som `front_image_suspect` (fejl) i admin → Log (`src/lib/front-photo-guard.ts`). Den natlige robot `front-image-check` finder beskårne forsidebilleder (form + loggen) og sender dem til scan-appens "Skal scannes"; scan-appens nye forsidefoto erstatter dem.
 - **Varer over to år fremstår som nye (user rule 2026-10-15)**: har en vare ligget i databasen i over to år (eller er det over to år siden, den sidst blev tjekket), tager kameraet forside, energi og indhold som ved en ny vare, når en indlogget kunde scanner den — men kunden får varens tidligere info med det samme. Fotoene vurderes KUN om natten: intern AI (`recheck-local`, DINOv2) sammenligner nyt foto med originalen, OpenAI kun ved tvivl, og `product-recheck` læser energi/indhold (telefonens OCR først). Ændringer går til admin → Nye varer → 2-års tjek med det nye foto ved siden af originalen; det nyeste er valgt som standard. Admin tager stilling, FØR billedet fritlægges (ingen spildte tokens); det valgte fritlægges om natten. Nye tal gælder kun registreringer fra og med scanningen (kunden selv og dem imellem) — historikken før scanningen ændres aldrig. Web + native. Se DECISIONS.md 2026-10-15.
@@ -326,6 +334,21 @@ ikke her, er den ikke registreret og skal tilføjes.
   (`/admin/api-keys#<id>`), ikke kun til API-nøgle-siden.
 - Webhooks, som en udbyders server kalder, skal stå i `TOKEN_API_PREFIXES`
   i `src/lib/access-wall.ts`; ellers afviser adgangsmuren dem som bots (403).
+
+## Eksterne kilder flettes altid ind (user rule 2026-10-17)
+
+Så snart en vare scannes, oprettes eller fremsøges, flettes eksterne kilder
+(i dag Open Food Facts via stregkoden) automatisk ind i baggrunden —
+`src/lib/external-enrichment.ts`. Kaldes fra stregkodeopslaget, "opret
+straks" (efter fotoene er læst, med stregkode-reserven med det samme),
+manuel oprettelse, søgeresultater, varesiden og admins OFF-hentning; robotten
+`external-sources-sweep` tager resten. Kun huller fyldes: etikettens data
+overskrives aldrig, brandet sættes kun fra brand-listen (aldrig oprettet ud
+fra OFF), ingredienser kun på varens eget sprog, og øvrige næringstal kun når
+OFF's energi passer (±5 %) med varens. Energien selv følger stadig
+stregkode-reserven. Samme vare tjekkes højst hver 7. dag
+(`sourceCheckedAt`); OFF hentes igen efter 30 dage. Ny ekstern kilde → læg den
+ind i samme modul.
 
 ## Stregkode-reserve (user rule 2026-10-17)
 

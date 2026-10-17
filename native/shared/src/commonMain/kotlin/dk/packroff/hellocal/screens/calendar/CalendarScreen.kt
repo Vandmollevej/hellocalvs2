@@ -42,6 +42,7 @@ import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.screens.food.AddMenuSheet
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.ui.HcAppBar
+import dk.packroff.hellocal.ui.LocalBottomArcInset
 import kotlin.math.abs
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -254,7 +255,7 @@ fun CalendarScreen(args: RouteArgs) {
                     )
                 },
             )
-            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
+            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp).padding(bottom = LocalBottomArcInset.current)) {
                 if (!isLandscape) {
                     PeriodHeader(
                         view = view,
