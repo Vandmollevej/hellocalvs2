@@ -6,7 +6,7 @@
     "src/components/AppHomeGate.tsx": "baa51e8bdefd34a0",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
-    "src/components/DailyList.tsx": "1260ad086f6e2a8f",
+    "src/components/DailyList.tsx": "1981ba81e2cb88f8",
     "src/components/DecimalText.tsx": "ae5809b34b60c7a0",
     "src/components/EmailVerifySheet.tsx": "1e39e80308f972b6",
     "src/components/EnergyBreakdown.tsx": "693400e98aaca217",
@@ -69,7 +69,7 @@
     "src/components/hf/TextField.tsx": "8339609e420b5315"
   },
   "/activity/create": {
-    "src/app/activity/create/page.tsx": "a59cb891044cd075",
+    "src/app/activity/create/page.tsx": "7c2ea81660896342",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -265,7 +265,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/calendar": {
-    "src/app/calendar/page.tsx": "fac87596309f2c86",
+    "src/app/calendar/page.tsx": "eb2cca33424dd1ea",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",
@@ -628,7 +628,7 @@
     "src/components/web/WebShell.tsx": "90e177ec84dfc4a5"
   },
   "/foods": {
-    "src/app/foods/page.tsx": "c7f1bc6890ac97fb",
+    "src/app/foods/page.tsx": "ce83f8c762223fed",
     "src/app/layout.tsx": "ce9cce1fff73600a",
     "src/components/AuthGate.tsx": "94db96b768f9f95f",
     "src/components/BottomNav.tsx": "c7b5a5b9bc69dd31",

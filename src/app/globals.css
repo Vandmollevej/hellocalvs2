@@ -2911,14 +2911,21 @@ textarea.hf-input {
   display: none;
 }
 
-/* Bundcirklen (FooterArc) rager 40 px op over menuen: indhold uden fast footer
-   får samme luft i bunden, så intet ender bag cirklen. Ikke i desktop-skallen. */
-.hf-screen-scroll--arc {
-  padding-bottom: 40px;
+/* Bundcirklen (FooterArc) rager 40 px op over menuen. Klasse-regel for ALLE
+   rullende sider uden fast footer (HfScreen + AppScreen): et usynligt
+   afstandsstykke efter indholdet (cirklen + 16 px), så alt — også en knap
+   sidst på siden — altid kan rulles helt fri af halvcirklen. Et ::after-
+   element i stedet for padding-bottom, fordi Safari kan ignorere padding i
+   bunden af en rullecontainer. Ikke i desktop-skallen. */
+.hf-screen-scroll--arc::after {
+  content: "";
+  display: block;
+  height: calc(40px + 1rem);
+  flex-shrink: 0;
 }
 
-.web-shell .hf-screen-scroll--arc {
-  padding-bottom: 0;
+.web-shell .hf-screen-scroll--arc::after {
+  display: none;
 }
 
 .web-shell .hf-screen-footer {
