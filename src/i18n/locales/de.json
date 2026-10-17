@@ -292,7 +292,7 @@
       "title": "Support",
       "intro": "Da uns der Schutz deiner Daten wichtig ist, hat der Hello Cal Support standardmäßig keinen Zugriff auf deine persönlichen Daten oder dein Konto. Du bestimmst selbst, welche Daten der Support vorübergehend einsehen darf.",
       "description": "Unten kannst du festlegen, welche Daten wir einsehen dürfen, und den Zeitraum bestimmen, in dem auf die Daten zugegriffen werden kann.",
-      "period": "Zugriffszeitraum",
+      "period": "Zugriff im Zeitraum erlauben",
       "from": "Von",
       "until": "Bis",
       "dataTitle": "Daten, die der Support einsehen darf",

@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +37,7 @@ import dk.packroff.hellocal.nav.RouteArgs
 import dk.packroff.hellocal.platform.NativeHooks
 import dk.packroff.hellocal.theme.HcColors
 import dk.packroff.hellocal.theme.HcDimens
+import dk.packroff.hellocal.ui.CaptureSwipeableRow
 import dk.packroff.hellocal.theme.HcTypeRoles
 import dk.packroff.hellocal.ui.CaptureBrandCard
 import dk.packroff.hellocal.ui.CaptureCenteredError
@@ -43,6 +47,7 @@ import dk.packroff.hellocal.ui.CaptureFormCard
 import dk.packroff.hellocal.ui.HcLine
 import dk.packroff.hellocal.ui.HcMaskIcon
 import dk.packroff.hellocal.ui.CaptureSlider
+import dk.packroff.hellocal.ui.CaptureTapNumber
 import dk.packroff.hellocal.ui.CaptureSuccess
 import dk.packroff.hellocal.ui.HcButton
 import dk.packroff.hellocal.ui.HcLoader
@@ -63,14 +68,15 @@ private const val MIN_ML = 0
 private const val MAX_ML = 1000
 private const val STEP_ML = 25
 
-private class WaterContainer(val key: String, val ml: Int, val src: String, val boxHeight: Dp)
+private class WaterContainer(val key: String, val ml: Int, val src: String, val heightShare: Float)
 
 // Four presets that tap-select an ml amount; the slider stays freely adjustable.
+// Square tiles; image height is a share of the tile, so 75 cl sticks up above it.
 private val CONTAINERS = listOf(
-    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 68.dp),
-    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 58.dp),
-    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 48.dp),
-    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 38.dp),
+    WaterContainer("bottleLarge", 750, "/icons/water/bottle-large.png", 1.18f),
+    WaterContainer("bottleSmall", 500, "/icons/water/bottle-small.png", 0.76f),
+    WaterContainer("glassLarge", 330, "/icons/water/glass-large.png", 0.60f),
+    WaterContainer("glassSmall", 250, "/icons/water/glass-small.png", 0.47f),
 )
 
 /** The water glass icon (src/components/icons/WaterGlass.tsx — PNG used as a mask). */
@@ -125,26 +131,31 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
         Column(verticalArrangement = Arrangement.spacedBy(HcDimens.SpaceBlock)) {
             CaptureBrandCard(t.t("waterLog.intro"))
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(Modifier.fillMaxWidth().padding(top = 24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 CONTAINERS.forEach { c ->
                     val selected = selectedKey == c.key
                     val shape = RoundedCornerShape(16.dp)
-                    Column(
-                        Modifier.weight(1f).aspectRatio(1f).clip(shape)
-                            .background(if (selected) HcColors.SelectedBg else HcColors.Tan, shape)
-                            .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
-                            .clickable {
-                                selectedKey = c.key
-                                amountMl = c.ml
-                                saved = false
-                            },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-                    ) {
-                        Box(Modifier.fillMaxWidth().height(72.dp), contentAlignment = Alignment.BottomCenter) {
-                            HcRemoteImage(c.src, Modifier.height(c.boxHeight))
-                        }
-                        HcText("${c.ml / 10}cl", HcTypeRoles.Micro, bold = true, color = HcColors.Black)
+                    BoxWithConstraints(Modifier.weight(1f).aspectRatio(1f)) {
+                        Box(
+                            Modifier.matchParentSize().clip(shape)
+                                .background(if (selected) HcColors.SelectedBg else HcColors.Tan, shape)
+                                .let { if (selected) it.border(2.dp, HcColors.SelectedBorder, shape) else it }
+                                .clickable {
+                                    selectedKey = c.key
+                                    amountMl = c.ml
+                                    saved = false
+                                },
+                        )
+                        HcRemoteImage(
+                            c.src,
+                            Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp)
+                                .wrapContentHeight(Alignment.Bottom, unbounded = true)
+                                .requiredHeight(maxHeight * c.heightShare),
+                        )
+                        HcText(
+                            "${c.ml / 10}cl", HcTypeRoles.Micro, bold = true, color = HcColors.Black,
+                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 6.dp),
+                        )
                     }
                 }
             }
@@ -152,7 +163,19 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
             CaptureFormCard {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                     HcText(t.t("waterLog.amountLabel"), HcTypeRoles.Small, Modifier.weight(1f), bold = true, color = HcColors.Black)
-                    HcText("$amountMl ml", HcTypeRoles.Title, color = HcColors.Black)
+                    CaptureTapNumber(
+                        value = amountMl.toDouble(),
+                        display = "$amountMl ml",
+                        unit = "ml",
+                        min = 0.0,
+                        max = 5000.0,
+                        role = HcTypeRoles.Title,
+                        onChange = {
+                            amountMl = it.toInt()
+                            selectedKey = null
+                            saved = false
+                        },
+                    )
                 }
                 CaptureSlider(
                     value = amountMl,
@@ -186,8 +209,20 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                     Column {
                         groupWaterByDate(entries).forEach { group ->
                             HcSectionTitle(group.label)
+                            // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                             group.entries.forEachIndexed { i, entry ->
                                 val local = CaptureDates.local(entry.loggedAt)
+                                CaptureSwipeableRow(onDelete = {
+                                    val before = entries
+                                    entries = entries.filter { it.id != entry.id }
+                                    scope.launch {
+                                        runCatching { Api.delete("/api/water-entries/${entry.id}") }
+                                            .onSuccess { NativeHooks.onRegistrationChanged() }
+                                            .onFailure { entries = before }
+                                    }
+                                }) {
+                                Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                                 CaptureFoodRow(
                                     title = "${entry.amountMl} ml",
                                     thumbnail = { WaterGlassIcon(22.dp) },
@@ -199,7 +234,10 @@ fun WaterCreateScreen(@Suppress("UNUSED_PARAMETER") args: RouteArgs) {
                                         )
                                     },
                                 )
+                                }
+                                }
                                 if (i < group.entries.lastIndex) HcLine()
+                            }
                             }
                         }
                     }

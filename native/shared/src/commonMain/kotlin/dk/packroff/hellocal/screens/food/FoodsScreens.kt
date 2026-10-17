@@ -431,6 +431,8 @@ fun FoodsScreen(args: RouteArgs) {
             if (suggestedVoice.isNotEmpty()) {
                 Column {
                     HcText(t.t("voice.suggested"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                     suggestedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
@@ -441,6 +443,7 @@ fun FoodsScreen(args: RouteArgs) {
                             adding = adding,
                         )
                         if (index < suggestedVoice.lastIndex) HcLine()
+                    }
                     }
                     if (suggestedVoice.size > 1) {
                         HcButton(
@@ -455,6 +458,8 @@ fun FoodsScreen(args: RouteArgs) {
             if (savedVoice.isNotEmpty()) {
                 Column {
                     HcText(t.t("voice.added"), HcTypeRoles.Body, Modifier.padding(bottom = 4.dp), bold = true, color = HcColors.Black)
+                    // Same tan card with swipe as "Dagens tilføjelser" on the front page.
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(HcDimens.RadiusCard)).background(HcColors.Tan)) {
                     savedVoice.forEachIndexed { index, entry ->
                         VoiceItemRow(
                             entry,
@@ -464,6 +469,7 @@ fun FoodsScreen(args: RouteArgs) {
                             onOpen = { nav.push("/registration/${entry.id}") },
                         )
                         if (index < savedVoice.lastIndex) HcLine()
+                    }
                     }
                 }
             }
@@ -728,12 +734,20 @@ fun DrinkDetailScreen(args: RouteArgs) {
                     ) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
                             HcText(ingredient.name, HcTypeRoles.Small, Modifier.weight(1f), color = HcColors.Black, bold = true)
-                            HcText("${daNumber(value, 2)} ${ingredient.unit}", HcTypeRoles.Title, color = HcColors.Black)
+                            dk.packroff.hellocal.ui.CaptureTapNumber(
+                                value = value,
+                                display = "${daNumber(value, 2)} ${ingredient.unit}",
+                                unit = ingredient.unit,
+                                min = 0.0,
+                                decimals = if (ingredient.step < 1) 2 else 0,
+                                role = HcTypeRoles.Title,
+                                onChange = { amounts = amounts + (ingredient.id to it) },
+                            )
                         }
                         FoodSlider(
                             value = value,
                             min = ingredient.minAmount,
-                            max = ingredient.maxAmount,
+                            max = maxOf(ingredient.maxAmount, value),
                             step = ingredient.step.takeIf { it > 0 } ?: 1.0,
                             onChange = { amounts = amounts + (ingredient.id to it) },
                         )

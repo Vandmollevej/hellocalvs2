@@ -782,6 +782,20 @@ private fun fixOcrWord(token: String): String {
     }
 }
 
+/** src/lib/ingredient-text-quality.ts normalizeIngredientPunctuation: ", ," → ",", "karamelE150d" → "karamel E150d", "aromaer(inkl." → "aromaer (inkl.". */
+fun normalizeIngredientPunctuation(text: String): String = text
+    .replace(Regex("""[ \t]+"""), " ")
+    .replace(Regex(""",(?:\s*,)+"""), ",")
+    .replace(Regex("""\(\s*[,;]\s*"""), "(")
+    .replace(Regex("""\s*[,;]\s*\)"""), ")")
+    .replace(Regex("""\(\s+"""), "(")
+    .replace(Regex("""\s+([,.;:)])"""), "$1")
+    .replace(Regex("""(?<=\p{L}{2})\("""), " (")
+    .replace(Regex("""(\p{Ll}{2})(E\d{3})"""), "$1 $2")
+    .replace(Regex("""([,;])(?=\p{L})"""), "$1 ")
+    .replace(Regex("""\)(?=[\p{L}\d])"""), ") ")
+    .trim()
+
 fun displayIngredientsText(text: String): String {
     var out = text.trim()
     val nutrition = NUTRITION_START.find(out)
@@ -797,6 +811,7 @@ fun displayIngredientsText(text: String): String {
         out = SOYA.replace(out) { m -> m.groupValues[1] + (if (m.groupValues[2] == "Y") "J" else "j") + m.groupValues[3] }
         out = Regex("""[${TEXT_LETTERS}1]+""").replace(out) { m -> if (m.value.any { it.isLetter() }) fixOcrWord(m.value) else m.value }
     }
+    out = normalizeIngredientPunctuation(out)
     return out.ifEmpty { text }
 }
 

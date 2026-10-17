@@ -278,6 +278,17 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
   return body.product.id;
 }
 
+// Flowet går til en eksisterende vare uden stregkodeopslag (dublet ud fra
+// forsiden): gem scanningen, så varen står i "Dine indscanninger".
+export function recordProductScan(productId: string) {
+  void fetch("/api/my-scans", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId }),
+    keepalive: true,
+  }).catch(() => {});
+}
+
 // Fejlede eller udløb oprettelsen, kan serveren alligevel have oprettet
 // varen (svaret gik tabt): findes stregkoden nu, er det varen.
 export async function findCreatedProduct(barcode: string, flowId?: string): Promise<string | null> {

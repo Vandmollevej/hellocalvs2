@@ -9,7 +9,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 - Profil → Screeninger er stedet for egne målinger (migræne, mavesmerter, humør, selvoprettede). Søvn er en fast række (også øverst i Screeningrapporter, peger på /statistics/sleep). "Opret ny screening" er et flow, ikke en enkelt formular. Se DECISIONS.md 2026-10-09.
 - Valget "Screening" ligger nederst i Tilføj-menuen og kan vælges som bundmenu-ikon.
-- Listen er den globale `AccordionCard` + `ChevronRow` (native `HcAccordionCard` + `HcChevronRow`) med status-prik (`.hf-status-dot`) og "Aktiv/Inaktiv" i `value` — ingen hjemmelavede rækker (bruger 2026-10-16).
+- Listen er `AccordionCard` med `ScreeningRow` (`src/components/screenings/ScreeningRow.tsx`; native `ScreeningListRow`): præcis som madvarelistens rækker — px-4-ramme med tan-dark streg, den globale `FoodRow` (64 px, 44 px ikonfelt med måne/clipboard-heart, navn, status-prik + "Aktiv/Inaktiv" som caption) og pil til højre (user rule 2026-10-17: "1:1 med madvare-blokkene", særligt højden). Afløser 48 px-`ChevronRow` herfra.
 
 ## Varens sprog og oversættelse (user rule 2026-10-15)
 
@@ -117,15 +117,16 @@ ikke her, er den ikke registreret og skal tilføjes.
   ikke længere). Kilder: simple-icons (CC0), Wikimedia Commons,
   udbyderens egen favicon/app-ikon (App Store 1024 px), mærket frigjort fra
   flisen. Se DECISIONS.md 2026-10-11.
-- **Brand og subbrand ved produktcirklen (bruger 2026-10-10)**: brandet står til
-  højre for cirklen, subbrandet oven over det. Begge vises som logo, når det
-  findes, ellers som navn i fed grøn tekst. Subbrand-logofiler hedder
+- **Brand og subbrand ved produktcirklen (bruger 2026-10-10, ændret 2026-10-17)**:
+  brandet står til højre for cirklen, subbrandet oven over det — **kun som logo**.
+  Har brandet/subbrandet intet logo, vises intet (bruger 2026-10-17: Coca-Cola stod
+  som "Coca-Cola Europacific Partners Services Bulgaria EOOD", fordi Open Food
+  Facts' brand-felt indeholdt producentens firmanavn, og navnet blev vist som tekst).
+  Brands uden logo findes i admin → Produkt-database → Brands → "Uden logo", hvor
+  hvert brand linker til alle dets varer, så logoet kan lægges ind. Ingen
+  hardcodede navnelister til at rette brandnavne. Subbrand-logofiler hedder
   `<brand> <subbrand>.png` eller `<subbrand>.png` og lægges ind som brand-logoer
-  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-10.
-- **Brand-/subbrandnavne går aldrig ud over kanten (bruger 2026-10-15)**: er
-  navnet for langt til pladsen mellem cirklen og sidens kant, brydes det i
-  flere linjer (web + native). Et navn på flere linjer vokser opad og står så
-  længere ude fra cirklen. `brandNameMaxWidthPx` i `src/lib/brand-logo-layout.ts`.
+  (admin-upload eller `_import`). Se DECISIONS.md 2026-10-17.
 - **Uden produktbillede: stort logo i cirklen (bruger 2026-10-14)**: har varen
   hverken billede eller et billede på vej, står subbrandets logo stort midt i
   cirklen (brandet står, hvor det plejer), ellers brandets logo. Logoet rager
@@ -192,6 +193,7 @@ ikke her, er den ikke registreret og skal tilføjes.
 
 ## UI
 
+- **Én swipe-række overalt (user rule 2026-10-17)**: alle rækker, der kan swipes, bruger `SwipeableRow` (`src/components/SwipeableRow.tsx`; native `FoodSwipeableRow`/`CaptureSwipeableRow`) og ligger i samme tan-kort som "Dagens tilføjelser" på forsiden: `overflow-hidden rounded-card bg-hf-tan`, tan-dark streg mellem rækkerne, rækken selv har `px-4`, så knapperne går helt ud til kortets kant. Alle knapper er ens: ikon over tekst, hvid på farve, 80 px (Favorit grøn, Kopier watch, Fejl/Aktivér grå, Fjern rød med skraldespand). Egne knapper gives som `rightActions`/`leftActions` — byg aldrig en ny swipe-komponent. Lister med registreringer (vand, kalenderens indtastninger, tale, chat) kan swipes væk.
 - **Lister med pil bruger den globale række (user rule 2026-10-16: "tilpas det globale design i stedet for at hardcode")**: en liste af rækker med pil til højre er altid `AccordionCard` + `ChevronRow` (`src/components/hf/AccordionCard.tsx`; native `HcAccordionCard` + `HcChevronRow`) — 48 px, 16 px gutter, tan-dark linje, ingen gap mellem rækker. Status til højre før pilen = `value`. Byg aldrig rækken selv med `flex px-4 py-3 border-b …`. Swipe-flader bag rækken har kortets farve (`bg-hf-tan`).
 - **`ActionButton`/`ActionLink` er altid mindst 48 px høje** (`.hf-btn--large` indbygget) — aldrig sammenklemte knapper.
 - **"Har du fundet en fejl?" på alle varer (user rule 2026-10-15)**: knappen nederst på varesiden vises altid — også på generiske varer, varer uden stregkode og varer, brugeren selv har oprettet. Skjul den aldrig ud fra stregkode eller ejer. Rapporten knyttes til `productId` eller `genericIngredientId` (`src/app/api/bug-reports/route.ts`). Web (`AddProductView.tsx`) og native (`AddProductScreen.kt`).
@@ -464,6 +466,7 @@ ext/image-billeder (logoet i sidebjælken) på /admin/login og forsvinder. Match
 - Intet talfelt (mængde, vægt, mål, tid, antal) må stå alene: det har altid en tilgængelig slider (`HfSlider` / `PersonsSlider` / `MacroSliderBar` / `SleepRangeSlider`; native `CaptureSlider` / `FoodSlider`). Tal kan stadig skrives, men slideren skal være der.
 - Alle slidere giver mildt haptisk feedback ved værdiskift på alle mobilplatforme: web via `sliderHaptic()` (`src/lib/haptics.ts`, Vibration API), native via `LocalHapticFeedback`.
 - Nye slidere skal bruge disse komponenter, aldrig `<input type="range">`.
+- **Tallet over en slider kan altid skrives (bruger 2026-10-17, gentaget flere gange):** overalt hvor der er en slider, skal værdien også kunne tastes manuelt. Tallet ser ud som almindelig tekst og ændrer ikke udseende, før man trykker på det; da får det hvid baggrund, og taltastaturet kommer frem. Brug `TapNumberInput` (web) / `CaptureTapNumber` (native) — eller et eksisterende felt ved siden af slideren. Ingen slider uden en indtastningsmulighed.
 - Mængdefeltet på produktsiden er selv slideren (bruger 2026-10-16): det store tal trækkes vandret (`DragNumberStrip`, web + native). Under trækket vises nabotallene mindre og mere utydelige i siderne i tal-hjulets stil, alle på det store tals grundlinje; enheden ("g") skjules under trækket og kommer igen, når nabotallene er faldet ud. Ingen separat slider under feltet.
 - Præciseret 2026-10-16: reglen gælder felter hvor brugeren selv taster et tal (mængde, vægt, højde, tid, mål, antal). Slider tilføjet på: mængde på produktsiden, aktivitet (tid/distance/kcal), kropsmål, kardio, familie (højde/vægt), graviditet, screening-tal, pulszoner, Opret ret-tid, omregning (web + native). Produktoprettelse (kcal/protein/kulhydrat/fedt pr. 100 g) og admin er undtaget — der indtastes aflæste mærkater præcist. Kode- og tekstfelter har aldrig slider.
 
