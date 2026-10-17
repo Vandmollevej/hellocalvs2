@@ -15,18 +15,9 @@ jobs:
           set -uo pipefail
           cd /deploy
           q() { docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -P pager=off' <<< "BEGIN READ ONLY; $1; ROLLBACK;"; }
-          P=cmvawb4ue000s01oeu5bem334
-          echo "=== Letmaelk product now ==="
-          q "SELECT id, left(name,40) name, \"brandId\" IS NOT NULL has_brand, \"kcalPer100g\" kcal, \"proteinPer100g\" prot, \"carbsPer100g\" carbs, \"fatPer100g\" fat, \"nutritionMissing\" nm, \"nutrientSources\"::text src, \"pendingFields\" pf, \"imageUrl\", \"pendingImageUrl\", \"updatedAt\" FROM products WHERE id='$P'"
-          echo "=== Its original/back photos ==="
-          q "SELECT step, left(\"imageUrl\",70) url, \"localScannedAt\", \"analyzedAt\", left(coalesce(\"localResult\"->>'text',''),400) text, \"localResult\"->>'confidence' conf, \"createdAt\" FROM product_back_photos WHERE \"productId\"='$P' ORDER BY \"createdAt\""
-          echo "=== Its enrichment job ==="
-          q "SELECT attempts, \"finishedAt\", left(\"lastError\",300) err, left(input::text,900) input FROM quick_enrichment_jobs WHERE \"productId\"='$P'"
-          echo "=== Its logs since yesterday 19:00 UTC ==="
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI:SS') t, event, level, left(message,300) msg FROM debug_logs WHERE \"productId\"='$P' AND \"createdAt\" > '2026-10-16 19:00' ORDER BY \"createdAt\" LIMIT 80"
-          echo "=== Recovery job runs (last 10) ==="
-          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, event, level, left(message,300) msg FROM debug_logs WHERE \"createdAt\" > now() - interval '12 hours' AND (event LIKE '%recovery%' OR event = 'local_reread' OR event LIKE 'enrich_front%') ORDER BY \"createdAt\" DESC LIMIT 15"
-          echo "=== OpenAI errors last 12h ==="
-          q "SELECT count(*), max(\"createdAt\") FROM debug_logs WHERE category='ai' AND level='error' AND \"createdAt\" > now() - interval '12 hours'"
-          echo "=== Running app version ==="
-          grep -E '^HELLOCAL_TAG=' .env.production || true
+          echo "=== Recovery job state ==="
+          q "SELECT key, enabled, \"intervalMinutes\", \"lastStartedAt\", \"lastRunAt\", \"lastStatus\", left(\"lastMessage\",400) msg FROM scheduled_jobs WHERE key IN ('quick-enrichment-recovery','back-photo-local','back-photo-scan')"
+          echo "=== Recovery job runs ==="
+          q "SELECT \"jobKey\", to_char(\"startedAt\",'MM-DD HH24:MI') s, to_char(\"finishedAt\",'MM-DD HH24:MI') f, status, \"runCount\", left(message,400) msg FROM scheduled_job_runs WHERE \"jobKey\" IN ('quick-enrichment-recovery','back-photo-local') AND \"finishedAt\" > now() - interval '14 hours' ORDER BY \"finishedAt\" DESC LIMIT 12"
+          echo "=== Errors last 12h ==="
+          q "SELECT to_char(\"createdAt\",'MM-DD HH24:MI') t, category, event, left(message,300) msg FROM debug_logs WHERE level='error' AND \"createdAt\" > now() - interval '12 hours' ORDER BY \"createdAt\" DESC LIMIT 15"
