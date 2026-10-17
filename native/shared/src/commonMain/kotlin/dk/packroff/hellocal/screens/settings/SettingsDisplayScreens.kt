@@ -40,6 +40,17 @@ import dk.packroff.hellocal.ui.SettingsPagePadding
 import dk.packroff.hellocal.ui.SettingsUncertaintyTilde
 import dk.packroff.hellocal.ui.formatNumber
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import dk.packroff.hellocal.api.Api
+import dk.packroff.hellocal.screens.profile.ProfileDates
+import dk.packroff.hellocal.ui.ProfileChoiceChip
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
 
 private val SettingsDisplayP4 = PaddingValues(16.dp)
 
@@ -215,34 +226,97 @@ fun MenstrualCycleSettingsScreen(args: RouteArgs) {
 }
 
 /**
- * Native port of src/app/settings/display/sleep-quality/page.tsx
- * (User.sleepQualityPromptEnabled). `?focus=toggle` (from "Slå fra" in the sleep
- * question) gives the toggle a thin green ring.
+ * Native port of src/app/settings/display/sleep-quality/page.tsx: on/off at the
+ * top (User.sleepQualityPromptEnabled), how often to ask (sleepQualityFrequency),
+ * "Vis i kalenderen" (sleepQualityShowInCalendar) and today's 1–5 rating.
+ * `?focus=toggle` (from "Slå fra" in the sleep question) gives the toggle a thin green ring.
  */
 @Composable
 fun SleepQualitySettingsScreen(args: RouteArgs) {
     val t = LocalTranslator.current
-    val (flag, save) = rememberProfileFlag("sleepQualityPromptEnabled")
+    val scope = rememberCoroutineScope()
     val focusToggle = args.opt("focus") == "toggle"
+    var loaded by remember { mutableStateOf(false) }
+    var enabled by remember { mutableStateOf(true) }
+    var frequency by remember { mutableStateOf("DAILY") }
+    var showInCalendar by remember { mutableStateOf(true) }
+    var todayRating by remember { mutableStateOf<Int?>(null) }
+    val today = ProfileDates.todayIso()
+    LaunchedEffect(Unit) {
+        runCatching { settingsLoadProfile() }.getOrNull()?.let { user ->
+            enabled = user.settingsBool("sleepQualityPromptEnabled") ?: true
+            frequency = user.settingsStr("sleepQualityFrequency")?.takeIf { it in SleepFrequencies } ?: "DAILY"
+            showInCalendar = user.settingsBool("sleepQualityShowInCalendar") != false
+            loaded = true
+        }
+        todayRating = runCatching { Api.get("/api/sleep-quality?from=$today&to=$today") }.getOrNull()
+            ?.jsonObject?.get("entries")?.let { it as? JsonArray }?.firstOrNull()?.jsonObject?.get("rating")
+            ?.let { it as? JsonPrimitive }?.intOrNull
+    }
+    fun save(field: String, value: Any) {
+        scope.launch { settingsPatchProfile(mapOf(field to value)) }
+    }
     HcScreen(title = t.t("settings.sleepQuality"), contentPadding = SettingsDisplayP4) {
         SettingsPage {
-            val value = flag.value
-            if (value == null) {
+            if (!loaded) {
                 HcLoader()
             } else {
                 val ring = if (focusToggle) Modifier.border(2.dp, HcColors.Green, RoundedCornerShape(12.dp)) else Modifier
                 Column(ring) {
                     HcToggle(
-                        checked = value,
-                        onChange = save,
+                        checked = enabled,
+                        onChange = { enabled = it; save("sleepQualityPromptEnabled", it) },
                         label = t.t("sleepQualitySettings.toggleLabel"),
                         description = t.t("sleepQualitySettings.toggleDescription"),
                     )
+                }
+                Column(Modifier.alpha(if (enabled) 1f else 0.5f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    HcText(t.t("screenings.frequencyTitle"), HcTypeRoles.SectionTitle)
+                    SleepFrequencies.forEach { key ->
+                        ProfileChoiceChip(
+                            t.t("screenings.frequency.$key"),
+                            frequency == key,
+                            { frequency = key; save("sleepQualityFrequency", key) },
+                            Modifier.fillMaxWidth(),
+                            enabled = enabled,
+                        )
+                    }
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    HcText(t.t("screenings.calendarTitle"), HcTypeRoles.SectionTitle)
+                    HcToggle(
+                        checked = showInCalendar,
+                        onChange = { showInCalendar = it; save("sleepQualityShowInCalendar", it) },
+                        label = t.t("screenings.calendarLabel"),
+                        description = t.t("sleepQualitySettings.calendarDesc"),
+                    )
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    HcText(t.t("sleepQualitySettings.todayTitle"), HcTypeRoles.SectionTitle)
+                    HcText(t.t("sleepQuality.question"), HcTypeRoles.Body, color = HcColors.TextSecondary)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        (1..5).forEach { rating ->
+                            val selected = todayRating == rating
+                            Box(
+                                Modifier.size(48.dp).clip(CircleShape)
+                                    .background(if (selected) HcColors.Green else HcColors.Tan)
+                                    .clickable {
+                                        todayRating = rating
+                                        scope.launch { runCatching { Api.put("/api/sleep-quality", mapOf("date" to today, "rating" to rating)) } }
+                                    },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                HcText(rating.toString(), HcTypeRoles.SectionTitle, color = if (selected) HcColors.White else HcColors.Black)
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+private val SleepFrequencies = listOf("DAILY", "WEEKLY", "MONTHLY", "MANUAL")
 
 /** src/components/hf/HelpTip.tsx — small help text, only while "Vis tooltips" is on. */
 @Composable

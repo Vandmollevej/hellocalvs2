@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Fråga om nattens sömn",
-    "toggleDescription": "Första gången du öppnar appen varje dag får du frågan att betygsätta nattens sömn från 1 till 5. Betyget visas på dagen i kalendern och i statistiken."
+    "toggleDescription": "Du ombeds betygsätta nattens sömn från 1 till 5 första gången du öppnar appen. Välj nedan hur ofta du vill bli tillfrågad.",
+    "calendarDesc": "Betyget visas på dagen i kalendern.",
+    "todayTitle": "I dag"
   },
   "sleepQuality": {
     "question": "Hur har du upplevt din sömnkvalitet?",

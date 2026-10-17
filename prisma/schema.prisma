@@ -260,6 +260,10 @@ model User {
   // Visning. Slået til som standard — dagens første app-åbning viser et
   // overlay, hvor nattens søvn vurderes 1–5 (SleepQualityEntry).
   sleepQualityPromptEnabled Boolean @default(true)
+  // Frekvens (DAILY/WEEKLY/MONTHLY/MANUAL, som screeninger) og "Vis i kalenderen"
+  // for søvnspørgsmålet (Profil → Screeninger → Søvn, bruger 2026-10-17).
+  sleepQualityFrequency      String  @default("DAILY")
+  sleepQualityShowInCalendar Boolean @default(true)
 
   registrations           Registration[]
   productScans            ProductScan[]

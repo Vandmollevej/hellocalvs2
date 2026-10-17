@@ -523,7 +523,9 @@
   },
   "sleepQualitySettings": {
     "toggleLabel": "Nach dem Schlaf der Nacht fragen",
-    "toggleDescription": "Wenn du die App jeden Tag zum ersten Mal öffnest, wirst du gebeten, den Schlaf der letzten Nacht von 1 bis 5 zu bewerten. Die Bewertung wird am Tag im Kalender und in der Statistik angezeigt."
+    "toggleDescription": "Beim ersten Öffnen der App wirst du gebeten, deinen Schlaf der letzten Nacht von 1 bis 5 zu bewerten. Wähle unten, wie oft du gefragt werden möchtest.",
+    "calendarDesc": "Die Bewertung wird am Tag im Kalender angezeigt.",
+    "todayTitle": "Heute"
   },
   "sleepQuality": {
     "question": "Wie hast du deine Schlafqualität empfunden?",
